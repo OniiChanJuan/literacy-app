@@ -1,3 +1,5 @@
+"use client";
+
 import type { MediaType } from "@/lib/data";
 
 const PLATFORMS: Record<string, { label: string; icon: string; color: string; bg: string }> = {
