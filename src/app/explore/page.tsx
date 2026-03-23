@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { ALL_ITEMS, ITEMS, TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, isUpcoming, type MediaType, type Item, type UpcomingItem } from "@/lib/data";
+import { useState, useEffect, useCallback } from "react";
+import { TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, type MediaType, type Item, type UpcomingItem } from "@/lib/data";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
@@ -13,16 +13,11 @@ interface SearchResult extends Item {
 
 type Mode = "all" | "type" | "genre" | "vibe";
 
-// ── Section label ───────────────────────────────────────────────────────
 function SectionLabel({ children }: { children: string }) {
   return (
     <div style={{
-      fontSize: 10,
-      color: "rgba(255,255,255,0.25)",
-      textTransform: "uppercase",
-      letterSpacing: 2,
-      fontWeight: 600,
-      marginBottom: 14,
+      fontSize: 10, color: "rgba(255,255,255,0.25)", textTransform: "uppercase",
+      letterSpacing: 2, fontWeight: 600, marginBottom: 14,
     }}>
       {children}
     </div>
@@ -38,9 +33,20 @@ export default function ExplorePage() {
   const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
   const [searching, setSearching] = useState(false);
   const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
+  const [highestRated, setHighestRated] = useState<Item[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+  const [filterLoading, setFilterLoading] = useState(false);
+  const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
 
-  // Determine if any filter is active
   const hasActiveFilter = selectedType !== null || selectedGenre !== null || selectedVibe !== null;
+
+  // Load counts from DB
+  useEffect(() => {
+    fetch("/api/catalog/counts")
+      .then((r) => r.json())
+      .then((data) => { if (data.byType) setTypeCounts(data.byType); })
+      .catch(() => {});
+  }, []);
 
   // API search with debounce
   useEffect(() => {
@@ -66,37 +72,57 @@ export default function ExplorePage() {
       .catch(() => {});
   }, []);
 
-  // Highest rated items (by first external score)
-  const highestRated = useMemo(() => {
-    return [...ITEMS]
-      .filter((i) => Object.keys(i.ext).length > 0)
-      .sort((a, b) => {
-        const aScore = Object.values(a.ext)[0] || 0;
-        const bScore = Object.values(b.ext)[0] || 0;
-        return bScore - aScore;
+  // Fetch highest rated from DB
+  useEffect(() => {
+    fetch("/api/catalog?limit=20&sort=recent")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const withScores = data
+          .filter((i: Item) => {
+            const ext = i.ext as Record<string, number>;
+            return Object.values(ext).some((v) => v >= 8);
+          })
+          .slice(0, 15);
+        setHighestRated(withScores);
       })
-      .slice(0, 15);
+      .catch(() => {});
   }, []);
 
-  // Filtered results
-  const filteredItems = useMemo(() => {
-    if (selectedType) return ALL_ITEMS.filter((i) => i.type === selectedType);
-    if (selectedGenre) return ALL_ITEMS.filter((i) => i.genre.includes(selectedGenre));
-    if (selectedVibe) return ALL_ITEMS.filter((i) => i.vibes.includes(selectedVibe));
-    return [];
-  }, [selectedType, selectedGenre, selectedVibe]);
+  // Fetch filtered items from DB when filter changes
+  const fetchFiltered = useCallback(async (type: MediaType | null, genre: string | null, vibe: string | null) => {
+    if (!type && !genre && !vibe) { setFilteredItems([]); return; }
+    setFilterLoading(true);
+    try {
+      let url = "/api/catalog?limit=100";
+      if (type) url += `&type=${type}`;
+      if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+      if (vibe) url += `&vibe=${encodeURIComponent(vibe)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      setFilteredItems(Array.isArray(data) ? data : []);
+    } catch {
+      setFilteredItems([]);
+    }
+    setFilterLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchFiltered(selectedType, selectedGenre, selectedVibe);
+  }, [selectedType, selectedGenre, selectedVibe, fetchFiltered]);
 
   const clearFilters = () => {
     setSelectedType(null);
     setSelectedGenre(null);
     setSelectedVibe(null);
+    setFilteredItems([]);
   };
 
   const modes: { id: Mode; label: string }[] = [
-    { id: "all",   label: "All" },
-    { id: "type",  label: "By Media" },
+    { id: "all", label: "All" },
+    { id: "type", label: "By Media" },
     { id: "genre", label: "By Genre" },
-    { id: "vibe",  label: "By Vibe" },
+    { id: "vibe", label: "By Vibe" },
   ];
 
   return (
@@ -109,16 +135,10 @@ export default function ExplorePage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
-            width: "100%",
-            padding: "14px 18px 14px 42px",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 14,
-            color: "#fff",
-            fontSize: 14,
-            outline: "none",
-            boxSizing: "border-box",
-            transition: "border-color 0.2s",
+            width: "100%", padding: "14px 18px 14px 42px",
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 14, color: "#fff", fontSize: 14, outline: "none",
+            boxSizing: "border-box", transition: "border-color 0.2s",
           }}
           onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)")}
           onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
@@ -129,8 +149,7 @@ export default function ExplorePage() {
             onClick={() => setSearch("")}
             style={{
               position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
-              background: "none", border: "none", color: "rgba(255,255,255,0.3)",
-              cursor: "pointer", fontSize: 14,
+              background: "none", border: "none", color: "rgba(255,255,255,0.3)", cursor: "pointer", fontSize: 14,
             }}
           >
             ✕
@@ -138,7 +157,7 @@ export default function ExplorePage() {
         )}
       </div>
 
-      {/* Search results — override everything when searching */}
+      {/* Search results */}
       {searchResults !== null || searching ? (
         <div>
           {searching && <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 16 }}>Searching...</div>}
@@ -175,12 +194,8 @@ export default function ExplorePage() {
                     background: active ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
                     color: active ? "#fff" : "rgba(255,255,255,0.4)",
                     border: active ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.06)",
-                    borderRadius: 12,
-                    padding: "8px 14px",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    transition: "all 0.15s",
+                    borderRadius: 12, padding: "8px 14px", fontSize: 13, fontWeight: 600,
+                    cursor: "pointer", transition: "all 0.15s",
                   }}
                 >
                   {m.label}
@@ -189,7 +204,7 @@ export default function ExplorePage() {
             })}
           </div>
 
-          {/* Active filter results */}
+          {/* Active filter results from DB */}
           {hasActiveFilter && (
             <div style={{ marginBottom: 32 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
@@ -199,7 +214,9 @@ export default function ExplorePage() {
                     {selectedGenre && selectedGenre}
                     {selectedVibe && VIBES[selectedVibe] && `${VIBES[selectedVibe].icon} ${VIBES[selectedVibe].label}`}
                   </span>
-                  <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{filteredItems.length} items</span>
+                  <span style={{ fontSize: 12, color: "var(--text-faint)" }}>
+                    {filterLoading ? "Loading..." : `${filteredItems.length} items`}
+                  </span>
                 </div>
                 <button
                   onClick={clearFilters}
@@ -208,14 +225,18 @@ export default function ExplorePage() {
                   ✕ Clear filter
                 </button>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: 16 }}>
-                {filteredItems.map((item) =>
-                  isUpcoming(item)
-                    ? <UpcomingCard key={item.id} item={item as UpcomingItem} />
-                    : <Card key={item.id} item={item} />
-                )}
-              </div>
-              {filteredItems.length === 0 && (
+              {filterLoading ? (
+                <div style={{ textAlign: "center", padding: "32px 20px", color: "var(--text-faint)", fontSize: 13 }}>
+                  Loading items...
+                </div>
+              ) : (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: 16 }}>
+                  {filteredItems.map((item) => (
+                    <Card key={item.id} item={item} />
+                  ))}
+                </div>
+              )}
+              {!filterLoading && filteredItems.length === 0 && (
                 <div style={{ textAlign: "center", padding: "32px 20px", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
                   No items match this filter.
                 </div>
@@ -223,38 +244,34 @@ export default function ExplorePage() {
             </div>
           )}
 
-          {/* Default curated storefront — only shown when no filter is active */}
+          {/* Default curated storefront */}
           {!hasActiveFilter && (
             <>
-              {/* 3. Browse by media type — 4-column grid */}
+              {/* 3. Browse by media type */}
               {(mode === "all" || mode === "type") && (
                 <div style={{ marginBottom: 32 }}>
                   <SectionLabel>Browse by media type</SectionLabel>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
                     {TYPE_ORDER.map((k) => {
                       const t = TYPES[k];
-                      const count = ALL_ITEMS.filter((i) => i.type === k).length;
+                      const count = typeCounts[k] || 0;
                       return (
                         <button
                           key={k}
                           onClick={() => { setSelectedType(k); setMode("type"); }}
                           style={{
-                            background: `${t.color}0A`,
-                            border: `1px solid ${t.color}33`,
-                            borderRadius: 14,
-                            padding: "18px 16px",
-                            cursor: "pointer",
-                            textAlign: "left",
-                            transition: "all 0.15s",
+                            background: `${t.color}0A`, border: `1px solid ${t.color}33`,
+                            borderRadius: 11, padding: "14px 12px", cursor: "pointer",
+                            textAlign: "left", transition: "all 0.15s",
                           }}
                           onMouseEnter={(e) => { e.currentTarget.style.background = `${t.color}18`; e.currentTarget.style.transform = "translateY(-2px)"; }}
                           onMouseLeave={(e) => { e.currentTarget.style.background = `${t.color}0A`; e.currentTarget.style.transform = ""; }}
                         >
-                          <div style={{ fontSize: 28, marginBottom: 8 }}>{t.icon}</div>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: t.color, marginBottom: 3 }}>
+                          <div style={{ fontSize: 22, marginBottom: 5 }}>{t.icon}</div>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: t.color, marginBottom: 2 }}>
                             {t.label}
                           </div>
-                          <div style={{ fontSize: 10, color: "var(--text-faint)" }}>
+                          <div style={{ fontSize: 9, color: "var(--text-faint)" }}>
                             {count} title{count !== 1 ? "s" : ""}
                           </div>
                         </button>
@@ -269,34 +286,21 @@ export default function ExplorePage() {
                 <div style={{ marginBottom: 32 }}>
                   <SectionLabel>Popular genres</SectionLabel>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {ALL_GENRES.slice(0, 16).map((g) => {
-                      const count = ALL_ITEMS.filter((i) => i.genre.includes(g)).length;
-                      return (
-                        <button
-                          key={g}
-                          onClick={() => { setSelectedGenre(g); setMode("genre"); }}
-                          style={{
-                            background: "rgba(255,255,255,0.04)",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                            borderRadius: 20,
-                            padding: "6px 14px",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: "rgba(255,255,255,0.6)",
-                            cursor: "pointer",
-                            transition: "all 0.15s",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 6,
-                          }}
-                          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#fff"; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
-                        >
-                          {g}
-                          <span style={{ fontSize: 10, color: "var(--text-faint)" }}>{count}</span>
-                        </button>
-                      );
-                    })}
+                    {ALL_GENRES.slice(0, 20).map((g) => (
+                      <button
+                        key={g}
+                        onClick={() => { setSelectedGenre(g); setMode("genre"); }}
+                        style={{
+                          background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+                          borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
+                          color: "rgba(255,255,255,0.6)", cursor: "pointer", transition: "all 0.15s",
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#fff"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
+                      >
+                        {g}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -309,31 +313,21 @@ export default function ExplorePage() {
                     {ALL_VIBES.map((v) => {
                       const vibe = VIBES[v];
                       if (!vibe) return null;
-                      const count = ALL_ITEMS.filter((i) => i.vibes.includes(v)).length;
                       return (
                         <button
                           key={v}
                           onClick={() => { setSelectedVibe(v); setMode("vibe"); }}
                           style={{
-                            background: `${vibe.color}12`,
-                            border: `1px solid ${vibe.color}25`,
-                            borderRadius: 20,
-                            padding: "6px 14px",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: vibe.color,
-                            cursor: "pointer",
-                            transition: "all 0.15s",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 5,
+                            background: `${vibe.color}12`, border: `1px solid ${vibe.color}25`,
+                            borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
+                            color: vibe.color, cursor: "pointer", transition: "all 0.15s",
+                            display: "flex", alignItems: "center", gap: 5,
                           }}
                           onMouseEnter={(e) => { e.currentTarget.style.background = `${vibe.color}25`; }}
                           onMouseLeave={(e) => { e.currentTarget.style.background = `${vibe.color}12`; }}
                         >
                           <span>{vibe.icon}</span>
                           {vibe.label}
-                          <span style={{ fontSize: 10, opacity: 0.6 }}>{count}</span>
                         </button>
                       );
                     })}
@@ -341,14 +335,10 @@ export default function ExplorePage() {
                 </div>
               )}
 
-              {/* 6. Highest rated across all media */}
+              {/* 6. Highest rated */}
               {mode === "all" && highestRated.length > 0 && (
                 <div style={{ marginBottom: 32 }}>
-                  <ScrollRow
-                    label="Highest Rated"
-                    sub="Top-rated across all media"
-                    icon="⭐"
-                  >
+                  <ScrollRow label="Highest Rated" sub="Top-rated across all media" icon="⭐">
                     {highestRated.map((item) => <Card key={item.id} item={item} />)}
                   </ScrollRow>
                 </div>
@@ -357,12 +347,7 @@ export default function ExplorePage() {
               {/* 7. Coming soon */}
               {mode === "all" && upcoming.length > 0 && (
                 <div>
-                  <ScrollRow
-                    label="Coming Soon"
-                    sub={`${upcoming.length} upcoming releases`}
-                    icon="🔥"
-                    iconBg="#E8485522"
-                  >
+                  <ScrollRow label="Coming Soon" sub={`${upcoming.length} upcoming releases`} icon="🔥" iconBg="#E8485522">
                     {upcoming.map((item) => (
                       <UpcomingCard key={`upcoming-${item.id}`} item={item} />
                     ))}
