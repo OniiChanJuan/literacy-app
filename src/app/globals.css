@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ── Core palette ─────────────────────────────────────── */
+  --bg-page:      #0b0b10;
+  --bg-card:      #141419;
+  --bg-elevated:  #1a1a24;
+  --accent:       #E84855;
+  --foreground:   #f0f0f5;
+
+  /* ── Media type colors ────────────────────────────────── */
+  --media-movie:   #E84855;
+  --media-tv:      #C45BAA;
+  --media-book:    #3185FC;
+  --media-manga:   #FF6B6B;
+  --media-comic:   #F9A620;
+  --media-game:    #2EC4B6;
+  --media-music:   #9B5DE5;
+  --media-podcast: #00BBF9;
+
+  /* ── Score colors ─────────────────────────────────────── */
+  --score-good: #2EC4B6;
+  --score-mid:  #F9A620;
+  --score-poor: #E84855;
+
+  /* ── Surface / border tokens (white at various opacities) */
+  --surface-1:  rgba(255, 255, 255, 0.02);
+  --surface-2:  rgba(255, 255, 255, 0.04);
+  --surface-3:  rgba(255, 255, 255, 0.06);
+  --surface-4:  rgba(255, 255, 255, 0.08);
+  --surface-5:  rgba(255, 255, 255, 0.12);
+  --border:     rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.15);
+
+  /* ── Text opacity tokens ──────────────────────────────── */
+  --text-primary:   rgba(255, 255, 255, 1);
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-muted:     rgba(255, 255, 255, 0.45);
+  --text-faint:     rgba(255, 255, 255, 0.25);
+
+  /* ── Fonts ────────────────────────────────────────────── */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans:  'DM Sans', system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* ── Utility: hide scrollbar in scroll rows ──────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { scrollbar-width: none; }
