@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
 import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
 import { parseIgdbId, getIgdbDetails } from "@/lib/igdb";
+import { parseGbookId, getGoogleBookDetails } from "@/lib/google-books";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
@@ -19,15 +20,19 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   let item: Item | null = null;
   let isExternal = false;
 
-  // Check if this is a TMDB ID (e.g., "tmdb-movie-12345")
+  // Check if this is an external API ID
   const tmdbParsed = parseTmdbId(id);
   const igdbParsed = parseIgdbId(id);
+  const gbookParsed = parseGbookId(id);
 
   if (tmdbParsed) {
     item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
     isExternal = true;
   } else if (igdbParsed) {
     item = await getIgdbDetails(igdbParsed);
+    isExternal = true;
+  } else if (gbookParsed) {
+    item = await getGoogleBookDetails(gbookParsed);
     isExternal = true;
   } else {
     item = ALL_ITEMS.find((i) => i.id === parseInt(id)) || null;

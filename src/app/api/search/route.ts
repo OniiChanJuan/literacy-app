@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { ALL_ITEMS } from "@/lib/data";
 import { searchTmdb, tmdbItemId } from "@/lib/tmdb";
 import { searchIgdb, igdbItemId } from "@/lib/igdb";
+import { searchGoogleBooks, gbookItemId } from "@/lib/google-books";
 
-// GET /api/search?q=query — search local items + TMDB + IGDB
+// GET /api/search?q=query — search local items + TMDB + IGDB + Google Books
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim().toLowerCase();
   if (!q || q.length < 2) {
@@ -27,9 +28,9 @@ export async function GET(req: NextRequest) {
     routeId: String(item.id),
   }));
 
-  // Search TMDB + IGDB in parallel
+  // Search TMDB + IGDB + Google Books in parallel
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [tmdbResults, igdbResults] = await Promise.all([
+  const [tmdbResults, igdbResults, gbookResults] = await Promise.all([
     searchTmdb(q)
       .then((items) =>
         items
@@ -53,8 +54,21 @@ export async function GET(req: NextRequest) {
           }))
       )
       .catch((e) => { console.error("IGDB search failed:", e); return [] as any[]; }),
+
+    searchGoogleBooks(q)
+      .then((items) =>
+        items
+          .filter((item) => !localTitles.has(`${item.title.toLowerCase()}-${item.year}`))
+          .filter((item) => item.cover) // only show books with covers
+          .map((item) => ({
+            ...item,
+            source: "gbook" as const,
+            routeId: gbookItemId(item.volumeId),
+          }))
+      )
+      .catch((e) => { console.error("Google Books search failed:", e); return [] as any[]; }),
   ]);
 
-  // Local first, then TMDB, then IGDB
-  return NextResponse.json([...localResults, ...tmdbResults, ...igdbResults]);
+  // Local first, then external APIs
+  return NextResponse.json([...localResults, ...tmdbResults, ...igdbResults, ...gbookResults]);
 }
