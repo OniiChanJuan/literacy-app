@@ -146,7 +146,7 @@ export const ITEMS: Item[] = [
     id: 10, title: "Dune", type: "book",
     genre: ["Sci-Fi", "Adventure"], year: 1965,
     vibes: ["epic", "atmospheric", "slow-burn"],
-    cover: "https://books.google.com/books/content?id=AQk_EAAAQBAJ&printsec=frontcover&img=1&zoom=0&source=gbs_api",
+    cover: "https://books.google.com/books/content?id=nrRKDwAAQBAJ&printsec=frontcover&img=1&zoom=0&source=gbs_api",
     desc: "A noble family becomes embroiled in a war for control of the galaxy's most valuable asset: a desert planet that is the only source of the most precious substance in existence.",
     people: [{ role: "Author", name: "Frank Herbert" }],
     awards: ["hugo", "nebula"], platforms: ["kindle", "audible", "library"],

@@ -100,7 +100,13 @@ export async function searchGoogleBooks(query: string): Promise<GoogleBookSearch
   if (!res.ok) return [];
   const data = await res.json();
 
-  return (data.items || []).map((v: GoogleBookVolume) => ({
+  // Filter out movie tie-in editions and study guides
+  const filtered = (data.items || []).filter((v: GoogleBookVolume) => {
+    const title = (v.volumeInfo.title || "").toLowerCase();
+    return !title.includes("movie tie-in") && !title.includes("study guide") && !title.includes("spark notes");
+  });
+
+  return filtered.map((v: GoogleBookVolume) => ({
     ...mapVolumeToItem(v),
     volumeId: v.id,
   }));
