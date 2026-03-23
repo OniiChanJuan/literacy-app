@@ -247,6 +247,32 @@ function getCuratedUpcomingMusic(): UpcomingItem[] {
   ];
 }
 
+// ── Curated upcoming comics ─────────────────────────────────────────────
+function getCuratedUpcomingComics(): UpcomingItem[] {
+  return [
+    {
+      id: 400001, title: "Ultimate Spider-Man Vol. 4", type: "comic",
+      genre: ["Superhero", "Action"], vibes: ["epic", "stylish"], year: 2026,
+      cover: "https://comicvine.gamespot.com/a/uploads/scale_medium/11/117763/9600379-usm2024015_cov.jpg",
+      desc: "Jonathan Hickman and Marco Checchetto continue the critically acclaimed reimagining of Spider-Man in the Ultimate Universe.",
+      people: [{ role: "Writer", name: "Jonathan Hickman" }, { role: "Artist", name: "Marco Checchetto" }, { role: "Publisher", name: "Marvel" }],
+      awards: [], platforms: ["comixology"],
+      ext: {}, totalEp: 6,
+      releaseDate: "2026-06-01", hypeScore: 88, wantCount: 12400, upcoming: true,
+    },
+    {
+      id: 400002, title: "Absolute Batman Vol. 2", type: "comic",
+      genre: ["Superhero", "Action"], vibes: ["dark", "intense"], year: 2026,
+      cover: "https://comicvine.gamespot.com/a/uploads/scale_medium/11/117763/9656785-absbat2024009_cov.jpg",
+      desc: "Scott Snyder and Nick Dragotta continue their bold reimagining of Batman in DC's Absolute Universe.",
+      people: [{ role: "Writer", name: "Scott Snyder" }, { role: "Artist", name: "Nick Dragotta" }, { role: "Publisher", name: "DC Comics" }],
+      awards: [], platforms: ["comixology"],
+      ext: {}, totalEp: 6,
+      releaseDate: "2026-07-15", hypeScore: 91, wantCount: 15800, upcoming: true,
+    },
+  ];
+}
+
 // ── Main export ─────────────────────────────────────────────────────────
 
 /** Fetch all upcoming items from all APIs */
@@ -259,9 +285,10 @@ export async function fetchAllUpcoming(): Promise<UpcomingItem[]> {
   ]);
 
   const music = getCuratedUpcomingMusic();
+  const comics = getCuratedUpcomingComics();
 
   // Combine and sort by release date
-  const all = [...movies, ...tv, ...games, ...books, ...music];
+  const all = [...movies, ...tv, ...games, ...books, ...music, ...comics];
   all.sort((a, b) => a.releaseDate.localeCompare(b.releaseDate));
 
   return all;

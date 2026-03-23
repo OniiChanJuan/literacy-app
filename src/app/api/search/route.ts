@@ -5,6 +5,7 @@ import { searchIgdb, igdbItemId } from "@/lib/igdb";
 import { searchGoogleBooks, gbookItemId } from "@/lib/google-books";
 import { searchSpotify, spotifyItemId } from "@/lib/spotify";
 import { searchJikanManga, searchJikanAnime, jikanItemId } from "@/lib/jikan";
+import { searchComicVine, cvItemId } from "@/lib/comicvine";
 
 // GET /api/search?q=query — search all APIs
 export async function GET(req: NextRequest) {
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
 
   // Search all APIs in parallel
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [tmdbResults, igdbResults, gbookResults, spotifyResults, mangaResults, animeResults] = await Promise.all([
+  const [tmdbResults, igdbResults, gbookResults, spotifyResults, mangaResults, animeResults, comicResults] = await Promise.all([
     searchTmdb(q) // Already filters out anime TV shows
       .then((items) =>
         items
@@ -108,10 +109,23 @@ export async function GET(req: NextRequest) {
           }))
       )
       .catch((e) => { console.error("Jikan anime search failed:", e); return [] as any[]; }),
+
+    searchComicVine(q)
+      .then((items) =>
+        items
+          .filter((item) => !localTitles.has(`${item.title.toLowerCase()}-${item.year}`))
+          .filter((item) => item.cover)
+          .map((item) => ({
+            ...item,
+            source: "comicvine" as const,
+            routeId: cvItemId(item.cvId),
+          }))
+      )
+      .catch((e) => { console.error("Comic Vine search failed:", e); return [] as any[]; }),
   ]);
 
   return NextResponse.json([
     ...localResults, ...tmdbResults, ...mangaResults, ...animeResults,
-    ...igdbResults, ...gbookResults, ...spotifyResults,
+    ...comicResults, ...igdbResults, ...gbookResults, ...spotifyResults,
   ]);
 }
