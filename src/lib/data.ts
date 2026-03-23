@@ -272,7 +272,7 @@ export const ITEMS: Item[] = [
     id: 14, title: "Hades", type: "game",
     genre: ["Action", "Fantasy"], year: 2020,
     vibes: ["fast-paced", "stylish", "immersive"],
-    cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4rs3.jpg",
+    cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/cob9kr.jpg",
     desc: "Defy the god of the dead as you hack and slash your way out of the Underworld with help from the gods of Olympus.",
     people: [{ role: "Developer", name: "Supergiant Games" }, { role: "Director", name: "Greg Kasavin" }],
     awards: ["goty", "bafta", "tga"], platforms: ["steam", "ps", "xbox", "switch"],
