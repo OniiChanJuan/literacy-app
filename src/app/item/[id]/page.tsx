@@ -5,6 +5,7 @@ import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
 import CommunityReviews from "@/components/community-reviews";
 import Recommendations from "@/components/recommendations";
+import StatusTracker from "@/components/status-tracker";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -233,6 +234,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
           {/* Your rating */}
           <RatingPanel itemId={item.id} />
+
+          {/* Status tracking */}
+          <StatusTracker item={item} />
         </div>
       </div>
 

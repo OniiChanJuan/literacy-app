@@ -1,114 +1,211 @@
 "use client";
 
+import { useState } from "react";
+import { ITEMS, TYPES, TYPE_ORDER, type MediaType } from "@/lib/data";
+import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";
+import Card from "@/components/card";
+
+const STATUSES: { key: LibraryStatus; label: string; icon: string; color: string }[] = [
+  { key: "completed",   label: "Completed",   icon: "✓", color: "#2EC4B6" },
+  { key: "in_progress", label: "In Progress",  icon: "▶", color: "#3185FC" },
+  { key: "want_to",     label: "Want To",      icon: "＋", color: "#9B5DE5" },
+  { key: "dropped",     label: "Dropped",      icon: "✕", color: "#E84855" },
+];
+
 export default function LibraryPage() {
-  const statuses = [
-    { key: "completed",   label: "Completed",   icon: "✓", color: "#2EC4B6" },
-    { key: "in_progress", label: "In Progress",  icon: "▶", color: "#3185FC" },
-    { key: "want_to",     label: "Want To",      icon: "＋", color: "#9B5DE5" },
-    { key: "dropped",     label: "Dropped",      icon: "✕", color: "#E84855" },
-  ];
+  const { entries } = useLibrary();
+  const [sectionFilters, setSectionFilters] = useState<Record<LibraryStatus, MediaType | "all">>({
+    completed: "all",
+    in_progress: "all",
+    want_to: "all",
+    dropped: "all",
+  });
+
+  // Group items by status
+  const grouped: Record<LibraryStatus, typeof ITEMS> = {
+    completed: [],
+    in_progress: [],
+    want_to: [],
+    dropped: [],
+  };
+  for (const item of ITEMS) {
+    const entry = entries[item.id];
+    if (entry) grouped[entry.status].push(item);
+  }
+
+  const totalTracked = Object.keys(entries).length;
+
+  if (totalTracked === 0) {
+    return (
+      <div>
+        <div style={{ textAlign: "center", padding: "60px 20px" }}>
+          <div style={{ fontSize: 44, marginBottom: 14 }}>📝</div>
+          <div style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: 20,
+            fontWeight: 800,
+            marginBottom: 6,
+          }}>
+            Nothing tracked yet
+          </div>
+          <div style={{
+            fontSize: 13,
+            color: "rgba(255,255,255,0.4)",
+            maxWidth: 340,
+            margin: "0 auto",
+            lineHeight: 1.6,
+          }}>
+            Open any item and add it to your library.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {/* Empty state */}
-      <div style={{ textAlign: "center", padding: "60px 20px" }}>
-        <div style={{ fontSize: 44, marginBottom: 14 }}>📝</div>
-        <div style={{
-          fontFamily: "'Playfair Display', serif",
-          fontSize: 20,
-          fontWeight: 800,
-          marginBottom: 6,
-        }}>
-          Nothing tracked yet
-        </div>
-        <div style={{
-          fontSize: 13,
-          color: "rgba(255,255,255,0.4)",
-          maxWidth: 340,
-          margin: "0 auto",
-          lineHeight: 1.6,
-        }}>
-          Open any item and add it to your library.
-        </div>
+      {/* Status summary pills */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 28, flexWrap: "wrap" }}>
+        {STATUSES.map((s) => {
+          const count = grouped[s.key].length;
+          return (
+            <div
+              key={s.key}
+              style={{
+                background: count > 0 ? s.color + "15" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${count > 0 ? s.color + "40" : "rgba(255,255,255,0.06)"}`,
+                borderRadius: 10,
+                padding: "8px 14px",
+                display: "flex",
+                alignItems: "center",
+                gap: 7,
+                opacity: count > 0 ? 1 : 0.4,
+              }}
+            >
+              <span style={{ fontSize: 13, color: s.color }}>{s.icon}</span>
+              <span style={{ fontSize: 18, fontWeight: 700, color: s.color }}>{count}</span>
+              <span style={{ fontSize: 10, color: "var(--text-muted)" }}>{s.label}</span>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Status summary pills — shown when library has items */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap", opacity: 0.35 }}>
-        {statuses.map((s) => (
-          <div
-            key={s.key}
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.06)",
-              borderRadius: 10,
-              padding: "8px 14px",
-              display: "flex",
-              alignItems: "center",
-              gap: 7,
-            }}
-          >
-            <span style={{ fontSize: 13, color: s.color }}>{s.icon}</span>
-            <span style={{ fontSize: 18, fontWeight: 700, color: s.color }}>0</span>
-            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>{s.label}</span>
-          </div>
-        ))}
-      </div>
+      {/* Status sections */}
+      {STATUSES.map((s) => {
+        const items = grouped[s.key];
+        if (items.length === 0) return null;
 
-      {/* Media type filter pills */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20, opacity: 0.35 }}>
-        {[
-          { label: "Movies",   icon: "🎬", color: "#E84855" },
-          { label: "TV Shows", icon: "📺", color: "#C45BAA" },
-          { label: "Books",    icon: "📖", color: "#3185FC" },
-          { label: "Manga",    icon: "🗾", color: "#FF6B6B" },
-          { label: "Comics",   icon: "💥", color: "#F9A620" },
-          { label: "Games",    icon: "🎮", color: "#2EC4B6" },
-          { label: "Music",    icon: "🎵", color: "#9B5DE5" },
-          { label: "Podcasts", icon: "🎙️", color: "#00BBF9" },
-        ].map((t) => (
-          <button
-            key={t.label}
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              color: "rgba(255,255,255,0.5)",
-              border: "none",
-              borderRadius: 12,
-              padding: "6px 12px",
-              fontSize: 10,
-              fontWeight: 600,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 3,
-            }}
-          >
-            <span style={{ fontSize: 10 }}>{t.icon}</span>
-            {t.label}
-          </button>
-        ))}
-      </div>
+        const filter = sectionFilters[s.key];
+        const filtered = filter === "all" ? items : items.filter((i) => i.type === filter);
 
-      {/* Status sections — shown when library has items */}
-      {statuses.map((s) => (
-        <div key={s.key} style={{ marginBottom: 32, opacity: 0.2 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <span style={{ fontSize: 14, color: s.color, fontWeight: 700 }}>{s.icon}</span>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 800 }}>{s.label}</span>
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>0</span>
+        // Which media types exist in this section?
+        const typesInSection = new Set(items.map((i) => i.type));
+
+        return (
+          <div key={s.key} style={{ marginBottom: 40 }}>
+            {/* Section header */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              <span style={{ fontSize: 14, color: s.color, fontWeight: 700 }}>{s.icon}</span>
+              <span style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, color: "#fff" }}>
+                {s.label}
+              </span>
+              <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{items.length}</span>
+            </div>
+
+            {/* Per-section media type filter pills */}
+            {typesInSection.size > 1 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+                <button
+                  onClick={() => setSectionFilters((p) => ({ ...p, [s.key]: "all" }))}
+                  style={{
+                    background: filter === "all" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
+                    color: filter === "all" ? "#fff" : "rgba(255,255,255,0.5)",
+                    border: filter === "all" ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
+                    borderRadius: 12,
+                    padding: "5px 12px",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  All
+                </button>
+                {TYPE_ORDER.filter((t) => typesInSection.has(t)).map((t) => {
+                  const typeInfo = TYPES[t];
+                  const active = filter === t;
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => setSectionFilters((p) => ({ ...p, [s.key]: active ? "all" : t }))}
+                      style={{
+                        background: active ? typeInfo.color + "25" : "rgba(255,255,255,0.05)",
+                        color: active ? typeInfo.color : "rgba(255,255,255,0.5)",
+                        border: active ? `1px solid ${typeInfo.color}55` : "1px solid transparent",
+                        borderRadius: 12,
+                        padding: "5px 12px",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      <span style={{ fontSize: 11 }}>{typeInfo.icon}</span>
+                      {typeInfo.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Items grid */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+              {filtered.map((item) => {
+                const entry = entries[item.id];
+                return (
+                  <div key={item.id} style={{ position: "relative" }}>
+                    <Card item={item} />
+                    {/* Progress overlay for In Progress items */}
+                    {s.key === "in_progress" && entry && item.totalEp > 0 && (
+                      <div style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: 4,
+                        borderRadius: "0 0 14px 14px",
+                        background: "rgba(255,255,255,0.06)",
+                        overflow: "hidden",
+                      }}>
+                        <div style={{
+                          height: "100%",
+                          background: "#3185FC",
+                          width: `${Math.min(100, (entry.progress / item.totalEp) * 100)}%`,
+                        }} />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {filtered.length === 0 && (
+              <div style={{
+                padding: "24px",
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.05)",
+                borderRadius: 14,
+                fontSize: 12,
+                color: "var(--text-faint)",
+                textAlign: "center",
+              }}>
+                No {filter !== "all" ? TYPES[filter].label.toLowerCase() : "items"} in this section
+              </div>
+            )}
           </div>
-          <div style={{
-            height: 260,
-            background: "rgba(255,255,255,0.02)",
-            border: "1px solid rgba(255,255,255,0.05)",
-            borderRadius: 14,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.1)" }}>cards will appear here</span>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

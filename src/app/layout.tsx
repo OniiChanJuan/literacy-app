@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Nav from "@/components/nav";
 import { RatingsProvider } from "@/lib/ratings-context";
+import { LibraryProvider } from "@/lib/library-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,10 +18,12 @@ export default function RootLayout({
     <html lang="en">
       <body style={{ minHeight: "100vh", background: "#0b0b10", fontFamily: "'DM Sans', sans-serif", color: "#fff", margin: 0, padding: 0 }}>
         <RatingsProvider>
-          <Nav />
-          <main style={{ padding: "26px 28px 80px" }}>
-            {children}
-          </main>
+          <LibraryProvider>
+            <Nav />
+            <main style={{ padding: "26px 28px 80px" }}>
+              {children}
+            </main>
+          </LibraryProvider>
         </RatingsProvider>
       </body>
     </html>
