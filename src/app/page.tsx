@@ -1,11 +1,25 @@
 "use client";
 
-import { ITEMS, UPCOMING, TYPES, TYPE_ORDER } from "@/lib/data";
+import { useState, useEffect } from "react";
+import { ITEMS, TYPES, TYPE_ORDER, type UpcomingItem } from "@/lib/data";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 
 export default function ForYouPage() {
+  const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
+  const [loadingUpcoming, setLoadingUpcoming] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/upcoming")
+      .then((r) => r.json())
+      .then((data) => {
+        setUpcoming(Array.isArray(data) ? data : []);
+        setLoadingUpcoming(false);
+      })
+      .catch(() => setLoadingUpcoming(false));
+  }, []);
+
   return (
     <div>
       {/* Welcome banner */}
@@ -26,16 +40,26 @@ export default function ForYouPage() {
         </div>
       </div>
 
-      {/* Coming Soon row */}
+      {/* Coming Soon row — fetched from all APIs */}
       <ScrollRow
         label="Coming Soon"
-        sub={`${UPCOMING.length} upcoming releases`}
+        sub={loadingUpcoming ? "Loading..." : `${upcoming.length} upcoming releases`}
         icon="🔥"
         iconBg="#E8485522"
       >
-        {[...UPCOMING].sort((a, b) => a.releaseDate.localeCompare(b.releaseDate)).map((item) => (
-          <UpcomingCard key={item.id} item={item} />
-        ))}
+        {loadingUpcoming ? (
+          <div style={{ padding: "40px 20px", color: "var(--text-faint)", fontSize: 13 }}>
+            Loading upcoming releases...
+          </div>
+        ) : upcoming.length > 0 ? (
+          upcoming.map((item) => (
+            <UpcomingCard key={`upcoming-${item.id}`} item={item} />
+          ))
+        ) : (
+          <div style={{ padding: "40px 20px", color: "var(--text-faint)", fontSize: 13 }}>
+            No upcoming releases found
+          </div>
+        )}
       </ScrollRow>
 
       {/* Section label */}

@@ -4,6 +4,10 @@ import { useRouter } from "next/navigation";
 import { TYPES, type UpcomingItem } from "@/lib/data";
 import { useLibrary } from "@/lib/library-context";
 
+function isImageUrl(cover: string): boolean {
+  return cover.startsWith("http") || cover.startsWith("/");
+}
+
 export default function UpcomingCard({ item }: { item: UpcomingItem }) {
   const router = useRouter();
   const { entries, setStatus } = useLibrary();
@@ -14,6 +18,9 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
   const month = release.toLocaleString("en-US", { month: "short" });
   const day = release.getDate();
   const year = release.getFullYear();
+
+  const hasImage = item.cover && isImageUrl(item.cover);
+  const hasGradient = item.cover && !isImageUrl(item.cover);
 
   return (
     <div
@@ -38,7 +45,50 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
       }}
     >
       {/* Cover */}
-      <div style={{ background: item.cover, height: 250, position: "relative" }}>
+      <div style={{
+        height: 250,
+        position: "relative",
+        ...(hasGradient ? { background: item.cover } : { background: "#1a1a2e" }),
+      }}>
+        {/* Image cover */}
+        {hasImage && (
+          <img
+            src={item.cover}
+            alt={item.title}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+
+        {/* Styled placeholder for items with no cover */}
+        {!hasImage && !hasGradient && (
+          <div style={{
+            width: "100%",
+            height: "100%",
+            background: `linear-gradient(135deg, ${t.color}33, ${t.color}11)`,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px 12px",
+          }}>
+            <span style={{ fontSize: 32, marginBottom: 8 }}>{t.icon}</span>
+            <span style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 13,
+              fontWeight: 700,
+              color: "#fff",
+              textAlign: "center",
+              lineHeight: 1.3,
+              marginBottom: 8,
+            }}>
+              {item.title}
+            </span>
+            <span style={{ fontSize: 11, color: t.color, fontWeight: 600 }}>
+              {month} {day}, {year}
+            </span>
+          </div>
+        )}
+
         {/* Type badge — top left */}
         <div style={{
           position: "absolute",
@@ -117,7 +167,7 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
           alignItems: "center",
         }}>
           <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
-            {item.wantCount.toLocaleString()} want this
+            {(item.wantCount || 0).toLocaleString()} want this
           </span>
           <button
             onClick={(e) => {
