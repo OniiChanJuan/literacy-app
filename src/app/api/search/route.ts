@@ -3,6 +3,7 @@ import { ALL_ITEMS } from "@/lib/data";
 import { searchTmdb, tmdbItemId } from "@/lib/tmdb";
 import { searchIgdb, igdbItemId } from "@/lib/igdb";
 import { searchGoogleBooks, gbookItemId } from "@/lib/google-books";
+import { searchSpotify, spotifyItemId } from "@/lib/spotify";
 
 // GET /api/search?q=query — search local items + TMDB + IGDB + Google Books
 export async function GET(req: NextRequest) {
@@ -28,9 +29,9 @@ export async function GET(req: NextRequest) {
     routeId: String(item.id),
   }));
 
-  // Search TMDB + IGDB + Google Books in parallel
+  // Search all APIs in parallel
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [tmdbResults, igdbResults, gbookResults] = await Promise.all([
+  const [tmdbResults, igdbResults, gbookResults, spotifyResults] = await Promise.all([
     searchTmdb(q)
       .then((items) =>
         items
@@ -67,8 +68,21 @@ export async function GET(req: NextRequest) {
           }))
       )
       .catch((e) => { console.error("Google Books search failed:", e); return [] as any[]; }),
+
+    searchSpotify(q)
+      .then((items) =>
+        items
+          .filter((item) => !localTitles.has(`${item.title.toLowerCase()}-${item.year}`))
+          .filter((item) => item.cover)
+          .map((item) => ({
+            ...item,
+            source: "spotify" as const,
+            routeId: spotifyItemId(item.spotifyType, item.spotifyId),
+          }))
+      )
+      .catch((e) => { console.error("Spotify search failed:", e); return [] as any[]; }),
   ]);
 
   // Local first, then external APIs
-  return NextResponse.json([...localResults, ...tmdbResults, ...igdbResults, ...gbookResults]);
+  return NextResponse.json([...localResults, ...tmdbResults, ...igdbResults, ...gbookResults, ...spotifyResults]);
 }

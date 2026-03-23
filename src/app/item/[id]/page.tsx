@@ -3,6 +3,7 @@ import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
 import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
 import { parseIgdbId, getIgdbDetails } from "@/lib/igdb";
 import { parseGbookId, getGoogleBookDetails } from "@/lib/google-books";
+import { parseSpotifyId, getSpotifyAlbumDetails, getSpotifyShowDetails } from "@/lib/spotify";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
@@ -24,6 +25,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   const tmdbParsed = parseTmdbId(id);
   const igdbParsed = parseIgdbId(id);
   const gbookParsed = parseGbookId(id);
+  const spotifyParsed = parseSpotifyId(id);
 
   if (tmdbParsed) {
     item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
@@ -33,6 +35,11 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     isExternal = true;
   } else if (gbookParsed) {
     item = await getGoogleBookDetails(gbookParsed);
+    isExternal = true;
+  } else if (spotifyParsed) {
+    item = spotifyParsed.type === "album"
+      ? await getSpotifyAlbumDetails(spotifyParsed.spotifyId)
+      : await getSpotifyShowDetails(spotifyParsed.spotifyId);
     isExternal = true;
   } else {
     item = ALL_ITEMS.find((i) => i.id === parseInt(id)) || null;
