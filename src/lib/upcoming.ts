@@ -6,7 +6,7 @@ const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
 
 const IGDB_CID = () => process.env.IGDB_CLIENT_ID || "";
 const IGDB_CS = () => process.env.IGDB_CLIENT_SECRET || "";
-const IGDB_IMG = "https://images.igdb.com/igdb/image/upload/t_cover_big";
+const IGDB_IMG = "https://images.igdb.com/igdb/image/upload/t_720p";
 
 const GBOOKS_KEY = () => process.env.GOOGLE_BOOKS_API_KEY || "";
 
@@ -253,7 +253,7 @@ function getCuratedUpcomingComics(): UpcomingItem[] {
     {
       id: 400001, title: "Ultimate Spider-Man Vol. 4", type: "comic",
       genre: ["Superhero", "Action"], vibes: ["epic", "stylish"], year: 2026,
-      cover: "https://comicvine.gamespot.com/a/uploads/scale_medium/11/117763/9600379-usm2024015_cov.jpg",
+      cover: "https://comicvine.gamespot.com/a/uploads/scale_large/11/117763/9600379-usm2024015_cov.jpg",
       desc: "Jonathan Hickman and Marco Checchetto continue the critically acclaimed reimagining of Spider-Man in the Ultimate Universe.",
       people: [{ role: "Writer", name: "Jonathan Hickman" }, { role: "Artist", name: "Marco Checchetto" }, { role: "Publisher", name: "Marvel" }],
       awards: [], platforms: ["comixology"],
@@ -263,7 +263,7 @@ function getCuratedUpcomingComics(): UpcomingItem[] {
     {
       id: 400002, title: "Absolute Batman Vol. 2", type: "comic",
       genre: ["Superhero", "Action"], vibes: ["dark", "intense"], year: 2026,
-      cover: "https://comicvine.gamespot.com/a/uploads/scale_medium/11/117763/9656785-absbat2024009_cov.jpg",
+      cover: "https://comicvine.gamespot.com/a/uploads/scale_large/11/117763/9656785-absbat2024009_cov.jpg",
       desc: "Scott Snyder and Nick Dragotta continue their bold reimagining of Batman in DC's Absolute Universe.",
       people: [{ role: "Writer", name: "Scott Snyder" }, { role: "Artist", name: "Nick Dragotta" }, { role: "Publisher", name: "DC Comics" }],
       awards: [], platforms: ["comixology"],

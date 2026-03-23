@@ -42,7 +42,7 @@ async function igdbFetch(endpoint: string, body: string): Promise<unknown[]> {
 
 // ── Cover URL helper ────────────────────────────────────────────────────
 
-function coverUrl(imageId: string, size: "t_cover_big" | "t_720p" = "t_cover_big"): string {
+function coverUrl(imageId: string, size: "t_cover_big" | "t_720p" = "t_720p"): string {
   return `${IMG_BASE}/${size}/${imageId}.jpg`;
 }
 

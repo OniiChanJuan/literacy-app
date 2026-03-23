@@ -95,7 +95,7 @@ export async function searchComicVine(query: string): Promise<CVSearchResult[]> 
   if (!data?.results) return [];
 
   return data.results
-    .filter((v) => v.image?.medium_url)
+    .filter((v) => v.image?.original_url || v.image?.medium_url)
     .map((v) => ({
       ...mapVolumeToItem(v),
       cvId: v.id,
@@ -118,7 +118,7 @@ function mapVolumeToItem(v: CVVolume): Item {
   const genres = deriveGenres(v.name, publisher, deck);
   const vibes = deriveVibes(genres, deck);
   const year = v.start_year ? parseInt(v.start_year) : 0;
-  const cover = v.image?.medium_url || v.image?.original_url || "";
+  const cover = v.image?.original_url || v.image?.medium_url || "";
 
   const people: Person[] = [];
   if (publisher) people.push({ role: "Publisher", name: publisher });
