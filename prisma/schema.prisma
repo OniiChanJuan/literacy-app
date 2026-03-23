@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  bio          String   @default("")
+  avatar       String   @default("")
+  authProvider String   @default("email") @map("auth_provider")
+  isPrivate    Boolean  @default(false) @map("is_private")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  ratings        Rating[]
+  reviews        Review[]
+  libraryEntries LibraryEntry[]
+  following      Follow[]       @relation("follower")
+  followers      Follow[]       @relation("followed")
+
+  @@map("users")
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  title       String
+  type        String
+  genre       String[]
+  vibes       String[]
+  year        Int
+  cover       String
+  description String
+  people      Json
+  awards      Json
+  platforms   Json
+  ext         Json
+  totalEp     Int      @default(0) @map("total_ep")
+
+  isUpcoming  Boolean  @default(false) @map("is_upcoming")
+  releaseDate String?  @map("release_date")
+  hypeScore   Int?     @map("hype_score")
+  wantCount   Int?     @map("want_count")
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  ratings        Rating[]
+  reviews        Review[]
+  libraryEntries LibraryEntry[]
+
+  @@map("items")
+}
+
+model Rating {
+  userId       String   @map("user_id")
+  itemId       Int      @map("item_id")
+  score        Int
+  recommendTag String?  @map("recommend_tag")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemId])
+  @@map("ratings")
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  userId       String   @map("user_id")
+  itemId       Int      @map("item_id")
+  text         String
+  helpfulCount Int      @default(0) @map("helpful_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model LibraryEntry {
+  userId          String    @map("user_id")
+  itemId          Int       @map("item_id")
+  status          String
+  progressCurrent Int       @default(0) @map("progress_current")
+  progressTotal   Int       @default(0) @map("progress_total")
+  startedAt       DateTime? @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemId])
+  @@map("library_entries")
+}
+
+model Follow {
+  followerId String   @map("follower_id")
+  followedId String   @map("followed_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  follower User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followed User @relation("followed", fields: [followedId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followedId])
+  @@map("follows")
+}
