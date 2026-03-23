@@ -4,6 +4,7 @@ import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
 import CommunityReviews from "@/components/community-reviews";
+import Recommendations from "@/components/recommendations";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -234,6 +235,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           <RatingPanel itemId={item.id} />
         </div>
       </div>
+
+      {/* Recommendation columns */}
+      <Recommendations item={item} />
     </div>
   );
 }
