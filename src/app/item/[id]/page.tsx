@@ -18,6 +18,7 @@ import ExternalScores from "@/components/external-scores";
 import PlatformButtons from "@/components/platform-buttons";
 import WatchProviders from "@/components/watch-providers";
 import FranchiseBadge from "@/components/franchise-badge";
+import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
@@ -259,6 +260,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           ) : (
             <PlatformButtons platforms={item.platforms} mediaType={item.type} />
           )}
+
+          {/* This universe — franchise mini cards */}
+          <FranchiseUniverse routeId={id} />
 
           {/* People */}
           {item.people.length > 0 && (
