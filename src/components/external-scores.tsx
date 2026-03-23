@@ -8,6 +8,7 @@ const SOURCES: Record<ExternalSource, { label: string; icon: string; color: stri
   ign:       { label: "IGN",            icon: "I",  color: "#bf1313", maxScore: 10,  suffix: "/10" },
   goodreads: { label: "Goodreads",      icon: "📖", color: "#553b08", maxScore: 5,   suffix: "/5" },
   pitchfork: { label: "Pitchfork",      icon: "🎵", color: "#df2020", maxScore: 10,  suffix: "/10" },
+  steam:     { label: "Steam",          icon: "S",  color: "#1b2838", maxScore: 100, suffix: "%" },
 };
 
 function scoreColor(score: number, max: number): string {

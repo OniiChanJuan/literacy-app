@@ -135,9 +135,12 @@ interface IgdbGame {
   }[];
   total_rating?: number;
   total_rating_count?: number;
+  external_games?: { category: number; uid: string }[];
 }
 
 const SEARCH_FIELDS = "fields name,cover.image_id,first_release_date,genres.name,platforms.name,summary,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,total_rating,total_rating_count;";
+
+const DETAIL_FIELDS = "fields name,cover.image_id,first_release_date,genres.name,platforms.name,summary,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,total_rating,total_rating_count,external_games.category,external_games.uid;";
 
 /** Search IGDB for games */
 export async function searchIgdb(query: string): Promise<Item[]> {
@@ -149,15 +152,43 @@ export async function searchIgdb(query: string): Promise<Item[]> {
   return results.map(mapGameToItem);
 }
 
-/** Fetch full IGDB game details by ID */
+/** Fetch full IGDB game details by ID, including Steam review score */
 export async function getIgdbDetails(igdbId: number): Promise<Item | null> {
   const results = await igdbFetch(
     "/games",
-    `where id = ${igdbId}; ${SEARCH_FIELDS} limit 1;`
+    `where id = ${igdbId}; ${DETAIL_FIELDS} limit 1;`
   ) as IgdbGame[];
 
   if (results.length === 0) return null;
-  return mapGameToItem(results[0]);
+  const item = mapGameToItem(results[0]);
+
+  // Try to get Steam review score
+  const steamEntry = results[0].external_games?.find((e) => e.category === 1); // category 1 = Steam
+  if (steamEntry?.uid) {
+    const steamScore = await fetchSteamReviewScore(steamEntry.uid);
+    if (steamScore !== null) {
+      item.ext = { ...item.ext, steam: steamScore };
+    }
+  }
+
+  return item;
+}
+
+/** Fetch Steam review percentage for a given Steam App ID */
+async function fetchSteamReviewScore(steamAppId: string): Promise<number | null> {
+  try {
+    const res = await fetch(
+      `https://store.steampowered.com/appreviews/${steamAppId}?json=1&language=all&purchase_type=all`,
+      { next: { revalidate: 86400 } } // cache for 24h
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const s = data.query_summary;
+    if (!s || s.total_reviews === 0) return null;
+    return Math.round((s.total_positive / s.total_reviews) * 100);
+  } catch {
+    return null;
+  }
 }
 
 function mapGameToItem(g: IgdbGame): Item {
