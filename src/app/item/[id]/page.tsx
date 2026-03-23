@@ -10,6 +10,7 @@ import StatusTracker from "@/components/status-tracker";
 import UpcomingDetailSidebar from "@/components/upcoming-detail-sidebar";
 import ExternalScores from "@/components/external-scores";
 import PlatformButtons from "@/components/platform-buttons";
+import WatchProviders from "@/components/watch-providers";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -206,8 +207,17 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             </section>
           )}
 
-          {/* Platforms */}
-          <PlatformButtons platforms={item.platforms} mediaType={item.type} />
+          {/* Platforms — real TMDB watch providers for movie/tv, static for others */}
+          {(item.type === "movie" || item.type === "tv") ? (
+            <WatchProviders
+              title={item.title}
+              year={item.year}
+              mediaType={item.type}
+              tmdbId={isTmdb ? item.id : undefined}
+            />
+          ) : (
+            <PlatformButtons platforms={item.platforms} mediaType={item.type} />
+          )}
 
           {/* People */}
           {item.people.length > 0 && (
