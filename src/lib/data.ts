@@ -354,6 +354,124 @@ export const ITEMS: Item[] = [
   },
 ];
 
+// ── Upcoming releases ────────────────────────────────────────────────────────
+export interface UpcomingItem extends Item {
+  releaseDate: string; // ISO date string
+  hypeScore: number;   // 0–100
+  wantCount: number;
+  upcoming: true;
+}
+
+export const UPCOMING: UpcomingItem[] = [
+  {
+    id: 101, title: "The Odyssey", type: "movie",
+    genre: ["Adventure", "Drama", "Fantasy"], year: 2025,
+    vibes: ["epic", "atmospheric", "emotional"],
+    cover: "linear-gradient(135deg, #1a3a5c, #0d4f8b, #d4af37)",
+    desc: "Christopher Nolan brings Homer's ancient epic to the big screen in a sweeping mythological journey across the Mediterranean.",
+    people: [{ role: "Director", name: "Christopher Nolan" }, { role: "Star", name: "Matt Damon" }, { role: "Star", name: "Tom Holland" }],
+    awards: [], platforms: ["theaters"],
+    ext: {}, totalEp: 1,
+    releaseDate: "2025-07-17", hypeScore: 92, wantCount: 14320, upcoming: true,
+  },
+  {
+    id: 102, title: "Hollow Knight: Silksong", type: "game",
+    genre: ["Adventure", "Action", "Indie"], year: 2025,
+    vibes: ["atmospheric", "immersive", "intense"],
+    cover: "linear-gradient(135deg, #f5e6ca, #c0392b, #1a1a2e)",
+    desc: "Play as Hornet in this highly anticipated sequel, exploring a vast new kingdom filled with deadly silk creatures and ancient mysteries.",
+    people: [{ role: "Developer", name: "Team Cherry" }],
+    awards: [], platforms: ["steam", "switch"],
+    ext: {}, totalEp: 30,
+    releaseDate: "2025-06-12", hypeScore: 88, wantCount: 28740, upcoming: true,
+  },
+  {
+    id: 103, title: "Winds of Winter", type: "book",
+    genre: ["Fantasy", "Drama"], year: 2026,
+    vibes: ["epic", "dark", "slow-burn"],
+    cover: "linear-gradient(135deg, #2c3e50, #4a6741, #d4af37)",
+    desc: "The long-awaited sixth installment in A Song of Ice and Fire continues the sprawling saga of Westeros.",
+    people: [{ role: "Author", name: "George R.R. Martin" }],
+    awards: [], platforms: ["kindle", "audible", "library"],
+    ext: {}, totalEp: 900,
+    releaseDate: "2026-11-01", hypeScore: 95, wantCount: 41200, upcoming: true,
+  },
+  {
+    id: 104, title: "Arcane: Season 3", type: "tv",
+    genre: ["Fantasy", "Action", "Drama"], year: 2026,
+    vibes: ["emotional", "intense", "heartbreaking"],
+    cover: "linear-gradient(135deg, #1a0533, #9b59b6, #e74c3c)",
+    desc: "The final chapter of the Arcane saga concludes the war between Piltover and Zaun in this animated epic from Riot Games.",
+    people: [{ role: "Creator", name: "Christian Linke" }, { role: "Voice", name: "Hailee Steinfeld" }, { role: "Voice", name: "Ella Purnell" }],
+    awards: [], platforms: ["netflix"],
+    ext: {}, totalEp: 9,
+    releaseDate: "2026-08-15", hypeScore: 91, wantCount: 19800, upcoming: true,
+  },
+  {
+    id: 105, title: "Chainsaw Man Part 3", type: "manga",
+    genre: ["Action", "Horror", "Comedy"], year: 2026,
+    vibes: ["chaotic", "dark", "intense"],
+    cover: "linear-gradient(135deg, #e74c3c, #c0392b, #0a0a0a)",
+    desc: "Tatsuki Fujimoto's unhinged shonen saga enters its third major arc with new devils, new allies, and escalating chaos.",
+    people: [{ role: "Author", name: "Tatsuki Fujimoto" }, { role: "Publisher", name: "Shueisha" }],
+    awards: [], platforms: ["mangaplus", "viz"],
+    ext: {}, totalEp: 0,
+    releaseDate: "2026-04-21", hypeScore: 82, wantCount: 15600, upcoming: true,
+  },
+  {
+    id: 106, title: "GTA VI", type: "game",
+    genre: ["Action", "Adventure"], year: 2025,
+    vibes: ["immersive", "intense", "stylish"],
+    cover: "linear-gradient(135deg, #ff6b6b, #ee5a24, #1a1a2e)",
+    desc: "Rockstar Games returns to Vice City in the most anticipated open-world game of the decade, featuring dual protagonists and a living, breathing metropolis.",
+    people: [{ role: "Developer", name: "Rockstar Games" }, { role: "Publisher", name: "Take-Two Interactive" }],
+    awards: [], platforms: ["ps", "xbox"],
+    ext: {}, totalEp: 80,
+    releaseDate: "2025-10-26", hypeScore: 98, wantCount: 67500, upcoming: true,
+  },
+  {
+    id: 107, title: "Kendrick Lamar — New Album", type: "music",
+    genre: ["Hip-Hop", "Drama"], year: 2026,
+    vibes: ["thought-provoking", "intense", "cerebral"],
+    cover: "linear-gradient(135deg, #1a1a2e, #e74c3c, #f1c40f)",
+    desc: "The Pulitzer Prize-winning rapper's follow-up to GNX, rumored to be a conceptual double album exploring legacy and fatherhood.",
+    people: [{ role: "Artist", name: "Kendrick Lamar" }, { role: "Producer", name: "Various" }],
+    awards: [], platforms: ["spotify", "apple_music"],
+    ext: {}, totalEp: 0,
+    releaseDate: "2026-06-01", hypeScore: 87, wantCount: 22100, upcoming: true,
+  },
+  {
+    id: 108, title: "Invincible: Season 4", type: "tv",
+    genre: ["Action", "Sci-Fi", "Drama"], year: 2026,
+    vibes: ["brutal", "emotional", "intense"],
+    cover: "linear-gradient(135deg, #f1c40f, #2980b9, #1a1a2e)",
+    desc: "Mark Grayson faces the Viltrumite War as the animated adaptation continues to push the boundaries of superhero storytelling.",
+    people: [{ role: "Creator", name: "Robert Kirkman" }, { role: "Voice", name: "Steven Yeun" }, { role: "Voice", name: "J.K. Simmons" }],
+    awards: [], platforms: ["prime"],
+    ext: {}, totalEp: 8,
+    releaseDate: "2026-05-10", hypeScore: 84, wantCount: 16900, upcoming: true,
+  },
+  {
+    id: 109, title: "Elden Ring: Nightreign", type: "game",
+    genre: ["Fantasy", "Action", "Adventure"], year: 2025,
+    vibes: ["epic", "dark", "immersive"],
+    cover: "linear-gradient(135deg, #0a0a0a, #4a0e0e, #d4af37)",
+    desc: "A standalone co-op experience set in the Elden Ring universe, blending roguelike survival with FromSoftware's signature dark fantasy combat.",
+    people: [{ role: "Developer", name: "FromSoftware" }, { role: "Director", name: "Hidetaka Miyazaki" }],
+    awards: [], platforms: ["steam", "ps", "xbox"],
+    ext: {}, totalEp: 50,
+    releaseDate: "2025-06-27", hypeScore: 90, wantCount: 31400, upcoming: true,
+  },
+];
+
+/** Helper to check if an item is upcoming */
+export function isUpcoming(item: Item): item is UpcomingItem {
+  return "upcoming" in item && (item as UpcomingItem).upcoming === true;
+}
+
+/** All items combined (for search, etc.) */
+export const ALL_ITEMS: Item[] = [...ITEMS, ...UPCOMING];
+
 // Ordered list of types for the For You page rows
 export const TYPE_ORDER: MediaType[] = ["movie", "tv", "book", "manga", "comic", "game", "music", "podcast"];
 

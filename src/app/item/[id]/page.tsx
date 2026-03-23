@@ -1,16 +1,19 @@
 import { notFound } from "next/navigation";
-import { ITEMS, TYPES, VIBES } from "@/lib/data";
+import { ALL_ITEMS, TYPES, VIBES, isUpcoming } from "@/lib/data";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
 import CommunityReviews from "@/components/community-reviews";
 import Recommendations from "@/components/recommendations";
 import StatusTracker from "@/components/status-tracker";
+import UpcomingDetailSidebar from "@/components/upcoming-detail-sidebar";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const item = ITEMS.find((i) => i.id === parseInt(id));
+  const item = ALL_ITEMS.find((i) => i.id === parseInt(id));
   if (!item) notFound();
+
+  const upcoming = isUpcoming(item);
 
   const t = TYPES[item.type];
 
@@ -203,45 +206,54 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             </section>
           )}
 
-          {/* Community Reviews */}
-          <section style={{ marginBottom: 32 }}>
-            <CommunityReviews itemId={item.id} />
-          </section>
+          {/* Community Reviews — only for released items */}
+          {!upcoming && (
+            <section style={{ marginBottom: 32 }}>
+              <CommunityReviews itemId={item.id} />
+            </section>
+          )}
         </div>
 
         {/* Right column */}
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {/* Community aggregate score */}
-          <div style={{
-            background: "var(--surface-1)",
-            border: "1px solid var(--border)",
-            borderRadius: 16,
-            padding: 24,
-          }}>
-            <div style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: 14,
-              fontWeight: 700,
-              color: "var(--text-muted)",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-              marginBottom: 16,
-            }}>
-              Community Score
-            </div>
-            <AggregateScorePanel itemId={item.id} />
-          </div>
+          {upcoming ? (
+            /* Upcoming: hype score, want count, Want To button */
+            <UpcomingDetailSidebar item={item} />
+          ) : (
+            <>
+              {/* Community aggregate score */}
+              <div style={{
+                background: "var(--surface-1)",
+                border: "1px solid var(--border)",
+                borderRadius: 16,
+                padding: 24,
+              }}>
+                <div style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "var(--text-muted)",
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                  marginBottom: 16,
+                }}>
+                  Community Score
+                </div>
+                <AggregateScorePanel itemId={item.id} />
+              </div>
 
-          {/* Your rating */}
-          <RatingPanel itemId={item.id} />
+              {/* Your rating */}
+              <RatingPanel itemId={item.id} />
 
-          {/* Status tracking */}
-          <StatusTracker item={item} />
+              {/* Status tracking */}
+              <StatusTracker item={item} />
+            </>
+          )}
         </div>
       </div>
 
-      {/* Recommendation columns */}
-      <Recommendations item={item} />
+      {/* Recommendation columns — only for released items */}
+      {!upcoming && <Recommendations item={item} />}
     </div>
   );
 }

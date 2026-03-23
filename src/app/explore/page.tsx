@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ITEMS, TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, type MediaType } from "@/lib/data";
+import { ALL_ITEMS, TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, isUpcoming, type MediaType, type Item, type UpcomingItem } from "@/lib/data";
 import Card from "@/components/card";
+import UpcomingCard from "@/components/upcoming-card";
 
 type Mode = "all" | "type" | "genre" | "vibe";
 
@@ -26,7 +27,7 @@ export default function ExplorePage() {
   const searchResults = useMemo(() => {
     if (!search.trim()) return null;
     const q = search.toLowerCase();
-    return ITEMS.filter((i) =>
+    return ALL_ITEMS.filter((i) =>
       i.title.toLowerCase().includes(q) ||
       i.genre.some((g) => g.toLowerCase().includes(q)) ||
       i.vibes.some((v) => (VIBES[v]?.label || v).toLowerCase().includes(q)) ||
@@ -36,7 +37,7 @@ export default function ExplorePage() {
 
   // All-mode filtered results
   const allFiltered = useMemo(() => {
-    return ITEMS.filter((i) => {
+    return ALL_ITEMS.filter((i) => {
       if (filterTypes.length && !filterTypes.includes(i.type)) return false;
       if (filterGenres.length && !i.genre.some((g) => filterGenres.includes(g))) return false;
       return true;
@@ -193,7 +194,7 @@ export default function ExplorePage() {
               }}>
                 {TYPE_ORDER.map((k) => {
                   const t = TYPES[k];
-                  const count = ITEMS.filter((i) => i.type === k).length;
+                  const count = ALL_ITEMS.filter((i) => i.type === k).length;
                   const active = selectedType === k;
                   return (
                     <button
@@ -236,7 +237,7 @@ export default function ExplorePage() {
                     icon={TYPES[selectedType].icon}
                     label={TYPES[selectedType].label}
                   />
-                  <ItemGrid items={ITEMS.filter((i) => i.type === selectedType)} />
+                  <ItemGrid items={ALL_ITEMS.filter((i) => i.type === selectedType)} />
                 </div>
               )}
             </div>
@@ -252,7 +253,7 @@ export default function ExplorePage() {
                 marginBottom: 28,
               }}>
                 {ALL_GENRES.map((g) => {
-                  const count = ITEMS.filter((i) => i.genre.includes(g)).length;
+                  const count = ALL_ITEMS.filter((i) => i.genre.includes(g)).length;
                   const active = selectedGenre === g;
                   return (
                     <button
@@ -290,7 +291,7 @@ export default function ExplorePage() {
               {selectedGenre && (
                 <div>
                   <SectionHeader label={selectedGenre} />
-                  <ItemGrid items={ITEMS.filter((i) => i.genre.includes(selectedGenre))} />
+                  <ItemGrid items={ALL_ITEMS.filter((i) => i.genre.includes(selectedGenre))} />
                 </div>
               )}
               {!selectedGenre && <Empty text="Tap a genre to see matching media" />}
@@ -309,7 +310,7 @@ export default function ExplorePage() {
                 {ALL_VIBES.map((v) => {
                   const vibe = VIBES[v];
                   if (!vibe) return null;
-                  const count = ITEMS.filter((i) => i.vibes.includes(v)).length;
+                  const count = ALL_ITEMS.filter((i) => i.vibes.includes(v)).length;
                   const active = selectedVibe === v;
                   return (
                     <button
@@ -354,7 +355,7 @@ export default function ExplorePage() {
                     icon={VIBES[selectedVibe].icon}
                     label={VIBES[selectedVibe].label}
                   />
-                  <ItemGrid items={ITEMS.filter((i) => i.vibes.includes(selectedVibe))} />
+                  <ItemGrid items={ALL_ITEMS.filter((i) => i.vibes.includes(selectedVibe))} />
                 </div>
               )}
               {!selectedVibe && <Empty text="Tap a vibe to discover media that matches the mood" />}
@@ -368,16 +369,18 @@ export default function ExplorePage() {
 
 // ── Sub-components (local to this page) ─────────────────────────────────────
 
-function ItemGrid({ items }: { items: typeof ITEMS }) {
+function ItemGrid({ items }: { items: Item[] }) {
   return (
     <div style={{
       display: "grid",
       gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
       gap: 16,
     }}>
-      {items.map((item) => (
-        <Card key={item.id} item={item} />
-      ))}
+      {items.map((item) =>
+        isUpcoming(item)
+          ? <UpcomingCard key={item.id} item={item as UpcomingItem} />
+          : <Card key={item.id} item={item} />
+      )}
     </div>
   );
 }

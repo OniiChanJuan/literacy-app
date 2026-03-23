@@ -1,7 +1,8 @@
 "use client";
 
-import { ITEMS, TYPES, TYPE_ORDER } from "@/lib/data";
+import { ITEMS, UPCOMING, TYPES, TYPE_ORDER } from "@/lib/data";
 import Card from "@/components/card";
+import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 
 export default function ForYouPage() {
@@ -24,6 +25,18 @@ export default function ForYouPage() {
           Rate below and Literacy will find connections across media you&apos;d never expect.
         </div>
       </div>
+
+      {/* Coming Soon row */}
+      <ScrollRow
+        label="Coming Soon"
+        sub={`${UPCOMING.length} upcoming releases`}
+        icon="🔥"
+        iconBg="#E8485522"
+      >
+        {[...UPCOMING].sort((a, b) => a.releaseDate.localeCompare(b.releaseDate)).map((item) => (
+          <UpcomingCard key={item.id} item={item} />
+        ))}
+      </ScrollRow>
 
       {/* Section label */}
       <div style={{
