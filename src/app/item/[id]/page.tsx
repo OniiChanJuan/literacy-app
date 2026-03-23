@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
 import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
+import { parseIgdbId, getIgdbDetails } from "@/lib/igdb";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
@@ -16,20 +17,25 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   const { id } = await params;
 
   let item: Item | null = null;
-  let isTmdb = false;
+  let isExternal = false;
 
   // Check if this is a TMDB ID (e.g., "tmdb-movie-12345")
   const tmdbParsed = parseTmdbId(id);
+  const igdbParsed = parseIgdbId(id);
+
   if (tmdbParsed) {
     item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
-    isTmdb = true;
+    isExternal = true;
+  } else if (igdbParsed) {
+    item = await getIgdbDetails(igdbParsed);
+    isExternal = true;
   } else {
     item = ALL_ITEMS.find((i) => i.id === parseInt(id)) || null;
   }
 
   if (!item) notFound();
 
-  const upcoming = !isTmdb && isUpcoming(item);
+  const upcoming = !isExternal && isUpcoming(item);
   const hasImageCover = item.cover.startsWith("http");
 
   const t = TYPES[item.type];
@@ -213,7 +219,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               title={item.title}
               year={item.year}
               mediaType={item.type}
-              tmdbId={isTmdb ? item.id : undefined}
+              tmdbId={tmdbParsed ? item.id : undefined}
             />
           ) : (
             <PlatformButtons platforms={item.platforms} mediaType={item.type} />
@@ -319,7 +325,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       </div>
 
       {/* Recommendation columns — only for released local items */}
-      {!upcoming && !isTmdb && <Recommendations item={item} />}
+      {!upcoming && !isExternal && <Recommendations item={item} />}
     </div>
   );
 }
