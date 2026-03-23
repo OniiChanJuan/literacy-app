@@ -5,6 +5,7 @@ import { Item, TYPES } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import { ScoreBadge } from "./aggregate-score";
 import Stars from "./stars";
+import HoverPreview from "./hover-preview";
 
 function isImageUrl(cover: string): boolean {
   return cover.startsWith("http") || cover.startsWith("/");
@@ -19,6 +20,7 @@ export default function Card({ item, routeId }: { item: Item; routeId?: string }
   const hasImage = isImageUrl(item.cover);
 
   return (
+    <HoverPreview item={item}>
     <div
       onClick={() => router.push(href)}
       style={{
@@ -144,5 +146,6 @@ export default function Card({ item, routeId }: { item: Item; routeId?: string }
         )}
       </div>
     </div>
+    </HoverPreview>
   );
 }

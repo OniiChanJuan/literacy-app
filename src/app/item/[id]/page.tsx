@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
 import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
 import { parseIgdbId, getIgdbDetails } from "@/lib/igdb";
@@ -17,6 +18,7 @@ import ExternalScores from "@/components/external-scores";
 import PlatformButtons from "@/components/platform-buttons";
 import WatchProviders from "@/components/watch-providers";
 import FranchiseBadge from "@/components/franchise-badge";
+import AwardBadges from "@/components/award-badges";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -221,7 +223,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                   const vibe = VIBES[v];
                   if (!vibe) return null;
                   return (
-                    <span key={v} style={{
+                    <Link key={v} href={`/vibe/${v}`} style={{
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 6,
@@ -231,15 +233,20 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                       border: `1px solid ${vibe.color}55`,
                       padding: "6px 14px",
                       borderRadius: 20,
+                      textDecoration: "none",
+                      transition: "transform 0.1s",
                     }}>
                       <span>{vibe.icon}</span>
                       {vibe.label}
-                    </span>
+                    </Link>
                   );
                 })}
               </div>
             </section>
           )}
+
+          {/* Awards */}
+          <AwardBadges awards={item.awards} />
 
           {/* Platforms — real TMDB watch providers for movie/tv, static for others */}
           {(item.type === "movie" || item.type === "tv") ? (
