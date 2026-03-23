@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { ITEMS, TYPES, VIBES } from "@/lib/data";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
+import { AggregateScorePanel } from "@/components/aggregate-score";
+import CommunityReviews from "@/components/community-reviews";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -23,7 +25,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         position: "relative",
         overflow: "hidden",
       }}>
-        {/* Fade overlay for readability */}
         <div style={{
           position: "absolute",
           inset: 0,
@@ -52,7 +53,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
           {/* Title */}
           <h1 style={{
-            fontFamily: "'Playfair Display', serif",
+            fontFamily: "var(--font-serif)",
             fontSize: 42,
             fontWeight: 900,
             lineHeight: 1.1,
@@ -65,15 +66,15 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
           {/* Year + genres */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", fontWeight: 500 }}>
+            <span style={{ fontSize: 15, color: "var(--text-muted)", fontWeight: 500 }}>
               {item.year}
             </span>
-            <span style={{ color: "rgba(255,255,255,0.2)" }}>·</span>
+            <span style={{ color: "var(--text-faint)" }}>·</span>
             {item.genre.map((g) => (
               <span key={g} style={{
                 fontSize: 12,
-                color: "rgba(255,255,255,0.6)",
-                background: "rgba(255,255,255,0.1)",
+                color: "var(--text-secondary)",
+                background: "var(--surface-4)",
                 padding: "3px 10px",
                 borderRadius: 6,
               }}>
@@ -92,10 +93,10 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           {/* Description */}
           <section style={{ marginBottom: 32 }}>
             <h2 style={{
-              fontFamily: "'Playfair Display', serif",
+              fontFamily: "var(--font-serif)",
               fontSize: 16,
               fontWeight: 700,
-              color: "rgba(255,255,255,0.5)",
+              color: "var(--text-muted)",
               textTransform: "uppercase",
               letterSpacing: "1px",
               marginBottom: 12,
@@ -104,7 +105,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             </h2>
             <p style={{
               fontSize: 15,
-              color: "rgba(255,255,255,0.75)",
+              color: "var(--text-secondary)",
               lineHeight: 1.75,
             }}>
               {item.desc}
@@ -115,10 +116,10 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           {item.vibes.length > 0 && (
             <section style={{ marginBottom: 32 }}>
               <h2 style={{
-                fontFamily: "'Playfair Display', serif",
+                fontFamily: "var(--font-serif)",
                 fontSize: 16,
                 fontWeight: 700,
-                color: "rgba(255,255,255,0.5)",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "1px",
                 marginBottom: 12,
@@ -152,12 +153,12 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
           {/* People */}
           {item.people.length > 0 && (
-            <section>
+            <section style={{ marginBottom: 32 }}>
               <h2 style={{
-                fontFamily: "'Playfair Display', serif",
+                fontFamily: "var(--font-serif)",
                 fontSize: 16,
                 fontWeight: 700,
-                color: "rgba(255,255,255,0.5)",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "1px",
                 marginBottom: 12,
@@ -171,38 +172,67 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                     gap: 12,
                     alignItems: "center",
                     padding: "12px 16px",
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    background: "var(--surface-1)",
+                    border: "1px solid var(--border)",
                     borderRadius: 12,
                   }}>
                     <div style={{
                       width: 36,
                       height: 36,
                       borderRadius: "50%",
-                      background: "rgba(255,255,255,0.08)",
+                      background: "var(--surface-4)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: 13,
                       fontWeight: 700,
-                      color: "rgba(255,255,255,0.4)",
+                      color: "var(--text-muted)",
                       flexShrink: 0,
                     }}>
                       {p.name[0]}
                     </div>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{p.name}</div>
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 1 }}>{p.role}</div>
+                      <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 1 }}>{p.role}</div>
                     </div>
                   </div>
                 ))}
               </div>
             </section>
           )}
+
+          {/* Community Reviews */}
+          <section style={{ marginBottom: 32 }}>
+            <CommunityReviews itemId={item.id} />
+          </section>
         </div>
 
-        {/* Right column — rating panel */}
-        <RatingPanel itemId={item.id} />
+        {/* Right column */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {/* Community aggregate score */}
+          <div style={{
+            background: "var(--surface-1)",
+            border: "1px solid var(--border)",
+            borderRadius: 16,
+            padding: 24,
+          }}>
+            <div style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 14,
+              fontWeight: 700,
+              color: "var(--text-muted)",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              marginBottom: 16,
+            }}>
+              Community Score
+            </div>
+            <AggregateScorePanel itemId={item.id} />
+          </div>
+
+          {/* Your rating */}
+          <RatingPanel itemId={item.id} />
+        </div>
       </div>
     </div>
   );

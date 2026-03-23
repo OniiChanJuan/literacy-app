@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Item, TYPES } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
+import { ScoreBadge } from "./aggregate-score";
 import Stars from "./stars";
 
 export default function Card({ item }: { item: Item }) {
@@ -55,7 +56,7 @@ export default function Card({ item }: { item: Item }) {
           <span style={{ fontSize: 12 }}>{t.icon}</span> {t.label.replace(/s$/, "")}
         </div>
 
-        {/* Gold rating badge — top right (only when rated) */}
+        {/* Gold rating badge — top right (only when user has rated) */}
         {userRating > 0 && (
           <div style={{
             position: "absolute",
@@ -72,15 +73,15 @@ export default function Card({ item }: { item: Item }) {
             alignItems: "center",
             gap: 3,
           }}>
-            ★ {userRating}
+          ★ {userRating}
           </div>
         )}
       </div>
 
       {/* Info */}
-      <div style={{ background: "#141419", padding: "12px 12px 10px" }}>
+      <div style={{ background: "var(--bg-card)", padding: "12px 12px 10px" }}>
         <div style={{
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: "var(--font-serif)",
           fontSize: 14,
           fontWeight: 700,
           lineHeight: 1.25,
@@ -98,9 +99,10 @@ export default function Card({ item }: { item: Item }) {
           alignItems: "center",
           marginBottom: 8,
         }}>
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>
+          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
             {item.year}
           </span>
+          <ScoreBadge itemId={item.id} />
         </div>
         <Stars
           rating={userRating}
