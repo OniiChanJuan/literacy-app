@@ -1,0 +1,408 @@
+"use client";
+
+import { useState, useEffect, use } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { ALL_ITEMS, TYPES, type Item } from "@/lib/data";
+import Card from "@/components/card";
+
+interface ProfileData {
+  user: {
+    id: string;
+    name: string | null;
+    bio: string;
+    avatar: string;
+    isPrivate: boolean;
+    createdAt: string;
+    ratingsCount: number;
+    reviewsCount: number;
+    trackedCount: number;
+  };
+  topRatings: { itemId: number; score: number; recommendTag: string | null }[];
+  library: { itemId: number; status: string; progressCurrent: number }[] | null;
+  isOwn: boolean;
+}
+
+const STATUS_META: Record<string, { label: string; icon: string; color: string }> = {
+  completed: { label: "Completed", icon: "✓", color: "#2EC4B6" },
+  in_progress: { label: "In Progress", icon: "▶", color: "#3185FC" },
+  want_to: { label: "Want To", icon: "＋", color: "#9B5DE5" },
+  dropped: { label: "Dropped", icon: "✕", color: "#E84855" },
+};
+
+export default function UserProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { data: session } = useSession();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [editPrivate, setEditPrivate] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/users/${id}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Not found");
+        return r.json();
+      })
+      .then((data: ProfileData) => {
+        setProfile(data);
+        setEditName(data.user.name || "");
+        setEditBio(data.user.bio || "");
+        setEditPrivate(data.user.isPrivate);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const res = await fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: editName, bio: editBio, isPrivate: editPrivate }),
+    });
+    if (res.ok) {
+      setProfile((prev) => prev ? {
+        ...prev,
+        user: { ...prev.user, name: editName, bio: editBio, isPrivate: editPrivate },
+        library: editPrivate ? null : prev.library,
+      } : null);
+      setEditing(false);
+    }
+    setSaving(false);
+  };
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--text-faint)" }}>
+        Loading profile...
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div style={{ textAlign: "center", padding: "80px 20px" }}>
+        <div style={{ fontSize: 44, marginBottom: 14 }}>🔍</div>
+        <div style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
+          User not found
+        </div>
+        <Link href="/people" style={{ color: "#3185FC", fontSize: 13, textDecoration: "none" }}>
+          Back to People
+        </Link>
+      </div>
+    );
+  }
+
+  const { user, topRatings, library, isOwn } = profile;
+  const initial = user.name?.[0]?.toUpperCase() || "?";
+  const joinDate = new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  // Resolve items for top ratings and library
+  const itemMap = new Map<number, Item>(ALL_ITEMS.map((i) => [i.id, i]));
+
+  // Group library by status
+  const libraryByStatus: Record<string, Item[]> = {};
+  if (library) {
+    for (const entry of library) {
+      const item = itemMap.get(entry.itemId);
+      if (item) {
+        if (!libraryByStatus[entry.status]) libraryByStatus[entry.status] = [];
+        libraryByStatus[entry.status].push(item);
+      }
+    }
+  }
+
+  return (
+    <div>
+      {/* Profile header */}
+      <div style={{
+        display: "flex",
+        gap: 24,
+        alignItems: "center",
+        padding: "32px 0",
+        borderBottom: "1px solid var(--border)",
+        marginBottom: 32,
+      }}>
+        {/* Avatar */}
+        <div style={{
+          width: 80,
+          height: 80,
+          borderRadius: "50%",
+          background: user.avatar
+            ? `url(${user.avatar}) center/cover`
+            : "linear-gradient(135deg, #E84855, #C45BAA)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 32,
+          fontWeight: 800,
+          color: "#fff",
+          flexShrink: 0,
+        }}>
+          {!user.avatar && initial}
+        </div>
+
+        {/* Info */}
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+            <h1 style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 28,
+              fontWeight: 900,
+              color: "#fff",
+              margin: 0,
+            }}>
+              {user.name || "Anonymous"}
+            </h1>
+            {user.isPrivate && (
+              <span style={{
+                fontSize: 10,
+                color: "var(--text-faint)",
+                background: "rgba(255,255,255,0.06)",
+                padding: "3px 8px",
+                borderRadius: 6,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+              }}>
+                Private
+              </span>
+            )}
+          </div>
+          {user.bio && (
+            <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "0 0 8px", lineHeight: 1.5 }}>
+              {user.bio}
+            </p>
+          )}
+          <div style={{ fontSize: 11, color: "var(--text-faint)" }}>
+            Joined {joinDate}
+          </div>
+        </div>
+
+        {/* Edit button (own profile only) */}
+        {isOwn && (
+          <button
+            onClick={() => setEditing(!editing)}
+            style={{
+              padding: "8px 18px",
+              borderRadius: 10,
+              border: "1px solid var(--border)",
+              background: editing ? "rgba(255,255,255,0.08)" : "transparent",
+              color: "var(--text-muted)",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            {editing ? "Cancel" : "Edit Profile"}
+          </button>
+        )}
+      </div>
+
+      {/* Edit form */}
+      {editing && isOwn && (
+        <div style={{
+          background: "var(--surface-1)",
+          border: "1px solid var(--border)",
+          borderRadius: 16,
+          padding: 24,
+          marginBottom: 32,
+        }}>
+          <div style={{ fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 20 }}>
+            Edit Profile
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+              Name
+            </label>
+            <input
+              type="text"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 14px",
+                borderRadius: 10,
+                border: "1px solid var(--border)",
+                background: "rgba(255,255,255,0.04)",
+                color: "#fff",
+                fontSize: 14,
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+              Bio
+            </label>
+            <textarea
+              value={editBio}
+              onChange={(e) => setEditBio(e.target.value)}
+              rows={3}
+              style={{
+                width: "100%",
+                padding: "10px 14px",
+                borderRadius: 10,
+                border: "1px solid var(--border)",
+                background: "rgba(255,255,255,0.04)",
+                color: "#fff",
+                fontSize: 14,
+                outline: "none",
+                resize: "vertical",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          {/* Privacy toggle */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "14px 16px",
+            background: "rgba(255,255,255,0.03)",
+            borderRadius: 12,
+            border: "1px solid var(--border)",
+            marginBottom: 20,
+          }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Private Library</div>
+              <div style={{ fontSize: 11, color: "var(--text-faint)", marginTop: 2 }}>
+                When enabled, others can see your profile but not your library
+              </div>
+            </div>
+            <button
+              onClick={() => setEditPrivate(!editPrivate)}
+              style={{
+                width: 44,
+                height: 24,
+                borderRadius: 12,
+                border: "none",
+                background: editPrivate ? "#E84855" : "rgba(255,255,255,0.15)",
+                cursor: "pointer",
+                position: "relative",
+                transition: "background 0.2s",
+                flexShrink: 0,
+              }}
+            >
+              <div style={{
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                background: "#fff",
+                position: "absolute",
+                top: 3,
+                left: editPrivate ? 23 : 3,
+                transition: "left 0.2s",
+              }} />
+            </button>
+          </div>
+
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              padding: "10px 24px",
+              borderRadius: 10,
+              border: "none",
+              background: "#E84855",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: saving ? "not-allowed" : "pointer",
+              opacity: saving ? 0.6 : 1,
+            }}
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
+      )}
+
+      {/* Stats */}
+      <div style={{ display: "flex", gap: 16, marginBottom: 36 }}>
+        {[
+          { label: "Rated", value: user.ratingsCount, color: "#f1c40f" },
+          { label: "Reviewed", value: user.reviewsCount, color: "#E84855" },
+          { label: "Tracked", value: user.trackedCount, color: "#3185FC" },
+        ].map((s) => (
+          <div key={s.label} style={{
+            flex: 1,
+            padding: "16px 0",
+            background: "var(--surface-1)",
+            border: "1px solid var(--border)",
+            borderRadius: 14,
+            textAlign: "center",
+          }}>
+            <div style={{ fontSize: 28, fontWeight: 800, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: 10, color: "var(--text-faint)", textTransform: "uppercase", letterSpacing: 1, marginTop: 4 }}>
+              {s.label}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Top Rated */}
+      {topRatings.length > 0 && (
+        <section style={{ marginBottom: 40 }}>
+          <h2 style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: 18,
+            fontWeight: 800,
+            color: "#fff",
+            marginBottom: 16,
+          }}>
+            Top Rated
+          </h2>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+            {topRatings.map((r) => {
+              const item = itemMap.get(r.itemId);
+              if (!item) return null;
+              return <Card key={item.id} item={item} />;
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Library by status */}
+      {library === null ? (
+        <div style={{
+          padding: "40px 20px",
+          textAlign: "center",
+          background: "var(--surface-1)",
+          border: "1px solid var(--border)",
+          borderRadius: 14,
+        }}>
+          <div style={{ fontSize: 32, marginBottom: 10 }}>🔒</div>
+          <div style={{ fontSize: 14, color: "var(--text-muted)" }}>
+            This user&apos;s library is private
+          </div>
+        </div>
+      ) : (
+        Object.entries(STATUS_META).map(([status, meta]) => {
+          const items = libraryByStatus[status];
+          if (!items || items.length === 0) return null;
+          return (
+            <section key={status} style={{ marginBottom: 36 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+                <span style={{ fontSize: 14, color: meta.color, fontWeight: 700 }}>{meta.icon}</span>
+                <span style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, color: "#fff" }}>
+                  {meta.label}
+                </span>
+                <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{items.length}</span>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+                {items.map((item) => <Card key={item.id} item={item} />)}
+              </div>
+            </section>
+          );
+        })
+      )}
+    </div>
+  );
+}

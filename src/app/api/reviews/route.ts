@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
     const rating = ratingMap.get(r.userId);
     return {
       id: r.id,
+      userId: r.userId,
       userName: r.user.name || "Anonymous",
       userAvatar: r.user.image || r.user.avatar || "",
       score: rating?.score ?? 0,

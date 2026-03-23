@@ -65,24 +65,42 @@ export default function Nav() {
                 <span style={{ color: "#E84855", fontWeight: 700, fontSize: 17 }}>{trackedCount}</span>
                 <br />tracked
               </div>
-              <div
-                onClick={() => signOut()}
-                title="Sign out"
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #E84855, #C45BAA)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 15,
-                  fontWeight: 700,
-                  color: "#fff",
-                  cursor: "pointer",
-                }}>
-                {initial}
+              <div style={{ position: "relative" }}>
+                <Link
+                  href={`/user/${session.user.id}`}
+                  title="Your profile"
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #E84855, #C45BAA)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: "#fff",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                  }}>
+                  {initial}
+                </Link>
               </div>
+              <button
+                onClick={() => signOut()}
+                style={{
+                  background: "none",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 8,
+                  color: "var(--text-faint)",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                Sign Out
+              </button>
             </>
           ) : (
             <Link

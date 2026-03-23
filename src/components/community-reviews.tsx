@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface ReviewData {
   id: number;
+  userId: string;
   userName: string;
   userAvatar: string;
   score: number;
@@ -139,9 +141,9 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
 
                 {/* Name + date */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+                  <Link href={`/user/${review.userId}`} style={{ fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
                     {review.userName}
-                  </div>
+                  </Link>
                   <div style={{ fontSize: 10, color: "var(--text-faint)", marginTop: 1 }}>
                     {timeAgo(review.createdAt)}
                   </div>
