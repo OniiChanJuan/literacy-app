@@ -16,6 +16,7 @@ import UpcomingDetailSidebar from "@/components/upcoming-detail-sidebar";
 import ExternalScores from "@/components/external-scores";
 import PlatformButtons from "@/components/platform-buttons";
 import WatchProviders from "@/components/watch-providers";
+import FranchiseBadge from "@/components/franchise-badge";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -67,6 +68,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   return (
     <div>
       <BackButton />
+
+      {/* Franchise badge */}
+      <FranchiseBadge routeId={id} />
 
       {/* Hero banner */}
       <div style={{
