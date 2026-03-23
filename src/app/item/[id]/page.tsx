@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { ALL_ITEMS, TYPES, VIBES, isUpcoming } from "@/lib/data";
+import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
+import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
@@ -12,10 +13,22 @@ import PlatformButtons from "@/components/platform-buttons";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const item = ALL_ITEMS.find((i) => i.id === parseInt(id));
+
+  let item: Item | null = null;
+  let isTmdb = false;
+
+  // Check if this is a TMDB ID (e.g., "tmdb-movie-12345")
+  const tmdbParsed = parseTmdbId(id);
+  if (tmdbParsed) {
+    item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
+    isTmdb = true;
+  } else {
+    item = ALL_ITEMS.find((i) => i.id === parseInt(id)) || null;
+  }
+
   if (!item) notFound();
 
-  const upcoming = isUpcoming(item);
+  const upcoming = !isTmdb && isUpcoming(item);
 
   const t = TYPES[item.type];
 
@@ -25,21 +38,52 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
       {/* Hero banner */}
       <div style={{
-        background: item.cover,
+        background: isTmdb ? "#1a1a2e" : item.cover,
         borderRadius: 20,
         padding: "48px 36px 36px",
         marginBottom: 36,
         position: "relative",
         overflow: "hidden",
       }}>
+        {/* Poster background for TMDB items */}
+        {isTmdb && item.cover && (
+          <img
+            src={item.cover}
+            alt=""
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              filter: "blur(20px) brightness(0.4)",
+            }}
+          />
+        )}
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(to top, rgba(11,11,16,0.85) 0%, rgba(11,11,16,0.2) 60%, transparent 100%)",
+          background: "linear-gradient(to top, rgba(11,11,16,0.9) 0%, rgba(11,11,16,0.3) 60%, rgba(11,11,16,0.5) 100%)",
           borderRadius: 20,
         }} />
 
-        <div style={{ position: "relative" }}>
+        <div style={{ position: "relative", display: "flex", gap: 24, alignItems: "flex-end" }}>
+          {/* Poster thumbnail for TMDB items */}
+          {isTmdb && item.cover && (
+            <img
+              src={item.cover}
+              alt={item.title}
+              style={{
+                width: 140,
+                height: 210,
+                objectFit: "cover",
+                borderRadius: 12,
+                boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                flexShrink: 0,
+              }}
+            />
+          )}
+          <div>
           {/* Type badge */}
           <div style={{
             display: "inline-flex",
@@ -88,6 +132,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 {g}
               </span>
             ))}
+          </div>
           </div>
         </div>
       </div>
@@ -260,8 +305,8 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         </div>
       </div>
 
-      {/* Recommendation columns — only for released items */}
-      {!upcoming && <Recommendations item={item} />}
+      {/* Recommendation columns — only for released local items */}
+      {!upcoming && !isTmdb && <Recommendations item={item} />}
     </div>
   );
 }

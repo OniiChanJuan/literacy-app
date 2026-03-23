@@ -6,15 +6,21 @@ import { useRatings } from "@/lib/ratings-context";
 import { ScoreBadge } from "./aggregate-score";
 import Stars from "./stars";
 
-export default function Card({ item }: { item: Item }) {
+function isImageUrl(cover: string): boolean {
+  return cover.startsWith("http") || cover.startsWith("/");
+}
+
+export default function Card({ item, routeId }: { item: Item; routeId?: string }) {
   const router = useRouter();
   const { ratings, rate } = useRatings();
   const t = TYPES[item.type];
   const userRating = ratings[item.id] || 0;
+  const href = `/item/${routeId || item.id}`;
+  const hasImage = isImageUrl(item.cover);
 
   return (
     <div
-      onClick={() => router.push(`/item/${item.id}`)}
+      onClick={() => router.push(href)}
       style={{
         minWidth: 190,
         maxWidth: 190,
@@ -35,7 +41,26 @@ export default function Card({ item }: { item: Item }) {
       }}
     >
       {/* Cover */}
-      <div style={{ background: item.cover, height: 250, position: "relative" }}>
+      <div style={{
+        height: 250,
+        position: "relative",
+        ...(hasImage
+          ? { background: "#1a1a2e" }
+          : { background: item.cover }),
+      }}>
+        {hasImage && (
+          <img
+            src={item.cover}
+            alt={item.title}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        )}
+
         {/* Type badge — top left */}
         <div style={{
           position: "absolute",
@@ -100,15 +125,23 @@ export default function Card({ item }: { item: Item }) {
           marginBottom: 8,
         }}>
           <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
-            {item.year}
+            {item.year || "TBA"}
           </span>
-          <ScoreBadge itemId={item.id} />
+          {!routeId && <ScoreBadge itemId={item.id} />}
+          {routeId && item.ext.imdb && (
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#f5c518" }}>{item.ext.imdb}</span>
+              <span style={{ fontSize: 10, color: "var(--text-faint)" }}>TMDB</span>
+            </div>
+          )}
         </div>
-        <Stars
-          rating={userRating}
-          onRate={(s) => rate(item.id, s)}
-          size={14}
-        />
+        {!routeId && (
+          <Stars
+            rating={userRating}
+            onRate={(s) => rate(item.id, s)}
+            size={14}
+          />
+        )}
       </div>
     </div>
   );

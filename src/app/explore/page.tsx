@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ALL_ITEMS, TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, isUpcoming, type MediaType, type Item, type UpcomingItem } from "@/lib/data";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
+
+interface SearchResult extends Item {
+  source: "local" | "tmdb";
+  routeId: string;
+}
 
 type Mode = "all" | "type" | "genre" | "vibe";
 
@@ -20,19 +25,32 @@ export default function ExplorePage() {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
 
+  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
+  const [searching, setSearching] = useState(false);
+
   const toggle = <T,>(arr: T[], val: T): T[] =>
     arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
 
-  // Search results — override mode if searching
-  const searchResults = useMemo(() => {
-    if (!search.trim()) return null;
-    const q = search.toLowerCase();
-    return ALL_ITEMS.filter((i) =>
-      i.title.toLowerCase().includes(q) ||
-      i.genre.some((g) => g.toLowerCase().includes(q)) ||
-      i.vibes.some((v) => (VIBES[v]?.label || v).toLowerCase().includes(q)) ||
-      i.people.some((p) => p.name.toLowerCase().includes(q))
-    );
+  // API-powered search with debounce
+  useEffect(() => {
+    if (!search.trim() || search.trim().length < 2) {
+      setSearchResults(null);
+      return;
+    }
+    setSearching(true);
+    const timeout = setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(search.trim())}`)
+        .then((r) => r.json())
+        .then((data) => {
+          setSearchResults(Array.isArray(data) ? data : []);
+          setSearching(false);
+        })
+        .catch(() => {
+          setSearchResults([]);
+          setSearching(false);
+        });
+    }, 400);
+    return () => clearTimeout(timeout);
   }, [search]);
 
   // All-mode filtered results
@@ -93,15 +111,24 @@ export default function ExplorePage() {
       </div>
 
       {/* Search results — shown instead of modes when searching */}
-      {searchResults ? (
+      {searchResults !== null || searching ? (
         <div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>
-            {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for &ldquo;{search}&rdquo;
-          </div>
-          {searchResults.length > 0 ? (
-            <ItemGrid items={searchResults} />
-          ) : (
-            <Empty text="No matches found. Try a different search." />
+          {searching && (
+            <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 16 }}>
+              Searching...
+            </div>
+          )}
+          {!searching && searchResults && (
+            <>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>
+                {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for &ldquo;{search}&rdquo;
+              </div>
+              {searchResults.length > 0 ? (
+                <SearchResultGrid results={searchResults} />
+              ) : (
+                <Empty text="No matches found. Try a different search." />
+              )}
+            </>
           )}
         </div>
       ) : (
@@ -368,6 +395,20 @@ export default function ExplorePage() {
 }
 
 // ── Sub-components (local to this page) ─────────────────────────────────────
+
+function SearchResultGrid({ results }: { results: SearchResult[] }) {
+  return (
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
+      gap: 16,
+    }}>
+      {results.map((item) => (
+        <Card key={`${item.source}-${item.id}`} item={item} routeId={item.routeId} />
+      ))}
+    </div>
+  );
+}
 
 function ItemGrid({ items }: { items: Item[] }) {
   return (
