@@ -1,5 +1,7 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { Item, TYPES } from "@/lib/data";
 import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";
 
@@ -11,6 +13,36 @@ const STATUSES: { key: LibraryStatus; label: string; icon: string; color: string
 ];
 
 export default function StatusTracker({ item }: { item: Item }) {
+  const { data: session } = useSession();
+
+  if (!session?.user) {
+    return (
+      <div style={{
+        background: "var(--surface-1)",
+        border: "1px solid var(--border)",
+        borderRadius: 16,
+        padding: 24,
+        textAlign: "center",
+      }}>
+        <div style={{ fontSize: 24, marginBottom: 10 }}>📝</div>
+        <div style={{ fontSize: 14, color: "var(--text-muted)", marginBottom: 12 }}>
+          Sign in to track this
+        </div>
+        <Link href="/login" style={{
+          display: "inline-block",
+          padding: "8px 20px",
+          borderRadius: 10,
+          background: "#E84855",
+          color: "#fff",
+          fontSize: 13,
+          fontWeight: 700,
+          textDecoration: "none",
+        }}>
+          Sign In
+        </Link>
+      </div>
+    );
+  }
   const { entries, setStatus, setProgress } = useLibrary();
   const entry = entries[item.id];
   const currentStatus = entry?.status ?? null;

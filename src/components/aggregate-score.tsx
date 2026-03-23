@@ -1,11 +1,32 @@
 "use client";
 
-import { useMemo } from "react";
-import { generateReviews, computeAggregate, scoreColor } from "@/lib/reviews";
+import { useState, useEffect } from "react";
+import { scoreColor } from "@/lib/score-utils";
+
+interface AggregateData {
+  avg: string;
+  count: number;
+  dist: [number, number, number, number, number];
+  recPct: number;
+}
 
 // ── Compact: for cards ──────────────────────────────────────────────────
 export function ScoreBadge({ itemId }: { itemId: number }) {
-  const agg = useMemo(() => computeAggregate(generateReviews(itemId)), [itemId]);
+  const [agg, setAgg] = useState<AggregateData | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/items/${itemId}/aggregate`)
+      .then((r) => r.json())
+      .then(setAgg)
+      .catch(() => {});
+  }, [itemId]);
+
+  if (!agg || agg.count === 0) {
+    return (
+      <span style={{ fontSize: 10, color: "var(--text-faint)" }}>No ratings</span>
+    );
+  }
+
   const avg = parseFloat(agg.avg);
   const color = scoreColor(avg);
 
@@ -19,12 +40,34 @@ export function ScoreBadge({ itemId }: { itemId: number }) {
 
 // ── Full: for detail page ───────────────────────────────────────────────
 export function AggregateScorePanel({ itemId }: { itemId: number }) {
-  const reviews = useMemo(() => generateReviews(itemId), [itemId]);
-  const agg = useMemo(() => computeAggregate(reviews), [reviews]);
+  const [agg, setAgg] = useState<AggregateData | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/items/${itemId}/aggregate`)
+      .then((r) => r.json())
+      .then(setAgg)
+      .catch(() => {});
+  }, [itemId]);
+
+  if (!agg) {
+    return (
+      <div style={{ padding: 16, textAlign: "center", color: "var(--text-faint)", fontSize: 13 }}>
+        Loading...
+      </div>
+    );
+  }
+
+  if (agg.count === 0) {
+    return (
+      <div style={{ padding: 16, textAlign: "center", color: "var(--text-faint)", fontSize: 13 }}>
+        No ratings yet. Be the first!
+      </div>
+    );
+  }
+
   const avg = parseFloat(agg.avg);
   const color = scoreColor(avg);
   const maxDist = Math.max(...agg.dist, 1);
-
   const recEmoji = agg.recPct >= 70 ? "👍" : agg.recPct >= 40 ? "🤷" : "👎";
   const recColor = agg.recPct >= 70 ? "var(--score-good)" : agg.recPct >= 40 ? "var(--score-mid)" : "var(--score-poor)";
 
@@ -51,7 +94,7 @@ export function AggregateScorePanel({ itemId }: { itemId: number }) {
           </div>
           <div style={{ width: 1, height: 36, background: "var(--surface-3)" }} />
           <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-            {agg.count} ratings
+            {agg.count} {agg.count === 1 ? "rating" : "ratings"}
           </div>
         </div>
 

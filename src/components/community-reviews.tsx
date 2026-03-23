@@ -1,11 +1,76 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { generateReviews } from "@/lib/reviews";
+import { useState, useEffect } from "react";
+
+interface ReviewData {
+  id: number;
+  userName: string;
+  userAvatar: string;
+  score: number;
+  recommendTag: string | null;
+  text: string;
+  createdAt: string;
+}
+
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days === 0) return "today";
+  if (days === 1) return "yesterday";
+  return `${days} days ago`;
+}
 
 export default function CommunityReviews({ itemId }: { itemId: number }) {
-  const reviews = useMemo(() => generateReviews(itemId), [itemId]);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/reviews?itemId=${itemId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setReviews(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [itemId]);
+
+  if (loading) {
+    return (
+      <div style={{ padding: 20, textAlign: "center", color: "var(--text-faint)", fontSize: 13 }}>
+        Loading reviews...
+      </div>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <div>
+        <h2 style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 16,
+          fontWeight: 700,
+          color: "var(--text-muted)",
+          textTransform: "uppercase",
+          letterSpacing: "1px",
+          marginBottom: 16,
+        }}>
+          Community Reviews
+        </h2>
+        <div style={{
+          padding: "32px 20px",
+          textAlign: "center",
+          color: "var(--text-faint)",
+          fontSize: 13,
+          background: "var(--surface-1)",
+          borderRadius: 14,
+          border: "1px solid var(--border)",
+        }}>
+          No reviews yet. Be the first to share your thoughts!
+        </div>
+      </div>
+    );
+  }
 
   const visible = showAll ? reviews : reviews.slice(0, 4);
 
@@ -28,18 +93,19 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
           Community Reviews
         </h2>
         <span style={{ fontSize: 12, color: "var(--text-faint)" }}>
-          {reviews.length} reviews
+          {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
         </span>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {visible.map((review, i) => {
-          const recEmoji = review.rec === "recommend" ? "👍"
-            : review.rec === "mixed" ? "🤷" : "👎";
+        {visible.map((review) => {
+          const recEmoji = review.recommendTag === "recommend" ? "👍"
+            : review.recommendTag === "mixed" ? "🤷"
+            : review.recommendTag === "skip" ? "👎" : "";
 
           return (
             <div
-              key={i}
+              key={review.id}
               style={{
                 padding: "16px 18px",
                 background: "var(--surface-1)",
@@ -59,7 +125,7 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
                   width: 32,
                   height: 32,
                   borderRadius: "50%",
-                  background: review.avatarColor,
+                  background: "linear-gradient(135deg, #E84855, #C45BAA)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -68,25 +134,27 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
                   color: "#fff",
                   flexShrink: 0,
                 }}>
-                  {review.username[0].toUpperCase()}
+                  {review.userName[0]?.toUpperCase() || "?"}
                 </div>
 
                 {/* Name + date */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
-                    {review.username}
+                    {review.userName}
                   </div>
                   <div style={{ fontSize: 10, color: "var(--text-faint)", marginTop: 1 }}>
-                    {review.daysAgo === 1 ? "yesterday" : `${review.daysAgo} days ago`}
+                    {timeAgo(review.createdAt)}
                   </div>
                 </div>
 
                 {/* Stars + rec tag */}
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                  <span style={{ color: "#f1c40f", fontSize: 12 }}>
-                    {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-                  </span>
-                  <span style={{ fontSize: 12 }}>{recEmoji}</span>
+                  {review.score > 0 && (
+                    <span style={{ color: "#f1c40f", fontSize: 12 }}>
+                      {"★".repeat(review.score)}{"☆".repeat(5 - review.score)}
+                    </span>
+                  )}
+                  {recEmoji && <span style={{ fontSize: 12 }}>{recEmoji}</span>}
                 </div>
               </div>
 

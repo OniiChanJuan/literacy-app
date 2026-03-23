@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import { useLibrary } from "@/lib/library-context";
 
 const tabs = [
   { id: "foryou",  label: "For You",  icon: "✦", href: "/" },
@@ -12,6 +14,11 @@ const tabs = [
 
 export default function Nav() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const { entries } = useLibrary();
+  const trackedCount = Object.keys(entries).length;
+
+  const initial = session?.user?.name?.[0]?.toUpperCase() || "?";
 
   return (
     <header style={{
@@ -50,26 +57,49 @@ export default function Nav() {
           </div>
         </div>
 
-        {/* Right side: stats + avatar */}
+        {/* Right side: auth */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", textAlign: "right", lineHeight: 1.4 }}>
-            <span style={{ color: "#E84855", fontWeight: 700, fontSize: 17 }}>0</span>
-            <br />tracked
-          </div>
-          <div style={{
-            width: 38,
-            height: 38,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #E84855, #C45BAA)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 15,
-            fontWeight: 700,
-            color: "#fff",
-          }}>
-            L
-          </div>
+          {session?.user ? (
+            <>
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", textAlign: "right", lineHeight: 1.4 }}>
+                <span style={{ color: "#E84855", fontWeight: 700, fontSize: 17 }}>{trackedCount}</span>
+                <br />tracked
+              </div>
+              <div
+                onClick={() => signOut()}
+                title="Sign out"
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #E84855, #C45BAA)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: "#fff",
+                  cursor: "pointer",
+                }}>
+                {initial}
+              </div>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              style={{
+                padding: "8px 18px",
+                borderRadius: 10,
+                background: "#E84855",
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
 

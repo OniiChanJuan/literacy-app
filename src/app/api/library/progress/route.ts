@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { DEMO_USER_ID } from "@/lib/constants";
+import { auth } from "@/lib/auth";
 
 // PATCH /api/library/progress — update progress for a library entry
 export async function PATCH(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const userId = session.user.id;
   const body = await req.json();
   const { itemId, progress } = body as { itemId: number; progress: number };
 
@@ -13,7 +19,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const entry = await prisma.libraryEntry.update({
-      where: { userId_itemId: { userId: DEMO_USER_ID, itemId } },
+      where: { userId_itemId: { userId, itemId } },
       data: { progressCurrent: Math.max(0, progress) },
     });
     return NextResponse.json(entry);
