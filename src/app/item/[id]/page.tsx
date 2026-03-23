@@ -29,6 +29,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   if (!item) notFound();
 
   const upcoming = !isTmdb && isUpcoming(item);
+  const hasImageCover = item.cover.startsWith("http");
 
   const t = TYPES[item.type];
 
@@ -38,15 +39,15 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
       {/* Hero banner */}
       <div style={{
-        background: isTmdb ? "#1a1a2e" : item.cover,
+        background: hasImageCover ? "#1a1a2e" : item.cover,
         borderRadius: 20,
         padding: "48px 36px 36px",
         marginBottom: 36,
         position: "relative",
         overflow: "hidden",
       }}>
-        {/* Poster background for TMDB items */}
-        {isTmdb && item.cover && (
+        {/* Blurred poster background for image covers */}
+        {hasImageCover && (
           <img
             src={item.cover}
             alt=""
@@ -63,13 +64,15 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(to top, rgba(11,11,16,0.9) 0%, rgba(11,11,16,0.3) 60%, rgba(11,11,16,0.5) 100%)",
+          background: hasImageCover
+            ? "linear-gradient(to top, rgba(11,11,16,0.9) 0%, rgba(11,11,16,0.3) 60%, rgba(11,11,16,0.5) 100%)"
+            : "linear-gradient(to top, rgba(11,11,16,0.85) 0%, rgba(11,11,16,0.2) 60%, transparent 100%)",
           borderRadius: 20,
         }} />
 
         <div style={{ position: "relative", display: "flex", gap: 24, alignItems: "flex-end" }}>
-          {/* Poster thumbnail for TMDB items */}
-          {isTmdb && item.cover && (
+          {/* Poster thumbnail for image covers */}
+          {hasImageCover && (
             <img
               src={item.cover}
               alt={item.title}
