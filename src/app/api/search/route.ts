@@ -4,8 +4,9 @@ import { searchTmdb, tmdbItemId } from "@/lib/tmdb";
 import { searchIgdb, igdbItemId } from "@/lib/igdb";
 import { searchGoogleBooks, gbookItemId } from "@/lib/google-books";
 import { searchSpotify, spotifyItemId } from "@/lib/spotify";
+import { searchJikanManga, searchJikanAnime, jikanItemId } from "@/lib/jikan";
 
-// GET /api/search?q=query — search local items + TMDB + IGDB + Google Books
+// GET /api/search?q=query — search all APIs
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim().toLowerCase();
   if (!q || q.length < 2) {
@@ -31,8 +32,8 @@ export async function GET(req: NextRequest) {
 
   // Search all APIs in parallel
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [tmdbResults, igdbResults, gbookResults, spotifyResults] = await Promise.all([
-    searchTmdb(q)
+  const [tmdbResults, igdbResults, gbookResults, spotifyResults, mangaResults, animeResults] = await Promise.all([
+    searchTmdb(q) // Already filters out anime TV shows
       .then((items) =>
         items
           .filter((item) => !localTitles.has(`${item.title.toLowerCase()}-${item.year}`))
@@ -60,7 +61,7 @@ export async function GET(req: NextRequest) {
       .then((items) =>
         items
           .filter((item) => !localTitles.has(`${item.title.toLowerCase()}-${item.year}`))
-          .filter((item) => item.cover) // only show books with covers
+          .filter((item) => item.cover)
           .map((item) => ({
             ...item,
             source: "gbook" as const,
@@ -81,8 +82,36 @@ export async function GET(req: NextRequest) {
           }))
       )
       .catch((e) => { console.error("Spotify search failed:", e); return [] as any[]; }),
+
+    searchJikanManga(q)
+      .then((items) =>
+        items
+          .filter((item) => !localTitles.has(`${item.title.toLowerCase()}-${item.year}`))
+          .filter((item) => item.cover)
+          .map((item) => ({
+            ...item,
+            source: "jikan" as const,
+            routeId: jikanItemId("manga", item.malId),
+          }))
+      )
+      .catch((e) => { console.error("Jikan manga search failed:", e); return [] as any[]; }),
+
+    searchJikanAnime(q)
+      .then((items) =>
+        items
+          .filter((item) => !localTitles.has(`${item.title.toLowerCase()}-${item.year}`))
+          .filter((item) => item.cover)
+          .map((item) => ({
+            ...item,
+            source: "jikan" as const,
+            routeId: jikanItemId("anime", item.malId),
+          }))
+      )
+      .catch((e) => { console.error("Jikan anime search failed:", e); return [] as any[]; }),
   ]);
 
-  // Local first, then external APIs
-  return NextResponse.json([...localResults, ...tmdbResults, ...igdbResults, ...gbookResults, ...spotifyResults]);
+  return NextResponse.json([
+    ...localResults, ...tmdbResults, ...mangaResults, ...animeResults,
+    ...igdbResults, ...gbookResults, ...spotifyResults,
+  ]);
 }

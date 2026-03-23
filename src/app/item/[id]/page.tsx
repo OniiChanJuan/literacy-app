@@ -4,6 +4,7 @@ import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
 import { parseIgdbId, getIgdbDetails } from "@/lib/igdb";
 import { parseGbookId, getGoogleBookDetails } from "@/lib/google-books";
 import { parseSpotifyId, getSpotifyAlbumDetails, getSpotifyShowDetails } from "@/lib/spotify";
+import { parseJikanId, getJikanMangaDetails, getJikanAnimeDetails } from "@/lib/jikan";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
@@ -26,6 +27,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   const igdbParsed = parseIgdbId(id);
   const gbookParsed = parseGbookId(id);
   const spotifyParsed = parseSpotifyId(id);
+  const jikanParsed = parseJikanId(id);
 
   if (tmdbParsed) {
     item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
@@ -40,6 +42,11 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     item = spotifyParsed.type === "album"
       ? await getSpotifyAlbumDetails(spotifyParsed.spotifyId)
       : await getSpotifyShowDetails(spotifyParsed.spotifyId);
+    isExternal = true;
+  } else if (jikanParsed) {
+    item = jikanParsed.type === "manga"
+      ? await getJikanMangaDetails(jikanParsed.malId)
+      : await getJikanAnimeDetails(jikanParsed.malId);
     isExternal = true;
   } else {
     item = ALL_ITEMS.find((i) => i.id === parseInt(id)) || null;

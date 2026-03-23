@@ -42,16 +42,26 @@ export interface TmdbSearchResult {
   vote_average: number;
   vote_count: number;
   media_type?: string;
+  origin_country?: string[]; // tv only
 }
 
-/** Search TMDB for movies and TV shows */
+/** Search TMDB for movies and TV shows, filtering out anime (Jikan handles those) */
 export async function searchTmdb(query: string): Promise<Item[]> {
   const res = await fetch(url("/search/multi", { query, include_adult: "false" }));
   if (!res.ok) return [];
   const data = await res.json();
 
   return (data.results || [])
-    .filter((r: TmdbSearchResult) => r.media_type === "movie" || r.media_type === "tv")
+    .filter((r: TmdbSearchResult) => {
+      if (r.media_type !== "movie" && r.media_type !== "tv") return false;
+      // Skip anime TV shows — Jikan is the primary source for those
+      if (r.media_type === "tv") {
+        const isAnimation = r.genre_ids.includes(16); // 16 = Animation
+        const isJapanese = r.origin_country?.includes("JP");
+        if (isAnimation && isJapanese) return false;
+      }
+      return true;
+    })
     .slice(0, 20)
     .map((r: TmdbSearchResult) => mapSearchResult(r));
 }
