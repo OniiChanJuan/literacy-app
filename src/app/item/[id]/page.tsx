@@ -7,6 +7,8 @@ import CommunityReviews from "@/components/community-reviews";
 import Recommendations from "@/components/recommendations";
 import StatusTracker from "@/components/status-tracker";
 import UpcomingDetailSidebar from "@/components/upcoming-detail-sidebar";
+import ExternalScores from "@/components/external-scores";
+import PlatformButtons from "@/components/platform-buttons";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -156,6 +158,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             </section>
           )}
 
+          {/* Platforms */}
+          <PlatformButtons platforms={item.platforms} mediaType={item.type} />
+
           {/* People */}
           {item.people.length > 0 && (
             <section style={{ marginBottom: 32 }}>
@@ -241,6 +246,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 </div>
                 <AggregateScorePanel itemId={item.id} />
               </div>
+
+              {/* External scores */}
+              <ExternalScores ext={item.ext} />
 
               {/* Your rating */}
               <RatingPanel itemId={item.id} />
