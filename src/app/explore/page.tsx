@@ -231,9 +231,88 @@ export default function ExplorePage() {
           {/* Default storefront — no active filter */}
           {!hasActiveFilter && (
             <>
-              {/* ALL mode: media type scroll rows */}
+              {/* ALL mode: browse tiles + genre pills + vibe pills + media type scroll rows */}
               {mode === "all" && (
-                <div>
+                <>
+                  {/* Browse by media type tiles */}
+                  <div style={{ marginBottom: 24 }}>
+                    <SectionLabel>Browse by media type</SectionLabel>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                      {TYPE_ORDER.map((k) => {
+                        const t = TYPES[k];
+                        const count = typeCounts[k] || 0;
+                        return (
+                          <button
+                            key={k}
+                            onClick={() => { setSelectedType(k); setMode("type"); }}
+                            style={{
+                              background: `${t.color}0A`, border: `1px solid ${t.color}33`,
+                              borderRadius: 11, padding: "14px 12px", cursor: "pointer",
+                              textAlign: "left", transition: "all 0.15s",
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = `${t.color}18`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = `${t.color}0A`; e.currentTarget.style.transform = ""; }}
+                          >
+                            <div style={{ fontSize: 22, marginBottom: 5 }}>{t.icon}</div>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: t.color, marginBottom: 2 }}>{t.label}</div>
+                            <div style={{ fontSize: 9, color: "var(--text-faint)" }}>{count} title{count !== 1 ? "s" : ""}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Popular genres */}
+                  <div style={{ marginBottom: 24 }}>
+                    <SectionLabel>Popular genres</SectionLabel>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {ALL_GENRES.slice(0, 20).map((g) => (
+                        <button
+                          key={g}
+                          onClick={() => { setSelectedGenre(g); setMode("genre"); }}
+                          style={{
+                            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+                            borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
+                            color: "rgba(255,255,255,0.6)", cursor: "pointer", transition: "all 0.15s",
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#fff"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
+                        >
+                          {g}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Browse by vibe */}
+                  <div style={{ marginBottom: 28 }}>
+                    <SectionLabel>Browse by vibe</SectionLabel>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {ALL_VIBES.map((v) => {
+                        const vibe = VIBES[v];
+                        if (!vibe) return null;
+                        return (
+                          <button
+                            key={v}
+                            onClick={() => { setSelectedVibe(v); setMode("vibe"); }}
+                            style={{
+                              background: `${vibe.color}12`, border: `1px solid ${vibe.color}25`,
+                              borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
+                              color: vibe.color, cursor: "pointer", transition: "all 0.15s",
+                              display: "flex", alignItems: "center", gap: 5,
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = `${vibe.color}25`; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = `${vibe.color}12`; }}
+                          >
+                            <span>{vibe.icon}</span>
+                            {vibe.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Media type scroll rows */}
                   {TYPE_ORDER.map((k) => {
                     const t = TYPES[k];
                     const count = typeCounts[k] || 0;
@@ -247,7 +326,7 @@ export default function ExplorePage() {
                       />
                     );
                   })}
-                </div>
+                </>
               )}
 
               {/* BY MEDIA mode: type tiles */}
