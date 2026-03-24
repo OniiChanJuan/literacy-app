@@ -99,6 +99,8 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
       padding: 14,
       marginBottom: 24,
       overflow: "hidden",
+      maxWidth: "100%",
+      boxSizing: "border-box",
     }}>
       {/* Header */}
       <div style={{
@@ -164,7 +166,7 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
           </button>
         )}
 
-        {/* Scrollable cards */}
+        {/* Scrollable cards — width:0 + minWidth:100% prevents flex children from expanding parent */}
         <div
           ref={scrollRef}
           className="scrollbar-hide"
@@ -176,6 +178,8 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
             scrollbarWidth: "none",
             msOverflowStyle: "none",
             WebkitOverflowScrolling: "touch",
+            width: 0,
+            minWidth: "100%",
           }}
         >
           {franchise.otherItems.map((item) => (
