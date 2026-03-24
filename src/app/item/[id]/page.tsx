@@ -353,13 +353,13 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       <div style={{
         background: `linear-gradient(135deg, rgba(${rgb}, 0.08), rgba(${rgb}, 0.02))`,
         borderRadius: 12,
-        padding: 16,
+        padding: "18px 20px",
         marginBottom: 0,
       }}>
         {/* Three-column layout */}
         <div className="hero-layout" style={{
           display: "flex",
-          gap: 14,
+          gap: 16,
           alignItems: "flex-start",
         }}>
           {/* Left — Cover art */}
@@ -474,20 +474,25 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           </div>
 
           {/* Right — Quick reference */}
-          <div className="hero-right" style={{ width: 140, flexShrink: 0 }}>
+          <div className="hero-right" style={{
+            width: 170,
+            flexShrink: 0,
+            borderLeft: "0.5px solid rgba(255,255,255,0.04)",
+            paddingLeft: 12,
+          }}>
             {/* Creator */}
             {creator && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
                 <div style={{
-                  width: 24,
-                  height: 24,
+                  width: 30,
+                  height: 30,
                   borderRadius: "50%",
                   background: t.color,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 10,
-                  fontWeight: 700,
+                  fontSize: 12,
+                  fontWeight: 500,
                   color: "#fff",
                   flexShrink: 0,
                 }}>
@@ -495,16 +500,16 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: 500,
-                    color: "rgba(255,255,255,0.8)",
+                    color: "rgba(255,255,255,0.85)",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}>
                     {creator.name}
                   </div>
-                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.25)" }}>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
                     {creator.role}
                   </div>
                 </div>
@@ -512,21 +517,21 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             )}
 
             {/* Quick facts */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
               {quickFacts.map((f) => (
                 <div key={f.label} style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "baseline",
+                  alignItems: "center",
                 }}>
-                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>{f.label}</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>{f.label}</span>
                   <span style={{
-                    fontSize: 11,
-                    color: "rgba(255,255,255,0.6)",
+                    fontSize: 13,
+                    color: "rgba(255,255,255,0.7)",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    maxWidth: 80,
+                    maxWidth: 100,
                     textAlign: "right",
                   }}>
                     {f.value}
@@ -539,16 +544,16 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "baseline",
+                  alignItems: "center",
                 }}>
-                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>Platforms</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>Platforms</span>
                   <span style={{
-                    fontSize: 11,
-                    color: "rgba(255,255,255,0.6)",
+                    fontSize: 13,
+                    color: "rgba(255,255,255,0.7)",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    maxWidth: 80,
+                    maxWidth: 100,
                     textAlign: "right",
                   }}>
                     {item.platforms.slice(0, 3).map((p: any) =>
@@ -561,22 +566,22 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
             {/* Where to [verb] */}
             {item.type !== "game" && compactPlatforms.length > 0 && (
-              <div style={{ marginTop: 10 }}>
+              <div style={{ marginTop: 2 }}>
                 <div style={{
-                  fontSize: 8,
+                  fontSize: 10,
                   color: "rgba(255,255,255,0.2)",
                   textTransform: "uppercase",
                   letterSpacing: 0.5,
-                  marginBottom: 5,
+                  marginBottom: 6,
                 }}>
                   Where to {actionVerb}
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                   {compactPlatforms.map((p) => (
                     <div key={p.key} style={{
-                      fontSize: 8,
-                      padding: "2px 7px",
-                      borderRadius: 4,
+                      fontSize: 10,
+                      padding: "4px 10px",
+                      borderRadius: 5,
                       background: p.color,
                       color: "#fff",
                       fontWeight: 500,
@@ -634,6 +639,23 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
       {/* Responsive styles */}
       <style>{`
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .hero-layout {
+            flex-wrap: wrap !important;
+          }
+          .hero-right {
+            width: 100% !important;
+            border-left: none !important;
+            padding-left: 0 !important;
+            border-top: 0.5px solid rgba(255,255,255,0.06) !important;
+            padding-top: 10px !important;
+            margin-top: 4px !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+            align-items: center !important;
+          }
+        }
         @media (max-width: 768px) {
           .hero-layout {
             flex-direction: column !important;
@@ -641,6 +663,8 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           }
           .hero-right {
             width: 100% !important;
+            border-left: none !important;
+            padding-left: 0 !important;
             display: flex !important;
             flex-wrap: wrap !important;
             gap: 8px !important;
