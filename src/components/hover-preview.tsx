@@ -31,7 +31,7 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
   }, []);
 
   const t = TYPES[item.type];
-  const extEntries = Object.entries(item.ext) as [string, number][];
+  const extEntries = Object.entries(item.ext || {}) as [string, number][];
 
   return (
     <div
@@ -90,7 +90,7 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
           </div>
 
           {/* Genres */}
-          {item.genre.length > 0 && (
+          {item.genre?.length > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 10 }}>
               {item.genre.slice(0, 4).map((g) => (
                 <span key={g} style={{
@@ -107,7 +107,7 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
           )}
 
           {/* Vibes */}
-          {item.vibes.length > 0 && (
+          {item.vibes?.length > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 10 }}>
               {item.vibes.map((v) => {
                 const vibe = VIBES[v];
@@ -156,9 +156,9 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
           )}
 
           {/* People */}
-          {item.people.length > 0 && (
+          {item.people?.length > 0 && (
             <div style={{ fontSize: 11, color: "var(--text-faint)", marginBottom: 10 }}>
-              {item.people.slice(0, 3).map((p) => `${p.name}`).join(" · ")}
+              {item.people.slice(0, 3).map((p: any) => `${p.name}`).join(" · ")}
             </div>
           )}
 
