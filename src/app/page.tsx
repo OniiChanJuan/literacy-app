@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef, memo } from "react";
-import { TYPES, TYPE_ORDER, type Item, type UpcomingItem } from "@/lib/data";
+import { TYPES, type Item, type UpcomingItem } from "@/lib/data";
+import { useRatings } from "@/lib/ratings-context";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
 
-/** Fetch items from API, returning the array or null on failure */
+// ── Helpers ─────────────────────────────────────────────────────────────
+
 async function fetchItems(url: string): Promise<Item[] | null> {
   try {
     const res = await fetch(url);
@@ -19,68 +21,43 @@ async function fetchItems(url: string): Promise<Item[] | null> {
   }
 }
 
-/** Row that fetches data on mount (for above-the-fold content) */
-function EagerRow({
-  fetchUrl,
-  label,
-  sub,
-  icon,
-  iconBg,
-}: {
-  fetchUrl: string;
-  label: string;
-  sub: string;
-  icon: string;
-  iconBg: string;
+/** Eager fetch row */
+function EagerRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref }: {
+  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     fetchItems(fetchUrl).then((data) => {
-      if (data) setItems(data);
+      if (data && data.length >= 4) setItems(data);
+      else if (data) setItems(null); // fewer than 4 = don't show
       else setFailed(true);
     });
   }, [fetchUrl]);
 
-  // Don't hide the row on failure — show skeletons instead
-  // Only hide if we successfully got data but it was empty
-  if (items !== null && items.length === 0) return null;
+  if (items === null && !failed) {
+    return (
+      <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
+        <SkeletonRow count={8} />
+      </ScrollRow>
+    );
+  }
+  if (failed || !items || items.length < 4) return null;
 
   return (
-    <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg}>
-      {items === null ? (
-        failed ? (
-          <div style={{ padding: "20px", color: "var(--text-faint)", fontSize: 12 }}>
-            Failed to load. Try refreshing.
-          </div>
-        ) : (
-          <SkeletonRow count={6} />
-        )
-      ) : (
-        items.map((item) => <Card key={item.id} item={item} />)
-      )}
+    <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
+      {items.map((item) => <Card key={item.id} item={item} />)}
     </ScrollRow>
   );
 }
 
-/** Row that only fetches when scrolled near viewport */
-const LazyRow = memo(function LazyRow({
-  fetchUrl,
-  label,
-  sub,
-  icon,
-  iconBg,
-}: {
-  fetchUrl: string;
-  label: string;
-  sub: string;
-  icon: string;
-  iconBg: string;
+/** Lazy fetch row */
+const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref }: {
+  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [visible, setVisible] = useState(false);
-  const [failed, setFailed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -97,34 +74,71 @@ const LazyRow = memo(function LazyRow({
   useEffect(() => {
     if (!visible) return;
     fetchItems(fetchUrl).then((data) => {
-      if (data) setItems(data);
-      else setFailed(true);
+      if (data && data.length >= 4) setItems(data);
+      else setItems([]);
     });
   }, [visible, fetchUrl]);
 
-  if (items !== null && items.length === 0) return null;
+  if (items !== null && items.length < 4) return null;
 
   return (
     <div ref={ref}>
-      <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg}>
-        {items === null ? (
-          failed ? (
-            <div style={{ padding: "20px", color: "var(--text-faint)", fontSize: 12 }}>
-              Failed to load.
-            </div>
-          ) : (
-            <SkeletonRow count={6} />
-          )
-        ) : (
-          items.map((item) => <Card key={item.id} item={item} />)
-        )}
+      <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
+        {items === null ? <SkeletonRow count={8} /> : items.map((item) => <Card key={item.id} item={item} />)}
       </ScrollRow>
     </div>
   );
 });
 
+// ── Taste DNA Bar ───────────────────────────────────────────────────────
+
+function TasteDnaBar() {
+  const { ratings } = useRatings();
+  const ratingCount = Object.keys(ratings).length;
+
+  if (ratingCount < 3) return null;
+
+  // Get top genres/vibes from rated items (we'd need item data for this — use a placeholder approach)
+  const topTags = ["Sci-Fi", "Dark", "Epic", "Atmospheric", "Thriller"];
+
+  return (
+    <div style={{
+      background: "rgba(255,255,255,0.03)",
+      border: "0.5px solid rgba(255,255,255,0.06)",
+      borderRadius: 10,
+      padding: "12px 14px",
+      marginBottom: 18,
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>Your taste</span>
+        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)" }}>{ratingCount} rated</span>
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 8 }}>
+        {topTags.map((tag) => (
+          <span key={tag} style={{
+            fontSize: 9,
+            padding: "3px 8px",
+            borderRadius: 8,
+            background: "rgba(255,255,255,0.06)",
+            color: "rgba(255,255,255,0.5)",
+          }}>
+            {tag}
+          </span>
+        ))}
+      </div>
+      <a href="/library" style={{ fontSize: 10, color: "#E84855", textDecoration: "none" }}>
+        View profile →
+      </a>
+    </div>
+  );
+}
+
+// ── Main Page ───────────────────────────────────────────────────────────
+
 export default function ForYouPage() {
   const [upcoming, setUpcoming] = useState<UpcomingItem[] | null>(null);
+  const { ratings } = useRatings();
+  const ratingCount = Object.keys(ratings).length;
 
   useEffect(() => {
     fetch("/api/upcoming")
@@ -133,97 +147,160 @@ export default function ForYouPage() {
       .catch(() => setUpcoming([]));
   }, []);
 
+  // Get user's highest rated item for personalized row
+  const highestRatedId = ratingCount > 0
+    ? parseInt(Object.entries(ratings).sort(([, a], [, b]) => b - a)[0][0])
+    : null;
+
   return (
     <div>
-      {/* Welcome banner */}
+      {/* 1. Welcome banner */}
       <div style={{
         background: "linear-gradient(135deg, rgba(232,72,85,0.08), rgba(49,133,252,0.08), rgba(46,196,182,0.08))",
         border: "1px solid rgba(255,255,255,0.06)",
         borderRadius: 18,
-        padding: "30px 24px",
-        marginBottom: 40,
+        padding: "28px 24px",
+        marginBottom: 20,
         textAlign: "center",
       }}>
-        <div style={{ fontSize: 36, marginBottom: 10 }}>📚 🎬 🎮 🎵</div>
-        <div style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 800, marginBottom: 6, color: "#fff" }}>
+        <div style={{ fontSize: 32, marginBottom: 8 }}>📚 🎬 🎮 🎵</div>
+        <div style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, marginBottom: 5, color: "#fff" }}>
           Rate anything. Discover everything.
         </div>
-        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", maxWidth: 400, margin: "0 auto", lineHeight: 1.6 }}>
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", maxWidth: 380, margin: "0 auto", lineHeight: 1.5 }}>
           Rate below and Literacy will find connections across media you&apos;d never expect.
+        </div>
+        <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 6 }}>
+          Your taste shapes your recommendations across every medium
         </div>
       </div>
 
-      {/* Curated rows — fetch eagerly (above the fold) */}
+      {/* 2. Taste DNA bar */}
+      <TasteDnaBar />
+
+      {/* 3. Personalized rows (only with 5+ ratings) */}
+      {ratingCount >= 5 && highestRatedId && (
+        <EagerRow
+          fetchUrl={`/api/catalog?limit=12`}
+          label="Because you rated highly"
+          sub="Items matching your top-rated genres and vibes"
+          icon="✨"
+          iconBg="rgba(232,72,85,0.15)"
+        />
+      )}
+
+      {/* 4. Universal rows */}
       <EagerRow
-        fetchUrl="/api/catalog?curated=top_rated&limit=20"
-        label="Critically Acclaimed"
+        fetchUrl="/api/catalog?curated=top_rated&limit=12"
+        label="Critically acclaimed"
         sub="Highest rated across all media"
         icon="⭐"
         iconBg="#D4AF3722"
+        seeAllHref="/explore"
       />
 
       <EagerRow
-        fetchUrl="/api/catalog?curated=popular&limit=20"
-        label="Popular Right Now"
+        fetchUrl="/api/catalog?curated=popular&limit=12"
+        label="Popular right now"
         sub="Recent releases making waves"
         icon="🔥"
         iconBg="#E8485522"
+        seeAllHref="/explore"
       />
 
       <EagerRow
-        fetchUrl="/api/catalog?curated=hidden_gems&limit=20"
-        label="Hidden Gems"
-        sub="Highly rated but under the radar"
+        fetchUrl="/api/catalog?curated=hidden_gems&limit=12"
+        label="Hidden gems"
+        sub="High scores, low radar"
         icon="💎"
         iconBg="#3185FC22"
+        seeAllHref="/explore"
+      />
+
+      {/* Per-type rows */}
+      <LazyRow
+        fetchUrl="/api/catalog?type=movie&limit=12"
+        label="Highest reviewed movies"
+        icon="🎬"
+        iconBg="#E8485522"
+        seeAllHref="/explore"
+      />
+
+      <LazyRow
+        fetchUrl="/api/catalog?type=game&limit=12"
+        label="Most discussed games"
+        icon="🎮"
+        iconBg="#2EC4B622"
+        seeAllHref="/explore"
+      />
+
+      <LazyRow
+        fetchUrl="/api/catalog?type=manga&limit=12"
+        label="Top manga"
+        icon="🗾"
+        iconBg="#FF6B6B22"
+        seeAllHref="/explore"
+      />
+
+      <LazyRow
+        fetchUrl="/api/catalog?type=book&limit=12"
+        label="The community is reading"
+        icon="📖"
+        iconBg="#3185FC22"
+        seeAllHref="/explore"
+      />
+
+      <LazyRow
+        fetchUrl="/api/catalog?type=tv&limit=12"
+        label="Top shows"
+        icon="📺"
+        iconBg="#C45BAA22"
+        seeAllHref="/explore"
+      />
+
+      <LazyRow
+        fetchUrl="/api/catalog?type=music&limit=12"
+        label="Albums worth hearing"
+        icon="🎵"
+        iconBg="#9B5DE522"
+        seeAllHref="/explore"
+      />
+
+      <LazyRow
+        fetchUrl="/api/catalog?type=comic&limit=12"
+        label="Comics to pick up"
+        icon="💥"
+        iconBg="#F9A62022"
+        seeAllHref="/explore"
+      />
+
+      <LazyRow
+        fetchUrl="/api/catalog?type=podcast&limit=12"
+        label="Podcasts worth your time"
+        icon="🎙️"
+        iconBg="#00BBF922"
+        seeAllHref="/explore"
       />
 
       {/* Coming Soon */}
       <ScrollRow
-        label="Coming Soon"
-        sub={upcoming === null ? "" : `${upcoming.length} upcoming releases`}
-        icon="🔥"
-        iconBg="#E8485522"
+        label="Coming soon"
+        sub={upcoming === null ? "" : `${upcoming.length} upcoming`}
+        icon="📅"
+        iconBg="rgba(155,93,229,0.15)"
       >
         {upcoming === null ? (
-          <SkeletonRow count={6} />
-        ) : upcoming.length > 0 ? (
+          <SkeletonRow count={8} />
+        ) : upcoming.length >= 4 ? (
           upcoming.map((item) => (
             <UpcomingCard key={`upcoming-${item.id}`} item={item} />
           ))
         ) : (
-          <div style={{ padding: "40px 20px", color: "var(--text-faint)", fontSize: 13 }}>
-            No upcoming releases found
+          <div style={{ padding: "20px", color: "var(--text-faint)", fontSize: 12 }}>
+            No upcoming releases
           </div>
         )}
       </ScrollRow>
-
-      {/* Section label */}
-      <div style={{
-        fontSize: 10,
-        color: "rgba(255,255,255,0.2)",
-        textTransform: "uppercase",
-        letterSpacing: 2,
-        fontWeight: 600,
-        marginBottom: 28,
-      }}>
-        Browse by media
-      </div>
-
-      {/* Per-type rows — lazy load when scrolled near */}
-      {TYPE_ORDER.map((type) => {
-        const meta = TYPES[type];
-        return (
-          <LazyRow
-            key={type}
-            fetchUrl={`/api/catalog?type=${type}&limit=20`}
-            label={meta.label}
-            sub=""
-            icon={meta.icon}
-            iconBg={meta.color + "22"}
-          />
-        );
-      })}
     </div>
   );
 }

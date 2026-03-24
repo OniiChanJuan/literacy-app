@@ -28,27 +28,28 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
     <div
       onClick={() => router.push(`/item/${item.id}`)}
       style={{
-        minWidth: 190,
-        maxWidth: 190,
-        borderRadius: 14,
+        minWidth: 120,
+        maxWidth: 120,
+        borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
         transition: "transform 0.2s, box-shadow 0.2s",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
         flexShrink: 0,
+        border: "0.5px solid rgba(255,255,255,0.06)",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.4)";
+        e.currentTarget.style.transform = "translateY(-3px)";
+        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.35)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "";
-        e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.25)";
+        e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)";
       }}
     >
       {/* Cover */}
       <div style={{
-        height: 250,
+        height: 95,
         position: "relative",
         ...(hasGradient ? { background: item.cover } : { background: "#1a1a2e" }),
       }}>
@@ -57,10 +58,10 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
           <Image
             src={item.cover}
             alt={item.title}
-            width={190}
-            height={250}
-            quality={75}
-            sizes="190px"
+            width={120}
+            height={95}
+            quality={70}
+            sizes="120px"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}

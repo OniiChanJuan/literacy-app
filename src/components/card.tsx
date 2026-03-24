@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Item, TYPES } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
-import { ScoreBadge } from "./aggregate-score";
 import Stars from "./stars";
 import HoverPreview from "./hover-preview";
 
@@ -13,7 +12,46 @@ function isImageUrl(cover: string | undefined | null): boolean {
   return !!cover && (cover.startsWith("http") || cover.startsWith("/"));
 }
 
-const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: string }) {
+/** Get the best external score to display */
+function getBestExtScore(ext: any): { label: string; value: number; display: string } | null {
+  if (!ext || typeof ext !== "object") return null;
+  const entries = Object.entries(ext) as [string, number][];
+  if (entries.length === 0) return null;
+
+  // Prioritize: IMDb, RT, Meta, MAL, Goodreads, Pitchfork, IGN, Steam
+  const priority = ["imdb", "rt", "meta", "mal", "goodreads", "pitchfork", "ign", "steam"];
+  for (const key of priority) {
+    const val = ext[key];
+    if (val !== undefined && val !== null) {
+      // Normalize display
+      if (key === "imdb" || key === "mal" || key === "ign" || key === "pitchfork") {
+        return { label: key.toUpperCase(), value: val, display: val.toFixed?.(1) || String(val) };
+      }
+      if (key === "goodreads") {
+        return { label: "GR", value: val, display: val.toFixed?.(1) || String(val) };
+      }
+      // RT, Meta, Steam are 0-100
+      return { label: key.toUpperCase(), value: val / 10, display: `${val}%` };
+    }
+  }
+
+  // Fallback: use the first entry
+  const [k, v] = entries[0];
+  return { label: k.toUpperCase(), value: v, display: String(v) };
+}
+
+function scoreColor(val: number): string {
+  if (val >= 4.0) return "#2EC4B6";
+  if (val >= 3.0) return "#F9A620";
+  return "#E84855";
+}
+
+function formatCount(n: number): string {
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  return String(n);
+}
+
+const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; routeId?: string; crossMedia?: boolean }) {
   const router = useRouter();
   const { ratings, rate } = useRatings();
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
@@ -30,45 +68,48 @@ const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: strin
     rate(item.id, s);
   }, [rate, item.id]);
 
+  const extScore = getBestExtScore(item.ext);
+
   return (
     <HoverPreview item={item}>
     <div
       onClick={handleClick}
       style={{
-        minWidth: 190,
-        maxWidth: 190,
-        borderRadius: 14,
+        minWidth: 120,
+        maxWidth: 120,
+        borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
         transition: "transform 0.2s, box-shadow 0.2s",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
         flexShrink: 0,
+        border: "0.5px solid rgba(255,255,255,0.06)",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.4)";
+        e.currentTarget.style.transform = "translateY(-3px)";
+        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.35)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "";
-        e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.25)";
+        e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)";
       }}
     >
-      {/* Cover */}
+      {/* Cover — 65% of card */}
       <div style={{
-        height: 250,
+        height: 95,
         position: "relative",
         ...(hasImage && !imgError
           ? { background: "#1a1a2e" }
-          : { background: item.cover?.startsWith("linear") ? item.cover : "#1a1a2e" }),
+          : { background: item.cover?.startsWith("linear") ? item.cover : `linear-gradient(135deg, ${t.color}22, ${t.color}08)` }),
       }}>
         {hasImage && !imgError && (
           <Image
             src={item.cover}
             alt={item.title}
-            width={190}
-            height={250}
-            quality={75}
-            sizes="190px"
+            width={120}
+            height={95}
+            quality={70}
+            sizes="120px"
             style={{
               width: "100%",
               height: "100%",
@@ -79,18 +120,17 @@ const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: strin
           />
         )}
 
-        {/* Fallback when image fails */}
-        {imgError && (
+        {/* Fallback */}
+        {(imgError || (!hasImage && !item.cover?.startsWith("linear"))) && (
           <div style={{
             width: "100%", height: "100%",
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
-            background: `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
-            padding: 16,
+            padding: 8,
           }}>
-            <span style={{ fontSize: 32, marginBottom: 8 }}>{t.icon}</span>
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", textAlign: "center", lineHeight: 1.3 }}>
-              {item.title}
+            <span style={{ fontSize: 20, marginBottom: 2 }}>{t.icon}</span>
+            <span style={{ fontSize: 8, color: "rgba(255,255,255,0.4)", textAlign: "center", lineHeight: 1.2 }}>
+              {item.title?.slice(0, 30)}
             </span>
           </div>
         )}
@@ -98,53 +138,63 @@ const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: strin
         {/* Type badge — top left */}
         <div style={{
           position: "absolute",
-          top: 10,
-          left: 10,
-          background: "rgba(0,0,0,0.55)",
-          backdropFilter: "blur(8px)",
+          top: 4,
+          left: 4,
+          background: "rgba(0,0,0,0.6)",
+          backdropFilter: "blur(4px)",
           color: t.color,
-          fontSize: 10,
+          fontSize: 7,
           fontWeight: 700,
-          padding: "3px 9px",
-          borderRadius: 8,
+          padding: "1px 5px",
+          borderRadius: 4,
           textTransform: "uppercase",
-          display: "flex",
-          alignItems: "center",
-          gap: 4,
         }}>
-          <span style={{ fontSize: 12 }}>{t.icon}</span> {t.label.replace(/s$/, "")}
+          {t.label.replace(/s$/, "")}
         </div>
 
-        {/* Gold rating badge — top right */}
+        {/* User rating badge — top right */}
         {userRating > 0 && (
           <div style={{
             position: "absolute",
-            top: 10,
-            right: 10,
-            background: "rgba(0,0,0,0.6)",
-            backdropFilter: "blur(8px)",
+            top: 4,
+            right: 4,
+            background: "rgba(0,0,0,0.7)",
             color: "#f1c40f",
-            fontSize: 12,
+            fontSize: 8,
             fontWeight: 700,
-            padding: "3px 8px",
-            borderRadius: 8,
-            display: "flex",
-            alignItems: "center",
-            gap: 3,
+            padding: "1px 5px",
+            borderRadius: 4,
           }}>
-          ★ {userRating}
+            ★ {userRating}
+          </div>
+        )}
+
+        {/* Cross-media badge — bottom left */}
+        {crossMedia && (
+          <div style={{
+            position: "absolute",
+            bottom: 3,
+            left: 3,
+            background: "rgba(232,72,85,0.8)",
+            color: "#fff",
+            fontSize: 7,
+            fontWeight: 600,
+            padding: "1px 5px",
+            borderRadius: 4,
+          }}>
+            Cross-media
           </div>
         )}
       </div>
 
-      {/* Info */}
-      <div style={{ background: "var(--bg-card)", padding: "12px 12px 10px" }}>
+      {/* Info area — 35% of card */}
+      <div style={{ background: "var(--bg-card)", padding: "6px 6px 5px" }}>
+        {/* Title */}
         <div style={{
-          fontFamily: "var(--font-serif)",
-          fontSize: 14,
-          fontWeight: 700,
-          lineHeight: 1.25,
-          marginBottom: 4,
+          fontSize: 11,
+          fontWeight: 500,
+          lineHeight: 1.2,
+          marginBottom: 3,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -152,28 +202,38 @@ const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: strin
         }}>
           {item.title}
         </div>
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 8,
-        }}>
-          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+
+        {/* Score row */}
+        {extScore ? (
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 3,
+            marginBottom: 2,
+          }}>
+            <span style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: scoreColor(extScore.value),
+            }}>
+              {extScore.display}
+            </span>
+            <span style={{ fontSize: 8, color: "rgba(255,255,255,0.25)" }}>
+              {extScore.label}
+            </span>
+          </div>
+        ) : (
+          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", marginBottom: 2 }}>
             {item.year || "TBA"}
-          </span>
-          {!routeId && <ScoreBadge itemId={item.id} />}
-          {routeId && item.ext.imdb && (
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#f5c518" }}>{item.ext.imdb}</span>
-              <span style={{ fontSize: 10, color: "var(--text-faint)" }}>TMDB</span>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {/* Inline stars */}
         {!routeId && (
           <Stars
             rating={userRating}
             onRate={handleRate}
-            size={14}
+            size={10}
           />
         )}
       </div>
