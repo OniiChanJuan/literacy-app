@@ -22,6 +22,18 @@ const TYPE_GENRES: Record<string, string[]> = {
   podcast: ["True Crime", "Comedy", "Interview", "Education", "Tech", "History", "Science", "Culture"],
 };
 
+// Approximate total titles available across all connected APIs (static, updated during weekly sync)
+const API_UNIVERSE_COUNTS: Record<string, string> = {
+  movie: "800K+ titles",
+  tv: "160K+ titles",
+  book: "40M+ titles",
+  manga: "65K+ titles",
+  comic: "150K+ titles",
+  game: "200K+ titles",
+  music: "100M+ titles",
+  podcast: "6M+ titles",
+};
+
 type SortOption = "rating" | "popular" | "newest" | "oldest" | "az";
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "rating", label: "Highest rated" },
@@ -309,7 +321,7 @@ function ExploreContent() {
                   >
                     <div style={{ fontSize: 22, marginBottom: 5 }}>{t.icon}</div>
                     <div style={{ fontSize: 12, fontWeight: 700, color: t.color, marginBottom: 2 }}>{t.label}</div>
-                    <div style={{ fontSize: 9, color: "var(--text-faint)" }}>Explore all</div>
+                    <div style={{ fontSize: 9, color: "var(--text-faint)" }}>{API_UNIVERSE_COUNTS[k] || "Explore all"}</div>
                   </button>
                 );
               })}
