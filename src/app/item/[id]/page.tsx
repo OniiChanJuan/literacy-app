@@ -26,7 +26,7 @@ import AwardBadges from "@/components/award-badges";
 import DlcSection, { DlcBadge } from "@/components/dlc-section";
 import ItemSubBanner from "@/components/item-sub-banner";
 
-function dbItemToItem(dbItem: any): Item {
+function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null; secondaryColor?: string | null } {
   return {
     id: dbItem.id,
     title: dbItem.title,
@@ -41,13 +41,15 @@ function dbItemToItem(dbItem: any): Item {
     platforms: dbItem.platforms || [],
     ext: dbItem.ext || {},
     totalEp: dbItem.totalEp || 0,
+    primaryColor: dbItem.primaryColor || null,
+    secondaryColor: dbItem.secondaryColor || null,
     ...(dbItem.isUpcoming ? {
       isUpcoming: true,
       releaseDate: dbItem.releaseDate || "",
       hypeScore: dbItem.hypeScore || 0,
       wantCount: dbItem.wantCount || 0,
     } : {}),
-  } as Item;
+  } as Item & { primaryColor?: string | null; secondaryColor?: string | null };
 }
 
 // ── Helper: extract primary creator based on media type ────────────────
@@ -271,11 +273,31 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
   if (!item) notFound();
 
+  // Fetch stored colors from DB (for items loaded from static data or without colors in the object)
+  let primaryColor: string | null = (item as any).primaryColor || null;
+  let secondaryColor: string | null = (item as any).secondaryColor || null;
+
+  if (!primaryColor && typeof item.id === "number") {
+    try {
+      const dbColors = await prisma.item.findUnique({
+        where: { id: item.id },
+        select: { primaryColor: true, secondaryColor: true },
+      });
+      if (dbColors?.primaryColor) {
+        primaryColor = dbColors.primaryColor;
+        secondaryColor = dbColors.secondaryColor || null;
+      }
+    } catch {}
+  }
+
   const upcoming = !isExternal && isUpcoming(item);
   const hasImageCover = item.cover?.startsWith("http") ?? false;
 
   const t = TYPES[item.type];
   const rgb = hexToRgb(t.color);
+  // Artwork-based colors for hero/sub-banner, falling back to media type color
+  const heroRgb = primaryColor ? hexToRgb(primaryColor) : rgb;
+  const heroRgb2 = secondaryColor ? hexToRgb(secondaryColor) : heroRgb;
   const creator = getPrimaryCreator(item.people, item.type);
   const quickFacts = getQuickFacts(item);
   const actionVerb = getActionVerb(item.type);
@@ -366,7 +388,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           ZONE 1 — HERO BANNER (full-width background)
           ═══════════════════════════════════════════════════════════════════ */}
       <div style={{
-        background: `linear-gradient(135deg, rgba(${rgb}, 0.08), rgba(${rgb}, 0.02))`,
+        background: `linear-gradient(135deg, rgba(${heroRgb}, 0.12), rgba(${heroRgb2}, 0.06), rgba(11,11,16, 0.95))`,
         marginBottom: 0,
       }}>
         <div className="content-width" style={{ paddingTop: 18, paddingBottom: 18 }}>
@@ -655,12 +677,12 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         </div>
       ) : (
         <div style={{
-          background: `rgba(${rgb}, 0.02)`,
-          borderTop: `1px solid rgba(${rgb}, 0.08)`,
+          background: `rgba(${heroRgb}, 0.03)`,
+          borderTop: `1px solid rgba(${heroRgb}, 0.1)`,
           borderBottom: "0.5px solid rgba(255,255,255,0.04)",
         }}>
           <div className="content-width">
-            <ItemSubBanner item={item} typeColor={t.color} />
+            <ItemSubBanner item={item} typeColor={t.color} heroColor={primaryColor || t.color} />
           </div>
         </div>
       )}
@@ -687,7 +709,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         {/* D. Community reviews */}
         {!upcoming && (
           <section style={{ marginTop: 16, marginBottom: 20 }}>
-            <CommunityReviews itemId={item.id} />
+            <CommunityReviews itemId={item.id} heroColor={primaryColor || t.color} />
           </section>
         )}
 

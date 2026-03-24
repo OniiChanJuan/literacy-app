@@ -73,9 +73,10 @@ const ALL_STATUSES: { key: LibraryStatus; label: string; icon: string; color: st
 interface SubBannerProps {
   item: Item;
   typeColor: string;
+  heroColor?: string;
 }
 
-export default function ItemSubBanner({ item, typeColor }: SubBannerProps) {
+export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerProps) {
   const { data: session } = useSession();
   const { ratings, recTags, rate, setRecTag } = useRatings();
   const { entries, setStatus } = useLibrary();
@@ -89,7 +90,7 @@ export default function ItemSubBanner({ item, typeColor }: SubBannerProps) {
   const entry = entries[item.id];
   const currentStatus = entry?.status ?? null;
   const ongoing = isOngoing(item.type);
-  const rgb = hexToRgb(typeColor);
+  const rgb = hexToRgb(heroColor || typeColor);
 
   useEffect(() => {
     // Fetch external scores and community aggregate in parallel

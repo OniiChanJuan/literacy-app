@@ -41,7 +41,15 @@ const REC_EMOJI: Record<string, string> = {
   skip: "👎",
 };
 
-export default function CommunityReviews({ itemId }: { itemId: number }) {
+function hexToRgb(hex: string): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `${r},${g},${b}`;
+}
+
+export default function CommunityReviews({ itemId, heroColor }: { itemId: number; heroColor?: string }) {
   const { data: session } = useSession();
   const { ratings, recTags } = useRatings();
   const [reviews, setReviews] = useState<ReviewData[]>([]);
@@ -57,6 +65,8 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
 
   // Spoiler reveal state per review
   const [revealedSpoilers, setRevealedSpoilers] = useState<Set<number>>(new Set());
+
+  const hRgb = heroColor ? hexToRgb(heroColor) : "232,72,85";
 
   const currentRating = ratings[itemId] || 0;
   const currentRec = recTags[itemId] ?? null;
@@ -172,35 +182,41 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
 
   return (
     <div>
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "baseline",
-        marginBottom: 16,
-      }}>
-        <h2 style={{
-          fontFamily: "'Playfair Display', serif",
-          fontSize: 16,
-          fontWeight: 700,
-          color: "rgba(255,255,255,0.5)",
-          textTransform: "uppercase",
-          letterSpacing: "1px",
+      <div style={{ marginBottom: 16 }}>
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          marginBottom: 8,
         }}>
-          Community Reviews
-        </h2>
-        {reviews.length > 0 && (
-          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>
-            {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
-          </span>
-        )}
+          <h2 style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 16,
+            fontWeight: 700,
+            color: "rgba(255,255,255,0.5)",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
+          }}>
+            Community Reviews
+          </h2>
+          {reviews.length > 0 && (
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>
+              {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
+            </span>
+          )}
+        </div>
+        <div style={{
+          height: 1,
+          background: `linear-gradient(90deg, rgba(${hRgb}, 0.2), transparent)`,
+        }} />
       </div>
 
       {/* Review Input Area */}
       {userId && showInput && (
         <div style={{
           padding: 16,
-          background: "#141419",
-          border: "0.5px solid rgba(255,255,255,0.06)",
+          background: `rgba(${hRgb}, 0.03)`,
+          border: `0.5px solid rgba(${hRgb}, 0.06)`,
           borderRadius: 12,
           marginBottom: 16,
         }}>
@@ -296,7 +312,7 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
                   padding: "7px 18px",
                   borderRadius: 8,
                   border: "none",
-                  background: canSubmit && !submitting ? "#E84855" : "rgba(255,255,255,0.06)",
+                  background: canSubmit && !submitting ? (heroColor || "#E84855") : "rgba(255,255,255,0.06)",
                   color: canSubmit && !submitting ? "#fff" : "rgba(255,255,255,0.2)",
                   fontSize: 12,
                   fontWeight: 700,
@@ -338,8 +354,8 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
       {myReview && !editing && (
         <div style={{
           padding: "16px 18px",
-          background: "#141419",
-          border: "0.5px solid rgba(232,72,85,0.15)",
+          background: `rgba(${hRgb}, 0.04)`,
+          border: `0.5px solid rgba(${hRgb}, 0.12)`,
           borderRadius: 12,
           marginBottom: 16,
         }}>
@@ -414,9 +430,9 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
         <div style={{
           padding: "24px 20px",
           textAlign: "center",
-          background: "#141419",
+          background: `rgba(${hRgb}, 0.03)`,
           borderRadius: 12,
-          border: "0.5px solid rgba(255,255,255,0.06)",
+          border: `0.5px solid rgba(${hRgb}, 0.06)`,
           marginBottom: 16,
         }}>
           <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", marginBottom: 10 }}>
@@ -444,9 +460,9 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
           textAlign: "center",
           color: "rgba(255,255,255,0.2)",
           fontSize: 13,
-          background: "#141419",
+          background: `rgba(${hRgb}, 0.03)`,
           borderRadius: 12,
-          border: "0.5px solid rgba(255,255,255,0.06)",
+          border: `0.5px solid rgba(${hRgb}, 0.06)`,
         }}>
           No reviews yet. Be the first to share your thoughts!
         </div>
@@ -460,6 +476,7 @@ export default function CommunityReviews({ itemId }: { itemId: number }) {
               revealed={revealedSpoilers.has(review.id)}
               onRevealSpoiler={() => toggleSpoiler(review.id)}
               onHelpful={() => handleHelpful(review.id)}
+              heroRgb={hRgb}
             />
           ))}
         </div>
@@ -495,12 +512,14 @@ function ReviewCard({
   revealed,
   onRevealSpoiler,
   onHelpful,
+  heroRgb,
 }: {
   review: ReviewData;
   currentUserId: string | null;
   revealed: boolean;
   onRevealSpoiler: () => void;
   onHelpful: () => void;
+  heroRgb: string;
 }) {
   const recEmoji = review.recommendTag ? REC_EMOJI[review.recommendTag] || "" : "";
   const isSpoiler = review.containsSpoilers && !revealed;
@@ -509,8 +528,8 @@ function ReviewCard({
   return (
     <div style={{
       padding: "16px 18px",
-      background: "#141419",
-      border: "0.5px solid rgba(255,255,255,0.06)",
+      background: `rgba(${heroRgb}, 0.03)`,
+      border: `0.5px solid rgba(${heroRgb}, 0.06)`,
       borderRadius: 12,
     }}>
       {/* Header */}

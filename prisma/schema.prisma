@@ -128,6 +128,8 @@ model Item {
 
   parentItemId    Int?     @map("parent_item_id")
   itemSubtype     String?  @map("item_subtype")
+  primaryColor    String?  @map("primary_color")
+  secondaryColor  String?  @map("secondary_color")
 
   createdAt       DateTime @default(now()) @map("created_at")
 
