@@ -100,3 +100,63 @@ export async function findExistingItem(
 
   return null;
 }
+
+// ── Franchise detection for new items ────────────────────────────────────
+
+/**
+ * After a new item is created, check if it should be linked to an existing franchise.
+ * Checks: 1) Same author already in a franchise, 2) Title matches franchise name
+ */
+export async function detectFranchiseForItem(
+  prisma: any,
+  itemId: number,
+  title: string,
+  type: string,
+  people?: any,
+): Promise<number | null> {
+  const creator = getCreatorName(people);
+
+  // 1. Check if the same author/creator has other items in a franchise
+  if (creator && (type === "book" || type === "manga" || type === "comic")) {
+    const sameAuthorItems = await prisma.item.findMany({
+      where: {
+        type,
+        parentItemId: null,
+        id: { not: itemId },
+      },
+      select: { id: true, people: true },
+      take: 100,
+    });
+
+    for (const other of sameAuthorItems) {
+      const otherCreator = getCreatorName(other.people);
+      if (otherCreator === creator) {
+        // Check if this other item is in a franchise
+        const franchiseLink = await prisma.franchiseItem.findFirst({
+          where: { itemId: other.id },
+          select: { franchiseId: true },
+        });
+        if (franchiseLink) {
+          return franchiseLink.franchiseId;
+        }
+      }
+    }
+  }
+
+  // 2. Check if the title contains a franchise name
+  const franchises = await prisma.franchise.findMany({
+    where: { parentFranchiseId: null },
+    select: { id: true, name: true },
+  });
+
+  const titleLower = title.toLowerCase();
+  for (const f of franchises) {
+    const fNameLower = f.name.toLowerCase();
+    // Franchise name must be a significant part of the title
+    if (fNameLower.length >= 4 && titleLower.includes(fNameLower)) {
+      return f.id;
+    }
+  }
+
+  return null;
+}

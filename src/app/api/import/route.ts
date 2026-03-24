@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { detectFranchiseForItem } from "@/lib/dedup";
 
 /**
  * POST /api/import — Import an external API item into our database
@@ -75,6 +76,20 @@ export async function POST(req: NextRequest) {
         lastSyncedAt: new Date(),
       },
     });
+
+    // Auto-detect franchise for new items
+    try {
+      const franchiseId = await detectFranchiseForItem(
+        prisma, item.id, body.title, body.type, body.people,
+      );
+      if (franchiseId) {
+        await prisma.franchiseItem.create({
+          data: { franchiseId, itemId: item.id, addedBy: "auto-detect" },
+        });
+      }
+    } catch {
+      // Non-critical — don't fail the import
+    }
 
     return NextResponse.json({ id: item.id, alreadyExisted: false }, { status: 201 });
   } catch (error: any) {
