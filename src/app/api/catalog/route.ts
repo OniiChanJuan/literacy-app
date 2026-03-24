@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { qualityRank, meetsQualityFloor, normalizeScore, applyDiversity } from "@/lib/ranking";
 
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
@@ -8,27 +9,15 @@ const ITEM_SELECT = {
   popularityScore: true, voteCount: true,
 } as const;
 
-// Minimum vote counts for curated rows (type-specific)
-const MIN_VOTES: Record<string, number> = {
-  movie: 500, tv: 500, game: 50, manga: 1000,
-  book: 100, music: 40, comic: 20, podcast: 10,
-};
-
-// For "popular right now" — lower thresholds since recent items have fewer votes
-const MIN_VOTES_RECENT: Record<string, number> = {
-  movie: 100, tv: 100, game: 20, manga: 200,
-  book: 20, music: 10, comic: 5, podcast: 5,
-};
-
 /**
- * GET /api/catalog — Fetch items with popularity filtering + deduplication
+ * GET /api/catalog — Fetch items with quality ranking + diversity + dedup
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
   const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 100);
   const offset = parseInt(searchParams.get("offset") || "0");
-  const sort = searchParams.get("sort") || "recent";
+  const sort = searchParams.get("sort") || "quality";
   const genre = searchParams.get("genre");
   const vibe = searchParams.get("vibe");
   const curated = searchParams.get("curated");
@@ -37,142 +26,113 @@ export async function GET(req: NextRequest) {
   try {
     const where: any = { isUpcoming: false, parentItemId: null };
     if (type) where.type = type;
-    if (genre) where.genre = { has: genre };
+    if (genre) {
+      const genres = genre.split(",").filter(Boolean);
+      if (genres.length === 1) where.genre = { has: genres[0] };
+      else if (genres.length > 1) where.genre = { hasSome: genres };
+    }
     if (vibe) where.vibes = { has: vibe };
     if (excludeIds.length > 0) where.id = { notIn: excludeIds };
+
+    // Fetch pool of items (larger than needed for ranking/diversity)
+    const poolSize = Math.max(limit * 5, 200);
 
     // ── Critically acclaimed ──────────────────────────────────────────
     if (curated === "top_rated") {
       const items = await prisma.item.findMany({
-        where: { isUpcoming: false, parentItemId: null, voteCount: { gte: 50 }, id: excludeIds.length ? { notIn: excludeIds } : undefined },
+        where: { ...where, voteCount: { gte: 50 } },
         orderBy: { voteCount: "desc" },
-        take: 500,
+        take: poolSize,
         select: ITEM_SELECT,
       });
 
-      // Score: normalized score × log10(vote_count)
-      const scored = items
-        .filter(i => {
-          const ext = i.ext as Record<string, number>;
-          const vals = Object.values(ext);
-          // Normalize to 0-10 scale
-          const best = vals.length > 0 ? Math.max(...vals.map(v => {
-            if (v <= 10) return v; // Already 0-10
-            if (v <= 100) return v / 10; // 0-100 → 0-10
-            return v / 100; // 0-1000 → 0-10
-          })) : 0;
-          return best >= 7.5; // Minimum 7.5/10 equivalent
-        })
-        .map(i => {
-          const ext = i.ext as Record<string, number>;
-          const vals = Object.values(ext);
-          const best = vals.length > 0 ? Math.max(...vals.map(v => v <= 10 ? v : v <= 100 ? v / 10 : v / 100)) : 0;
-          const compositeScore = best * Math.log10(Math.max(i.voteCount, 10));
-          return { ...i, compositeScore };
-        })
-        .sort((a, b) => b.compositeScore - a.compositeScore);
+      const ranked = items
+        .filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= 0.75)
+        .map((i) => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount }) }))
+        .sort((a, b) => b.rank - a.rank);
 
-      // Enforce max 30% per type
+      // Enforce max 30% per type for diversity
       const typeCounts = new Map<string, number>();
       const maxPerType = Math.ceil(limit * 0.3);
-      const diverse = scored.filter(i => {
-        const count = typeCounts.get(i.type) || 0;
-        if (count >= maxPerType) return false;
-        typeCounts.set(i.type, count + 1);
+      const diverse = ranked.filter((i) => {
+        const c = typeCounts.get(i.type) || 0;
+        if (c >= maxPerType) return false;
+        typeCounts.set(i.type, c + 1);
         return true;
-      }).slice(offset, offset + limit);
+      });
 
-      return jsonResponse(diverse.map(mapItem));
+      return jsonResponse(diverse.slice(offset, offset + limit).map(mapItem));
     }
 
     // ── Popular right now ─────────────────────────────────────────────
     if (curated === "popular") {
-      const cutoff = new Date();
-      cutoff.setMonth(cutoff.getMonth() - 18);
       const currentYear = new Date().getFullYear();
-
       const items = await prisma.item.findMany({
-        where: {
-          isUpcoming: false,
-          parentItemId: null,
-          year: { gte: currentYear - 2 },
-          voteCount: { gte: 10 },
-          id: excludeIds.length ? { notIn: excludeIds } : undefined,
-        },
+        where: { ...where, year: { gte: currentYear - 2 }, voteCount: { gte: 10 } },
         orderBy: { popularityScore: "desc" },
-        skip: offset,
-        take: limit,
+        take: poolSize,
         select: ITEM_SELECT,
       });
 
-      return jsonResponse(items.map(mapItem));
+      const filtered = items.filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }));
+      return jsonResponse(filtered.slice(offset, offset + limit).map(mapItem));
     }
 
     // ── Hidden gems ───────────────────────────────────────────────────
     if (curated === "hidden_gems") {
       const items = await prisma.item.findMany({
-        where: {
-          isUpcoming: false,
-          parentItemId: null,
-          voteCount: { gte: 10, lt: 5000 }, // Enough to be real but not mainstream
-          id: excludeIds.length ? { notIn: excludeIds } : undefined,
-        },
+        where: { ...where, voteCount: { gte: 10, lt: 5000 } },
         orderBy: { year: "desc" },
-        take: 500,
+        take: poolSize,
         select: ITEM_SELECT,
       });
 
-      // Hidden gems: high score-to-popularity ratio
       const gems = items
-        .filter(i => {
-          const ext = i.ext as Record<string, number>;
-          const vals = Object.values(ext);
-          const best = vals.length > 0 ? Math.max(...vals.map(v => v <= 10 ? v : v <= 100 ? v / 10 : v / 100)) : 0;
-          return best >= 7.5;
-        })
-        .map(i => {
-          const ext = i.ext as Record<string, number>;
-          const vals = Object.values(ext);
-          const best = vals.length > 0 ? Math.max(...vals.map(v => v <= 10 ? v : v <= 100 ? v / 10 : v / 100)) : 0;
-          // Higher score + lower vote count = more "hidden"
-          const gemScore = best / Math.log10(Math.max(i.voteCount, 10));
+        .filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= 0.75)
+        .map((i) => {
+          const norm = normalizeScore(i.ext as any, i.type);
+          const gemScore = norm / Math.log10(Math.max(i.voteCount, 10));
           return { ...i, gemScore };
         })
-        .sort((a, b) => b.gemScore - a.gemScore)
-        .slice(offset, offset + limit);
+        .sort((a, b) => b.gemScore - a.gemScore);
 
-      return jsonResponse(gems.map(mapItem));
+      return jsonResponse(gems.slice(offset, offset + limit).map(mapItem));
     }
 
-    // ── Standard type-filtered query with popularity ──────────────────
-    let orderBy: any = { voteCount: "desc" }; // Default: most popular first
-    if (sort === "title") orderBy = { title: "asc" };
-    if (sort === "recent") orderBy = { year: "desc" };
-    if (sort === "popular") orderBy = { popularityScore: "desc" };
-
-    // For type rows, apply minimum vote threshold
-    if (type && !genre && !vibe) {
-      const minVotes = MIN_VOTES[type] || 10;
-      // Use a lower threshold to ensure we have enough items
-      where.voteCount = { gte: Math.min(minVotes, 10) };
-      orderBy = [{ voteCount: "desc" }, { year: "desc" }];
+    // ── Standard query ────────────────────────────────────────────────
+    let orderBy: any;
+    switch (sort) {
+      case "newest": orderBy = { year: "desc" }; break;
+      case "oldest": orderBy = { year: "asc" }; break;
+      case "az": orderBy = { title: "asc" }; break;
+      case "popular": orderBy = { popularityScore: "desc" }; break;
+      default: orderBy = [{ voteCount: "desc" }, { year: "desc" }]; break;
     }
 
     const items = await prisma.item.findMany({
       where,
       orderBy,
-      skip: offset,
-      take: limit,
+      take: poolSize,
       select: ITEM_SELECT,
     });
 
-    return jsonResponse(items.map(mapItem));
+    // Apply quality ranking and floor for browse/filter views
+    const ranked = items
+      .filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }))
+      .map((i) => ({
+        ...i,
+        rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount }),
+      }));
+
+    // Re-sort by quality rank if using default sort
+    if (sort === "quality") {
+      ranked.sort((a, b) => b.rank - a.rank);
+    }
+
+    return jsonResponse(ranked.slice(offset, offset + limit).map(mapItem));
   } catch (error: any) {
     console.error("Catalog API error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch catalog" },
-      { status: 500, headers: { "Cache-Control": "no-store" } }
-    );
+    return NextResponse.json({ error: "Failed to fetch catalog" }, { status: 500 });
   }
 }
 
@@ -184,18 +144,11 @@ function jsonResponse(data: any) {
 
 function mapItem(item: any) {
   return {
-    id: item.id,
-    title: item.title,
-    type: item.type,
-    genre: item.genre || [],
-    vibes: item.vibes || [],
-    year: item.year,
-    cover: item.cover || "",
-    desc: item.description || "",
-    people: item.people || [],
-    awards: item.awards || [],
-    platforms: item.platforms || [],
-    ext: item.ext || {},
-    totalEp: item.totalEp || 0,
+    id: item.id, title: item.title, type: item.type,
+    genre: item.genre || [], vibes: item.vibes || [],
+    year: item.year, cover: item.cover || "",
+    desc: item.description || "", people: item.people || [],
+    awards: item.awards || [], platforms: item.platforms || [],
+    ext: item.ext || {}, totalEp: item.totalEp || 0,
   };
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rankSearchResults } from "@/lib/ranking";
 import { searchTmdb, tmdbItemId } from "@/lib/tmdb";
 import { searchIgdb, igdbItemId } from "@/lib/igdb";
 import { searchGoogleBooks, gbookItemId } from "@/lib/google-books";
@@ -112,7 +113,10 @@ export async function GET(req: NextRequest) {
   // Mark local results
   const markedLocal = localResults.map((r: any) => ({ ...r, sourceLabel: "Your catalog" }));
 
-  const res = NextResponse.json([...markedLocal, ...apiResults]);
+  // Combine and rank
+  const combined = rankSearchResults([...markedLocal, ...apiResults], q);
+
+  const res = NextResponse.json(combined);
   res.headers.set("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
   return res;
 }
