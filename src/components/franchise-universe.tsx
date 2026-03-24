@@ -233,7 +233,9 @@ function stripFranchisePrefix(title: string, franchiseName: string): string {
 
 function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; franchiseName: string; onClick: () => void }) {
   const t = TYPES[item.type as keyof typeof TYPES] || { color: "#888", icon: "?", label: "Unknown" };
-  const hasImage = item.cover?.startsWith("http");
+  const hasImage = item.cover && (item.cover.startsWith("http") || item.cover.startsWith("/"));
+  const [imgError, setImgError] = useState(false);
+  const showImage = hasImage && !imgError;
   const displayTitle = stripFranchisePrefix(item.title, franchiseName);
 
   return (
@@ -268,14 +270,14 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
         height: 70,
         position: "relative",
         overflow: "hidden",
-        background: hasImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+        background: showImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
       }}>
-        {hasImage ? (
-          /* Use native img for consistent sizing — next/image wrapper div can cause height issues */
+        {showImage ? (
           <img
             src={item.cover}
             alt={item.title}
             loading="lazy"
+            onError={() => setImgError(true)}
             style={{
               width: 95,
               height: 70,
@@ -286,10 +288,19 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
         ) : (
           <div style={{
             width: 95, height: 70,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 20, color: "rgba(255,255,255,0.15)",
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            gap: 4,
           }}>
-            {t.icon}
+            <span style={{ fontSize: 18, color: "rgba(255,255,255,0.15)" }}>{t.icon}</span>
+            <span style={{
+              fontSize: 7, color: "rgba(255,255,255,0.12)",
+              textAlign: "center", padding: "0 6px",
+              overflow: "hidden", textOverflow: "ellipsis",
+              whiteSpace: "nowrap", maxWidth: 85,
+            }}>
+              {displayTitle}
+            </span>
           </div>
         )}
 

@@ -396,30 +396,31 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           <div className="hero-layout" style={{
             display: "flex",
             gap: 20,
-            alignItems: "flex-start",
+            alignItems: "stretch",
+            minHeight: 180,
           }}>
-            {/* Left — Cover art (95px fixed) */}
-            <div style={{ flexShrink: 0, width: 95, height: (item.type === "book" || item.type === "manga") ? 145 : 140 }}>
+            {/* Left — Cover art (fills full hero height) */}
+            <div style={{ flexShrink: 0, width: 120, maxWidth: 120, position: "relative" }}>
               {hasImageCover ? (
                 <Image
                   src={item.cover}
                   alt={item.title}
-                  width={95}
-                  height={(item.type === "book" || item.type === "manga") ? 145 : 140}
+                  width={120}
+                  height={180}
                   priority
-                  sizes="95px"
+                  sizes="120px"
                   style={{
                     objectFit: "cover",
                     borderRadius: 8,
                     border: "0.5px solid rgba(255,255,255,0.1)",
-                    width: 95,
-                    height: (item.type === "book" || item.type === "manga") ? 145 : 140,
+                    width: 120,
+                    height: "100%",
                   }}
                 />
               ) : (
                 <div style={{
-                  width: 95,
-                  height: (item.type === "book" || item.type === "manga") ? 145 : 140,
+                  width: 120,
+                  height: "100%",
                   borderRadius: 8,
                   border: "0.5px solid rgba(255,255,255,0.1)",
                   background: item.cover || `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
