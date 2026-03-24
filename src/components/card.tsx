@@ -75,8 +75,8 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
     <div
       onClick={handleClick}
       style={{
-        minWidth: 160,
-        maxWidth: 160,
+        minWidth: 162,
+        maxWidth: 162,
         borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
@@ -96,7 +96,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
     >
       {/* Cover — 65% of card */}
       <div style={{
-        height: 160,
+        height: 212,
         position: "relative",
         ...(hasImage && !imgError
           ? { background: "#1a1a2e" }
@@ -106,8 +106,8 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           <Image
             src={item.cover}
             alt={item.title}
-            width={160}
-            height={160}
+            width={162}
+            height={212}
             quality={70}
             sizes="120px"
             style={{

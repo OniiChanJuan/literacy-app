@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, memo } from "react";
+import { useRef, useCallback, useEffect, memo } from "react";
 
 interface ScrollRowProps {
   label: string;
@@ -8,15 +8,35 @@ interface ScrollRowProps {
   icon?: string;
   iconBg?: string;
   seeAllHref?: string;
+  onLoadMore?: () => void;
+  loadingMore?: boolean;
   children: React.ReactNode;
 }
 
-const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref, children }: ScrollRowProps) {
+const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref, onLoadMore, loadingMore, children }: ScrollRowProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   const scroll = useCallback((dir: "left" | "right") => {
-    ref.current?.scrollBy({ left: dir === "left" ? -260 : 260, behavior: "smooth" });
+    ref.current?.scrollBy({ left: dir === "left" ? -340 : 340, behavior: "smooth" });
   }, []);
+
+  // Detect scroll near end to trigger load more
+  useEffect(() => {
+    if (!onLoadMore) return;
+    const el = ref.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      // When within 300px of the end, load more
+      if (scrollWidth - scrollLeft - clientWidth < 300) {
+        onLoadMore();
+      }
+    };
+
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [onLoadMore]);
 
   return (
     <div style={{ marginBottom: 18 }}>
@@ -95,6 +115,17 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
         }}
       >
         {children}
+        {loadingMore && (
+          <div style={{
+            minWidth: 162, maxWidth: 162, height: 212,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0, borderRadius: 8,
+            background: "rgba(255,255,255,0.02)",
+            border: "0.5px solid rgba(255,255,255,0.04)",
+          }}>
+            <div style={{ fontSize: 10, color: "var(--text-faint)" }}>Loading...</div>
+          </div>
+        )}
       </div>
     </div>
   );

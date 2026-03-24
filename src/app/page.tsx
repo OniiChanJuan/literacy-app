@@ -28,31 +28,78 @@ async function fetchItems(url: string, retries = 2): Promise<Item[] | null> {
   return null;
 }
 
-/** Eager fetch row */
-function EagerRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0 }: {
+/** Parse limit from URL for pagination */
+function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
+  const url = new URL(fetchUrl, "http://x");
+  const limit = parseInt(url.searchParams.get("limit") || "20");
+  return { base: fetchUrl, limit };
+}
+
+/** Row with pagination — loads more items when user scrolls to the end */
+function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0 }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const offsetRef = useRef(0);
+  const loadingRef = useRef(false);
+  const { base, limit } = getBaseUrl(fetchUrl);
 
+  // Initial fetch
   const doFetch = useCallback(() => {
     setFailed(false);
     setItems(null);
+    offsetRef.current = 0;
+    setHasMore(true);
     const timer = setTimeout(() => {
-      fetchItems(fetchUrl).then((data) => {
-        if (data && data.length > 0) setItems(data);
-        else if (data) setItems([]); // empty = no items for this type
-        else setFailed(true);
+      fetchItems(base).then((data) => {
+        if (data && data.length > 0) {
+          setItems(data);
+          offsetRef.current = data.length;
+          setHasMore(data.length >= limit);
+        } else if (data) {
+          setItems([]);
+        } else {
+          setFailed(true);
+        }
       });
     }, delay);
     return () => clearTimeout(timer);
-  }, [fetchUrl, delay]);
+  }, [base, limit, delay]);
 
   useEffect(() => {
     return doFetch();
   }, [doFetch]);
 
-  // Show skeleton while loading
+  // Load more handler
+  const handleLoadMore = useCallback(() => {
+    if (!hasMore || loadingRef.current) return;
+    loadingRef.current = true;
+    setLoadingMore(true);
+
+    // Build paginated URL
+    const sep = base.includes("?") ? "&" : "?";
+    const nextUrl = `${base}${sep}offset=${offsetRef.current}`;
+
+    fetchItems(nextUrl).then((data) => {
+      if (data && data.length > 0) {
+        setItems((prev) => {
+          const existing = new Set((prev || []).map((i) => i.id));
+          const newItems = data.filter((i) => !existing.has(i.id));
+          return [...(prev || []), ...newItems];
+        });
+        offsetRef.current += data.length;
+        setHasMore(data.length >= limit);
+      } else {
+        setHasMore(false);
+      }
+      setLoadingMore(false);
+      loadingRef.current = false;
+    });
+  }, [base, limit, hasMore]);
+
   if (items === null && !failed) {
     return (
       <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
@@ -61,7 +108,6 @@ function EagerRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0 }:
     );
   }
 
-  // Show retry on failure
   if (failed) {
     return (
       <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
@@ -77,26 +123,34 @@ function EagerRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0 }:
     );
   }
 
-  // Hide row only if genuinely empty (0 items for this category)
   if (!items || items.length === 0) return null;
 
   return (
-    <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
+    <ScrollRow
+      label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
+      onLoadMore={hasMore ? handleLoadMore : undefined}
+      loadingMore={loadingMore}
+    >
       {items.map((item) => <Card key={item.id} item={item} />)}
     </ScrollRow>
   );
 }
 
-/** Lazy fetch row */
+/** Lazy fetch row — only fetches when scrolled into view, with pagination */
 const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const offsetRef = useRef(0);
+  const loadingRef = useRef(false);
+  const visRef = useRef<HTMLDivElement>(null);
+  const { base, limit } = getBaseUrl(fetchUrl);
 
   useEffect(() => {
-    const el = ref.current;
+    const el = visRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
@@ -108,17 +162,51 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
 
   useEffect(() => {
     if (!visible) return;
-    fetchItems(fetchUrl).then((data) => {
-      if (data && data.length >= 4) setItems(data);
-      else setItems([]);
+    fetchItems(base).then((data) => {
+      if (data && data.length > 0) {
+        setItems(data);
+        offsetRef.current = data.length;
+        setHasMore(data.length >= limit);
+      } else {
+        setItems([]);
+      }
     });
-  }, [visible, fetchUrl]);
+  }, [visible, base, limit]);
 
-  if (items !== null && items.length < 4) return null;
+  const handleLoadMore = useCallback(() => {
+    if (!hasMore || loadingRef.current) return;
+    loadingRef.current = true;
+    setLoadingMore(true);
+
+    const sep = base.includes("?") ? "&" : "?";
+    const nextUrl = `${base}${sep}offset=${offsetRef.current}`;
+
+    fetchItems(nextUrl).then((data) => {
+      if (data && data.length > 0) {
+        setItems((prev) => {
+          const existing = new Set((prev || []).map((i) => i.id));
+          const newItems = data.filter((i) => !existing.has(i.id));
+          return [...(prev || []), ...newItems];
+        });
+        offsetRef.current += data.length;
+        setHasMore(data.length >= limit);
+      } else {
+        setHasMore(false);
+      }
+      setLoadingMore(false);
+      loadingRef.current = false;
+    });
+  }, [base, limit, hasMore]);
+
+  if (items !== null && items.length === 0) return null;
 
   return (
-    <div ref={ref}>
-      <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
+    <div ref={visRef}>
+      <ScrollRow
+        label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
+        onLoadMore={hasMore ? handleLoadMore : undefined}
+        loadingMore={loadingMore}
+      >
         {items === null ? <SkeletonRow count={8} /> : items.map((item) => <Card key={item.id} item={item} />)}
       </ScrollRow>
     </div>
@@ -215,8 +303,8 @@ export default function ForYouPage() {
 
       {/* 3. Personalized rows (only with 5+ ratings) */}
       {ratingCount >= 5 && highestRatedId && (
-        <EagerRow
-          fetchUrl={`/api/catalog?limit=12`}
+        <PaginatedRow
+          fetchUrl={`/api/catalog?limit=20`}
           label="Because you rated highly"
           sub="Items matching your top-rated genres and vibes"
           icon="✨"
@@ -225,8 +313,8 @@ export default function ForYouPage() {
       )}
 
       {/* 4. Universal rows */}
-      <EagerRow
-        fetchUrl="/api/catalog?curated=top_rated&limit=12"
+      <PaginatedRow
+        fetchUrl="/api/catalog?curated=top_rated&limit=20"
         label="Critically acclaimed"
         sub="Highest rated across all media"
         icon="⭐"
@@ -235,8 +323,8 @@ export default function ForYouPage() {
         delay={0}
       />
 
-      <EagerRow
-        fetchUrl="/api/catalog?curated=popular&limit=12"
+      <PaginatedRow
+        fetchUrl="/api/catalog?curated=popular&limit=20"
         label="Popular right now"
         sub="Recent releases making waves"
         icon="🔥"
@@ -245,8 +333,8 @@ export default function ForYouPage() {
         delay={300}
       />
 
-      <EagerRow
-        fetchUrl="/api/catalog?curated=hidden_gems&limit=12"
+      <PaginatedRow
+        fetchUrl="/api/catalog?curated=hidden_gems&limit=20"
         label="Hidden gems"
         sub="High scores, low radar"
         icon="💎"
@@ -257,7 +345,7 @@ export default function ForYouPage() {
 
       {/* Per-type rows */}
       <LazyRow
-        fetchUrl="/api/catalog?type=movie&limit=12"
+        fetchUrl="/api/catalog?type=movie&limit=20"
         label="Highest reviewed movies"
         icon="🎬"
         iconBg="#E8485522"
@@ -265,7 +353,7 @@ export default function ForYouPage() {
       />
 
       <LazyRow
-        fetchUrl="/api/catalog?type=game&limit=12"
+        fetchUrl="/api/catalog?type=game&limit=20"
         label="Most discussed games"
         icon="🎮"
         iconBg="#2EC4B622"
@@ -273,7 +361,7 @@ export default function ForYouPage() {
       />
 
       <LazyRow
-        fetchUrl="/api/catalog?type=manga&limit=12"
+        fetchUrl="/api/catalog?type=manga&limit=20"
         label="Top manga"
         icon="🗾"
         iconBg="#FF6B6B22"
@@ -281,7 +369,7 @@ export default function ForYouPage() {
       />
 
       <LazyRow
-        fetchUrl="/api/catalog?type=book&limit=12"
+        fetchUrl="/api/catalog?type=book&limit=20"
         label="The community is reading"
         icon="📖"
         iconBg="#3185FC22"
@@ -289,7 +377,7 @@ export default function ForYouPage() {
       />
 
       <LazyRow
-        fetchUrl="/api/catalog?type=tv&limit=12"
+        fetchUrl="/api/catalog?type=tv&limit=20"
         label="Top shows"
         icon="📺"
         iconBg="#C45BAA22"
@@ -297,7 +385,7 @@ export default function ForYouPage() {
       />
 
       <LazyRow
-        fetchUrl="/api/catalog?type=music&limit=12"
+        fetchUrl="/api/catalog?type=music&limit=20"
         label="Albums worth hearing"
         icon="🎵"
         iconBg="#9B5DE522"
@@ -305,7 +393,7 @@ export default function ForYouPage() {
       />
 
       <LazyRow
-        fetchUrl="/api/catalog?type=comic&limit=12"
+        fetchUrl="/api/catalog?type=comic&limit=20"
         label="Comics to pick up"
         icon="💥"
         iconBg="#F9A62022"
@@ -313,7 +401,7 @@ export default function ForYouPage() {
       />
 
       <LazyRow
-        fetchUrl="/api/catalog?type=podcast&limit=12"
+        fetchUrl="/api/catalog?type=podcast&limit=20"
         label="Podcasts worth your time"
         icon="🎙️"
         iconBg="#00BBF922"

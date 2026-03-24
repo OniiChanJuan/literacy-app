@@ -3,14 +3,14 @@ import { memo } from "react";
 const SkeletonCard = memo(function SkeletonCard() {
   return (
     <div style={{
-      minWidth: 160,
-      maxWidth: 160,
+      minWidth: 162,
+      maxWidth: 162,
       borderRadius: 8,
       overflow: "hidden",
       flexShrink: 0,
       border: "0.5px solid rgba(255,255,255,0.06)",
     }}>
-      <div className="skeleton-shimmer" style={{ height: 160, background: "rgba(255,255,255,0.04)" }} />
+      <div className="skeleton-shimmer" style={{ height: 212, background: "rgba(255,255,255,0.04)" }} />
       <div style={{ background: "var(--bg-card)", padding: "8px 8px 6px" }}>
         <div className="skeleton-shimmer" style={{ height: 11, width: "80%", borderRadius: 3, marginBottom: 4, background: "rgba(255,255,255,0.06)" }} />
         <div className="skeleton-shimmer" style={{ height: 9, width: "50%", borderRadius: 3, background: "rgba(255,255,255,0.04)" }} />
