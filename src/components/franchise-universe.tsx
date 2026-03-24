@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { TYPES } from "@/lib/data";
 
 interface FranchiseItemData {
@@ -57,17 +56,32 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
   const updateArrows = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
-    setShowLeft(el.scrollLeft > 10);
-    setShowRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
+    setShowLeft(el.scrollLeft > 5);
+    setShowRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 5);
   }, []);
 
+  // Update arrows after franchise loads AND after a short delay for images
+  useEffect(() => {
+    if (!franchise) return;
+    // Immediate check
+    updateArrows();
+    // Delayed check after images might have loaded
+    const t1 = setTimeout(updateArrows, 100);
+    const t2 = setTimeout(updateArrows, 500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [franchise, updateArrows]);
+
+  // Listen to scroll events
   useEffect(() => {
     const el = scrollRef.current;
-    if (!el || !franchise) return;
-    updateArrows();
+    if (!el) return;
     el.addEventListener("scroll", updateArrows, { passive: true });
-    return () => el.removeEventListener("scroll", updateArrows);
-  }, [franchise, updateArrows]);
+    window.addEventListener("resize", updateArrows);
+    return () => {
+      el.removeEventListener("scroll", updateArrows);
+      window.removeEventListener("resize", updateArrows);
+    };
+  }, [updateArrows]);
 
   const scroll = (dir: number) => {
     scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
@@ -115,16 +129,18 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
         {showLeft && (
           <button
             onClick={() => scroll(-1)}
+            aria-label="Scroll left"
             style={{
-              position: "absolute", left: -6, top: "50%", transform: "translateY(-50%)",
+              position: "absolute", left: -14, top: "50%", transform: "translateY(-50%)",
               width: 28, height: 28, borderRadius: "50%",
               background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
               border: "0.5px solid rgba(255,255,255,0.1)",
               color: "#fff", fontSize: 12, cursor: "pointer", zIndex: 2,
               display: "flex", alignItems: "center", justifyContent: "center",
+              padding: 0,
             }}
           >
-            ‹
+            ←
           </button>
         )}
 
@@ -132,30 +148,34 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
         {showRight && (
           <button
             onClick={() => scroll(1)}
+            aria-label="Scroll right"
             style={{
-              position: "absolute", right: -6, top: "50%", transform: "translateY(-50%)",
+              position: "absolute", right: -14, top: "50%", transform: "translateY(-50%)",
               width: 28, height: 28, borderRadius: "50%",
               background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
               border: "0.5px solid rgba(255,255,255,0.1)",
               color: "#fff", fontSize: 12, cursor: "pointer", zIndex: 2,
               display: "flex", alignItems: "center", justifyContent: "center",
+              padding: 0,
             }}
           >
-            ›
+            →
           </button>
         )}
 
         {/* Scrollable cards */}
         <div
           ref={scrollRef}
+          className="scrollbar-hide"
           style={{
             display: "flex",
             gap: 10,
             overflowX: "auto",
+            scrollBehavior: "smooth",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            WebkitOverflowScrolling: "touch",
           }}
-          className="scrollbar-hide"
         >
           {franchise.otherItems.map((item) => (
             <MiniCard
@@ -172,11 +192,7 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
         <div style={{ marginTop: 10, textAlign: "right" }}>
           <a
             href={`/franchise/${franchise.parentFranchise.id}`}
-            style={{
-              fontSize: 9,
-              color: "rgba(255,255,255,0.2)",
-              textDecoration: "none",
-            }}
+            style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", textDecoration: "none" }}
           >
             Part of the {franchise.parentFranchise.name} universe →
           </a>
@@ -194,11 +210,16 @@ function MiniCard({ item, onClick }: { item: FranchiseItemData; onClick: () => v
     <button
       onClick={onClick}
       style={{
-        minWidth: 95, maxWidth: 95,
-        borderRadius: 8, overflow: "hidden",
+        minWidth: 95,
+        maxWidth: 95,
+        width: 95,
+        borderRadius: 8,
+        overflow: "hidden",
         border: "0.5px solid rgba(255,255,255,0.06)",
-        background: "none", padding: 0,
-        cursor: "pointer", textAlign: "left",
+        background: "none",
+        padding: 0,
+        cursor: "pointer",
+        textAlign: "left",
         transition: "transform 0.15s, box-shadow 0.15s",
         flexShrink: 0,
       }}
@@ -213,24 +234,40 @@ function MiniCard({ item, onClick }: { item: FranchiseItemData; onClick: () => v
     >
       {/* Cover — exactly 70px tall */}
       <div style={{
-        width: 95, height: 70,
-        position: "relative", overflow: "hidden",
+        width: 95,
+        height: 70,
+        position: "relative",
+        overflow: "hidden",
         background: hasImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
       }}>
-        {hasImage && (
-          <Image
+        {hasImage ? (
+          /* Use native img for consistent sizing — next/image wrapper div can cause height issues */
+          <img
             src={item.cover}
             alt={item.title}
-            width={95}
-            height={70}
-            quality={60}
-            sizes="95px"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            loading="lazy"
+            style={{
+              width: 95,
+              height: 70,
+              objectFit: "cover",
+              display: "block",
+            }}
           />
+        ) : (
+          <div style={{
+            width: 95, height: 70,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 20, color: "rgba(255,255,255,0.15)",
+          }}>
+            {t.icon}
+          </div>
         )}
+
+        {/* Gradient overlay */}
         <div style={{
           position: "absolute", inset: 0,
           background: "linear-gradient(to top, rgba(20,20,25,0.6) 0%, transparent 60%)",
+          pointerEvents: "none",
         }} />
 
         {/* Type badge — top-left */}
@@ -239,6 +276,7 @@ function MiniCard({ item, onClick }: { item: FranchiseItemData; onClick: () => v
           background: "rgba(0,0,0,0.65)", color: t.color,
           fontSize: 7, fontWeight: 500, padding: "1px 5px", borderRadius: 4,
           display: "flex", alignItems: "center", gap: 2,
+          lineHeight: 1.4,
         }}>
           {t.icon} {t.label}
         </div>
@@ -257,17 +295,24 @@ function MiniCard({ item, onClick }: { item: FranchiseItemData; onClick: () => v
 
       {/* Info area — exactly 36px */}
       <div style={{
-        background: "#141419", padding: "6px 7px",
-        height: 36, boxSizing: "border-box",
+        background: "#141419",
+        padding: "6px 7px",
+        height: 36,
+        boxSizing: "border-box",
+        overflow: "hidden",
       }}>
         <div style={{
           fontSize: 10, fontWeight: 500, color: "#fff",
           overflow: "hidden", textOverflow: "ellipsis",
           whiteSpace: "nowrap", lineHeight: 1.3,
+          maxWidth: 81, /* 95 - 7px padding each side */
         }}>
           {item.title}
         </div>
-        <div style={{ fontSize: 8, marginTop: 2 }}>
+        <div style={{
+          fontSize: 8, marginTop: 2,
+          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+        }}>
           {item.isUpcoming ? (
             <span style={{ color: "rgba(155,93,229,0.6)" }}>Coming soon</span>
           ) : item.score ? (
