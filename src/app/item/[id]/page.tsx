@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
+import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item, type MediaType, type Person } from "@/lib/data";
+import { ExpandableText } from "@/components/expandable-text";
 import { prisma } from "@/lib/prisma";
 import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
 import { parseIgdbId, getIgdbDetails } from "@/lib/igdb";
@@ -23,6 +24,7 @@ import FranchiseBadge from "@/components/franchise-badge";
 import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
 import DlcSection, { DlcBadge } from "@/components/dlc-section";
+import ItemSubBanner from "@/components/item-sub-banner";
 
 function dbItemToItem(dbItem: any): Item {
   return {
@@ -48,6 +50,108 @@ function dbItemToItem(dbItem: any): Item {
   } as Item;
 }
 
+// ── Helper: extract primary creator based on media type ────────────────
+function getPrimaryCreator(people: Person[], type: MediaType): { name: string; role: string } | null {
+  if (!people || people.length === 0) return null;
+
+  const roleMap: Record<MediaType, string[]> = {
+    book: ["Author", "Writer"],
+    movie: ["Director"],
+    tv: ["Creator", "Showrunner", "Director"],
+    game: ["Developer", "Studio"],
+    manga: ["Author", "Artist", "Mangaka"],
+    music: ["Artist", "Band", "Performer"],
+    comic: ["Writer", "Artist"],
+    podcast: ["Host", "Creator"],
+  };
+
+  const preferredRoles = roleMap[type] || [];
+  for (const role of preferredRoles) {
+    const match = people.find((p) => p.role.toLowerCase() === role.toLowerCase());
+    if (match) return match;
+  }
+  return people[0]; // Fallback to first person
+}
+
+// ── Helper: get right-column fact label and value per media type ───────
+function getQuickFacts(item: Item): { label: string; value: string }[] {
+  const facts: { label: string; value: string }[] = [];
+
+  facts.push({ label: "Year", value: String(item.year || "—") });
+
+  switch (item.type) {
+    case "book":
+      if (item.totalEp > 0) facts.push({ label: "Pages", value: item.totalEp.toLocaleString() });
+      break;
+    case "movie":
+      // totalEp=1 just means "1 movie" — only show runtime if it's an actual duration (>1)
+      if (item.totalEp > 1) facts.push({ label: "Runtime", value: `${item.totalEp} min` });
+      break;
+    case "tv":
+      if (item.totalEp > 0) facts.push({ label: "Episodes", value: item.totalEp.toLocaleString() });
+      break;
+    case "game":
+      // Platforms shown separately
+      break;
+    case "manga":
+      if (item.totalEp > 0) facts.push({ label: "Chapters", value: item.totalEp.toLocaleString() });
+      break;
+    case "music":
+      if (item.totalEp > 0) facts.push({ label: "Tracks", value: String(item.totalEp) });
+      break;
+    case "comic":
+      if (item.totalEp > 0) facts.push({ label: "Issues", value: String(item.totalEp) });
+      break;
+    case "podcast":
+      if (item.totalEp > 0) facts.push({ label: "Episodes", value: item.totalEp.toLocaleString() });
+      break;
+  }
+
+  if (item.genre.length > 0) {
+    facts.push({ label: "Genre", value: item.genre[0] });
+  }
+
+  return facts;
+}
+
+// ── Helper: action verb per media type ─────────────────────────────────
+function getActionVerb(type: MediaType): string {
+  switch (type) {
+    case "movie": case "tv": return "watch";
+    case "book": case "manga": case "comic": return "read";
+    case "game": return "play";
+    case "music": case "podcast": return "listen";
+  }
+}
+
+// ── Hex to RGB for rgba() ──────────────────────────────────────────────
+function hexToRgb(hex: string): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `${r},${g},${b}`;
+}
+
+// Platform brand colors (subset for compact display)
+const PLATFORM_COLORS: Record<string, string> = {
+  steam: "#1b2838", netflix: "#E50914", prime: "#00A8E1", hbo: "#5822b4",
+  hulu: "#1CE783", apple: "#555", disney: "#113CCF", kindle: "#FF9900",
+  audible: "#F8991C", library: "#4a6741", spotify: "#1DB954", apple_music: "#FA243C",
+  apple_pod: "#872EC4", mangaplus: "#E84855", viz: "#1C1C1C", comixology: "#2A2A2A",
+  pc: "#171a21", ps5: "#003087", ps4: "#003087", xsx: "#107C10", xone: "#107C10",
+  switch: "#E60012", switch2: "#E60012", theaters: "#E84855",
+};
+
+const PLATFORM_LABELS: Record<string, string> = {
+  steam: "Steam", netflix: "Netflix", prime: "Prime", hbo: "Max",
+  hulu: "Hulu", apple: "Apple TV+", disney: "Disney+", kindle: "Kindle",
+  audible: "Audible", library: "Library", spotify: "Spotify", apple_music: "Apple Music",
+  apple_pod: "Apple Pods", mangaplus: "Manga+", viz: "VIZ", comixology: "ComiXology",
+  pc: "PC", ps5: "PS5", ps4: "PS4", xsx: "Xbox", xone: "Xbox One",
+  switch: "Switch", switch2: "Switch 2", theaters: "Theaters",
+};
+
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
@@ -64,7 +168,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
   // Auto-import: fetch from API, save to DB, use local ID
   if (tmdbParsed) {
-    // Check if already imported
     const existing = await prisma.item.findFirst({ where: { tmdbId: tmdbParsed.tmdbId, type: tmdbParsed.type } }).catch(() => null);
     if (existing) {
       item = dbItemToItem(existing);
@@ -174,6 +277,10 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   const hasImageCover = item.cover?.startsWith("http") ?? false;
 
   const t = TYPES[item.type];
+  const rgb = hexToRgb(t.color);
+  const creator = getPrimaryCreator(item.people, item.type);
+  const quickFacts = getQuickFacts(item);
+  const actionVerb = getActionVerb(item.type);
 
   // Fetch DLC data for games
   let dlcs: any[] = [];
@@ -183,7 +290,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   if (item.type === "game" && !isExternal) {
     const numericId = typeof item.id === "number" ? item.id : parseInt(id);
 
-    // Check if this item IS a DLC (has a parent)
     try {
       const dbItem = await prisma.item.findUnique({
         where: { id: numericId },
@@ -221,312 +327,327 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     }
   }
 
+  // Compact platform pills for right column
+  const compactPlatforms = (item.platforms || []).slice(0, 4).map((p: any) => {
+    const key = typeof p === "string" ? p : p?.key || "";
+    return {
+      key,
+      label: PLATFORM_LABELS[key] || key,
+      color: PLATFORM_COLORS[key] || "#555",
+    };
+  });
+
   return (
-    <div>
+    <div style={{ maxWidth: "100vw", overflowX: "hidden" }}>
       <BackButton />
 
-      {/* DLC badge — if this is a DLC, show link back to base game */}
+      {/* DLC badge */}
       {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} subtype={itemSubtype} />}
 
       {/* Franchise badge */}
       <FranchiseBadge routeId={id} />
 
-      {/* Hero banner */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          ZONE 1 — COMPACT HERO BANNER
+          ═══════════════════════════════════════════════════════════════════ */}
       <div style={{
-        background: hasImageCover ? "#1a1a2e" : item.cover,
-        borderRadius: 20,
-        padding: "48px 36px 36px",
-        marginBottom: 36,
-        position: "relative",
-        overflow: "hidden",
+        background: `linear-gradient(135deg, rgba(${rgb}, 0.08), rgba(${rgb}, 0.02))`,
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 0,
       }}>
-        {/* Blurred poster background for image covers */}
-        {hasImageCover && (
-          <Image
-            src={item.cover}
-            alt=""
-            fill
-            sizes="100vw"
-            quality={30}
-            style={{
-              objectFit: "cover",
-              filter: "blur(20px) brightness(0.4)",
-            }}
-          />
-        )}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: hasImageCover
-            ? "linear-gradient(to top, rgba(11,11,16,0.9) 0%, rgba(11,11,16,0.3) 60%, rgba(11,11,16,0.5) 100%)"
-            : "linear-gradient(to top, rgba(11,11,16,0.85) 0%, rgba(11,11,16,0.2) 60%, transparent 100%)",
-          borderRadius: 20,
-        }} />
-
-        <div style={{ position: "relative", display: "flex", gap: 24, alignItems: "flex-end" }}>
-          {/* Poster thumbnail for image covers */}
-          {hasImageCover && (
-            <Image
-              src={item.cover}
-              alt={item.title}
-              width={140}
-              height={210}
-              priority
-              sizes="140px"
-              style={{
-                objectFit: "cover",
-                borderRadius: 12,
-                boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
-                flexShrink: 0,
-              }}
-            />
-          )}
-          <div>
-          {/* Type badge */}
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 5,
-            background: t.color,
-            color: "#fff",
-            fontSize: 11,
-            fontWeight: 700,
-            padding: "4px 12px",
-            borderRadius: 8,
-            textTransform: "uppercase",
-            letterSpacing: "0.5px",
-            marginBottom: 16,
-          }}>
-            {t.icon} {t.label.replace(/s$/, "")}
-          </div>
-
-          {/* Title */}
-          <h1 style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: 42,
-            fontWeight: 900,
-            lineHeight: 1.1,
-            color: "#fff",
-            marginBottom: 12,
-            maxWidth: 700,
-          }}>
-            {item.title}
-          </h1>
-
-          {/* Year + genres */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 15, color: "var(--text-muted)", fontWeight: 500 }}>
-              {item.year}
-            </span>
-            <span style={{ color: "var(--text-faint)" }}>·</span>
-            {item.genre.map((g) => (
-              <span key={g} style={{
-                fontSize: 12,
-                color: "var(--text-secondary)",
-                background: "var(--surface-4)",
-                padding: "3px 10px",
-                borderRadius: 6,
+        {/* Three-column layout */}
+        <div className="hero-layout" style={{
+          display: "flex",
+          gap: 16,
+          alignItems: "flex-start",
+        }}>
+          {/* Left — Cover art */}
+          <div style={{ flexShrink: 0, width: 95, height: 140 }}>
+            {hasImageCover ? (
+              <Image
+                src={item.cover}
+                alt={item.title}
+                width={95}
+                height={140}
+                priority
+                sizes="95px"
+                style={{
+                  objectFit: "cover",
+                  borderRadius: 8,
+                  border: "0.5px solid rgba(255,255,255,0.1)",
+                  width: 95,
+                  height: 140,
+                }}
+              />
+            ) : (
+              <div style={{
+                width: 95,
+                height: 140,
+                borderRadius: 8,
+                border: "0.5px solid rgba(255,255,255,0.1)",
+                background: item.cover || `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
               }}>
-                {g}
-              </span>
-            ))}
+                <span style={{ fontSize: 24 }}>{t.icon}</span>
+                <span style={{
+                  fontSize: 8,
+                  color: "rgba(255,255,255,0.3)",
+                  textAlign: "center",
+                  padding: "0 4px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical" as any,
+                }}>
+                  {item.title}
+                </span>
+              </div>
+            )}
           </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Two-column layout */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 32, alignItems: "start" }}>
+          {/* Middle — Info */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Type badge */}
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              background: t.color,
+              color: "#fff",
+              fontSize: 9,
+              fontWeight: 500,
+              padding: "2px 8px",
+              borderRadius: 8,
+              marginBottom: 6,
+            }}>
+              {t.label.replace(/s$/, "")}
+            </div>
 
-        {/* Left column */}
-        <div>
-          {/* Description */}
-          <section style={{ marginBottom: 32 }}>
-            <h2 style={{
+            {/* Title */}
+            <h1 style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 16,
-              fontWeight: 700,
-              color: "var(--text-muted)",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-              marginBottom: 12,
+              fontSize: 20,
+              fontWeight: 500,
+              lineHeight: 1.2,
+              color: "#fff",
+              marginBottom: 4,
+              margin: "0 0 4px 0",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical" as any,
             }}>
-              About
-            </h2>
-            <p style={{
-              fontSize: 15,
-              color: "var(--text-secondary)",
-              lineHeight: 1.75,
-            }}>
-              {item.desc}
-            </p>
-          </section>
+              {item.title}
+            </h1>
 
-          {/* Vibe tags */}
-          {item.vibes.length > 0 && (
-            <section style={{ marginBottom: 32 }}>
-              <h2 style={{
-                fontFamily: "var(--font-serif)",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "var(--text-muted)",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                marginBottom: 12,
-              }}>
-                Vibes
-              </h2>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {item.vibes.map((v) => {
+            {/* Vibe tags */}
+            {item.vibes.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+                {item.vibes.slice(0, 5).map((v) => {
                   const vibe = VIBES[v];
                   if (!vibe) return null;
                   return (
                     <Link key={v} href={`/vibe/${v}`} style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      fontSize: 13,
-                      color: "#fff",
-                      background: vibe.color + "33",
-                      border: `1px solid ${vibe.color}55`,
-                      padding: "6px 14px",
-                      borderRadius: 20,
+                      fontSize: 9,
+                      padding: "2px 7px",
+                      borderRadius: 8,
+                      background: "rgba(255,255,255,0.04)",
+                      border: "0.5px solid rgba(255,255,255,0.06)",
+                      color: "rgba(255,255,255,0.45)",
                       textDecoration: "none",
-                      transition: "transform 0.1s",
                     }}>
-                      <span>{vibe.icon}</span>
                       {vibe.label}
                     </Link>
                   );
                 })}
               </div>
-            </section>
-          )}
+            )}
 
-          {/* Awards */}
-          <AwardBadges awards={item.awards} />
+            {/* Description — compact with line clamp */}
+            <ExpandableText text={item.desc} compact toggleColor={t.color} />
+          </div>
 
-          {/* Platforms — real TMDB watch providers for movie/tv, static for others */}
-          {(item.type === "movie" || item.type === "tv") ? (
-            <WatchProviders
-              title={item.title}
-              year={item.year}
-              mediaType={item.type}
-              tmdbId={tmdbParsed ? item.id : undefined}
-            />
-          ) : (
-            <PlatformButtons platforms={item.platforms} mediaType={item.type} />
-          )}
-
-          {/* This universe — franchise mini cards */}
-          <FranchiseUniverse itemId={typeof item.id === 'number' ? item.id : parseInt(id)} />
-
-          {/* DLC, Expansions & Editions — right after franchise, before People */}
-          {dlcs.length > 0 && (
-            <DlcSection dlcs={dlcs} baseGameTitle={item.title} typeColor={t.color} />
-          )}
-
-          {/* People */}
-          {item.people.length > 0 && (
-            <section style={{ marginBottom: 32 }}>
-              <h2 style={{
-                fontFamily: "var(--font-serif)",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "var(--text-muted)",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                marginBottom: 12,
-              }}>
-                People
-              </h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {item.people.map((p, i) => (
-                  <div key={i} style={{
-                    display: "flex",
-                    gap: 12,
-                    alignItems: "center",
-                    padding: "12px 16px",
-                    background: "var(--surface-1)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 12,
-                  }}>
-                    <div style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: "50%",
-                      background: "var(--surface-4)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "var(--text-muted)",
-                      flexShrink: 0,
-                    }}>
-                      {p.name[0]}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{p.name}</div>
-                      <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 1 }}>{p.role}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Community Reviews — only for released items */}
-          {!upcoming && (
-            <section style={{ marginBottom: 32 }}>
-              <CommunityReviews itemId={item.id} />
-            </section>
-          )}
-        </div>
-
-        {/* Right column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {upcoming ? (
-            /* Upcoming: hype score, want count, Want To button */
-            <UpcomingDetailSidebar item={item} />
-          ) : (
-            <>
-              {/* Community aggregate score */}
-              <div style={{
-                background: "var(--surface-1)",
-                border: "1px solid var(--border)",
-                borderRadius: 16,
-                padding: 24,
-              }}>
+          {/* Right — Quick reference */}
+          <div className="hero-right" style={{ width: 140, flexShrink: 0 }}>
+            {/* Creator */}
+            {creator && (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                 <div style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: 14,
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  background: t.color,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 10,
                   fontWeight: 700,
-                  color: "var(--text-muted)",
-                  textTransform: "uppercase",
-                  letterSpacing: "1px",
-                  marginBottom: 16,
+                  color: "#fff",
+                  flexShrink: 0,
                 }}>
-                  Community Score
+                  {creator.name[0]}
                 </div>
-                <AggregateScorePanel itemId={item.id} />
+                <div style={{ minWidth: 0 }}>
+                  <div style={{
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "rgba(255,255,255,0.8)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}>
+                    {creator.name}
+                  </div>
+                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.25)" }}>
+                    {creator.role}
+                  </div>
+                </div>
               </div>
+            )}
 
-              {/* External scores */}
-              <ExternalScoresPanel itemId={item.id} fallbackExt={item.ext} />
+            {/* Quick facts */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {quickFacts.map((f) => (
+                <div key={f.label} style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                }}>
+                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>{f.label}</span>
+                  <span style={{
+                    fontSize: 11,
+                    color: "rgba(255,255,255,0.6)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: 80,
+                    textAlign: "right",
+                  }}>
+                    {f.value}
+                  </span>
+                </div>
+              ))}
 
-              {/* Your rating */}
-              <RatingPanel itemId={item.id} />
+              {/* Game platforms as fact row */}
+              {item.type === "game" && item.platforms.length > 0 && (
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                }}>
+                  <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>Platforms</span>
+                  <span style={{
+                    fontSize: 11,
+                    color: "rgba(255,255,255,0.6)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: 80,
+                    textAlign: "right",
+                  }}>
+                    {item.platforms.slice(0, 3).map((p: any) =>
+                      PLATFORM_LABELS[typeof p === "string" ? p : p?.key] || (typeof p === "string" ? p : p?.key || "")
+                    ).join(", ")}
+                  </span>
+                </div>
+              )}
+            </div>
 
-              {/* Status tracking */}
-              <StatusTracker item={item} />
-            </>
-          )}
+            {/* Where to [verb] */}
+            {item.type !== "game" && compactPlatforms.length > 0 && (
+              <div style={{ marginTop: 10 }}>
+                <div style={{
+                  fontSize: 8,
+                  color: "rgba(255,255,255,0.2)",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                  marginBottom: 5,
+                }}>
+                  Where to {actionVerb}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                  {compactPlatforms.map((p) => (
+                    <div key={p.key} style={{
+                      fontSize: 8,
+                      padding: "2px 7px",
+                      borderRadius: 4,
+                      background: p.color,
+                      color: "#fff",
+                      fontWeight: 500,
+                    }}>
+                      {p.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Recommendation columns — only for released local items */}
-      {!upcoming && !isExternal && <Recommendations item={item} />}
+      {/* ═══════════════════════════════════════════════════════════════════
+          ZONE 2 — SCORES AND ACTIONS SUB-BANNER
+          ═══════════════════════════════════════════════════════════════════ */}
+      {upcoming ? (
+        <div style={{ padding: "12px 16px" }}>
+          <UpcomingDetailSidebar item={item} />
+        </div>
+      ) : (
+        <ItemSubBanner item={item} typeColor={t.color} />
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          ZONE 3 — CONTENT (full width, no sidebar)
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div style={{ padding: "0 16px" }}>
+        {/* A. Franchise universe */}
+        <div style={{ margin: "12px 0" }}>
+          <FranchiseUniverse itemId={typeof item.id === "number" ? item.id : parseInt(id)} />
+        </div>
+
+        {/* B. DLC / Expansions */}
+        {dlcs.length > 0 && (
+          <DlcSection dlcs={dlcs} baseGameTitle={item.title} typeColor={t.color} />
+        )}
+
+        {/* C. Awards */}
+        <AwardBadges awards={item.awards} />
+
+        {/* D. Community reviews */}
+        {!upcoming && (
+          <section style={{ marginBottom: 32 }}>
+            <CommunityReviews itemId={item.id} />
+          </section>
+        )}
+
+        {/* E. Recommendations */}
+        {!upcoming && !isExternal && <Recommendations item={item} />}
+      </div>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-layout {
+            flex-direction: column !important;
+            align-items: center !important;
+          }
+          .hero-right {
+            width: 100% !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+            justify-content: center !important;
+            padding-top: 8px !important;
+            border-top: 0.5px solid rgba(255,255,255,0.06) !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

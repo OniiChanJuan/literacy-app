@@ -1,4 +1,5 @@
 import type { Item, Person, ExternalSource } from "./data";
+import { cleanDescription } from "./clean-description";
 
 const BASE = "https://www.googleapis.com/books/v1";
 
@@ -161,7 +162,7 @@ function mapVolumeToItem(v: GoogleBookVolume): Item {
     vibes,
     year,
     cover,
-    desc: stripHtml(description),
+    desc: cleanDescription(stripHtml(description), "book"),
     people,
     awards: [],
     platforms,

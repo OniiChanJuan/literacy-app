@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { detectFranchiseForItem } from "@/lib/dedup";
+import { cleanDescription } from "@/lib/clean-description";
 
 /**
  * POST /api/import — Import an external API item into our database
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
         vibes: Array.isArray(body.vibes) ? body.vibes : [],
         year: body.year || 0,
         cover: body.cover || "",
-        description: body.description || body.desc || "",
+        description: cleanDescription(body.description || body.desc || "", body.type),
         people: Array.isArray(body.people) ? body.people : [],
         awards: Array.isArray(body.awards) ? body.awards : [],
         platforms: Array.isArray(body.platforms) ? body.platforms : [],
