@@ -18,6 +18,7 @@ model User {
   bio           String    @default("")
   avatar        String    @default("")
   authProvider  String    @default("email") @map("auth_provider")
+  memberNumber  Int?      @unique @map("member_number")
   isPrivate     Boolean   @default(false) @map("is_private")
   termsAcceptedAt DateTime? @map("terms_accepted_at")
   createdAt     DateTime  @default(now()) @map("created_at")

@@ -8,8 +8,19 @@ import Link from "next/link";
 export default function UserMenu() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const [memberNumber, setMemberNumber] = useState<number | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  // Fetch member number
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetch(`/api/users/${session.user.id}`)
+        .then((r) => r.json())
+        .then((data) => { if (data.memberNumber) setMemberNumber(data.memberNumber); })
+        .catch(() => {});
+    }
+  }, [session?.user?.id]);
 
   // Close on outside click
   useEffect(() => {
@@ -96,6 +107,14 @@ export default function UserMenu() {
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>
                 @{(user as any).username || user.email?.split("@")[0] || "user"}
               </div>
+              {memberNumber && (
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", marginTop: 2, display: "flex", alignItems: "center", gap: 4 }}>
+                  Member #{memberNumber}
+                  {memberNumber <= 100 && (
+                    <span style={{ color: "#F9A620", fontSize: 9 }}>★ Founding member</span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

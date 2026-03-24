@@ -82,6 +82,10 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    // Assign next member number atomically
+    const maxResult = await prisma.user.aggregate({ _max: { memberNumber: true } });
+    const nextMemberNumber = (maxResult._max.memberNumber || 0) + 1;
+
     const user = await prisma.user.create({
       data: {
         name: nameResult.value,
@@ -90,6 +94,7 @@ export async function POST(req: NextRequest) {
         password: hashedPassword,
         authProvider: "credentials",
         termsAcceptedAt: new Date(),
+        memberNumber: nextMemberNumber,
       },
     });
 

@@ -61,16 +61,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // For Google sign-in, check if this is a new user without username
       if (account?.provider === "google" && user?.email) {
         const existing = await prisma.user.findUnique({
           where: { email: user.email },
-          select: { username: true },
+          select: { username: true, memberNumber: true },
         });
-        // If user exists but has no username, they need to complete profile
-        // The redirect happens in the jwt callback via a flag
+
         if (existing && !existing.username) {
           (user as any).needsUsername = true;
+        }
+
+        // Assign member number if missing (new Google user)
+        if (existing && !existing.memberNumber) {
+          const maxResult = await prisma.user.aggregate({ _max: { memberNumber: true } });
+          const next = (maxResult._max.memberNumber || 0) + 1;
+          await prisma.user.update({
+            where: { email: user.email },
+            data: { memberNumber: next },
+          });
         }
       }
       return true;

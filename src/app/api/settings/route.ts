@@ -17,6 +17,7 @@ export async function GET() {
       select: {
         id: true, email: true, username: true, name: true, image: true,
         bio: true, avatar: true, authProvider: true, isPrivate: true,
+        memberNumber: true, createdAt: true,
         password: false, // never return password hash
       },
     });

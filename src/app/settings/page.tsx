@@ -35,6 +35,9 @@ export default function SettingsPage() {
   const [email, setEmail] = useState("");
   const [favoriteTypes, setFavoriteTypes] = useState<string[]>([]);
 
+  const [memberNumber, setMemberNumber] = useState<number | null>(null);
+  const [joinedDate, setJoinedDate] = useState("");
+
   // Account state
   const [hasPassword, setHasPassword] = useState(false);
   const [connectedProviders, setConnectedProviders] = useState<string[]>([]);
@@ -79,6 +82,8 @@ export default function SettingsPage() {
           setEmail(data.user.email || "");
           setIsPrivate(data.user.isPrivate || false);
           setHasPassword(data.user.hasPassword || false);
+          setMemberNumber(data.user.memberNumber || null);
+          setJoinedDate(data.user.createdAt ? new Date(data.user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" }) : "");
         }
         if (data.settings) {
           setShowRatings(data.settings.showRatingsPublicly);
@@ -249,6 +254,28 @@ export default function SettingsPage() {
           {section === "profile" && (
             <div>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 20 }}>Profile</h2>
+
+              {memberNumber && (
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 8, marginBottom: 20,
+                  padding: "10px 14px", borderRadius: 8,
+                  background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
+                }}>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>
+                    Member #{memberNumber}
+                    {joinedDate && ` — joined ${joinedDate}`}
+                  </span>
+                  {memberNumber <= 100 && (
+                    <span style={{
+                      fontSize: 10, color: "#F9A620", fontWeight: 600,
+                      background: "#F9A62015", padding: "2px 8px", borderRadius: 6,
+                      border: "1px solid #F9A62025",
+                    }}>
+                      ★ Founding member
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: "block", fontSize: 12, color: "var(--text-faint)", marginBottom: 6, fontWeight: 600 }}>Display Name</label>
