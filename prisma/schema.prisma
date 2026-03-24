@@ -30,8 +30,29 @@ model User {
   libraryEntries LibraryEntry[]
   following      Follow[]       @relation("follower")
   followers      Follow[]       @relation("followed")
+  settings       UserSettings?
 
   @@map("users")
+}
+
+model UserSettings {
+  userId                String  @id @map("user_id")
+  showRatingsPublicly   Boolean @default(true) @map("show_ratings_publicly")
+  showLibraryPublicly   Boolean @default(true) @map("show_library_publicly")
+  showActivityPublicly  Boolean @default(true) @map("show_activity_publicly")
+  theme                 String  @default("dark")
+  defaultMediaType      String  @default("all") @map("default_media_type")
+  showMatureContent     Boolean @default(true) @map("show_mature_content")
+  emailNewFollower      Boolean @default(true) @map("email_new_follower")
+  emailReviewLiked      Boolean @default(true) @map("email_review_liked")
+  emailFranchiseRelease Boolean @default(true) @map("email_franchise_release")
+  emailWeeklyDigest     Boolean @default(true) @map("email_weekly_digest")
+  favoriteMediaTypes    Json    @default("[]") @map("favorite_media_types")
+  updatedAt             DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
 }
 
 model Account {
