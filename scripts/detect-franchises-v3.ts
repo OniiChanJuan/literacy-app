@@ -305,9 +305,19 @@ async function main() {
     seriesGroups.get(key)!.push(item);
   }
 
+  // Skip generic terms that aren't real franchises
+  const SKIP_SERIES = new Set([
+    "best of", "greatest hits", "20 #1's", "electronic", "reggae gold",
+    "reggae anthology", "100% electronica", "best indie folk", "20th century masters",
+    "latino #1's", "electronic elements", "bestsellers", "the harvard classics",
+    "nolan films", "dhurandhar",
+  ]);
+
   for (const [key, group] of seriesGroups) {
     if (group.length < 2) continue;
     const norm = key.split("|")[0];
+    if (SKIP_SERIES.has(norm)) continue;
+    if (norm.length < 4) continue; // Skip very short names
     const uniqueIds = [...new Set(group.map((i) => i.id))];
 
     try {
