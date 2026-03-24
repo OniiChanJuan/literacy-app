@@ -40,8 +40,11 @@ function scoreColor(score: number, maxScore: number): string {
   return "var(--score-poor)";
 }
 
-/** Shows all external scores from the DB for an item */
-export function ExternalScoresPanel({ itemId }: { itemId: number }) {
+// Sources to hide — not recognizable to normal users
+const HIDDEN_SOURCES = new Set(["igdb_user", "spotify_popularity"]);
+
+/** Shows all external scores from the DB for an item, with fallback to ext JSON */
+export function ExternalScoresPanel({ itemId, fallbackExt }: { itemId: number; fallbackExt?: any }) {
   const [scores, setScores] = useState<ScoreData[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -49,13 +52,46 @@ export function ExternalScoresPanel({ itemId }: { itemId: number }) {
     fetch(`/api/scores?itemId=${itemId}`)
       .then((r) => r.json())
       .then((data) => {
-        setScores(Array.isArray(data) ? data : []);
+        const dbScores = Array.isArray(data) ? data.filter((s: ScoreData) => !HIDDEN_SOURCES.has(s.source)) : [];
+        setScores(dbScores);
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
   }, [itemId]);
 
+  // If no DB scores, fall back to ext JSON
+  if (loaded && scores.length === 0 && fallbackExt) {
+    const entries = Object.entries(fallbackExt) as [string, number][];
+    const fallbackScores = entries
+      .filter(([source]) => !HIDDEN_SOURCES.has(source))
+      .map(([source, value]) => {
+        const config: Record<string, { maxScore: number; scoreType: string }> = {
+          imdb: { maxScore: 10, scoreType: "community" },
+          rt: { maxScore: 100, scoreType: "critics" },
+          meta: { maxScore: 100, scoreType: "critics" },
+          metacritic: { maxScore: 100, scoreType: "critics" },
+          mal: { maxScore: 10, scoreType: "community" },
+          goodreads: { maxScore: 5, scoreType: "community" },
+          pitchfork: { maxScore: 10, scoreType: "critics" },
+          ign: { maxScore: 10, scoreType: "critics" },
+          steam: { maxScore: 100, scoreType: "community" },
+        };
+        const c = config[source] || { maxScore: 10, scoreType: "community" };
+        return { source, score: value, maxScore: c.maxScore, scoreType: c.scoreType, label: "" };
+      });
+    if (fallbackScores.length > 0) {
+      return <ScoreCards scores={fallbackScores} />;
+    }
+  }
+
   if (!loaded || scores.length === 0) return null;
+  return <ScoreCards scores={scores} />;
+
+  return <ScoreCards scores={scores} />;
+}
+
+function ScoreCards({ scores }: { scores: ScoreData[] }) {
+  if (scores.length === 0) return null;
 
   return (
     <section style={{ marginBottom: 24 }}>
@@ -94,24 +130,15 @@ export function ExternalScoresPanel({ itemId }: { itemId: number }) {
               borderRadius: 10,
               minWidth: 110,
             }}>
-              {/* Icon badge */}
               <div style={{
-                width: 28,
-                height: 28,
-                borderRadius: 6,
-                background: meta.color + "22",
-                border: `1px solid ${meta.color}44`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: meta.icon.length > 1 ? 12 : 11,
-                fontWeight: 900,
-                color: meta.color,
-                flexShrink: 0,
+                width: 28, height: 28, borderRadius: 6,
+                background: meta.color + "22", border: `1px solid ${meta.color}44`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: meta.icon.length > 1 ? 12 : 11, fontWeight: 900,
+                color: meta.color, flexShrink: 0,
               }}>
                 {meta.icon}
               </div>
-
               <div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 2 }}>
                   <span style={{ fontSize: 16, fontWeight: 800, color, lineHeight: 1 }}>
@@ -122,27 +149,15 @@ export function ExternalScoresPanel({ itemId }: { itemId: number }) {
                   </span>
                 </div>
                 <div style={{
-                  fontSize: 8,
-                  color: "var(--text-faint)",
-                  marginTop: 2,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 3,
+                  fontSize: 8, color: "var(--text-faint)", marginTop: 2,
+                  textTransform: "uppercase", letterSpacing: 0.5,
                 }}>
                   {meta.displayName}
-                  {s.scoreType === "critics" && (
-                    <span style={{ fontSize: 7, color: "rgba(255,255,255,0.15)" }}>Critics</span>
-                  )}
-                  {s.scoreType === "community" && (
-                    <span style={{ fontSize: 7, color: "rgba(255,255,255,0.15)" }}>Users</span>
-                  )}
+                  {s.scoreType === "critics" && " · Critics"}
+                  {s.scoreType === "community" && " · Users"}
                 </div>
                 {s.label && (
-                  <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", marginTop: 1 }}>
-                    {s.label}
-                  </div>
+                  <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", marginTop: 1 }}>{s.label}</div>
                 )}
               </div>
             </div>

@@ -395,8 +395,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               </div>
 
               {/* External scores */}
-              <ExternalScoresPanel itemId={item.id} />
-              <ExternalScores ext={item.ext} />
+              <ExternalScoresPanel itemId={item.id} fallbackExt={item.ext} />
 
               {/* Your rating */}
               <RatingPanel itemId={item.id} />
