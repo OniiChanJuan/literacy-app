@@ -60,35 +60,43 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     item = await getComicVineDetails(cvParsed);
     isExternal = true;
   } else {
-    // Try static data first, then database
     const numId = parseInt(id);
-    item = ALL_ITEMS.find((i) => i.id === numId) || null;
 
-    if (!item && !isNaN(numId)) {
-      const dbItem = await prisma.item.findUnique({ where: { id: numId } });
-      if (dbItem) {
-        item = {
-          id: dbItem.id,
-          title: dbItem.title,
-          type: dbItem.type as Item["type"],
-          genre: dbItem.genre,
-          vibes: dbItem.vibes,
-          year: dbItem.year,
-          cover: dbItem.cover,
-          desc: dbItem.description,
-          people: (dbItem.people as any) || [],
-          awards: (dbItem.awards as any) || [],
-          platforms: (dbItem.platforms as any) || [],
-          ext: (dbItem.ext as any) || {},
-          totalEp: dbItem.totalEp,
-          ...(dbItem.isUpcoming ? {
-            isUpcoming: true,
-            releaseDate: dbItem.releaseDate || "",
-            hypeScore: dbItem.hypeScore || 0,
-            wantCount: dbItem.wantCount || 0,
-          } : {}),
-        } as Item;
+    // Try database first (most items are in DB)
+    if (!isNaN(numId)) {
+      try {
+        const dbItem = await prisma.item.findUnique({ where: { id: numId } });
+        if (dbItem) {
+          item = {
+            id: dbItem.id,
+            title: dbItem.title,
+            type: dbItem.type as Item["type"],
+            genre: dbItem.genre,
+            vibes: dbItem.vibes,
+            year: dbItem.year,
+            cover: dbItem.cover,
+            desc: dbItem.description,
+            people: (dbItem.people as any) || [],
+            awards: (dbItem.awards as any) || [],
+            platforms: (dbItem.platforms as any) || [],
+            ext: (dbItem.ext as any) || {},
+            totalEp: dbItem.totalEp,
+            ...(dbItem.isUpcoming ? {
+              isUpcoming: true,
+              releaseDate: dbItem.releaseDate || "",
+              hypeScore: dbItem.hypeScore || 0,
+              wantCount: dbItem.wantCount || 0,
+            } : {}),
+          } as Item;
+        }
+      } catch (e) {
+        console.error("Failed to fetch item from DB:", e);
       }
+    }
+
+    // Fallback to static data
+    if (!item) {
+      item = ALL_ITEMS.find((i) => i.id === numId) || null;
     }
   }
 
