@@ -306,7 +306,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           )}
 
           {/* This universe — franchise mini cards */}
-          <FranchiseUniverse routeId={id} />
+          <FranchiseUniverse itemId={typeof item.id === 'number' ? item.id : parseInt(id)} />
 
           {/* People */}
           {item.people.length > 0 && (

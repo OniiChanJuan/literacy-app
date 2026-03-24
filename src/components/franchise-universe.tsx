@@ -3,129 +3,61 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ALL_ITEMS, TYPES, isUpcoming, type Item } from "@/lib/data";
-import { getFranchiseForItem, type Franchise, type FranchiseItem } from "@/lib/franchises";
+import { TYPES } from "@/lib/data";
 
-interface ResolvedItem {
-  routeId: string;
+interface FranchiseItemData {
+  id: number;
   title: string;
-  cover: string;
-  type: Item["type"];
+  type: string;
   year: number;
-  score: string | null; // "★ 4.3" or null
+  cover: string;
   isUpcoming: boolean;
+  releaseDate: string | null;
+  score: { label: string; display: string; value: number } | null;
 }
 
-function resolveLocalItem(fi: FranchiseItem): ResolvedItem | null {
-  const numId = parseInt(fi.routeId);
-  if (isNaN(numId)) return null;
-  const item = ALL_ITEMS.find((i) => i.id === numId);
-  if (!item) return null;
-
-  // Get best external score
-  const ext = Object.values(item.ext);
-  const firstScore = ext.length > 0 ? ext[0] : null;
-  const scoreStr = firstScore ? `★ ${(firstScore / 10).toFixed(1)}` : null;
-
-  return {
-    routeId: fi.routeId,
-    title: item.title,
-    cover: item.cover,
-    type: item.type,
-    year: item.year,
-    score: scoreStr,
-    isUpcoming: isUpcoming(item),
-  };
+interface FranchiseData {
+  id: number;
+  name: string;
+  icon: string;
+  color: string;
+  totalItems: number;
+  mediaTypes: number;
+  otherItems: FranchiseItemData[];
 }
 
-export default function FranchiseUniverse({ routeId }: { routeId: string }) {
-  const franchise = getFranchiseForItem(routeId);
+function scoreColor(val: number): string {
+  if (val >= 8.0) return "#2EC4B6";
+  if (val >= 6.0) return "#F9A620";
+  return "#E84855";
+}
+
+export default function FranchiseUniverse({ itemId }: { itemId: number }) {
+  const [franchise, setFranchise] = useState<FranchiseData | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
-  const [externalItems, setExternalItems] = useState<Record<string, ResolvedItem>>({});
 
-  // Get other items (exclude current)
-  const otherFranchiseItems = franchise?.items.filter((fi) => fi.routeId !== routeId) || [];
-
-  // Fetch external items on mount
   useEffect(() => {
-    if (!franchise) return;
+    fetch(`/api/franchises?itemId=${itemId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setFranchise(data);
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, [itemId]);
 
-    const externalFis = otherFranchiseItems.filter((fi) => isNaN(parseInt(fi.routeId)));
-    if (externalFis.length === 0) return;
+  if (!loaded || !franchise || franchise.otherItems.length === 0) return null;
 
-    externalFis.forEach((fi) => {
-      // Try to fetch basic info from our search API
-      fetch(`/api/search?q=${encodeURIComponent(fi.title)}&limit=1`)
-        .then((r) => r.json())
-        .then((data) => {
-          if (Array.isArray(data) && data.length > 0) {
-            const match = data[0];
-            setExternalItems((prev) => ({
-              ...prev,
-              [fi.routeId]: {
-                routeId: fi.routeId,
-                title: fi.title,
-                cover: match.cover || "",
-                type: fi.type,
-                year: match.year || 0,
-                score: null,
-                isUpcoming: false,
-              },
-            }));
-          } else {
-            // Fallback — just show title
-            setExternalItems((prev) => ({
-              ...prev,
-              [fi.routeId]: {
-                routeId: fi.routeId,
-                title: fi.title,
-                cover: "",
-                type: fi.type,
-                year: 0,
-                score: null,
-                isUpcoming: false,
-              },
-            }));
-          }
-        })
-        .catch(() => {
-          setExternalItems((prev) => ({
-            ...prev,
-            [fi.routeId]: {
-              routeId: fi.routeId,
-              title: fi.title,
-              cover: "",
-              type: fi.type,
-              year: 0,
-              score: null,
-              isUpcoming: false,
-            },
-          }));
-        });
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [franchise?.slug]);
-
-  if (!franchise || otherFranchiseItems.length === 0) return null;
-
-  // Resolve all items
-  const resolved: ResolvedItem[] = otherFranchiseItems
-    .map((fi) => {
-      const local = resolveLocalItem(fi);
-      if (local) return local;
-      return externalItems[fi.routeId] || null;
-    })
-    .filter(Boolean) as ResolvedItem[];
-
-  if (resolved.length === 0) return null;
+  const c = franchise.color;
 
   return (
     <section style={{
-      background: `${franchise.color}0F`,
-      border: `0.5px solid ${franchise.color}1F`,
+      background: `linear-gradient(135deg, ${c}0F, ${c}0A)`,
+      border: `0.5px solid ${c}1F`,
       borderRadius: 10,
       padding: 14,
-      marginBottom: 32,
+      marginBottom: 24,
     }}>
       {/* Header */}
       <div style={{
@@ -134,31 +66,25 @@ export default function FranchiseUniverse({ routeId }: { routeId: string }) {
         alignItems: "center",
         marginBottom: 12,
       }}>
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          fontSize: 12,
-          fontWeight: 500,
-          color: "rgba(255,255,255,0.7)",
-        }}>
-          <span>{franchise.icon}</span>
-          This universe
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 14 }}>{franchise.icon}</span>
+          <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>
+            This universe
+          </span>
+          <span style={{ fontSize: 9, color: "rgba(255,255,255,0.25)" }}>
+            {franchise.totalItems} entries across {franchise.mediaTypes} media
+          </span>
         </div>
         <a
-          href={`/franchise/${franchise.slug}`}
-          onClick={(e) => { e.preventDefault(); router.push(`/franchise/${franchise.slug}`); }}
+          href={`/franchise/${franchise.id}`}
           style={{
             fontSize: 10,
-            color: `${franchise.color}99`,
+            color: `${c}99`,
             textDecoration: "none",
             fontWeight: 500,
-            transition: "color 0.15s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = franchise.color)}
-          onMouseLeave={(e) => (e.currentTarget.style.color = `${franchise.color}99`)}
         >
-          See full franchise →
+          See full timeline →
         </a>
       </div>
 
@@ -169,13 +95,13 @@ export default function FranchiseUniverse({ routeId }: { routeId: string }) {
         overflowX: "auto",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
-      }}>
-        {resolved.map((ri) => (
+      }} className="scrollbar-hide">
+        {franchise.otherItems.map((item) => (
           <MiniCard
-            key={ri.routeId}
-            item={ri}
-            franchiseColor={franchise.color}
-            onClick={() => router.push(`/item/${ri.routeId}`)}
+            key={item.id}
+            item={item}
+            franchiseColor={c}
+            onClick={() => router.push(`/item/${item.id}`)}
           />
         ))}
       </div>
@@ -188,19 +114,18 @@ function MiniCard({
   franchiseColor,
   onClick,
 }: {
-  item: ResolvedItem;
+  item: FranchiseItemData;
   franchiseColor: string;
   onClick: () => void;
 }) {
-  const t = TYPES[item.type];
-  const hasImage = item.cover.startsWith("http");
-  const isGradient = item.cover && !hasImage;
+  const t = TYPES[item.type as keyof typeof TYPES] || { color: "#888", icon: "?", label: "Unknown" };
+  const hasImage = item.cover?.startsWith("http");
 
   return (
     <button
       onClick={onClick}
       style={{
-        minWidth: 90,
+        minWidth: 95,
         borderRadius: 8,
         overflow: "hidden",
         border: "0.5px solid rgba(255,255,255,0.06)",
@@ -220,27 +145,23 @@ function MiniCard({
         e.currentTarget.style.boxShadow = "";
       }}
     >
-      {/* Cover area */}
+      {/* Cover */}
       <div style={{
         width: "100%",
-        height: 65,
+        height: 70,
         position: "relative",
         overflow: "hidden",
-        background: isGradient ? item.cover : "#1a1a2e",
+        background: hasImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
       }}>
         {hasImage && (
           <Image
             src={item.cover}
             alt={item.title}
-            width={90}
-            height={65}
+            width={95}
+            height={70}
             quality={60}
-            sizes="90px"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
+            sizes="95px"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         )}
         {/* Gradient overlay */}
@@ -255,20 +176,20 @@ function MiniCard({
           position: "absolute",
           top: 3,
           left: 3,
-          background: "rgba(0,0,0,0.6)",
+          background: "rgba(0,0,0,0.65)",
           color: t.color,
           fontSize: 7,
-          fontWeight: 600,
+          fontWeight: 500,
           padding: "1px 5px",
           borderRadius: 4,
           display: "flex",
           alignItems: "center",
           gap: 2,
         }}>
-          {t.icon}
+          {t.icon} {t.label.replace(/s$/, "")}
         </div>
 
-        {/* "Soon" badge for upcoming — top-right */}
+        {/* Upcoming year badge — top-right */}
         {item.isUpcoming && (
           <div style={{
             position: "absolute",
@@ -281,18 +202,15 @@ function MiniCard({
             padding: "1px 5px",
             borderRadius: 4,
           }}>
-            Soon
+            {item.year || "Soon"}
           </div>
         )}
       </div>
 
       {/* Info area */}
-      <div style={{
-        background: "#141419",
-        padding: "5px 6px",
-      }}>
+      <div style={{ background: "#141419", padding: "6px 7px" }}>
         <div style={{
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: 500,
           color: "#fff",
           lineHeight: 1.3,
@@ -302,12 +220,20 @@ function MiniCard({
         }}>
           {item.title}
         </div>
-        <div style={{
-          fontSize: 8,
-          color: "rgba(255,255,255,0.3)",
-          marginTop: 1,
-        }}>
-          {item.score || (item.year > 0 ? item.year : "")}
+        <div style={{ fontSize: 8, marginTop: 2 }}>
+          {item.isUpcoming ? (
+            <span style={{ color: "rgba(155,93,229,0.6)" }}>Coming soon</span>
+          ) : item.score ? (
+            <span>
+              <span style={{ color: scoreColor(item.score.value), fontWeight: 600 }}>
+                {item.score.display}
+              </span>
+              {" "}
+              <span style={{ color: "rgba(255,255,255,0.2)" }}>{item.score.label}</span>
+            </span>
+          ) : (
+            <span style={{ color: "rgba(255,255,255,0.2)" }}>{item.year}</span>
+          )}
         </div>
       </div>
     </button>
