@@ -53,6 +53,23 @@ body {
   font-family: var(--font-sans);
 }
 
+/* ── Content width container ─────────────────────────────── */
+.content-width {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .content-width {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
 /* ── Utility: hide scrollbar in scroll rows ──────────────── */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { scrollbar-width: none; }

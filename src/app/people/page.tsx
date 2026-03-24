@@ -111,7 +111,7 @@ export default function PeoplePage() {
   const isLoggedIn = !!session?.user;
 
   return (
-    <div>
+    <div className="content-width">
       {/* Two column layout: Search + Activity */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 36 }}>
 

@@ -77,7 +77,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--text-faint)" }}>
+      <div className="content-width" style={{ textAlign: "center", paddingTop: 80, paddingBottom: 20, color: "var(--text-faint)" }}>
         Loading profile...
       </div>
     );
@@ -85,7 +85,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   if (!profile) {
     return (
-      <div style={{ textAlign: "center", padding: "80px 20px" }}>
+      <div className="content-width" style={{ textAlign: "center", paddingTop: 80, paddingBottom: 20 }}>
         <div style={{ fontSize: 44, marginBottom: 14 }}>🔍</div>
         <div style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
           User not found
@@ -117,7 +117,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div>
+    <div className="content-width">
       {/* Profile header */}
       <div style={{
         display: "flex",

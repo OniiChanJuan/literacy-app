@@ -10,7 +10,7 @@ export default function TermsPage() {
   const textStyle = { fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.8 };
 
   return (
-    <div style={{ maxWidth: 700, margin: "40px auto", padding: "0 20px" }}>
+    <div className="content-width" style={{ maxWidth: 700, marginTop: 40 }}>
       <h1 style={{
         fontFamily: "var(--font-serif)",
         fontSize: 32,

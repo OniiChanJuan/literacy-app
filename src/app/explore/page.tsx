@@ -277,7 +277,7 @@ function ExploreContent() {
   }
 
   return (
-    <div>
+    <div className="content-width">
       <SearchBar search={search} setSearch={setSearch} />
 
       {/* Media type pills — always visible */}

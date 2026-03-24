@@ -131,10 +131,7 @@ export default function ItemSubBanner({ item, typeColor }: SubBannerProps) {
 
   return (
     <div style={{
-      background: `rgba(${rgb}, 0.02)`,
-      borderTop: `1px solid rgba(${rgb}, 0.08)`,
-      borderBottom: "0.5px solid rgba(255,255,255,0.04)",
-      padding: "10px 16px",
+      padding: "10px 0",
       display: "flex",
       alignItems: "center",
       gap: 12,

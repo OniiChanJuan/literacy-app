@@ -218,7 +218,7 @@ export default function SettingsPage() {
   });
 
   return (
-    <div style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
+    <div className="content-width" style={{ maxWidth: 800, paddingTop: 40 }}>
       <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 900, color: "#fff", marginBottom: 28 }}>
         Settings
       </h1>

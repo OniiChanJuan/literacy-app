@@ -81,14 +81,14 @@ export default function CompleteProfilePage() {
 
   if (status === "loading") {
     return (
-      <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--text-faint)" }}>
+      <div className="content-width" style={{ textAlign: "center", paddingTop: 80, paddingBottom: 20, color: "var(--text-faint)" }}>
         Loading...
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "80px auto", padding: "0 20px" }}>
+    <div className="content-width" style={{ maxWidth: 400, marginTop: 80 }}>
       <div style={{ textAlign: "center", marginBottom: 36 }}>
         <h1 style={{
           fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 900, marginBottom: 8,

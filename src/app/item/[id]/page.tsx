@@ -107,9 +107,7 @@ function getQuickFacts(item: Item): { label: string; value: string }[] {
       break;
   }
 
-  if (item.genre.length > 0) {
-    facts.push({ label: "Genre", value: item.genre[0] });
-  }
+  // Genre is handled separately in the right panel (not as a simple fact row)
 
   return facts;
 }
@@ -327,290 +325,350 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Compact platform pills for right column
-  const compactPlatforms = (item.platforms || []).slice(0, 4).map((p: any) => {
-    const key = typeof p === "string" ? p : p?.key || "";
-    return {
-      key,
-      label: PLATFORM_LABELS[key] || key,
-      color: PLATFORM_COLORS[key] || "#555",
-    };
-  });
+  // Compact platform pills for right column — deduplicate by key
+  const seenPlatforms = new Set<string>();
+  const compactPlatforms = (item.platforms || [])
+    .map((p: any) => {
+      const key = typeof p === "string" ? p : p?.key || "";
+      return {
+        key,
+        label: PLATFORM_LABELS[key] || key,
+        color: PLATFORM_COLORS[key] || "#555",
+      };
+    })
+    .filter((p) => {
+      if (seenPlatforms.has(p.key)) return false;
+      seenPlatforms.add(p.key);
+      return true;
+    })
+    .slice(0, 4);
+
+  // Deduplicate game platforms for display
+  const seenGamePlatforms = new Set<string>();
+  const dedupedGamePlatforms = (item.platforms || [])
+    .map((p: any) => typeof p === "string" ? p : p?.key || "")
+    .filter((key: string) => {
+      if (seenGamePlatforms.has(key)) return false;
+      seenGamePlatforms.add(key);
+      return true;
+    });
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", overflowX: "hidden" }}>
-      <BackButton />
-
-      {/* DLC badge */}
-      {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} subtype={itemSubtype} />}
-
-      {/* Franchise badge */}
-      <FranchiseBadge routeId={id} />
+    <div style={{ overflowX: "hidden" }}>
+      {/* Back button + badges — constrained width */}
+      <div className="content-width">
+        <BackButton />
+        {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} subtype={itemSubtype} />}
+        <FranchiseBadge routeId={id} />
+      </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          ZONE 1 — COMPACT HERO BANNER
+          ZONE 1 — HERO BANNER (full-width background)
           ═══════════════════════════════════════════════════════════════════ */}
       <div style={{
         background: `linear-gradient(135deg, rgba(${rgb}, 0.08), rgba(${rgb}, 0.02))`,
-        borderRadius: 12,
-        padding: "18px 20px",
         marginBottom: 0,
       }}>
-        {/* Three-column layout */}
-        <div className="hero-layout" style={{
-          display: "flex",
-          gap: 16,
-          alignItems: "flex-start",
-        }}>
-          {/* Left — Cover art */}
-          <div style={{ flexShrink: 0, width: 120, height: (item.type === "book" || item.type === "manga") ? 180 : 170 }}>
-            {hasImageCover ? (
-              <Image
-                src={item.cover}
-                alt={item.title}
-                width={120}
-                height={(item.type === "book" || item.type === "manga") ? 180 : 170}
-                priority
-                sizes="120px"
-                style={{
-                  objectFit: "cover",
+        <div className="content-width" style={{ paddingTop: 18, paddingBottom: 18 }}>
+          {/* Three-column layout */}
+          <div className="hero-layout" style={{
+            display: "flex",
+            gap: 20,
+            alignItems: "flex-start",
+          }}>
+            {/* Left — Cover art (95px fixed) */}
+            <div style={{ flexShrink: 0, width: 95, height: (item.type === "book" || item.type === "manga") ? 145 : 140 }}>
+              {hasImageCover ? (
+                <Image
+                  src={item.cover}
+                  alt={item.title}
+                  width={95}
+                  height={(item.type === "book" || item.type === "manga") ? 145 : 140}
+                  priority
+                  sizes="95px"
+                  style={{
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    border: "0.5px solid rgba(255,255,255,0.1)",
+                    width: 95,
+                    height: (item.type === "book" || item.type === "manga") ? 145 : 140,
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: 95,
+                  height: (item.type === "book" || item.type === "manga") ? 145 : 140,
                   borderRadius: 8,
                   border: "0.5px solid rgba(255,255,255,0.1)",
-                  width: 120,
-                  height: (item.type === "book" || item.type === "manga") ? 180 : 170,
-                }}
-              />
-            ) : (
-              <div style={{
-                width: 120,
-                height: (item.type === "book" || item.type === "manga") ? 180 : 170,
-                borderRadius: 8,
-                border: "0.5px solid rgba(255,255,255,0.1)",
-                background: item.cover || `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-              }}>
-                <span style={{ fontSize: 24 }}>{t.icon}</span>
-                <span style={{
-                  fontSize: 8,
-                  color: "rgba(255,255,255,0.3)",
-                  textAlign: "center",
-                  padding: "0 4px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical" as any,
-                }}>
-                  {item.title}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Middle — Info */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            {/* Type badge */}
-            <div style={{
-              display: "inline-flex",
-              alignItems: "center",
-              background: t.color,
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 500,
-              padding: "2px 8px",
-              borderRadius: 8,
-              marginBottom: 6,
-            }}>
-              {t.label.replace(/s$/, "")}
-            </div>
-
-            {/* Title */}
-            <h1 style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: 20,
-              fontWeight: 500,
-              lineHeight: 1.2,
-              color: "#fff",
-              marginBottom: 4,
-              margin: "0 0 4px 0",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical" as any,
-            }}>
-              {item.title}
-            </h1>
-
-            {/* Vibe tags */}
-            {item.vibes.length > 0 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
-                {item.vibes.slice(0, 5).map((v) => {
-                  const vibe = VIBES[v];
-                  if (!vibe) return null;
-                  return (
-                    <Link key={v} href={`/vibe/${v}`} style={{
-                      fontSize: 9,
-                      padding: "2px 7px",
-                      borderRadius: 8,
-                      background: "rgba(255,255,255,0.04)",
-                      border: "0.5px solid rgba(255,255,255,0.06)",
-                      color: "rgba(255,255,255,0.45)",
-                      textDecoration: "none",
-                    }}>
-                      {vibe.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Description — compact with line clamp */}
-            <ExpandableText text={item.desc} compact toggleColor={t.color} />
-          </div>
-
-          {/* Right — Quick reference */}
-          <div className="hero-right" style={{
-            width: 170,
-            flexShrink: 0,
-            borderLeft: "0.5px solid rgba(255,255,255,0.04)",
-            paddingLeft: 12,
-          }}>
-            {/* Creator */}
-            {creator && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-                <div style={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: "50%",
-                  background: t.color,
+                  background: item.cover || `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 12,
-                  fontWeight: 500,
-                  color: "#fff",
-                  flexShrink: 0,
+                  gap: 6,
                 }}>
-                  {creator.name[0]}
-                </div>
-                <div style={{ minWidth: 0 }}>
-                  <div style={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: "rgba(255,255,255,0.85)",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}>
-                    {creator.name}
-                  </div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
-                    {creator.role}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Quick facts */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
-              {quickFacts.map((f) => (
-                <div key={f.label} style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>{f.label}</span>
+                  <span style={{ fontSize: 24 }}>{t.icon}</span>
                   <span style={{
-                    fontSize: 13,
-                    color: "rgba(255,255,255,0.7)",
+                    fontSize: 8,
+                    color: "rgba(255,255,255,0.3)",
+                    textAlign: "center",
+                    padding: "0 4px",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    maxWidth: 100,
-                    textAlign: "right",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical" as any,
                   }}>
-                    {f.value}
-                  </span>
-                </div>
-              ))}
-
-              {/* Game platforms as fact row */}
-              {item.type === "game" && item.platforms.length > 0 && (
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>Platforms</span>
-                  <span style={{
-                    fontSize: 13,
-                    color: "rgba(255,255,255,0.7)",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    maxWidth: 100,
-                    textAlign: "right",
-                  }}>
-                    {item.platforms.slice(0, 3).map((p: any) =>
-                      PLATFORM_LABELS[typeof p === "string" ? p : p?.key] || (typeof p === "string" ? p : p?.key || "")
-                    ).join(", ")}
+                    {item.title}
                   </span>
                 </div>
               )}
             </div>
 
-            {/* Where to [verb] */}
-            {item.type !== "game" && compactPlatforms.length > 0 && (
-              <div style={{ marginTop: 2 }}>
-                <div style={{
-                  fontSize: 10,
-                  color: "rgba(255,255,255,0.2)",
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
-                  marginBottom: 6,
-                }}>
-                  Where to {actionVerb}
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-                  {compactPlatforms.map((p) => (
-                    <div key={p.key} style={{
-                      fontSize: 10,
-                      padding: "4px 10px",
-                      borderRadius: 5,
-                      background: p.color,
-                      color: "#fff",
-                      fontWeight: 500,
-                    }}>
-                      {p.label}
-                    </div>
-                  ))}
-                </div>
+            {/* Middle — Info (flex: 1) */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {/* Type badge */}
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                background: t.color,
+                color: "#fff",
+                fontSize: 9,
+                fontWeight: 500,
+                padding: "2px 8px",
+                borderRadius: 8,
+                marginBottom: 6,
+              }}>
+                {t.label.replace(/s$/, "")}
               </div>
-            )}
+
+              {/* Title */}
+              <h1 style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: 22,
+                fontWeight: 500,
+                lineHeight: 1.2,
+                color: "#fff",
+                margin: "0 0 4px 0",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical" as any,
+              }}>
+                {item.title}
+              </h1>
+
+              {/* Vibe tags */}
+              {item.vibes.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+                  {item.vibes.slice(0, 5).map((v) => {
+                    const vibe = VIBES[v];
+                    if (!vibe) return null;
+                    return (
+                      <Link key={v} href={`/vibe/${v}`} style={{
+                        fontSize: 9,
+                        padding: "2px 7px",
+                        borderRadius: 8,
+                        background: "rgba(255,255,255,0.04)",
+                        border: "0.5px solid rgba(255,255,255,0.06)",
+                        color: "rgba(255,255,255,0.45)",
+                        textDecoration: "none",
+                      }}>
+                        {vibe.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Description — compact with line clamp */}
+              <ExpandableText text={item.desc} compact toggleColor={t.color} />
+            </div>
+
+            {/* Right — Quick reference (25% width) */}
+            <div className="hero-right" style={{
+              flex: "0 0 25%",
+              minWidth: 180,
+              maxWidth: 300,
+              borderLeft: "0.5px solid rgba(255,255,255,0.06)",
+              paddingLeft: 16,
+            }}>
+              {/* Creator */}
+              {creator && (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                  <div style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    background: t.color,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "#fff",
+                    flexShrink: 0,
+                  }}>
+                    {creator.name[0]}
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: "rgba(255,255,255,0.85)",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}>
+                      {creator.name}
+                    </div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
+                      {creator.role}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Quick facts */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+                {quickFacts.map((f) => (
+                  <div key={f.label} style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>{f.label}</span>
+                    <span style={{
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.7)",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: 160,
+                      textAlign: "right",
+                    }}>
+                      {f.value}
+                    </span>
+                  </div>
+                ))}
+
+                {/* Genre row — show all genres */}
+                {item.genre.length > 0 && (
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: item.genre.length > 3 ? "flex-start" : "center",
+                  }}>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>Genre</span>
+                    {item.genre.length <= 3 ? (
+                      <span style={{
+                        fontSize: 13,
+                        color: "rgba(255,255,255,0.7)",
+                        textAlign: "right",
+                      }}>
+                        {item.genre.join(", ")}
+                      </span>
+                    ) : (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
+                        {item.genre.map((g) => (
+                          <span key={g} style={{
+                            fontSize: 10,
+                            padding: "2px 7px",
+                            borderRadius: 6,
+                            background: "rgba(255,255,255,0.04)",
+                            border: "0.5px solid rgba(255,255,255,0.06)",
+                            color: "rgba(255,255,255,0.6)",
+                          }}>
+                            {g}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Game platforms as fact row */}
+                {item.type === "game" && dedupedGamePlatforms.length > 0 && (
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>Platforms</span>
+                    <span style={{
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.7)",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: 160,
+                      textAlign: "right",
+                    }}>
+                      {dedupedGamePlatforms.slice(0, 3).map((key: string) =>
+                        PLATFORM_LABELS[key] || key
+                      ).join(", ")}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Where to [verb] */}
+              {item.type !== "game" && compactPlatforms.length > 0 && (
+                <div style={{ marginTop: 4 }}>
+                  <div style={{
+                    fontSize: 10,
+                    color: "rgba(255,255,255,0.2)",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                    marginBottom: 6,
+                  }}>
+                    Where to {actionVerb}
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                    {compactPlatforms.map((p) => (
+                      <div key={p.key} style={{
+                        fontSize: 10,
+                        padding: "4px 10px",
+                        borderRadius: 5,
+                        background: p.color,
+                        color: "#fff",
+                        fontWeight: 500,
+                      }}>
+                        {p.label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          ZONE 2 — SCORES AND ACTIONS SUB-BANNER
+          ZONE 2 — SCORES AND ACTIONS SUB-BANNER (full-width background)
           ═══════════════════════════════════════════════════════════════════ */}
       {upcoming ? (
-        <div style={{ padding: "12px 16px" }}>
+        <div className="content-width" style={{ padding: "12px 40px" }}>
           <UpcomingDetailSidebar item={item} />
         </div>
       ) : (
-        <ItemSubBanner item={item} typeColor={t.color} />
+        <div style={{
+          background: `rgba(${rgb}, 0.02)`,
+          borderTop: `1px solid rgba(${rgb}, 0.08)`,
+          borderBottom: "0.5px solid rgba(255,255,255,0.04)",
+        }}>
+          <div className="content-width">
+            <ItemSubBanner item={item} typeColor={t.color} />
+          </div>
+        </div>
       )}
 
       {/* ═══════════════════════════════════════════════════════════════════
-          ZONE 3 — CONTENT (full width, no sidebar)
+          ZONE 3 — CONTENT (constrained width)
           ═══════════════════════════════════════════════════════════════════ */}
-      <div style={{ padding: "0 16px" }}>
+      <div className="content-width">
         {/* A. Franchise universe */}
         <div style={{ marginTop: 12, marginBottom: 0 }}>
           <FranchiseUniverse itemId={typeof item.id === "number" ? item.id : parseInt(id)} />
@@ -644,7 +702,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             flex-wrap: wrap !important;
           }
           .hero-right {
-            width: 100% !important;
+            flex: 0 0 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
             border-left: none !important;
             padding-left: 0 !important;
             border-top: 0.5px solid rgba(255,255,255,0.06) !important;
@@ -662,7 +722,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             align-items: center !important;
           }
           .hero-right {
-            width: 100% !important;
+            flex: 0 0 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
             border-left: none !important;
             padding-left: 0 !important;
             display: flex !important;

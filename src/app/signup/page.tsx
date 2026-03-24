@@ -104,7 +104,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "60px auto", padding: "0 20px" }}>
+    <div className="content-width" style={{ maxWidth: 400, marginTop: 60 }}>
       <div style={{ textAlign: "center", marginBottom: 36 }}>
         <h1 style={{
           fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 900, marginBottom: 8,

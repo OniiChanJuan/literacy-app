@@ -12,7 +12,7 @@ export default function AwardBrowsePage({ params }: { params: Promise<{ award: s
 
   if (!award) {
     return (
-      <div style={{ textAlign: "center", padding: "80px 20px" }}>
+      <div className="content-width" style={{ textAlign: "center", paddingTop: 80, paddingBottom: 20 }}>
         <div style={{ fontSize: 44, marginBottom: 14 }}>🏆</div>
         <div style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 800 }}>
           Award not found
@@ -31,7 +31,7 @@ export default function AwardBrowsePage({ params }: { params: Promise<{ award: s
   }
 
   return (
-    <div>
+    <div className="content-width">
       <BackButton />
 
       {/* Hero */}

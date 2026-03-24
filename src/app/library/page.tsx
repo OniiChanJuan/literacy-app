@@ -37,7 +37,7 @@ export default function LibraryPage() {
 
   if (totalTracked === 0) {
     return (
-      <div>
+      <div className="content-width">
         <div style={{ textAlign: "center", padding: "60px 20px" }}>
           <div style={{ fontSize: 44, marginBottom: 14 }}>📝</div>
           <div style={{
@@ -63,7 +63,7 @@ export default function LibraryPage() {
   }
 
   return (
-    <div>
+    <div className="content-width">
       {/* Status summary pills */}
       <div style={{ display: "flex", gap: 10, marginBottom: 28, flexWrap: "wrap" }}>
         {STATUSES.map((s) => {

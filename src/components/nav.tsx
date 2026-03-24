@@ -25,7 +25,6 @@ export default function Nav() {
 
   return (
     <header style={{
-      padding: "28px 28px 0",
       background: "linear-gradient(180deg, rgba(232,72,85,0.06) 0%, transparent 100%)",
       backgroundColor: "#0b0b10",
       position: "sticky",
@@ -33,7 +32,7 @@ export default function Nav() {
       zIndex: 50,
     }}>
       {/* Top row: logo + right side */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 26 }}>
+      <div className="content-width" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 28, marginBottom: 26 }}>
 
         {/* Logo */}
         <div>
@@ -91,7 +90,7 @@ export default function Nav() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <div className="content-width" style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingTop: 0, paddingBottom: 0 }}>
         {tabs.map((t) => {
           const active = pathname === t.href;
           return (

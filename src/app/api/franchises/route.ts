@@ -73,11 +73,11 @@ export async function GET(req: NextRequest) {
       })
       .sort((a, b) => a.year - b.year);
 
-    // Deduplicate by normalized title + year
+    // Deduplicate by normalized title + type + year
     const seen = new Set<string>();
     const deduped = otherItems.filter((item) => {
-      const normalized = item.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").trim();
-      const key = `${normalized}::${item.year}`;
+      const normalized = item.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
+      const key = `${normalized}::${item.type}::${item.year}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;

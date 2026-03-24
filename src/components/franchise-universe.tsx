@@ -89,12 +89,15 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
 
   if (!loaded || !franchise || franchise.otherItems.length === 0) return null;
 
-  // Deduplicate items by normalized title + year
-  const deduped = franchise.otherItems.filter((item, idx, arr) => {
-    const norm = item.title.trim().toLowerCase();
-    return idx === arr.findIndex(
-      (other) => other.title.trim().toLowerCase() === norm && other.year === item.year
-    );
+  // Deduplicate items by normalized title + type + year
+  // Also catch near-duplicates (e.g., "Ghost in the Shell: SAC" vs "Ghost in the Shell: S.A.C.")
+  const seen = new Set<string>();
+  const deduped = franchise.otherItems.filter((item) => {
+    const norm = item.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
+    const key = `${norm}::${item.type}::${item.year}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
   });
 
   const c = franchise.color;
@@ -289,13 +292,6 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
             {t.icon}
           </div>
         )}
-
-        {/* Gradient overlay */}
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "linear-gradient(to top, rgba(20,20,25,0.6) 0%, transparent 60%)",
-          pointerEvents: "none",
-        }} />
 
         {/* Type badge — top-left */}
         <div style={{

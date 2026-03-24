@@ -234,7 +234,7 @@ export default function ForYouPage() {
   }, []);
 
   return (
-    <div>
+    <div className="content-width">
       {/* 1. Welcome banner */}
       <div style={{
         background: "linear-gradient(135deg, rgba(232,72,85,0.08), rgba(49,133,252,0.08), rgba(46,196,182,0.08))",

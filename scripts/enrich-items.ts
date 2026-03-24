@@ -302,10 +302,10 @@ async function enrichItem(prisma: any, item: any) {
           stats.genres_added++;
         }
 
-        // Total episodes for TV
+        // Total episodes for TV / runtime for movies
         if (needsTotalEp) {
-          if (tmdbType === "movie") {
-            updateData.totalEp = 1;
+          if (tmdbType === "movie" && d.runtime) {
+            updateData.totalEp = d.runtime;  // Store runtime in minutes
             stats.episodes_added++;
           } else if (d.number_of_episodes) {
             updateData.totalEp = d.number_of_episodes;

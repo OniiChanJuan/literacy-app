@@ -33,7 +33,7 @@ export default function RootLayout({
       <body style={{ minHeight: "100vh", background: "#0b0b10", fontFamily: "var(--font-sans)", color: "#fff", margin: 0, padding: 0 }}>
         <Providers>
           <Nav />
-          <main style={{ padding: "26px 28px 80px" }}>
+          <main style={{ paddingTop: 26, paddingBottom: 80 }}>
             {children}
           </main>
         </Providers>

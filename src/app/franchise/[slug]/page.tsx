@@ -73,7 +73,7 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
 
   if (loading) {
     return (
-      <div style={{ padding: "60px 20px", textAlign: "center", color: "var(--text-faint)" }}>
+      <div className="content-width" style={{ paddingTop: 60, paddingBottom: 20, textAlign: "center", color: "var(--text-faint)" }}>
         Loading franchise...
       </div>
     );
@@ -81,7 +81,7 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
 
   if (!data || !data.items) {
     return (
-      <div style={{ padding: "60px 20px", textAlign: "center" }}>
+      <div className="content-width" style={{ paddingTop: 60, paddingBottom: 20, textAlign: "center" }}>
         <BackButton />
         <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 24, color: "#fff", marginTop: 20 }}>
           Franchise not found
@@ -112,7 +112,7 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
   ];
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto" }}>
+    <div className="content-width" style={{ maxWidth: 900 }}>
       <BackButton />
 
       {/* Parent link */}
