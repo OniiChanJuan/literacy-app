@@ -16,7 +16,7 @@ import CommunityReviews from "@/components/community-reviews";
 import Recommendations from "@/components/recommendations";
 import StatusTracker from "@/components/status-tracker";
 import UpcomingDetailSidebar from "@/components/upcoming-detail-sidebar";
-import ExternalScores from "@/components/external-scores";
+import ExternalScores, { ExternalScoresPanel } from "@/components/external-scores";
 import PlatformButtons from "@/components/platform-buttons";
 import WatchProviders from "@/components/watch-providers";
 import FranchiseBadge from "@/components/franchise-badge";
@@ -395,6 +395,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               </div>
 
               {/* External scores */}
+              <ExternalScoresPanel itemId={item.id} />
               <ExternalScores ext={item.ext} />
 
               {/* Your rating */}

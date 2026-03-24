@@ -95,6 +95,7 @@ model Item {
   reviews        Review[]
   libraryEntries LibraryEntry[]
   franchiseItems FranchiseItem[]
+  externalScores ExternalScore[]
 
   @@index([type])
   @@index([year])
@@ -103,6 +104,23 @@ model Item {
   @@index([type, year])
   @@index([type, isUpcoming])
   @@map("items")
+}
+
+model ExternalScore {
+  id        Int      @id @default(autoincrement())
+  itemId    Int      @map("item_id")
+  source    String   // e.g. "imdb", "rt_critics", "rt_audience", "metacritic", "mal", "anilist", "goodreads", "steam", "pitchfork", "ign", "spotify_popularity"
+  score     Float    // the numeric value
+  maxScore  Float    @map("max_score") // e.g. 10 for IMDb, 100 for RT/Meta, 5 for Goodreads
+  scoreType String   @default("community") @map("score_type") // "critics", "community", "platform"
+  label     String   @default("") // display label e.g. "Overwhelmingly Positive"
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, source])
+  @@index([itemId])
+  @@map("external_scores")
 }
 
 model Franchise {
