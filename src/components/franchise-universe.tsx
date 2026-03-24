@@ -98,6 +98,7 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
       borderRadius: 10,
       padding: 14,
       marginBottom: 24,
+      overflow: "hidden",
     }}>
       {/* Header */}
       <div style={{
@@ -124,14 +125,14 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
       </div>
 
       {/* Card row with scroll arrows */}
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", overflow: "hidden" }}>
         {/* Left arrow */}
         {showLeft && (
           <button
             onClick={() => scroll(-1)}
             aria-label="Scroll left"
             style={{
-              position: "absolute", left: -14, top: "50%", transform: "translateY(-50%)",
+              position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)",
               width: 28, height: 28, borderRadius: "50%",
               background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
               border: "0.5px solid rgba(255,255,255,0.1)",
@@ -150,7 +151,7 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
             onClick={() => scroll(1)}
             aria-label="Scroll right"
             style={{
-              position: "absolute", right: -14, top: "50%", transform: "translateY(-50%)",
+              position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)",
               width: 28, height: 28, borderRadius: "50%",
               background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
               border: "0.5px solid rgba(255,255,255,0.1)",
