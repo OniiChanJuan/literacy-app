@@ -1,22 +1,49 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, memo } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { TYPES, TYPE_ORDER, type Item, type UpcomingItem } from "@/lib/data";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
 
-interface CatalogRow {
-  key: string;
+/** Row that fetches data on mount (for above-the-fold content) */
+function EagerRow({
+  fetchUrl,
+  label,
+  sub,
+  icon,
+  iconBg,
+}: {
+  fetchUrl: string;
   label: string;
   sub: string;
   icon: string;
   iconBg: string;
-  items: Item[];
+}) {
+  const [items, setItems] = useState<Item[] | null>(null);
+
+  useEffect(() => {
+    fetch(fetchUrl)
+      .then((r) => r.json())
+      .then((data) => setItems(Array.isArray(data) ? data : []))
+      .catch(() => setItems([]));
+  }, [fetchUrl]);
+
+  if (items !== null && items.length === 0) return null;
+
+  return (
+    <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg}>
+      {items === null ? (
+        <SkeletonRow count={6} />
+      ) : (
+        items.map((item) => <Card key={item.id} item={item} />)
+      )}
+    </ScrollRow>
+  );
 }
 
-/** Lazy row — only fetches data when scrolled near viewport */
+/** Row that only fetches when scrolled near viewport */
 const LazyRow = memo(function LazyRow({
   fetchUrl,
   label,
@@ -39,7 +66,7 @@ const LazyRow = memo(function LazyRow({
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
-      { rootMargin: "200px" }
+      { rootMargin: "300px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -98,8 +125,8 @@ export default function ForYouPage() {
         </div>
       </div>
 
-      {/* Curated rows — each makes its own API call with DB-level sorting */}
-      <LazyRow
+      {/* Curated rows — fetch eagerly (above the fold) */}
+      <EagerRow
         fetchUrl="/api/catalog?curated=top_rated&limit=20"
         label="Critically Acclaimed"
         sub="Highest rated across all media"
@@ -107,7 +134,7 @@ export default function ForYouPage() {
         iconBg="#D4AF3722"
       />
 
-      <LazyRow
+      <EagerRow
         fetchUrl="/api/catalog?curated=popular&limit=20"
         label="Popular Right Now"
         sub="Recent releases making waves"
@@ -115,7 +142,7 @@ export default function ForYouPage() {
         iconBg="#E8485522"
       />
 
-      <LazyRow
+      <EagerRow
         fetchUrl="/api/catalog?curated=hidden_gems&limit=20"
         label="Hidden Gems"
         sub="Highly rated but under the radar"
@@ -155,7 +182,7 @@ export default function ForYouPage() {
         Browse by media
       </div>
 
-      {/* Per-type rows — each lazy loads independently */}
+      {/* Per-type rows — lazy load when scrolled near */}
       {TYPE_ORDER.map((type) => {
         const meta = TYPES[type];
         return (
