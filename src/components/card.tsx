@@ -75,8 +75,8 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
     <div
       onClick={handleClick}
       style={{
-        minWidth: 120,
-        maxWidth: 120,
+        minWidth: 160,
+        maxWidth: 160,
         borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
@@ -96,7 +96,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
     >
       {/* Cover — 65% of card */}
       <div style={{
-        height: 95,
+        height: 160,
         position: "relative",
         ...(hasImage && !imgError
           ? { background: "#1a1a2e" }
@@ -106,8 +106,8 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           <Image
             src={item.cover}
             alt={item.title}
-            width={120}
-            height={95}
+            width={160}
+            height={160}
             quality={70}
             sizes="120px"
             style={{
@@ -143,9 +143,9 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           background: "rgba(0,0,0,0.6)",
           backdropFilter: "blur(4px)",
           color: t.color,
-          fontSize: 7,
+          fontSize: 8,
           fontWeight: 700,
-          padding: "1px 5px",
+          padding: "2px 6px",
           borderRadius: 4,
           textTransform: "uppercase",
         }}>
@@ -188,10 +188,10 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
       </div>
 
       {/* Info area — 35% of card */}
-      <div style={{ background: "var(--bg-card)", padding: "6px 6px 5px" }}>
+      <div style={{ background: "var(--bg-card)", padding: "8px 8px 6px" }}>
         {/* Title */}
         <div style={{
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: 500,
           lineHeight: 1.2,
           marginBottom: 3,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, useRef, memo, useCallback } from "react";
 import { TYPES, type Item, type UpcomingItem } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import Card from "@/components/card";
@@ -10,32 +10,49 @@ import { SkeletonRow } from "@/components/skeleton-card";
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 
-async function fetchItems(url: string): Promise<Item[] | null> {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const data = await res.json();
-    return Array.isArray(data) ? data : null;
-  } catch {
-    return null;
+async function fetchItems(url: string, retries = 2): Promise<Item[] | null> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        if (attempt < retries) { await new Promise(r => setTimeout(r, 500 * (attempt + 1))); continue; }
+        return null;
+      }
+      const data = await res.json();
+      return Array.isArray(data) ? data : null;
+    } catch {
+      if (attempt < retries) { await new Promise(r => setTimeout(r, 500 * (attempt + 1))); continue; }
+      return null;
+    }
   }
+  return null;
 }
 
 /** Eager fetch row */
-function EagerRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref }: {
-  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string;
+function EagerRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0 }: {
+  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => {
-    fetchItems(fetchUrl).then((data) => {
-      if (data && data.length >= 4) setItems(data);
-      else if (data) setItems(null); // fewer than 4 = don't show
-      else setFailed(true);
-    });
-  }, [fetchUrl]);
+  const doFetch = useCallback(() => {
+    setFailed(false);
+    setItems(null);
+    const timer = setTimeout(() => {
+      fetchItems(fetchUrl).then((data) => {
+        if (data && data.length > 0) setItems(data);
+        else if (data) setItems([]); // empty = no items for this type
+        else setFailed(true);
+      });
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [fetchUrl, delay]);
 
+  useEffect(() => {
+    return doFetch();
+  }, [doFetch]);
+
+  // Show skeleton while loading
   if (items === null && !failed) {
     return (
       <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
@@ -43,7 +60,25 @@ function EagerRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref }: {
       </ScrollRow>
     );
   }
-  if (failed || !items || items.length < 4) return null;
+
+  // Show retry on failure
+  if (failed) {
+    return (
+      <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "20px 10px", minWidth: 200 }}>
+          <span style={{ fontSize: 11, color: "var(--text-faint)" }}>Failed to load</span>
+          <button onClick={doFetch} style={{
+            fontSize: 10, color: "#E84855", background: "rgba(232,72,85,0.1)",
+            border: "1px solid rgba(232,72,85,0.2)", borderRadius: 6,
+            padding: "4px 10px", cursor: "pointer",
+          }}>Retry</button>
+        </div>
+      </ScrollRow>
+    );
+  }
+
+  // Hide row only if genuinely empty (0 items for this category)
+  if (!items || items.length === 0) return null;
 
   return (
     <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
@@ -197,6 +232,7 @@ export default function ForYouPage() {
         icon="⭐"
         iconBg="#D4AF3722"
         seeAllHref="/explore"
+        delay={0}
       />
 
       <EagerRow
@@ -206,6 +242,7 @@ export default function ForYouPage() {
         icon="🔥"
         iconBg="#E8485522"
         seeAllHref="/explore"
+        delay={300}
       />
 
       <EagerRow
@@ -215,6 +252,7 @@ export default function ForYouPage() {
         icon="💎"
         iconBg="#3185FC22"
         seeAllHref="/explore"
+        delay={600}
       />
 
       {/* Per-type rows */}
