@@ -66,7 +66,7 @@ function ExploreContent() {
   const searchParams = useSearchParams();
 
   // Initialize state from URL
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("q") || "");
   const [selectedType, setSelectedType] = useState<MediaType | null>((searchParams.get("type") as MediaType) || null);
   const [selectedGenres, setSelectedGenres] = useState<string[]>(searchParams.get("genre")?.split(",").filter(Boolean) || []);
   const [selectedVibe, setSelectedVibe] = useState<string | null>(searchParams.get("vibe") || null);
@@ -83,6 +83,7 @@ function ExploreContent() {
   // Sync state to URL
   useEffect(() => {
     const params = new URLSearchParams();
+    if (search.trim()) params.set("q", search.trim());
     if (selectedType) params.set("type", selectedType);
     if (selectedGenres.length) params.set("genre", selectedGenres.join(","));
     if (selectedVibe) params.set("vibe", selectedVibe);
@@ -92,7 +93,7 @@ function ExploreContent() {
     if (window.location.pathname + window.location.search !== newUrl) {
       router.replace(newUrl, { scroll: false });
     }
-  }, [selectedType, selectedGenres, selectedVibe, sort, router]);
+  }, [search, selectedType, selectedGenres, selectedVibe, sort, router]);
 
   // Load counts
   useEffect(() => {

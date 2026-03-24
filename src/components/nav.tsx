@@ -1,10 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useLibrary } from "@/lib/library-context";
 import UserMenu from "./user-menu";
+import GlobalSearch from "./global-search";
 
 const tabs = [
   { id: "foryou",  label: "For You",  icon: "✦", href: "/" },
@@ -58,8 +60,9 @@ export default function Nav() {
           </div>
         </div>
 
-        {/* Right side: auth */}
+        {/* Right side: search + auth */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <Suspense fallback={null}><GlobalSearch /></Suspense>
           {session?.user ? (
             <>
               <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", textAlign: "right", lineHeight: 1.4 }}>
