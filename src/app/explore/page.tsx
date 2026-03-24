@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, type MediaType, type Item, type UpcomingItem } from "@/lib/data";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
@@ -70,7 +71,7 @@ function ExploreContent() {
   const [selectedGenres, setSelectedGenres] = useState<string[]>(searchParams.get("genre")?.split(",").filter(Boolean) || []);
   const [selectedVibe, setSelectedVibe] = useState<string | null>(searchParams.get("vibe") || null);
   const [sort, setSort] = useState<SortOption>((searchParams.get("sort") as SortOption) || "rating");
-  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
+  const [searchResults, setSearchResults] = useState<any | null>(null);
   const [searching, setSearching] = useState(false);
   const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
   const [gridItems, setGridItems] = useState<Item[]>([]);
@@ -99,15 +100,15 @@ function ExploreContent() {
     fetch("/api/upcoming").then((r) => r.json()).then((d) => setUpcoming(Array.isArray(d) ? d : [])).catch(() => {});
   }, []);
 
-  // Search
+  // Search — grouped results
   useEffect(() => {
     if (!search.trim() || search.trim().length < 2) { setSearchResults(null); return; }
     setSearching(true);
     const t = setTimeout(() => {
-      fetch(`/api/search?q=${encodeURIComponent(search.trim())}`)
-        .then((r) => r.json()).then((d) => { setSearchResults(Array.isArray(d) ? d : []); setSearching(false); })
-        .catch(() => { setSearchResults([]); setSearching(false); });
-    }, 400);
+      fetch(`/api/search?q=${encodeURIComponent(search.trim())}&grouped=true`)
+        .then((r) => r.json()).then((d) => { setSearchResults(d); setSearching(false); })
+        .catch(() => { setSearchResults({ groups: {}, franchise: null, suggestions: [], totalResults: 0 }); setSearching(false); });
+    }, 300);
     return () => clearTimeout(t);
   }, [search]);
 
@@ -138,23 +139,135 @@ function ExploreContent() {
   const typeGenres = selectedType ? (TYPE_GENRES[selectedType] || ALL_GENRES.slice(0, 12)) : [];
   const typeColor = selectedType ? TYPES[selectedType].color : "#fff";
 
-  // Show search results
+  // Show search results — organized by type
   if (searchResults !== null || searching) {
+    const sr = searchResults || {};
+    const groups = sr.groups || {};
+    const franchise = sr.franchise;
+    const suggestions = sr.suggestions || [];
+    const bestMatch = sr.bestMatch;
+    const totalResults = sr.totalResults || 0;
+    const hasResults = totalResults > 0;
+
     return (
       <div>
         <SearchBar search={search} setSearch={setSearch} />
-        {searching && <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 16 }}>Searching...</div>}
+        {searching && <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 16 }}>Searching across all media...</div>}
         {!searching && searchResults && (
           <>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>
-              {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for &ldquo;{search}&rdquo;
+              {totalResults} result{totalResults !== 1 ? "s" : ""} for &ldquo;{search}&rdquo;
             </div>
-            {searchResults.length > 0 ? (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 14 }}>
-                {searchResults.map((item) => <Card key={`${item.source}-${item.id}`} item={item} routeId={item.routeId} />)}
+
+            {/* Franchise match */}
+            {franchise && (
+              <Link
+                href={`/franchise/${franchise.id}`}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+                  background: "rgba(232,72,85,0.06)", border: "0.5px solid rgba(232,72,85,0.15)",
+                  borderRadius: 10, marginBottom: 16, textDecoration: "none",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(232,72,85,0.1)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(232,72,85,0.06)"; }}
+              >
+                <span style={{ fontSize: 24 }}>{franchise.icon}</span>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{franchise.name} universe</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>
+                    {franchise.itemCount} entries across {franchise.typeCount} media type{franchise.typeCount !== 1 ? "s" : ""}
+                  </div>
+                </div>
+                <span style={{ marginLeft: "auto", fontSize: 11, color: "rgba(255,255,255,0.2)" }}>→</span>
+              </Link>
+            )}
+
+            {/* Genre/vibe suggestions */}
+            {suggestions.length > 0 && (
+              <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+                {suggestions.map((s: any) => (
+                  <Link
+                    key={s.value}
+                    href={`/explore?${s.type === "genre" ? "genre" : "vibe"}=${encodeURIComponent(s.value)}`}
+                    style={{
+                      fontSize: 11, padding: "5px 12px", borderRadius: 8,
+                      background: "rgba(255,255,255,0.04)", border: "0.5px solid rgba(255,255,255,0.08)",
+                      color: "rgba(255,255,255,0.5)", textDecoration: "none",
+                    }}
+                  >
+                    {s.label} →
+                  </Link>
+                ))}
               </div>
-            ) : (
-              <div style={{ textAlign: "center", padding: "32px 20px", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>No matches found.</div>
+            )}
+
+            {/* Best match — prominent card */}
+            {bestMatch && hasResults && (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>Best match</div>
+                <Link
+                  href={`/item/${bestMatch.routeId || bestMatch.id}`}
+                  style={{
+                    display: "flex", gap: 14, padding: 14, borderRadius: 10,
+                    background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.08)",
+                    textDecoration: "none", transition: "background 0.15s",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+                >
+                  {bestMatch.cover?.startsWith("http") && (
+                    <div style={{ width: 80, height: 110, borderRadius: 6, overflow: "hidden", flexShrink: 0, position: "relative" }}>
+                      <img src={bestMatch.cover} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>{bestMatch.title}</span>
+                      <span style={{
+                        fontSize: 8, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
+                        background: TYPES[bestMatch.type as keyof typeof TYPES]?.color + "22",
+                        color: TYPES[bestMatch.type as keyof typeof TYPES]?.color || "#888",
+                        textTransform: "uppercase",
+                      }}>
+                        {TYPES[bestMatch.type as keyof typeof TYPES]?.label || bestMatch.type}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginBottom: 6 }}>{bestMatch.year}</div>
+                    {bestMatch.desc && (
+                      <div style={{
+                        fontSize: 11, color: "rgba(255,255,255,0.35)", lineHeight: 1.5,
+                        overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                      }}>
+                        {bestMatch.desc || bestMatch.description}
+                      </div>
+                    )}
+                    {bestMatch.sourceLabel && bestMatch.source !== "local" && (
+                      <div style={{ fontSize: 8, color: "rgba(255,255,255,0.15)", marginTop: 4 }}>From {bestMatch.sourceLabel}</div>
+                    )}
+                  </div>
+                </Link>
+              </div>
+            )}
+
+            {/* Type-grouped results */}
+            {Object.entries(groups).map(([type, group]: [string, any]) => (
+              <div key={type} style={{ marginBottom: 16 }}>
+                <ScrollRow
+                  label={group.label}
+                  sub={`${group.items.length} result${group.items.length !== 1 ? "s" : ""}`}
+                >
+                  {group.items.map((item: any) => (
+                    <Card key={`${item.source}-${item.id}`} item={item} routeId={item.routeId} />
+                  ))}
+                </ScrollRow>
+              </div>
+            ))}
+
+            {!hasResults && !searching && (
+              <div style={{ textAlign: "center", padding: "40px 20px", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
+                No matches found. Try a different search.
+              </div>
             )}
           </>
         )}
