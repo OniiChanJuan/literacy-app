@@ -9,7 +9,7 @@ export async function GET() {
     // Count by type
     const typeCounts = await prisma.item.groupBy({
       by: ["type"],
-      where: { isUpcoming: false },
+      where: { isUpcoming: false, parentItemId: null },
       _count: true,
     });
 
@@ -17,7 +17,7 @@ export async function GET() {
     for (const t of typeCounts) byType[t.type] = t._count;
 
     // Total count
-    const total = await prisma.item.count({ where: { isUpcoming: false } });
+    const total = await prisma.item.count({ where: { isUpcoming: false, parentItemId: null } });
 
     return NextResponse.json({ byType, total });
   } catch (error: any) {

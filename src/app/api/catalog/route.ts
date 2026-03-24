@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
   const excludeIds = searchParams.get("exclude")?.split(",").map(Number).filter(Boolean) || [];
 
   try {
-    const where: any = { isUpcoming: false };
+    const where: any = { isUpcoming: false, parentItemId: null };
     if (type) where.type = type;
     if (genre) where.genre = { has: genre };
     if (vibe) where.vibes = { has: vibe };
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     // ── Critically acclaimed ──────────────────────────────────────────
     if (curated === "top_rated") {
       const items = await prisma.item.findMany({
-        where: { isUpcoming: false, voteCount: { gte: 50 }, id: excludeIds.length ? { notIn: excludeIds } : undefined },
+        where: { isUpcoming: false, parentItemId: null, voteCount: { gte: 50 }, id: excludeIds.length ? { notIn: excludeIds } : undefined },
         orderBy: { voteCount: "desc" },
         take: 500,
         select: ITEM_SELECT,
@@ -94,6 +94,7 @@ export async function GET(req: NextRequest) {
       const items = await prisma.item.findMany({
         where: {
           isUpcoming: false,
+          parentItemId: null,
           year: { gte: currentYear - 2 },
           voteCount: { gte: 10 },
           id: excludeIds.length ? { notIn: excludeIds } : undefined,
@@ -112,6 +113,7 @@ export async function GET(req: NextRequest) {
       const items = await prisma.item.findMany({
         where: {
           isUpcoming: false,
+          parentItemId: null,
           voteCount: { gte: 10, lt: 5000 }, // Enough to be real but not mainstream
           id: excludeIds.length ? { notIn: excludeIds } : undefined,
         },

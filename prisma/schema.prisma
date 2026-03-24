@@ -92,7 +92,14 @@ model Item {
   wikidataId      String?  @map("wikidata_id")
   popularityScore Float    @default(0) @map("popularity_score")
   voteCount       Int      @default(0) @map("vote_count")
+
+  parentItemId    Int?     @map("parent_item_id")
+  itemSubtype     String?  @map("item_subtype") // 'base', 'dlc', 'expansion', 'season_pass', or null
+
   createdAt       DateTime @default(now()) @map("created_at")
+
+  parentItem     Item?    @relation("ItemDLC", fields: [parentItemId], references: [id])
+  dlcs           Item[]   @relation("ItemDLC")
 
   ratings        Rating[]
   reviews        Review[]
@@ -106,6 +113,7 @@ model Item {
   @@index([isUpcoming])
   @@index([type, year])
   @@index([type, isUpcoming])
+  @@index([parentItemId])
   @@map("items")
 }
 

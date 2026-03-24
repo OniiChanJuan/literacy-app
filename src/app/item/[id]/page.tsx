@@ -22,6 +22,7 @@ import WatchProviders from "@/components/watch-providers";
 import FranchiseBadge from "@/components/franchise-badge";
 import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
+import DlcSection, { DlcBadge } from "@/components/dlc-section";
 
 function dbItemToItem(dbItem: any): Item {
   return {
@@ -111,9 +112,56 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
   const t = TYPES[item.type];
 
+  // Fetch DLC data for games
+  let dlcs: any[] = [];
+  let parentGame: { id: number; title: string } | null = null;
+
+  if (item.type === "game" && !isExternal) {
+    const numericId = typeof item.id === "number" ? item.id : parseInt(id);
+
+    // Check if this item IS a DLC (has a parent)
+    try {
+      const dbItem = await prisma.item.findUnique({
+        where: { id: numericId },
+        select: {
+          parentItemId: true,
+          itemSubtype: true,
+          parentItem: { select: { id: true, title: true } },
+          dlcs: {
+            select: {
+              id: true, title: true, type: true, year: true, cover: true, itemSubtype: true,
+              externalScores: {
+                select: { source: true, score: true, maxScore: true },
+                take: 1,
+                orderBy: { score: "desc" },
+              },
+            },
+            orderBy: { year: "asc" },
+          },
+        },
+      });
+
+      if (dbItem?.parentItem) {
+        parentGame = dbItem.parentItem;
+      }
+
+      if (dbItem?.dlcs && dbItem.dlcs.length > 0) {
+        dlcs = dbItem.dlcs.map((d: any) => ({
+          ...d,
+          bestScore: d.externalScores?.[0] || null,
+        }));
+      }
+    } catch (e) {
+      // Silently skip if DB query fails
+    }
+  }
+
   return (
     <div>
       <BackButton />
+
+      {/* DLC badge — if this is a DLC, show link back to base game */}
+      {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} />}
 
       {/* Franchise badge */}
       <FranchiseBadge routeId={id} />
@@ -356,6 +404,11 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 ))}
               </div>
             </section>
+          )}
+
+          {/* DLC & Expansions — only for base games with DLCs */}
+          {dlcs.length > 0 && (
+            <DlcSection dlcs={dlcs} baseGameTitle={item.title} typeColor={t.color} />
           )}
 
           {/* Community Reviews — only for released items */}
