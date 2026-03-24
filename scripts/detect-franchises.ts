@@ -1,0 +1,533 @@
+/**
+ * Franchise detection script — scans all items and links them into franchises
+ * using a 3-tier confidence system.
+ *
+ * Run with: npx tsx scripts/detect-franchises.ts
+ */
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+// ── Config ──────────────────────────────────────────────────────────────────
+const TMDB_KEY = process.env.TMDB_API_KEY!;
+const IGDB_ID = process.env.IGDB_CLIENT_ID!;
+const IGDB_SECRET = process.env.IGDB_CLIENT_SECRET!;
+const JIKAN_BASE = "https://api.jikan.moe/v4";
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function fetchJson(url: string, opts?: RequestInit): Promise<any> {
+  const res = await fetch(url, opts);
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
+  }
+  return res.json();
+}
+
+interface DbItem {
+  id: number;
+  title: string;
+  type: string;
+  year: number;
+  people: any;
+  cover: string;
+}
+
+interface Person { role: string; name: string }
+
+// ── Counters ────────────────────────────────────────────────────────────────
+const stats = {
+  tier1_tmdb: 0,
+  tier1_jikan: 0,
+  tier1_igdb: 0,
+  tier2_keyword: 0,
+  tier2_title: 0,
+  tier3_title_only: 0,
+  tier3_credits: 0,
+  total_franchises: 0,
+  total_suggestions: 0,
+};
+
+// ── Main ────────────────────────────────────────────────────────────────────
+async function main() {
+  console.log("🔍 Starting franchise detection...\n");
+
+  const connUrl = process.env.DIRECT_URL || process.env.DATABASE_URL!;
+  const adapter = new PrismaPg({ connectionString: connUrl });
+  const prisma = new PrismaClient({ adapter });
+
+  // Load all items
+  const items = await prisma.item.findMany({
+    select: { id: true, title: true, type: true, year: true, people: true, cover: true },
+  });
+  console.log(`📊 ${items.length} items loaded\n`);
+
+  // Group items by type
+  const movieItems = items.filter((i) => i.type === "movie");
+  const tvItems = items.filter((i) => i.type === "tv");
+  const gameItems = items.filter((i) => i.type === "game");
+  const mangaItems = items.filter((i) => i.type === "manga");
+  const animeItems = tvItems.filter((i) => {
+    // Try to detect anime by checking if people has Studio role or genre has Anime
+    return true; // We'll check via Jikan
+  });
+
+  // Get existing franchise item IDs to skip (used by all tiers)
+  const existingFranchiseItems = await prisma.franchiseItem.findMany({
+    select: { itemId: true },
+  });
+  const alreadyLinked = new Set(existingFranchiseItems.map((fi) => fi.itemId));
+
+  // ── TIER 1: TMDB Collections ──────────────────────────────────────────
+  console.log("═══ TIER 1: High Confidence (API-explicit data) ═══\n");
+  console.log("📽  TMDB Collections...");
+
+  const collectionMap = new Map<string, { name: string; items: DbItem[] }>();
+
+  for (const item of movieItems) {
+    try {
+      // Search TMDB for this movie
+      const searchData = await fetchJson(
+        `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}&year=${item.year}`
+      );
+      const match = (searchData.results || []).find((r: any) =>
+        r.title?.toLowerCase() === item.title.toLowerCase() ||
+        r.title?.toLowerCase().includes(item.title.toLowerCase())
+      );
+
+      if (match) {
+        // Get full movie details for belongs_to_collection
+        const details = await fetchJson(
+          `https://api.themoviedb.org/3/movie/${match.id}?api_key=${TMDB_KEY}`
+        );
+
+        if (details.belongs_to_collection) {
+          const coll = details.belongs_to_collection;
+          const key = `tmdb-collection-${coll.id}`;
+          if (!collectionMap.has(key)) {
+            collectionMap.set(key, { name: coll.name, items: [] });
+          }
+          collectionMap.get(key)!.items.push(item);
+        }
+      }
+      await sleep(260);
+    } catch (e: any) {
+      // Skip individual failures
+    }
+  }
+
+  // Create franchises from TMDB collections (only if 2+ items matched)
+  for (const [, coll] of collectionMap) {
+    if (coll.items.length < 2) continue;
+    const franchise = await prisma.franchise.create({
+      data: {
+        name: coll.name.replace(" Collection", ""),
+        icon: "🎬",
+        description: `Auto-detected from TMDB collection: ${coll.name}`,
+        cover: coll.items[0]?.cover || "",
+        autoGenerated: true,
+        confidenceTier: 1,
+        items: {
+          create: coll.items.map((item) => ({
+            itemId: item.id,
+            addedBy: "auto",
+          })),
+        },
+      },
+    });
+    stats.tier1_tmdb++;
+    stats.total_franchises++;
+    coll.items.forEach((i) => alreadyLinked.add(i.id));
+    console.log(`  ✓ "${franchise.name}" — ${coll.items.length} items: ${coll.items.map((i) => i.title).join(", ")}`);
+  }
+
+  // ── TIER 1: Jikan Relations ───────────────────────────────────────────
+  console.log("\n🗾 Jikan Relations (manga ↔ anime adaptations)...");
+
+  const validRelationTypes = new Set(["Adaptation", "Sequel", "Prequel", "Parent story", "Side story", "Spin-off"]);
+  const jikanLinked = new Set<string>(); // Track to avoid duplicates
+
+  for (const manga of mangaItems) {
+    try {
+      // Search Jikan for this manga
+      const searchData = await fetchJson(
+        `${JIKAN_BASE}/manga?q=${encodeURIComponent(manga.title)}&limit=3`
+      );
+      await sleep(400);
+
+      const match = (searchData.data || []).find((m: any) => {
+        const jTitle = (m.title_english || m.title || "").toLowerCase();
+        const mangaTitle = manga.title.toLowerCase();
+        // Strict exact match only
+        return jTitle === mangaTitle;
+      });
+
+      if (!match) continue;
+
+      // Get relations
+      const relData = await fetchJson(`${JIKAN_BASE}/manga/${match.mal_id}/relations`);
+      await sleep(400);
+
+      for (const rel of relData.data || []) {
+        if (!validRelationTypes.has(rel.relation)) continue;
+
+        for (const entry of rel.entry || []) {
+          if (entry.type !== "anime") continue;
+
+          // Find matching anime in our DB — strict title match only
+          const eTitle = (entry.name || "").toLowerCase();
+          const animeMatch = items.find((i) => {
+            if (i.type !== "tv") return false;
+            const iTitle = i.title.toLowerCase();
+            // Must be exact match or differ only by subtitle
+            return iTitle === eTitle ||
+              iTitle.replace(/[:–—]\s.*$/, "").trim() === eTitle.replace(/[:–—]\s.*$/, "").trim();
+          });
+
+          if (animeMatch) {
+            const linkKey = [manga.id, animeMatch.id].sort().join("-");
+            if (jikanLinked.has(linkKey)) continue;
+            jikanLinked.add(linkKey);
+
+            const franchise = await prisma.franchise.create({
+              data: {
+                name: manga.title,
+                icon: "🗾",
+                description: `Auto-detected: manga ↔ anime adaptation via MAL relations`,
+                cover: manga.cover || animeMatch.cover || "",
+                autoGenerated: true,
+                confidenceTier: 1,
+                items: {
+                  create: [
+                    { itemId: manga.id, addedBy: "auto" },
+                    { itemId: animeMatch.id, addedBy: "auto" },
+                  ],
+                },
+              },
+            });
+            stats.tier1_jikan++;
+            stats.total_franchises++;
+            alreadyLinked.add(manga.id);
+            alreadyLinked.add(animeMatch.id);
+            console.log(`  ✓ "${franchise.name}" — ${manga.title} (manga) ↔ ${animeMatch.title} (anime) [${rel.relation}]`);
+          }
+        }
+      }
+    } catch (e: any) {
+      // Skip individual failures
+    }
+  }
+
+  // ── TIER 1: IGDB Franchises ───────────────────────────────────────────
+  console.log("\n🎮 IGDB Franchises...");
+
+  let igdbToken = "";
+  try {
+    const tokenData = await fetchJson(
+      `https://id.twitch.tv/oauth2/token?client_id=${IGDB_ID}&client_secret=${IGDB_SECRET}&grant_type=client_credentials`,
+      { method: "POST" }
+    );
+    igdbToken = tokenData.access_token;
+  } catch (e: any) {
+    console.warn("  Failed to get IGDB token:", e.message);
+  }
+
+  if (igdbToken) {
+    const igdbFranchiseMap = new Map<number, { name: string; items: DbItem[] }>();
+
+    // Process games in batches
+    const gameTitles = gameItems.map((g) => `"${g.title.replace(/"/g, '\\"')}"`).join(",");
+    try {
+      const searchResults = await fetch("https://api.igdb.com/v4/games", {
+        method: "POST",
+        headers: {
+          "Client-ID": IGDB_ID,
+          Authorization: `Bearer ${igdbToken}`,
+          "Content-Type": "text/plain",
+        },
+        body: `fields name,franchise.name,franchises.name;
+               where name = (${gameTitles}) & franchise != null;
+               limit 100;`,
+      });
+      const games = await searchResults.json();
+
+      for (const g of games) {
+        const dbMatch = gameItems.find(
+          (i) => i.title.toLowerCase() === (g.name || "").toLowerCase()
+        );
+        if (!dbMatch) continue;
+
+        const franchiseId = g.franchise?.id;
+        const franchiseName = g.franchise?.name;
+        if (!franchiseId || !franchiseName) continue;
+
+        if (!igdbFranchiseMap.has(franchiseId)) {
+          igdbFranchiseMap.set(franchiseId, { name: franchiseName, items: [] });
+        }
+        igdbFranchiseMap.get(franchiseId)!.items.push(dbMatch);
+      }
+    } catch (e: any) {
+      console.warn("  IGDB batch search failed:", e.message);
+    }
+
+    for (const [, fran] of igdbFranchiseMap) {
+      // Filter out items already in a franchise
+      const unlinked = fran.items.filter((i) => !alreadyLinked.has(i.id));
+      if (unlinked.length < 2) continue;
+      // Deduplicate items by ID
+      const uniqueItems = [...new Map(unlinked.map((i) => [i.id, i])).values()];
+      if (uniqueItems.length < 2) continue;
+
+      try {
+      const franchise = await prisma.franchise.create({
+        data: {
+          name: fran.name,
+          icon: "🎮",
+          description: `Auto-detected from IGDB franchise: ${fran.name}`,
+          cover: uniqueItems[0]?.cover || "",
+          autoGenerated: true,
+          confidenceTier: 1,
+          items: {
+            create: uniqueItems.map((item) => ({
+              itemId: item.id,
+              addedBy: "auto",
+            })),
+          },
+        },
+      });
+      uniqueItems.forEach((i) => alreadyLinked.add(i.id));
+      stats.tier1_igdb++;
+      stats.total_franchises++;
+      console.log(`  ✓ "${franchise.name}" — ${uniqueItems.length} games: ${uniqueItems.map((i) => i.title).join(", ")}`);
+      } catch (e: any) {
+        console.warn(`  ⚠ Failed to create IGDB franchise "${fran.name}": ${e.message?.slice(0, 100)}`);
+      }
+    }
+  }
+
+  // ── TIER 2: Exact title + shared key person ───────────────────────────
+  console.log("\n═══ TIER 2: Medium Confidence (two matching signals) ═══\n");
+  console.log("👥 Exact title + shared creator...");
+
+  // Group items by normalized base title (before colon/dash subtitle)
+  function normalizeTitle(title: string): string {
+    return title
+      .toLowerCase()
+      .replace(/[:–—]\s.*$/, "") // Remove subtitle after colon/dash
+      .replace(/\s*\(.*?\)\s*/g, "") // Remove parentheticals
+      .trim();
+  }
+
+  function getKeyPeople(people: any): string[] {
+    if (!Array.isArray(people)) return [];
+    const keyRoles = ["director", "author", "creator", "writer", "original author", "developer"];
+    return (people as Person[])
+      .filter((p) => keyRoles.some((r) => p.role.toLowerCase().includes(r)))
+      .map((p) => p.name.toLowerCase());
+  }
+
+  const titleGroups = new Map<string, DbItem[]>();
+  for (const item of items) {
+    if (alreadyLinked.has(item.id)) continue;
+    const norm = normalizeTitle(item.title);
+    if (!titleGroups.has(norm)) titleGroups.set(norm, []);
+    titleGroups.get(norm)!.push(item);
+  }
+
+  for (const [normTitle, group] of titleGroups) {
+    if (group.length < 2) continue;
+
+    // Check for items from different media types
+    const types = new Set(group.map((i) => i.type));
+    if (types.size < 2) continue;
+
+    // Check for shared key people
+    const allPeople = group.map((i) => ({ item: i, people: getKeyPeople(i.people) }));
+
+    // Find pairs with shared people
+    const linkedItems: DbItem[] = [];
+    let hasSharedPerson = false;
+
+    for (let a = 0; a < allPeople.length; a++) {
+      for (let b = a + 1; b < allPeople.length; b++) {
+        if (allPeople[a].item.type === allPeople[b].item.type) continue;
+        const shared = allPeople[a].people.filter((p) => allPeople[b].people.includes(p));
+        if (shared.length > 0) {
+          hasSharedPerson = true;
+          if (!linkedItems.includes(allPeople[a].item)) linkedItems.push(allPeople[a].item);
+          if (!linkedItems.includes(allPeople[b].item)) linkedItems.push(allPeople[b].item);
+        }
+      }
+    }
+
+    if (hasSharedPerson && linkedItems.length >= 2) {
+      // TIER 2: Create franchise
+      const franchise = await prisma.franchise.create({
+        data: {
+          name: group[0].title.replace(/[:–—]\s.*$/, "").replace(/\s*\(.*?\)\s*/g, "").trim(),
+          icon: "🔗",
+          description: `Auto-detected: exact title match + shared creator across media types`,
+          cover: linkedItems[0]?.cover || "",
+          autoGenerated: true,
+          confidenceTier: 2,
+          items: {
+            create: linkedItems.map((item) => ({
+              itemId: item.id,
+              addedBy: "auto",
+            })),
+          },
+        },
+      });
+      stats.tier2_title++;
+      stats.total_franchises++;
+      console.log(`  ✓ "${franchise.name}" — ${linkedItems.map((i) => `${i.title} (${i.type})`).join(", ")}`);
+      linkedItems.forEach((i) => alreadyLinked.add(i.id));
+    } else if (!hasSharedPerson && types.size >= 2) {
+      // TIER 3: Same title, different creators — save as suggestion
+      const unlinked = group.filter((i) => !alreadyLinked.has(i.id));
+      if (unlinked.length >= 2) {
+        for (let a = 0; a < unlinked.length; a++) {
+          for (let b = a + 1; b < unlinked.length; b++) {
+            if (unlinked[a].type === unlinked[b].type) continue;
+            await prisma.suggestedConnection.create({
+              data: {
+                itemId1: unlinked[a].id,
+                itemId2: unlinked[b].id,
+                reason: `Same title "${normTitle}", different creators — verify manually`,
+                confidenceTier: 3,
+              },
+            });
+            stats.tier3_title_only++;
+            stats.total_suggestions++;
+            console.log(`  ⚠ Suggestion: "${unlinked[a].title}" (${unlinked[a].type}) ↔ "${unlinked[b].title}" (${unlinked[b].type}) — same title, no shared people`);
+          }
+        }
+      }
+    }
+  }
+
+  // ── TIER 2: TMDB keyword-based adaptation detection ───────────────────
+  console.log("\n📚 TMDB keyword-based adaptations...");
+
+  const adaptationKeywords = ["based on novel", "based on manga", "based on comic", "based on video game", "based on book"];
+
+  for (const item of [...movieItems, ...tvItems].slice(0, 100)) {
+    if (alreadyLinked.has(item.id)) continue;
+
+    try {
+      const searchData = await fetchJson(
+        `https://api.themoviedb.org/3/search/${item.type === "movie" ? "movie" : "tv"}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}&year=${item.year}`
+      );
+      const match = (searchData.results || []).find((r: any) => {
+        const t = (r.title || r.name || "").toLowerCase();
+        return t === item.title.toLowerCase();
+      });
+      if (!match) { await sleep(260); continue; }
+
+      // Get credits for "original author" type roles
+      const credits = await fetchJson(
+        `https://api.themoviedb.org/3/${item.type === "movie" ? "movie" : "tv"}/${match.id}/credits?api_key=${TMDB_KEY}`
+      );
+      await sleep(260);
+
+      const authorRoles = ["novel", "original series", "characters", "book", "manga", "comic book", "graphic novel"];
+      const originalAuthors = (credits.crew || [])
+        .filter((c: any) => authorRoles.some((r) => (c.job || "").toLowerCase().includes(r)))
+        .map((c: any) => c.name);
+
+      if (originalAuthors.length === 0) continue;
+
+      // Search our DB for works by these authors
+      for (const author of originalAuthors) {
+        const authorLower = author.toLowerCase();
+        const sourceItem = items.find((i) => {
+          if (i.id === item.id) return false;
+          if (alreadyLinked.has(i.id)) return false;
+          const people = Array.isArray(i.people) ? i.people as Person[] : [];
+          return people.some((p) =>
+            p.name.toLowerCase() === authorLower &&
+            ["author", "writer", "creator"].some((r) => p.role.toLowerCase().includes(r))
+          );
+        });
+
+        if (sourceItem) {
+          // Verify title match (90%+ substring)
+          const srcTitle = normalizeTitle(sourceItem.title);
+          const itemTitle = normalizeTitle(item.title);
+          const isSubstring = srcTitle.includes(itemTitle) || itemTitle.includes(srcTitle);
+
+          if (isSubstring) {
+            // TIER 2: Two signals — keyword + author match
+            const franchise = await prisma.franchise.create({
+              data: {
+                name: sourceItem.title.replace(/[:–—]\s.*$/, "").trim(),
+                icon: "📖",
+                description: `Auto-detected: TMDB credits "${author}" as source author, matched to ${sourceItem.type} in database`,
+                cover: sourceItem.cover || item.cover || "",
+                autoGenerated: true,
+                confidenceTier: 2,
+                items: {
+                  create: [
+                    { itemId: sourceItem.id, addedBy: "auto" },
+                    { itemId: item.id, addedBy: "auto" },
+                  ],
+                },
+              },
+            });
+            stats.tier2_keyword++;
+            stats.total_franchises++;
+            alreadyLinked.add(sourceItem.id);
+            alreadyLinked.add(item.id);
+            console.log(`  ✓ "${franchise.name}" — ${sourceItem.title} (${sourceItem.type}) ↔ ${item.title} (${item.type}) [author: ${author}]`);
+            break;
+          }
+        } else {
+          // TIER 3: Credits mention an author but we can't find their work
+          await prisma.suggestedConnection.create({
+            data: {
+              itemId1: item.id,
+              itemId2: item.id, // Self-reference since we don't have the source
+              reason: `TMDB says "${item.title}" is based on work by ${author}, but no matching ${item.type === "movie" ? "book/comic" : "source"} found in database`,
+              confidenceTier: 3,
+            },
+          });
+          stats.tier3_credits++;
+          stats.total_suggestions++;
+        }
+      }
+    } catch (e: any) {
+      // Skip
+    }
+  }
+
+  // ── Summary ───────────────────────────────────────────────────────────
+  console.log("\n\n════════════════════════════════════════════════════════");
+  console.log("📊 FRANCHISE DETECTION SUMMARY");
+  console.log("════════════════════════════════════════════════════════\n");
+
+  console.log("TIER 1 (High Confidence — auto-linked):");
+  console.log(`  TMDB Collections:     ${stats.tier1_tmdb} franchises`);
+  console.log(`  Jikan Relations:      ${stats.tier1_jikan} franchises`);
+  console.log(`  IGDB Franchises:      ${stats.tier1_igdb} franchises`);
+
+  console.log("\nTIER 2 (Medium Confidence — auto-linked, review recommended):");
+  console.log(`  TMDB Keyword+Author:  ${stats.tier2_keyword} franchises`);
+  console.log(`  Exact Title+Person:   ${stats.tier2_title} franchises`);
+
+  console.log("\nTIER 3 (Low Confidence — suggestions only, NOT linked):");
+  console.log(`  Same title no people: ${stats.tier3_title_only} suggestions`);
+  console.log(`  Missing source work:  ${stats.tier3_credits} suggestions`);
+
+  console.log(`\n═══════════════════════════════════════════════════════`);
+  console.log(`  Total franchises created:   ${stats.total_franchises}`);
+  console.log(`  Total suggestions saved:    ${stats.total_suggestions}`);
+  console.log(`═══════════════════════════════════════════════════════\n`);
+
+  await prisma.$disconnect();
+}
+
+main().catch((e) => {
+  console.error("Detection failed:", e);
+  process.exit(1);
+});
