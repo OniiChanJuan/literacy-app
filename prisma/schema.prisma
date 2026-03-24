@@ -115,11 +115,18 @@ model Item {
   wantCount   Int?     @map("want_count")
 
   wikidataId      String?  @map("wikidata_id")
+  tmdbId          Int?     @map("tmdb_id")
+  igdbId          Int?     @map("igdb_id")
+  malId           Int?     @map("mal_id")
+  spotifyId       String?  @map("spotify_id")
+  googleBooksId   String?  @map("google_books_id")
+  comicVineId     Int?     @map("comic_vine_id")
   popularityScore Float    @default(0) @map("popularity_score")
   voteCount       Int      @default(0) @map("vote_count")
+  lastSyncedAt    DateTime? @map("last_synced_at")
 
   parentItemId    Int?     @map("parent_item_id")
-  itemSubtype     String?  @map("item_subtype") // 'base', 'dlc', 'expansion', 'season_pass', or null
+  itemSubtype     String?  @map("item_subtype")
 
   createdAt       DateTime @default(now()) @map("created_at")
 

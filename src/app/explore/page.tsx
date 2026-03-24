@@ -309,7 +309,7 @@ function ExploreContent() {
                   >
                     <div style={{ fontSize: 22, marginBottom: 5 }}>{t.icon}</div>
                     <div style={{ fontSize: 12, fontWeight: 700, color: t.color, marginBottom: 2 }}>{t.label}</div>
-                    <div style={{ fontSize: 9, color: "var(--text-faint)" }}>{count} title{count !== 1 ? "s" : ""}</div>
+                    <div style={{ fontSize: 9, color: "var(--text-faint)" }}>Explore all</div>
                   </button>
                 );
               })}

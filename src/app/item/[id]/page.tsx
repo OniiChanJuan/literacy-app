@@ -62,28 +62,91 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   const jikanParsed = parseJikanId(id);
   const cvParsed = parseCvId(id);
 
+  // Auto-import: fetch from API, save to DB, use local ID
   if (tmdbParsed) {
-    item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
-    isExternal = true;
+    // Check if already imported
+    const existing = await prisma.item.findFirst({ where: { tmdbId: tmdbParsed.tmdbId, type: tmdbParsed.type } }).catch(() => null);
+    if (existing) {
+      item = dbItemToItem(existing);
+    } else {
+      item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
+      if (item) {
+        const saved = await prisma.item.create({
+          data: { title: item.title, type: item.type, genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: item.totalEp || 0, tmdbId: tmdbParsed.tmdbId, lastSyncedAt: new Date() },
+        }).catch(() => null);
+        if (saved) item = { ...item, id: saved.id };
+        isExternal = true;
+      }
+    }
   } else if (igdbParsed) {
-    item = await getIgdbDetails(igdbParsed);
-    isExternal = true;
+    const existing = await prisma.item.findFirst({ where: { igdbId: igdbParsed } }).catch(() => null);
+    if (existing) { item = dbItemToItem(existing); }
+    else {
+      item = await getIgdbDetails(igdbParsed);
+      if (item) {
+        const saved = await prisma.item.create({
+          data: { title: item.title, type: "game", genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, igdbId: igdbParsed, lastSyncedAt: new Date() },
+        }).catch(() => null);
+        if (saved) item = { ...item, id: saved.id };
+        isExternal = true;
+      }
+    }
   } else if (gbookParsed) {
-    item = await getGoogleBookDetails(gbookParsed);
-    isExternal = true;
+    const existing = await prisma.item.findFirst({ where: { googleBooksId: gbookParsed } }).catch(() => null);
+    if (existing) { item = dbItemToItem(existing); }
+    else {
+      item = await getGoogleBookDetails(gbookParsed);
+      if (item) {
+        const saved = await prisma.item.create({
+          data: { title: item.title, type: "book", genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, googleBooksId: gbookParsed, lastSyncedAt: new Date() },
+        }).catch(() => null);
+        if (saved) item = { ...item, id: saved.id };
+        isExternal = true;
+      }
+    }
   } else if (spotifyParsed) {
-    item = spotifyParsed.type === "album"
-      ? await getSpotifyAlbumDetails(spotifyParsed.spotifyId)
-      : await getSpotifyShowDetails(spotifyParsed.spotifyId);
-    isExternal = true;
+    const existing = await prisma.item.findFirst({ where: { spotifyId: spotifyParsed.spotifyId } }).catch(() => null);
+    if (existing) { item = dbItemToItem(existing); }
+    else {
+      item = spotifyParsed.type === "album"
+        ? await getSpotifyAlbumDetails(spotifyParsed.spotifyId)
+        : await getSpotifyShowDetails(spotifyParsed.spotifyId);
+      if (item) {
+        const saved = await prisma.item.create({
+          data: { title: item.title, type: item.type, genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, spotifyId: spotifyParsed.spotifyId, lastSyncedAt: new Date() },
+        }).catch(() => null);
+        if (saved) item = { ...item, id: saved.id };
+        isExternal = true;
+      }
+    }
   } else if (jikanParsed) {
-    item = jikanParsed.type === "manga"
-      ? await getJikanMangaDetails(jikanParsed.malId)
-      : await getJikanAnimeDetails(jikanParsed.malId);
-    isExternal = true;
+    const existing = await prisma.item.findFirst({ where: { malId: jikanParsed.malId } }).catch(() => null);
+    if (existing) { item = dbItemToItem(existing); }
+    else {
+      item = jikanParsed.type === "manga"
+        ? await getJikanMangaDetails(jikanParsed.malId)
+        : await getJikanAnimeDetails(jikanParsed.malId);
+      if (item) {
+        const saved = await prisma.item.create({
+          data: { title: item.title, type: item.type, genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: item.totalEp || 0, malId: jikanParsed.malId, lastSyncedAt: new Date() },
+        }).catch(() => null);
+        if (saved) item = { ...item, id: saved.id };
+        isExternal = true;
+      }
+    }
   } else if (cvParsed) {
-    item = await getComicVineDetails(cvParsed);
-    isExternal = true;
+    const existing = await prisma.item.findFirst({ where: { comicVineId: cvParsed } }).catch(() => null);
+    if (existing) { item = dbItemToItem(existing); }
+    else {
+      item = await getComicVineDetails(cvParsed);
+      if (item) {
+        const saved = await prisma.item.create({
+          data: { title: item.title, type: "comic", genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, comicVineId: cvParsed, lastSyncedAt: new Date() },
+        }).catch(() => null);
+        if (saved) item = { ...item, id: saved.id };
+        isExternal = true;
+      }
+    }
   } else {
     const numId = parseInt(id);
 
