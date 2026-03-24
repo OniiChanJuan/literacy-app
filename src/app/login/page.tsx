@@ -87,7 +87,7 @@ export default function LoginPage() {
         marginBottom: 24,
       }}>
         <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-        <span style={{ fontSize: 11, color: "var(--text-faint)", textTransform: "uppercase", letterSpacing: 1 }}>or</span>
+        <span style={{ fontSize: 11, color: "var(--text-faint)" }}>Or log in with email</span>
         <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
       </div>
 
@@ -151,6 +151,16 @@ export default function LoginPage() {
               boxSizing: "border-box",
             }}
           />
+        </div>
+
+        <div style={{ textAlign: "right", marginBottom: 16 }}>
+          <button
+            type="button"
+            onClick={() => alert("Password reset coming soon — contact support for now.")}
+            style={{ background: "none", border: "none", color: "#3185FC", fontSize: 12, cursor: "pointer", padding: 0 }}
+          >
+            Forgot password?
+          </button>
         </div>
 
         <button
