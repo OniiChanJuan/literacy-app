@@ -20,6 +20,7 @@ const ITEM_SELECT = {
 
 /**
  * GET /api/catalog — Fetch items with pagination and caching.
+ * Supports: type, genre, vibe, sort, curated, limit, offset
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -40,11 +41,14 @@ export async function GET(req: NextRequest) {
     let orderBy: any = { year: "desc" };
     if (sort === "title") orderBy = { title: "asc" };
 
+    // ── Curated: top_rated ──────────────────────────────────────────────
     if (curated === "top_rated") {
+      // Fetch a large pool, filter by high ext scores, sort, then paginate
+      const poolSize = offset + limit + 200; // fetch enough to cover offset + limit
       const items = await prisma.item.findMany({
         where: { isUpcoming: false },
         orderBy: { year: "desc" },
-        take: 100,
+        take: poolSize,
         select: ITEM_SELECT,
       });
 
@@ -58,27 +62,31 @@ export async function GET(req: NextRequest) {
           const bMax = Math.max(...Object.values(b.ext as Record<string, number>));
           return bMax - aMax;
         })
-        .slice(0, limit);
+        .slice(offset, offset + limit);
 
       return jsonResponse(sorted.map(mapItem));
     }
 
+    // ── Curated: popular ────────────────────────────────────────────────
     if (curated === "popular") {
       const currentYear = new Date().getFullYear();
       const items = await prisma.item.findMany({
         where: { isUpcoming: false, year: { gte: currentYear - 3 } },
         orderBy: { year: "desc" },
+        skip: offset,
         take: limit,
         select: ITEM_SELECT,
       });
       return jsonResponse(items.map(mapItem));
     }
 
+    // ── Curated: hidden_gems ────────────────────────────────────────────
     if (curated === "hidden_gems") {
+      const poolSize = offset + limit + 300;
       const items = await prisma.item.findMany({
         where: { isUpcoming: false },
         orderBy: { year: "desc" },
-        take: 100,
+        take: poolSize,
         select: ITEM_SELECT,
       });
 
@@ -88,12 +96,12 @@ export async function GET(req: NextRequest) {
           const vals = Object.values(ext);
           return vals.length > 0 && vals.some((v) => v >= 7) && !vals.some((v) => v >= 9);
         })
-        .slice(0, limit);
+        .slice(offset, offset + limit);
 
       return jsonResponse(gems.map(mapItem));
     }
 
-    // Standard query with pagination
+    // ── Standard query with pagination ──────────────────────────────────
     const items = await prisma.item.findMany({
       where,
       orderBy,

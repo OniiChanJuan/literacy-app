@@ -4,10 +4,12 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
+      { protocol: "http", hostname: "books.google.com" },
+      { protocol: "http", hostname: "**.google.com" },
     ],
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [190, 380, 640, 750, 1080],
-    imageSizes: [120, 190, 256],
+    deviceSizes: [320, 640, 750, 1080, 1920],
+    imageSizes: [162, 256, 384],
   },
 };
 
