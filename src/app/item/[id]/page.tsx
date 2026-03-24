@@ -178,6 +178,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   // Fetch DLC data for games
   let dlcs: any[] = [];
   let parentGame: { id: number; title: string } | null = null;
+  let itemSubtype: string | null = null;
 
   if (item.type === "game" && !isExternal) {
     const numericId = typeof item.id === "number" ? item.id : parseInt(id);
@@ -206,6 +207,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
       if (dbItem?.parentItem) {
         parentGame = dbItem.parentItem;
+        itemSubtype = dbItem.itemSubtype || null;
       }
 
       if (dbItem?.dlcs && dbItem.dlcs.length > 0) {
@@ -224,7 +226,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       <BackButton />
 
       {/* DLC badge — if this is a DLC, show link back to base game */}
-      {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} />}
+      {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} subtype={itemSubtype} />}
 
       {/* Franchise badge */}
       <FranchiseBadge routeId={id} />
@@ -419,6 +421,11 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           {/* This universe — franchise mini cards */}
           <FranchiseUniverse itemId={typeof item.id === 'number' ? item.id : parseInt(id)} />
 
+          {/* DLC, Expansions & Editions — right after franchise, before People */}
+          {dlcs.length > 0 && (
+            <DlcSection dlcs={dlcs} baseGameTitle={item.title} typeColor={t.color} />
+          )}
+
           {/* People */}
           {item.people.length > 0 && (
             <section style={{ marginBottom: 32 }}>
@@ -467,11 +474,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 ))}
               </div>
             </section>
-          )}
-
-          {/* DLC & Expansions — only for base games with DLCs */}
-          {dlcs.length > 0 && (
-            <DlcSection dlcs={dlcs} baseGameTitle={item.title} typeColor={t.color} />
           )}
 
           {/* Community Reviews — only for released items */}
