@@ -1,48 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { validateReviewText, rateLimit } from "@/lib/validation";
 
-// GET /api/reviews?itemId=X — fetch all reviews for an item
 export async function GET(req: NextRequest) {
   const itemId = parseInt(req.nextUrl.searchParams.get("itemId") || "0");
   if (!itemId) {
     return NextResponse.json({ error: "itemId required" }, { status: 400 });
   }
 
-  const reviews = await prisma.review.findMany({
-    where: { itemId },
-    include: {
-      user: { select: { id: true, name: true, image: true, avatar: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const reviews = await prisma.review.findMany({
+      where: { itemId },
+      include: {
+        user: { select: { id: true, name: true, image: true, avatar: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 50, // Paginate — don't load all reviews at once
+    });
 
-  // Get the associated ratings for these users on this item
-  const userIds = reviews.map((r) => r.userId);
-  const ratings = await prisma.rating.findMany({
-    where: { itemId, userId: { in: userIds } },
-  });
-  const ratingMap = new Map(ratings.map((r) => [r.userId, r]));
+    const userIds = reviews.map((r) => r.userId);
+    const ratings = await prisma.rating.findMany({
+      where: { itemId, userId: { in: userIds } },
+    });
+    const ratingMap = new Map(ratings.map((r) => [r.userId, r]));
 
-  const result = reviews.map((r) => {
-    const rating = ratingMap.get(r.userId);
-    return {
-      id: r.id,
-      userId: r.userId,
-      userName: r.user.name || "Anonymous",
-      userAvatar: r.user.image || r.user.avatar || "",
-      score: rating?.score ?? 0,
-      recommendTag: rating?.recommendTag ?? null,
-      text: r.text,
-      helpfulCount: r.helpfulCount,
-      createdAt: r.createdAt.toISOString(),
-    };
-  });
+    const result = reviews.map((r) => {
+      const rating = ratingMap.get(r.userId);
+      return {
+        id: r.id,
+        userId: r.userId,
+        userName: r.user.name || "Anonymous",
+        userAvatar: r.user.image || r.user.avatar || "",
+        score: rating?.score ?? 0,
+        recommendTag: rating?.recommendTag ?? null,
+        text: r.text,
+        helpfulCount: r.helpfulCount,
+        createdAt: r.createdAt.toISOString(),
+      };
+    });
 
-  return NextResponse.json(result);
+    return NextResponse.json(result);
+  } catch {
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+  }
 }
 
-// POST /api/reviews — create or update a review
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -50,37 +53,56 @@ export async function POST(req: NextRequest) {
   }
 
   const userId = session.user.id;
-  const body = await req.json();
-  const { itemId, text } = body as { itemId: number; text: string };
 
-  if (!itemId || !text?.trim()) {
-    return NextResponse.json({ error: "itemId and text required" }, { status: 400 });
+  // Rate limit: 30 reviews per minute per user
+  if (!rateLimit(`review:${userId}`, 30, 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests. Slow down." }, { status: 429 });
   }
 
-  // Check if user has rated this item
-  const rating = await prisma.rating.findUnique({
-    where: { userId_itemId: { userId, itemId } },
-  });
-  if (!rating) {
-    return NextResponse.json({ error: "You must rate this item before reviewing" }, { status: 400 });
+  let body: any;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  // Upsert review (one review per user per item)
-  const existing = await prisma.review.findFirst({
-    where: { userId, itemId },
-  });
+  const { itemId, text } = body;
 
-  let review;
-  if (existing) {
-    review = await prisma.review.update({
-      where: { id: existing.id },
-      data: { text: text.trim() },
+  if (!itemId || typeof itemId !== "number") {
+    return NextResponse.json({ error: "Valid itemId required" }, { status: 400 });
+  }
+
+  const textResult = validateReviewText(text || "");
+  if (!textResult.valid) {
+    return NextResponse.json({ error: textResult.error }, { status: 400 });
+  }
+
+  try {
+    const rating = await prisma.rating.findUnique({
+      where: { userId_itemId: { userId, itemId } },
     });
-  } else {
-    review = await prisma.review.create({
-      data: { userId, itemId, text: text.trim() },
-    });
-  }
+    if (!rating) {
+      return NextResponse.json({ error: "You must rate this item before reviewing" }, { status: 400 });
+    }
 
-  return NextResponse.json(review, { status: existing ? 200 : 201 });
+    const existing = await prisma.review.findFirst({
+      where: { userId, itemId },
+    });
+
+    let review;
+    if (existing) {
+      review = await prisma.review.update({
+        where: { id: existing.id },
+        data: { text: textResult.value },
+      });
+    } else {
+      review = await prisma.review.create({
+        data: { userId, itemId, text: textResult.value },
+      });
+    }
+
+    return NextResponse.json({ id: review.id }, { status: existing ? 200 : 201 });
+  } catch {
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+  }
 }

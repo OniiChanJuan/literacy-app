@@ -27,13 +27,16 @@ export async function GET(
   const isOwn = session?.user?.id === id;
   const showLibrary = !user.isPrivate || isOwn;
 
-  // Top rated items (highest score, up to 10)
-  const topRatings = await prisma.rating.findMany({
-    where: { userId: id },
-    orderBy: { score: "desc" },
-    take: 10,
-    select: { itemId: true, score: true, recommendTag: true },
-  });
+  // Top rated items — only show if profile is public or own
+  let topRatings: { itemId: number; score: number; recommendTag: string | null }[] = [];
+  if (showLibrary) {
+    topRatings = await prisma.rating.findMany({
+      where: { userId: id },
+      orderBy: { score: "desc" },
+      take: 10,
+      select: { itemId: true, score: true, recommendTag: true },
+    });
+  }
 
   // Library entries (only if public or own profile)
   let library: { itemId: number; status: string; progressCurrent: number }[] = [];
@@ -52,9 +55,9 @@ export async function GET(
       avatar: user.avatar || user.image || "",
       isPrivate: user.isPrivate,
       createdAt: user.createdAt,
-      ratingsCount: user._count.ratings,
-      reviewsCount: user._count.reviews,
-      trackedCount: user._count.libraryEntries,
+      ratingsCount: showLibrary ? user._count.ratings : 0,
+      reviewsCount: showLibrary ? user._count.reviews : 0,
+      trackedCount: showLibrary ? user._count.libraryEntries : 0,
     },
     topRatings,
     library: showLibrary ? library : null,

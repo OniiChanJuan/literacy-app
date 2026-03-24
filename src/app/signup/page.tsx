@@ -11,6 +11,8 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,6 +20,10 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
+    if (name.length > 30) {
+      setError("Name must be 30 characters or less");
+      return;
+    }
     if (password !== confirm) {
       setError("Passwords don't match");
       return;
@@ -26,14 +32,17 @@ export default function SignupPage() {
       setError("Password must be at least 8 characters");
       return;
     }
+    if (!agreedToTerms) {
+      setError("You must agree to the Terms of Service and Privacy Policy");
+      return;
+    }
 
     setLoading(true);
 
-    // Register
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, honeypot, agreedToTerms }),
     });
 
     if (!res.ok) {
@@ -43,7 +52,6 @@ export default function SignupPage() {
       return;
     }
 
-    // Auto-login after registration
     const result = await signIn("credentials", {
       email,
       password,
@@ -114,7 +122,14 @@ export default function SignupPage() {
           <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
             Name
           </label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            maxLength={30}
+            style={inputStyle}
+          />
         </div>
 
         <div style={{ marginBottom: 16 }}>
@@ -131,11 +146,54 @@ export default function SignupPage() {
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} placeholder="At least 8 characters" />
         </div>
 
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 16 }}>
           <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
             Confirm Password
           </label>
           <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required style={inputStyle} />
+        </div>
+
+        {/* Honeypot field — hidden from real users, bots fill it in */}
+        <div style={{ position: "absolute", left: -9999, opacity: 0, height: 0, overflow: "hidden" }} aria-hidden="true">
+          <label>Leave this empty</label>
+          <input
+            type="text"
+            name="website"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
+        {/* Terms checkbox */}
+        <div style={{ marginBottom: 24 }}>
+          <label style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 10,
+            cursor: "pointer",
+            fontSize: 12,
+            color: "var(--text-muted)",
+            lineHeight: 1.5,
+          }}>
+            <input
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              style={{ marginTop: 2, accentColor: "#E84855" }}
+            />
+            <span>
+              I agree to the{" "}
+              <Link href="/terms" target="_blank" style={{ color: "#3185FC", textDecoration: "none" }}>
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" target="_blank" style={{ color: "#3185FC", textDecoration: "none" }}>
+                Privacy Policy
+              </Link>
+            </span>
+          </label>
         </div>
 
         <button
