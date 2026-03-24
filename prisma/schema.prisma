@@ -89,8 +89,10 @@ model Item {
   hypeScore   Int?     @map("hype_score")
   wantCount   Int?     @map("want_count")
 
-  wikidataId  String?  @map("wikidata_id")
-  createdAt   DateTime @default(now()) @map("created_at")
+  wikidataId      String?  @map("wikidata_id")
+  popularityScore Float    @default(0) @map("popularity_score")
+  voteCount       Int      @default(0) @map("vote_count")
+  createdAt       DateTime @default(now()) @map("created_at")
 
   ratings        Rating[]
   reviews        Review[]
