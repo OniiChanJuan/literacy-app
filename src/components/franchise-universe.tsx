@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TYPES } from "@/lib/data";
@@ -16,6 +16,12 @@ interface FranchiseItemData {
   score: { label: string; display: string; value: number } | null;
 }
 
+interface ParentFranchise {
+  id: number;
+  name: string;
+  icon: string;
+}
+
 interface FranchiseData {
   id: number;
   name: string;
@@ -24,6 +30,7 @@ interface FranchiseData {
   totalItems: number;
   mediaTypes: number;
   otherItems: FranchiseItemData[];
+  parentFranchise: ParentFranchise | null;
 }
 
 function scoreColor(val: number): string {
@@ -35,17 +42,36 @@ function scoreColor(val: number): string {
 export default function FranchiseUniverse({ itemId }: { itemId: number }) {
   const [franchise, setFranchise] = useState<FranchiseData | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     fetch(`/api/franchises?itemId=${itemId}`)
       .then((r) => r.json())
-      .then((data) => {
-        setFranchise(data);
-        setLoaded(true);
-      })
+      .then((data) => { setFranchise(data); setLoaded(true); })
       .catch(() => setLoaded(true));
   }, [itemId]);
+
+  const updateArrows = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setShowLeft(el.scrollLeft > 10);
+    setShowRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !franchise) return;
+    updateArrows();
+    el.addEventListener("scroll", updateArrows, { passive: true });
+    return () => el.removeEventListener("scroll", updateArrows);
+  }, [franchise, updateArrows]);
+
+  const scroll = (dir: number) => {
+    scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
+  };
 
   if (!loaded || !franchise || franchise.otherItems.length === 0) return null;
 
@@ -77,47 +103,90 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
         </div>
         <a
           href={`/franchise/${franchise.id}`}
-          style={{
-            fontSize: 10,
-            color: `${c}99`,
-            textDecoration: "none",
-            fontWeight: 500,
-          }}
+          style={{ fontSize: 10, color: `${c}99`, textDecoration: "none", fontWeight: 500 }}
         >
-          See full timeline →
+          Explore this universe →
         </a>
       </div>
 
-      {/* Horizontal scroll of mini cards */}
-      <div style={{
-        display: "flex",
-        gap: 10,
-        overflowX: "auto",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-      }} className="scrollbar-hide">
-        {franchise.otherItems.map((item) => (
-          <MiniCard
-            key={item.id}
-            item={item}
-            franchiseColor={c}
-            onClick={() => router.push(`/item/${item.id}`)}
-          />
-        ))}
+      {/* Card row with scroll arrows */}
+      <div style={{ position: "relative" }}>
+        {/* Left arrow */}
+        {showLeft && (
+          <button
+            onClick={() => scroll(-1)}
+            style={{
+              position: "absolute", left: -6, top: "50%", transform: "translateY(-50%)",
+              width: 28, height: 28, borderRadius: "50%",
+              background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
+              border: "0.5px solid rgba(255,255,255,0.1)",
+              color: "#fff", fontSize: 12, cursor: "pointer", zIndex: 2,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >
+            ‹
+          </button>
+        )}
+
+        {/* Right arrow */}
+        {showRight && (
+          <button
+            onClick={() => scroll(1)}
+            style={{
+              position: "absolute", right: -6, top: "50%", transform: "translateY(-50%)",
+              width: 28, height: 28, borderRadius: "50%",
+              background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
+              border: "0.5px solid rgba(255,255,255,0.1)",
+              color: "#fff", fontSize: 12, cursor: "pointer", zIndex: 2,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >
+            ›
+          </button>
+        )}
+
+        {/* Scrollable cards */}
+        <div
+          ref={scrollRef}
+          style={{
+            display: "flex",
+            gap: 10,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+          className="scrollbar-hide"
+        >
+          {franchise.otherItems.map((item) => (
+            <MiniCard
+              key={item.id}
+              item={item}
+              onClick={() => router.push(`/item/${item.id}`)}
+            />
+          ))}
+        </div>
       </div>
+
+      {/* Parent franchise link */}
+      {franchise.parentFranchise && (
+        <div style={{ marginTop: 10, textAlign: "right" }}>
+          <a
+            href={`/franchise/${franchise.parentFranchise.id}`}
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,0.2)",
+              textDecoration: "none",
+            }}
+          >
+            Part of the {franchise.parentFranchise.name} universe →
+          </a>
+        </div>
+      )}
     </section>
   );
 }
 
-function MiniCard({
-  item,
-  franchiseColor,
-  onClick,
-}: {
-  item: FranchiseItemData;
-  franchiseColor: string;
-  onClick: () => void;
-}) {
+function MiniCard({ item, onClick }: { item: FranchiseItemData; onClick: () => void }) {
   const t = TYPES[item.type as keyof typeof TYPES] || { color: "#888", icon: "?", label: "Unknown" };
   const hasImage = item.cover?.startsWith("http");
 
@@ -125,14 +194,11 @@ function MiniCard({
     <button
       onClick={onClick}
       style={{
-        minWidth: 95,
-        borderRadius: 8,
-        overflow: "hidden",
+        minWidth: 95, maxWidth: 95,
+        borderRadius: 8, overflow: "hidden",
         border: "0.5px solid rgba(255,255,255,0.06)",
-        background: "none",
-        padding: 0,
-        cursor: "pointer",
-        textAlign: "left",
+        background: "none", padding: 0,
+        cursor: "pointer", textAlign: "left",
         transition: "transform 0.15s, box-shadow 0.15s",
         flexShrink: 0,
       }}
@@ -145,12 +211,10 @@ function MiniCard({
         e.currentTarget.style.boxShadow = "";
       }}
     >
-      {/* Cover */}
+      {/* Cover — exactly 70px tall */}
       <div style={{
-        width: "100%",
-        height: 70,
-        position: "relative",
-        overflow: "hidden",
+        width: 95, height: 70,
+        position: "relative", overflow: "hidden",
         background: hasImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
       }}>
         {hasImage && (
@@ -164,59 +228,42 @@ function MiniCard({
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         )}
-        {/* Gradient overlay */}
         <div style={{
-          position: "absolute",
-          inset: 0,
+          position: "absolute", inset: 0,
           background: "linear-gradient(to top, rgba(20,20,25,0.6) 0%, transparent 60%)",
         }} />
 
         {/* Type badge — top-left */}
         <div style={{
-          position: "absolute",
-          top: 3,
-          left: 3,
-          background: "rgba(0,0,0,0.65)",
-          color: t.color,
-          fontSize: 7,
-          fontWeight: 500,
-          padding: "1px 5px",
-          borderRadius: 4,
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
+          position: "absolute", top: 3, left: 3,
+          background: "rgba(0,0,0,0.65)", color: t.color,
+          fontSize: 7, fontWeight: 500, padding: "1px 5px", borderRadius: 4,
+          display: "flex", alignItems: "center", gap: 2,
         }}>
-          {t.icon} {t.label.replace(/s$/, "")}
+          {t.icon} {t.label}
         </div>
 
-        {/* Upcoming year badge — top-right */}
+        {/* Upcoming badge — top-right */}
         {item.isUpcoming && (
           <div style={{
-            position: "absolute",
-            top: 3,
-            right: 3,
+            position: "absolute", top: 3, right: 3,
             background: "linear-gradient(135deg, #9B5DE5, #C45BAA)",
-            color: "#fff",
-            fontSize: 7,
-            fontWeight: 700,
-            padding: "1px 5px",
-            borderRadius: 4,
+            color: "#fff", fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 4,
           }}>
             {item.year || "Soon"}
           </div>
         )}
       </div>
 
-      {/* Info area */}
-      <div style={{ background: "#141419", padding: "6px 7px" }}>
+      {/* Info area — exactly 36px */}
+      <div style={{
+        background: "#141419", padding: "6px 7px",
+        height: 36, boxSizing: "border-box",
+      }}>
         <div style={{
-          fontSize: 10,
-          fontWeight: 500,
-          color: "#fff",
-          lineHeight: 1.3,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+          fontSize: 10, fontWeight: 500, color: "#fff",
+          overflow: "hidden", textOverflow: "ellipsis",
+          whiteSpace: "nowrap", lineHeight: 1.3,
         }}>
           {item.title}
         </div>

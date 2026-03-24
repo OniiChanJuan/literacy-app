@@ -2,463 +2,327 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import { ALL_ITEMS, TYPES, VIBES, type Item, type MediaType } from "@/lib/data";
-import { getFranchise, getFranchiseTypes, type Franchise, type FranchiseItem } from "@/lib/franchises";
-import { parseTmdbId } from "@/lib/tmdb";
+import Image from "next/image";
+import { TYPES, type MediaType } from "@/lib/data";
 import BackButton from "@/components/back-button";
-import RatingPanel from "@/components/rating-panel";
-import { AggregateScorePanel } from "@/components/aggregate-score";
-import CommunityReviews from "@/components/community-reviews";
-import StatusTracker from "@/components/status-tracker";
-import ExternalScores from "@/components/external-scores";
-import WatchProviders from "@/components/watch-providers";
-import PlatformButtons from "@/components/platform-buttons";
 
-function isImageUrl(cover: string): boolean {
-  return cover.startsWith("http");
+interface FranchiseItem {
+  id: number;
+  title: string;
+  type: string;
+  year: number;
+  cover: string;
+  genre: string[];
+  vibes: string[];
+  ext: Record<string, number>;
+  isUpcoming: boolean;
+  releaseDate: string | null;
+  description: string;
+}
+
+interface ChildFranchise {
+  id: number;
+  name: string;
+  icon: string;
+  itemCount: number;
+}
+
+interface FranchiseDetail {
+  id: number;
+  name: string;
+  icon: string;
+  description: string;
+  totalItems: number;
+  mediaTypes: string[];
+  items: FranchiseItem[];
+  decades: Record<string, FranchiseItem[]>;
+  parentFranchise: { id: number; name: string; icon: string } | null;
+  childFranchises: ChildFranchise[];
+}
+
+function isImageUrl(s: string) { return s?.startsWith("http"); }
+
+function bestScore(ext: Record<string, number>): { display: string; color: string } | null {
+  const priority = ["imdb", "rt", "meta", "mal", "goodreads", "pitchfork"];
+  for (const key of priority) {
+    if (ext[key] !== undefined) {
+      const v = ext[key];
+      const color = v >= 8 || (key === "rt" && v >= 80) || (key === "meta" && v >= 80)
+        ? "#2EC4B6" : v >= 6 || (key === "rt" && v >= 60) || (key === "meta" && v >= 60)
+        ? "#F9A620" : "#E84855";
+      if (["imdb", "mal", "pitchfork", "ign"].includes(key)) return { display: `${v.toFixed(1)} ${key.toUpperCase()}`, color };
+      if (key === "goodreads") return { display: `${v.toFixed(1)} GR`, color };
+      return { display: `${v}% ${key.toUpperCase()}`, color };
+    }
+  }
+  return null;
 }
 
 export default function FranchisePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const franchise = getFranchise(slug);
-  const [items, setItems] = useState<Record<string, Item>>({});
-  const [activeType, setActiveType] = useState<MediaType | null>(null);
+  const [data, setData] = useState<FranchiseDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeType, setActiveType] = useState<string>("all");
 
   useEffect(() => {
-    if (!franchise) { setLoading(false); return; }
+    fetch(`/api/franchise/${slug}`)
+      .then((r) => r.json())
+      .then((d) => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [slug]);
 
-    // Fetch all items in parallel
-    const fetches = franchise.items.map(async (fi) => {
-      // Try local first
-      const localId = parseInt(fi.routeId);
-      if (!isNaN(localId)) {
-        const local = ALL_ITEMS.find((i) => i.id === localId);
-        if (local) return { routeId: fi.routeId, item: local };
-      }
-
-      // Fetch from API
-      let apiUrl = "";
-      if (fi.routeId.startsWith("tmdb-")) {
-        const parts = fi.routeId.match(/^tmdb-(movie|tv)-(\d+)$/);
-        if (parts) apiUrl = `/api/tmdb/${parts[1]}/${parts[2]}`;
-      } else if (fi.routeId.startsWith("jikan-")) {
-        const parts = fi.routeId.match(/^jikan-(manga|anime)-(\d+)$/);
-        if (parts) apiUrl = `/api/jikan/${parts[1]}/${parts[2]}`;
-      } else if (fi.routeId.startsWith("igdb-")) {
-        const parts = fi.routeId.match(/^igdb-game-(\d+)$/);
-        if (parts) apiUrl = `/api/igdb/${parts[1]}`;
-      }
-
-      if (!apiUrl) return null;
-
-      try {
-        const res = await fetch(apiUrl);
-        if (!res.ok) return null;
-        const item = await res.json();
-        return { routeId: fi.routeId, item };
-      } catch {
-        return null;
-      }
-    });
-
-    Promise.all(fetches).then((results) => {
-      const map: Record<string, Item> = {};
-      for (const r of results) {
-        if (r) map[r.routeId] = r.item;
-      }
-      setItems(map);
-
-      // Set initial active type to first available
-      if (franchise) {
-        const types = getFranchiseTypes(franchise);
-        setActiveType(types[0] || null);
-      }
-      setLoading(false);
-    });
-  }, [franchise, slug]);
-
-  if (!franchise) {
+  if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "80px 20px" }}>
-        <div style={{ fontSize: 44, marginBottom: 14 }}>🔍</div>
-        <div style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
-          Franchise not found
-        </div>
-        <Link href="/" style={{ color: "#3185FC", fontSize: 13, textDecoration: "none" }}>
-          Back to home
-        </Link>
+      <div style={{ padding: "60px 20px", textAlign: "center", color: "var(--text-faint)" }}>
+        Loading franchise...
       </div>
     );
   }
 
-  const types = getFranchiseTypes(franchise);
-  const activeItems = franchise.items.filter((fi) => fi.type === activeType);
+  if (!data || !data.items) {
+    return (
+      <div style={{ padding: "60px 20px", textAlign: "center" }}>
+        <BackButton />
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 24, color: "#fff", marginTop: 20 }}>
+          Franchise not found
+        </h1>
+      </div>
+    );
+  }
+
+  const filteredItems = activeType === "all"
+    ? data.items
+    : data.items.filter((i) => i.type === activeType);
+
+  // Group filtered items by year for timeline
+  const yearGroups = new Map<number, FranchiseItem[]>();
+  for (const item of filteredItems) {
+    if (!yearGroups.has(item.year)) yearGroups.set(item.year, []);
+    yearGroups.get(item.year)!.push(item);
+  }
+  const sortedYears = [...yearGroups.entries()].sort((a, b) => a[0] - b[0]);
+
+  const tabs = [
+    { key: "all", label: "All", count: data.items.length },
+    ...data.mediaTypes.map((t) => ({
+      key: t,
+      label: TYPES[t as MediaType]?.label || t,
+      count: data.items.filter((i) => i.type === t).length,
+    })),
+  ];
 
   return (
-    <div>
+    <div style={{ maxWidth: 900, margin: "0 auto" }}>
       <BackButton />
 
-      {/* Hero banner */}
-      <div style={{
-        background: franchise.cover,
-        borderRadius: 20,
-        padding: "56px 36px 40px",
-        marginBottom: 0,
-        position: "relative",
-        overflow: "hidden",
-        textAlign: "center",
-      }}>
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(to top, rgba(11,11,16,0.85) 0%, rgba(11,11,16,0.2) 60%, transparent 100%)",
-          borderRadius: 20,
-        }} />
-        <div style={{ position: "relative" }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>{franchise.icon}</div>
+      {/* Parent link */}
+      {data.parentFranchise && (
+        <Link
+          href={`/franchise/${data.parentFranchise.id}`}
+          style={{
+            display: "inline-block", marginBottom: 16,
+            fontSize: 11, color: "var(--text-faint)", textDecoration: "none",
+          }}
+        >
+          {data.parentFranchise.icon} Part of the {data.parentFranchise.name} universe →
+        </Link>
+      )}
+
+      {/* Hero header */}
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+          <span style={{ fontSize: 36 }}>{data.icon}</span>
           <h1 style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: 42,
-            fontWeight: 900,
-            lineHeight: 1.1,
-            color: "#fff",
-            marginBottom: 10,
+            fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 900,
+            color: "#fff", margin: 0,
           }}>
-            {franchise.name}
+            {data.name}
           </h1>
-          <p style={{
-            fontSize: 14,
-            color: "var(--text-secondary)",
-            maxWidth: 500,
-            margin: "0 auto",
-            lineHeight: 1.6,
-          }}>
-            {franchise.description}
+        </div>
+
+        {data.description && (
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 12, maxWidth: 600 }}>
+            {data.description}
           </p>
+        )}
+
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <span style={{ fontSize: 12, color: "var(--text-faint)" }}>
+            {data.totalItems} items across {data.mediaTypes.length} media types
+          </span>
+          {data.mediaTypes.map((t) => {
+            const type = TYPES[t as MediaType];
+            return type ? (
+              <span key={t} style={{ fontSize: 11, color: type.color }}>
+                {type.icon} {data.items.filter((i) => i.type === t).length}
+              </span>
+            ) : null;
+          })}
         </div>
       </div>
 
-      {/* Color accent line */}
-      <div style={{
-        height: 3,
-        background: `linear-gradient(90deg, transparent, ${franchise.color}, transparent)`,
-        marginBottom: 28,
-        borderRadius: 2,
-      }} />
+      {/* Sub-franchises */}
+      {data.childFranchises.length > 0 && (
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 2, color: "var(--text-faint)", marginBottom: 10, fontWeight: 600 }}>
+            Sub-universes
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {data.childFranchises.map((cf) => (
+              <Link
+                key={cf.id}
+                href={`/franchise/${cf.id}`}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "6px 12px", borderRadius: 8,
+                  background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+                  textDecoration: "none", color: "#fff", fontSize: 12, fontWeight: 500,
+                }}
+              >
+                <span>{cf.icon}</span>
+                {cf.name}
+                <span style={{ fontSize: 9, color: "var(--text-faint)" }}>{cf.itemCount}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Media type tabs */}
-      <div style={{
-        display: "flex",
-        gap: 4,
-        marginBottom: 32,
-        borderBottom: "1px solid var(--border)",
-      }}>
-        {types.map((type) => {
-          const t = TYPES[type];
-          const active = activeType === type;
-          const count = franchise.items.filter((fi) => fi.type === type).length;
+      <div style={{ display: "flex", gap: 6, marginBottom: 28, flexWrap: "wrap" }}>
+        {tabs.map((tab) => {
+          const active = activeType === tab.key;
+          const type = TYPES[tab.key as MediaType];
           return (
             <button
-              key={type}
-              onClick={() => setActiveType(type)}
+              key={tab.key}
+              onClick={() => setActiveType(tab.key)}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "12px 20px",
-                background: "none",
-                border: "none",
-                borderBottom: active ? `2.5px solid ${franchise.color}` : "2.5px solid transparent",
-                color: active ? "#fff" : "var(--text-muted)",
-                fontSize: 13,
-                fontWeight: active ? 700 : 500,
-                cursor: "pointer",
-                transition: "all 0.15s",
-                marginBottom: -1,
+                padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
+                cursor: "pointer", transition: "all 0.15s",
+                background: active ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
+                color: active ? "#fff" : "rgba(255,255,255,0.4)",
+                border: active
+                  ? `1px solid ${type?.color || "rgba(255,255,255,0.18)"}`
+                  : "1px solid rgba(255,255,255,0.06)",
               }}
             >
-              <span>{t.icon}</span>
-              {t.label}
-              {count > 1 && (
-                <span style={{
-                  fontSize: 10,
-                  background: active ? `${franchise.color}33` : "rgba(255,255,255,0.06)",
-                  padding: "1px 6px",
-                  borderRadius: 8,
-                  color: active ? franchise.color : "var(--text-faint)",
-                }}>
-                  {count}
-                </span>
-              )}
+              {type?.icon || "🔗"} {tab.label}
+              <span style={{ fontSize: 9, marginLeft: 4, opacity: 0.5 }}>{tab.count}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Loading state */}
-      {loading && (
-        <div style={{ textAlign: "center", padding: "40px", color: "var(--text-faint)", fontSize: 13 }}>
-          Loading franchise items...
-        </div>
-      )}
+      {/* Timeline */}
+      <div style={{ position: "relative", paddingLeft: 24 }}>
+        {/* Timeline line */}
+        <div style={{
+          position: "absolute", left: 8, top: 0, bottom: 0,
+          width: 1, background: "rgba(255,255,255,0.06)",
+        }} />
 
-      {/* Tab content — one section per item of the active type */}
-      {!loading && activeItems.map((fi) => {
-        const item = items[fi.routeId];
-        if (!item) return (
-          <div key={fi.routeId} style={{
-            padding: "40px",
-            textAlign: "center",
-            color: "var(--text-faint)",
-            fontSize: 13,
-            background: `${franchise.color}08`,
-            borderRadius: 16,
-            border: `1px solid ${franchise.color}15`,
-            marginBottom: 24,
-          }}>
-            Could not load {fi.title}
-          </div>
-        );
-
-        return (
-          <FranchiseItemView
-            key={fi.routeId}
-            item={item}
-            fi={fi}
-            franchise={franchise}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-function FranchiseItemView({ item, fi, franchise }: {
-  item: Item;
-  fi: FranchiseItem;
-  franchise: Franchise;
-}) {
-  const hasImage = isImageUrl(item.cover);
-  const t = TYPES[item.type];
-  const tmdbParsed = parseTmdbId(fi.routeId);
-
-  return (
-    <div style={{
-      marginBottom: 40,
-      background: `${franchise.color}06`,
-      border: `1px solid ${franchise.color}15`,
-      borderRadius: 20,
-      padding: 28,
-    }}>
-      {/* Item header with cover + title */}
-      <div style={{ display: "flex", gap: 24, marginBottom: 28 }}>
-        {/* Cover */}
-        {hasImage ? (
-          <img
-            src={item.cover}
-            alt={item.title}
-            width={120}
-            height={180}
-            style={{
-              objectFit: "cover",
-              borderRadius: 12,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-              flexShrink: 0,
-            }}
-          />
-        ) : (
-          <div style={{
-            width: 120,
-            height: 180,
-            borderRadius: 12,
-            background: item.cover || `${franchise.color}22`,
-            flexShrink: 0,
-          }} />
-        )}
-
-        {/* Title + meta */}
-        <div style={{ flex: 1 }}>
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 5,
-            background: t.color,
-            color: "#fff",
-            fontSize: 10,
-            fontWeight: 700,
-            padding: "3px 10px",
-            borderRadius: 6,
-            textTransform: "uppercase",
-            letterSpacing: "0.5px",
-            marginBottom: 10,
-          }}>
-            {t.icon} {t.label.replace(/s$/, "")}
-          </div>
-
-          <h2 style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: 26,
-            fontWeight: 800,
-            color: "#fff",
-            margin: "0 0 8px",
-            lineHeight: 1.2,
-          }}>
-            {fi.title}
-          </h2>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-            {item.year > 0 && (
-              <span style={{ fontSize: 13, color: "var(--text-muted)" }}>{item.year}</span>
-            )}
-            {item.genre.slice(0, 3).map((g) => (
-              <span key={g} style={{
-                fontSize: 11,
-                color: "var(--text-secondary)",
-                background: "var(--surface-4)",
-                padding: "2px 8px",
-                borderRadius: 5,
-              }}>
-                {g}
-              </span>
-            ))}
-          </div>
-
-          {/* Link to standalone page */}
-          <Link
-            href={`/item/${fi.routeId}`}
-            style={{
-              fontSize: 11,
-              color: franchise.color,
-              textDecoration: "none",
-              fontWeight: 600,
-            }}
-          >
-            View full page →
-          </Link>
-        </div>
-      </div>
-
-      {/* Description */}
-      {item.desc && (
-        <p style={{
-          fontSize: 14,
-          color: "var(--text-secondary)",
-          lineHeight: 1.7,
-          marginBottom: 20,
-        }}>
-          {item.desc.length > 300 ? item.desc.slice(0, 300) + "..." : item.desc}
-        </p>
-      )}
-
-      {/* Vibes */}
-      {item.vibes.length > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
-          {item.vibes.map((v) => {
-            const vibe = VIBES[v];
-            if (!vibe) return null;
-            return (
-              <span key={v} style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 5,
-                fontSize: 11,
-                color: "#fff",
-                background: vibe.color + "33",
-                border: `1px solid ${vibe.color}55`,
-                padding: "4px 12px",
-                borderRadius: 16,
-              }}>
-                <span>{vibe.icon}</span>
-                {vibe.label}
-              </span>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Two-column layout: left = people + platforms, right = scores + rating */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 24, alignItems: "start" }}>
-        {/* Left */}
-        <div>
-          {/* People */}
-          {item.people.length > 0 && (
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 11, color: "var(--text-faint)", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600, marginBottom: 8 }}>
-                People
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {item.people.slice(0, 6).map((p, i) => (
-                  <div key={i} style={{
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "center",
-                    padding: "8px 12px",
-                    background: "var(--surface-1)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 10,
-                    fontSize: 12,
-                  }}>
-                    <span style={{ color: "var(--text-faint)", fontSize: 10 }}>{p.role}</span>
-                    <span style={{ color: "#fff", fontWeight: 600 }}>{p.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Platforms */}
-          {(item.type === "movie" || item.type === "tv") ? (
-            <WatchProviders
-              title={item.title}
-              year={item.year}
-              mediaType={item.type}
-              tmdbId={tmdbParsed ? item.id : undefined}
-            />
-          ) : (
-            item.platforms.length > 0 && (
-              <PlatformButtons platforms={item.platforms} mediaType={item.type} />
-            )
-          )}
-
-          {/* Community Reviews */}
-          {!isNaN(parseInt(fi.routeId)) && (
-            <CommunityReviews itemId={parseInt(fi.routeId)} />
-          )}
-        </div>
-
-        {/* Right */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Community Score */}
-          {!isNaN(parseInt(fi.routeId)) && (
+        {sortedYears.map(([year, items]) => (
+          <div key={year} style={{ marginBottom: 24 }}>
+            {/* Year marker */}
             <div style={{
-              background: `${franchise.color}08`,
-              border: `1px solid ${franchise.color}15`,
-              borderRadius: 14,
-              padding: 20,
+              position: "relative", marginBottom: 12,
+              display: "flex", alignItems: "center", gap: 12,
             }}>
-              <div style={{ fontSize: 11, color: "var(--text-faint)", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600, marginBottom: 12 }}>
-                Community Score
-              </div>
-              <AggregateScorePanel itemId={parseInt(fi.routeId)} />
+              <div style={{
+                position: "absolute", left: -20,
+                width: 10, height: 10, borderRadius: "50%",
+                background: "rgba(255,255,255,0.1)", border: "2px solid rgba(255,255,255,0.2)",
+              }} />
+              <span style={{
+                fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 700,
+                color: "rgba(255,255,255,0.4)",
+              }}>
+                {year}
+              </span>
             </div>
-          )}
 
-          {/* External Scores */}
-          {Object.keys(item.ext).length > 0 && (
-            <ExternalScores ext={item.ext} />
-          )}
+            {/* Items for this year */}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              {items.map((item) => {
+                const t = TYPES[item.type as MediaType] || { color: "#888", icon: "?", label: "?" };
+                const score = bestScore(item.ext || {});
+                const hasImage = isImageUrl(item.cover);
 
-          {/* Your Rating */}
-          {!isNaN(parseInt(fi.routeId)) && (
-            <RatingPanel itemId={parseInt(fi.routeId)} />
-          )}
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/item/${item.id}`}
+                    style={{
+                      width: 140, borderRadius: 10, overflow: "hidden",
+                      border: "0.5px solid rgba(255,255,255,0.06)",
+                      textDecoration: "none", transition: "transform 0.15s",
+                      background: "#141419",
+                    }}
+                  >
+                    {/* Cover */}
+                    <div style={{
+                      height: 85, position: "relative", overflow: "hidden",
+                      background: hasImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+                    }}>
+                      {hasImage && (
+                        <Image
+                          src={item.cover}
+                          alt={item.title}
+                          width={140}
+                          height={85}
+                          quality={65}
+                          sizes="140px"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      )}
+                      <div style={{
+                        position: "absolute", top: 4, left: 4,
+                        background: "rgba(0,0,0,0.6)", color: t.color,
+                        fontSize: 8, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
+                      }}>
+                        {t.icon} {t.label}
+                      </div>
+                      {item.isUpcoming && (
+                        <div style={{
+                          position: "absolute", top: 4, right: 4,
+                          background: "linear-gradient(135deg, #9B5DE5, #C45BAA)",
+                          color: "#fff", fontSize: 7, fontWeight: 700, padding: "2px 6px", borderRadius: 4,
+                        }}>
+                          Upcoming
+                        </div>
+                      )}
+                    </div>
 
-          {/* Status Tracker */}
-          {!isNaN(parseInt(fi.routeId)) && (
-            <StatusTracker item={item} />
-          )}
-        </div>
+                    {/* Info */}
+                    <div style={{ padding: "8px 10px" }}>
+                      <div style={{
+                        fontSize: 11, fontWeight: 500, color: "#fff",
+                        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        marginBottom: 4,
+                      }}>
+                        {item.title}
+                      </div>
+                      {score && (
+                        <div style={{ fontSize: 9 }}>
+                          <span style={{ color: score.color, fontWeight: 600 }}>{score.display}</span>
+                        </div>
+                      )}
+                      {item.genre?.length > 0 && (
+                        <div style={{
+                          fontSize: 8, color: "var(--text-faint)", marginTop: 3,
+                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        }}>
+                          {item.genre.slice(0, 3).join(" · ")}
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

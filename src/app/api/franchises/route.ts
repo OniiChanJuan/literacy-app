@@ -3,33 +3,25 @@ import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/franchises?itemId=123 — Get franchise data for a specific item
- * Returns franchise info + all other items in the franchise (not the requested one)
+ * Returns the most specific (smallest) franchise + parent universe info
  */
 export async function GET(req: NextRequest) {
   const itemId = parseInt(req.nextUrl.searchParams.get("itemId") || "0");
-  if (!itemId) {
-    return NextResponse.json(null);
-  }
+  if (!itemId) return NextResponse.json(null);
 
   try {
-    // Find franchise(s) this item belongs to
     const franchiseLinks = await prisma.franchiseItem.findMany({
       where: { itemId },
       include: {
         franchise: {
           include: {
+            parentFranchise: { select: { id: true, name: true, icon: true } },
             items: {
               include: {
                 item: {
                   select: {
-                    id: true,
-                    title: true,
-                    type: true,
-                    year: true,
-                    cover: true,
-                    ext: true,
-                    isUpcoming: true,
-                    releaseDate: true,
+                    id: true, title: true, type: true, year: true,
+                    cover: true, ext: true, isUpcoming: true, releaseDate: true,
                   },
                 },
               },
@@ -39,71 +31,68 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    if (franchiseLinks.length === 0) {
-      return NextResponse.json(null);
-    }
+    if (franchiseLinks.length === 0) return NextResponse.json(null);
 
-    // Use the first franchise found (items usually belong to one franchise)
-    const franchise = franchiseLinks[0].franchise;
+    // Pick the most specific franchise (smallest item count = most specific)
+    const franchise = franchiseLinks
+      .map((fl) => fl.franchise)
+      .sort((a, b) => a.items.length - b.items.length)[0];
 
-    // Get other items (not the current one)
+    // Build other items list
     const otherItems = franchise.items
       .filter((fi) => fi.itemId !== itemId)
       .map((fi) => {
         const item = fi.item;
-        const ext = item.ext as Record<string, number>;
-        const extEntries = Object.entries(ext);
+        const ext = (item.ext || {}) as Record<string, number>;
         let bestScore: { label: string; display: string; value: number } | null = null;
 
-        if (extEntries.length > 0) {
-          const priority = ["imdb", "rt", "meta", "mal", "goodreads", "pitchfork", "ign", "steam"];
-          for (const key of priority) {
-            if (ext[key] !== undefined) {
-              const val = ext[key];
-              if (["imdb", "mal", "ign", "pitchfork"].includes(key)) {
-                bestScore = { label: key.toUpperCase(), display: val.toFixed(1), value: val };
-              } else if (key === "goodreads") {
-                bestScore = { label: "GR", display: val.toFixed(1), value: val };
-              } else {
-                bestScore = { label: key.toUpperCase(), display: `${val}%`, value: val / 10 };
-              }
-              break;
+        const priority = ["imdb", "rt", "meta", "mal", "goodreads", "pitchfork", "ign", "steam"];
+        for (const key of priority) {
+          if (ext[key] !== undefined) {
+            const val = ext[key];
+            if (["imdb", "mal", "ign", "pitchfork"].includes(key)) {
+              bestScore = { label: key === "imdb" ? "IMDb" : key === "mal" ? "MAL" : key.toUpperCase(), display: val.toFixed(1), value: val };
+            } else if (key === "goodreads") {
+              bestScore = { label: "Goodreads", display: val.toFixed(1), value: val };
+            } else if (key === "rt") {
+              bestScore = { label: "RT", display: `${val}%`, value: val / 10 };
+            } else if (key === "meta") {
+              bestScore = { label: "Meta", display: `${val}`, value: val / 10 };
+            } else {
+              bestScore = { label: key.toUpperCase(), display: String(val), value: val };
             }
-          }
-          if (!bestScore && extEntries.length > 0) {
-            const [k, v] = extEntries[0];
-            bestScore = { label: k.toUpperCase(), display: String(v), value: v };
+            break;
           }
         }
 
         return {
-          id: item.id,
-          title: item.title,
-          type: item.type,
-          year: item.year,
-          cover: item.cover,
-          isUpcoming: item.isUpcoming,
-          releaseDate: item.releaseDate,
+          id: item.id, title: item.title, type: item.type, year: item.year,
+          cover: item.cover, isUpcoming: item.isUpcoming, releaseDate: item.releaseDate,
           score: bestScore,
         };
-      });
+      })
+      .sort((a, b) => a.year - b.year);
 
-    // Count unique media types
     const allTypes = new Set(franchise.items.map((fi) => fi.item.type));
+
+    // Determine franchise color based on icon or dominant type
+    const typeColors: Record<string, string> = {
+      "🕷": "#E84855", "🦇": "#1a1a2e", "🦸": "#E84855", "🧬": "#3185FC",
+      "⚡": "#F9A620", "💍": "#C45BAA", "🐺": "#E84855", "🧟": "#2EC4B6",
+      "🎬": "#E84855", "🗾": "#FF6B6B", "🎮": "#2EC4B6", "📖": "#3185FC",
+      "📺": "#C45BAA", "🎵": "#9B5DE5", "🔗": "#9B5DE5",
+    };
+    const color = typeColors[franchise.icon] || "#C45BAA";
 
     const res = NextResponse.json({
       id: franchise.id,
       name: franchise.name,
       icon: franchise.icon || "🔗",
-      color: franchise.icon === "🎬" ? "#E84855" :
-             franchise.icon === "🗾" ? "#FF6B6B" :
-             franchise.icon === "🎮" ? "#2EC4B6" :
-             franchise.icon === "📖" ? "#3185FC" :
-             franchise.icon === "🔗" ? "#9B5DE5" :
-             "#C45BAA",
+      color,
       totalItems: franchise.items.length,
       mediaTypes: allTypes.size,
       otherItems,
+      parentFranchise: franchise.parentFranchise || null,
     });
     res.headers.set("Cache-Control", "s-maxage=600, stale-while-revalidate=1200");
     return res;
