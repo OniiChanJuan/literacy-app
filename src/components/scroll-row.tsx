@@ -117,7 +117,7 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
         {children}
         {loadingMore && (
           <div style={{
-            minWidth: 162, maxWidth: 162, height: 212,
+            minWidth: 120, maxWidth: 120, height: 145,
             display: "flex", alignItems: "center", justifyContent: "center",
             flexShrink: 0, borderRadius: 8,
             background: "rgba(255,255,255,0.02)",

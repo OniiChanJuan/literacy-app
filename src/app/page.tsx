@@ -28,14 +28,14 @@ async function fetchItems(url: string, retries = 2): Promise<Item[] | null> {
   return null;
 }
 
-/** Parse limit from URL for pagination */
 function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
   const url = new URL(fetchUrl, "http://x");
   const limit = parseInt(url.searchParams.get("limit") || "20");
   return { base: fetchUrl, limit };
 }
 
-/** Row with pagination — loads more items when user scrolls to the end */
+// ── Paginated Row (with infinite scroll) ────────────────────────────────
+
 function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0 }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number;
 }) {
@@ -47,7 +47,6 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   const loadingRef = useRef(false);
   const { base, limit } = getBaseUrl(fetchUrl);
 
-  // Initial fetch
   const doFetch = useCallback(() => {
     setFailed(false);
     setItems(null);
@@ -69,45 +68,30 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
     return () => clearTimeout(timer);
   }, [base, limit, delay]);
 
-  useEffect(() => {
-    return doFetch();
-  }, [doFetch]);
+  useEffect(() => { return doFetch(); }, [doFetch]);
 
-  // Load more handler
   const handleLoadMore = useCallback(() => {
     if (!hasMore || loadingRef.current) return;
     loadingRef.current = true;
     setLoadingMore(true);
-
-    // Build paginated URL
     const sep = base.includes("?") ? "&" : "?";
-    const nextUrl = `${base}${sep}offset=${offsetRef.current}`;
-
-    fetchItems(nextUrl).then((data) => {
+    fetchItems(`${base}${sep}offset=${offsetRef.current}`).then((data) => {
       if (data && data.length > 0) {
         setItems((prev) => {
           const existing = new Set((prev || []).map((i) => i.id));
-          const newItems = data.filter((i) => !existing.has(i.id));
-          return [...(prev || []), ...newItems];
+          return [...(prev || []), ...data.filter((i) => !existing.has(i.id))];
         });
         offsetRef.current += data.length;
         setHasMore(data.length >= limit);
-      } else {
-        setHasMore(false);
-      }
+      } else { setHasMore(false); }
       setLoadingMore(false);
       loadingRef.current = false;
     });
   }, [base, limit, hasMore]);
 
   if (items === null && !failed) {
-    return (
-      <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
-        <SkeletonRow count={8} />
-      </ScrollRow>
-    );
+    return <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}><SkeletonRow count={8} /></ScrollRow>;
   }
-
   if (failed) {
     return (
       <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}>
@@ -122,21 +106,18 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
       </ScrollRow>
     );
   }
-
   if (!items || items.length === 0) return null;
 
   return (
-    <ScrollRow
-      label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
-      onLoadMore={hasMore ? handleLoadMore : undefined}
-      loadingMore={loadingMore}
-    >
+    <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
+      onLoadMore={hasMore ? handleLoadMore : undefined} loadingMore={loadingMore}>
       {items.map((item) => <Card key={item.id} item={item} />)}
     </ScrollRow>
   );
 }
 
-/** Lazy fetch row — only fetches when scrolled into view, with pagination */
+// ── Lazy Row (loads on scroll into view) ────────────────────────────────
+
 const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string;
 }) {
@@ -167,9 +148,7 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
         setItems(data);
         offsetRef.current = data.length;
         setHasMore(data.length >= limit);
-      } else {
-        setItems([]);
-      }
+      } else { setItems([]); }
     });
   }, [visible, base, limit]);
 
@@ -177,22 +156,16 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
     if (!hasMore || loadingRef.current) return;
     loadingRef.current = true;
     setLoadingMore(true);
-
     const sep = base.includes("?") ? "&" : "?";
-    const nextUrl = `${base}${sep}offset=${offsetRef.current}`;
-
-    fetchItems(nextUrl).then((data) => {
+    fetchItems(`${base}${sep}offset=${offsetRef.current}`).then((data) => {
       if (data && data.length > 0) {
         setItems((prev) => {
           const existing = new Set((prev || []).map((i) => i.id));
-          const newItems = data.filter((i) => !existing.has(i.id));
-          return [...(prev || []), ...newItems];
+          return [...(prev || []), ...data.filter((i) => !existing.has(i.id))];
         });
         offsetRef.current += data.length;
         setHasMore(data.length >= limit);
-      } else {
-        setHasMore(false);
-      }
+      } else { setHasMore(false); }
       setLoadingMore(false);
       loadingRef.current = false;
     });
@@ -202,11 +175,8 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
 
   return (
     <div ref={visRef}>
-      <ScrollRow
-        label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
-        onLoadMore={hasMore ? handleLoadMore : undefined}
-        loadingMore={loadingMore}
-      >
+      <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
+        onLoadMore={hasMore ? handleLoadMore : undefined} loadingMore={loadingMore}>
         {items === null ? <SkeletonRow count={8} /> : items.map((item) => <Card key={item.id} item={item} />)}
       </ScrollRow>
     </div>
@@ -218,10 +188,8 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
 function TasteDnaBar() {
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;
-
   if (ratingCount < 3) return null;
 
-  // Get top genres/vibes from rated items (we'd need item data for this — use a placeholder approach)
   const topTags = ["Sci-Fi", "Dark", "Epic", "Atmospheric", "Thriller"];
 
   return (
@@ -239,19 +207,12 @@ function TasteDnaBar() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 8 }}>
         {topTags.map((tag) => (
           <span key={tag} style={{
-            fontSize: 9,
-            padding: "3px 8px",
-            borderRadius: 8,
-            background: "rgba(255,255,255,0.06)",
-            color: "rgba(255,255,255,0.5)",
-          }}>
-            {tag}
-          </span>
+            fontSize: 9, padding: "3px 8px", borderRadius: 8,
+            background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)",
+          }}>{tag}</span>
         ))}
       </div>
-      <a href="/library" style={{ fontSize: 10, color: "#E84855", textDecoration: "none" }}>
-        View profile →
-      </a>
+      <a href="/library" style={{ fontSize: 10, color: "#E84855", textDecoration: "none" }}>View profile →</a>
     </div>
   );
 }
@@ -269,11 +230,6 @@ export default function ForYouPage() {
       .then((data) => setUpcoming(Array.isArray(data) ? data : []))
       .catch(() => setUpcoming([]));
   }, []);
-
-  // Get user's highest rated item for personalized row
-  const highestRatedId = ratingCount > 0
-    ? parseInt(Object.entries(ratings).sort(([, a], [, b]) => b - a)[0][0])
-    : null;
 
   return (
     <div>
@@ -298,13 +254,13 @@ export default function ForYouPage() {
         </div>
       </div>
 
-      {/* 2. Taste DNA bar */}
+      {/* 2. Taste DNA bar (3+ ratings) */}
       <TasteDnaBar />
 
-      {/* 3. Personalized rows (only with 5+ ratings) */}
-      {ratingCount >= 5 && highestRatedId && (
+      {/* 3. Personalized rows (5+ ratings) */}
+      {ratingCount >= 5 && (
         <PaginatedRow
-          fetchUrl={`/api/catalog?limit=20`}
+          fetchUrl="/api/catalog?limit=20"
           label="Because you rated highly"
           sub="Items matching your top-rated genres and vibes"
           icon="✨"
@@ -312,7 +268,7 @@ export default function ForYouPage() {
         />
       )}
 
-      {/* 4. Universal rows */}
+      {/* 4. Universal curated rows */}
       <PaginatedRow
         fetchUrl="/api/catalog?curated=top_rated&limit=20"
         label="Critically acclaimed"
@@ -330,7 +286,7 @@ export default function ForYouPage() {
         icon="🔥"
         iconBg="#E8485522"
         seeAllHref="/explore"
-        delay={300}
+        delay={200}
       />
 
       <PaginatedRow
@@ -340,10 +296,10 @@ export default function ForYouPage() {
         icon="💎"
         iconBg="#3185FC22"
         seeAllHref="/explore"
-        delay={600}
+        delay={400}
       />
 
-      {/* Per-type rows */}
+      {/* Per-editorial-label rows — these are the curated "best of" per type */}
       <LazyRow
         fetchUrl="/api/catalog?type=movie&limit=20"
         label="Highest reviewed movies"

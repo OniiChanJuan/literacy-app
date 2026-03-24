@@ -33,7 +33,6 @@ export default function ExplorePage() {
   const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
   const [searching, setSearching] = useState(false);
   const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
-  const [highestRated, setHighestRated] = useState<Item[]>([]);
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   const [filterLoading, setFilterLoading] = useState(false);
   const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
@@ -72,22 +71,7 @@ export default function ExplorePage() {
       .catch(() => {});
   }, []);
 
-  // Fetch highest rated from DB
-  useEffect(() => {
-    fetch("/api/catalog?limit=20&sort=recent")
-      .then((r) => r.json())
-      .then((data) => {
-        if (!Array.isArray(data)) return;
-        const withScores = data
-          .filter((i: Item) => {
-            const ext = i.ext as Record<string, number>;
-            return Object.values(ext).some((v) => v >= 8);
-          })
-          .slice(0, 15);
-        setHighestRated(withScores);
-      })
-      .catch(() => {});
-  }, []);
+  // (removed highestRated — now handled in media type rows)
 
   // Fetch filtered items from DB when filter changes
   const fetchFiltered = useCallback(async (type: MediaType | null, genre: string | null, vibe: string | null) => {
@@ -244,11 +228,30 @@ export default function ExplorePage() {
             </div>
           )}
 
-          {/* Default curated storefront */}
+          {/* Default storefront — no active filter */}
           {!hasActiveFilter && (
             <>
-              {/* 3. Browse by media type */}
-              {(mode === "all" || mode === "type") && (
+              {/* ALL mode: media type scroll rows */}
+              {mode === "all" && (
+                <div>
+                  {TYPE_ORDER.map((k) => {
+                    const t = TYPES[k];
+                    const count = typeCounts[k] || 0;
+                    if (count === 0) return null;
+                    return (
+                      <MediaTypeRow
+                        key={k}
+                        type={k}
+                        label={`${t.icon} ${t.label}`}
+                        sub={`${count} titles`}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* BY MEDIA mode: type tiles */}
+              {mode === "type" && (
                 <div style={{ marginBottom: 32 }}>
                   <SectionLabel>Browse by media type</SectionLabel>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
@@ -258,7 +261,7 @@ export default function ExplorePage() {
                       return (
                         <button
                           key={k}
-                          onClick={() => { setSelectedType(k); setMode("type"); }}
+                          onClick={() => { setSelectedType(k); }}
                           style={{
                             background: `${t.color}0A`, border: `1px solid ${t.color}33`,
                             borderRadius: 11, padding: "14px 12px", cursor: "pointer",
@@ -268,12 +271,8 @@ export default function ExplorePage() {
                           onMouseLeave={(e) => { e.currentTarget.style.background = `${t.color}0A`; e.currentTarget.style.transform = ""; }}
                         >
                           <div style={{ fontSize: 22, marginBottom: 5 }}>{t.icon}</div>
-                          <div style={{ fontSize: 12, fontWeight: 700, color: t.color, marginBottom: 2 }}>
-                            {t.label}
-                          </div>
-                          <div style={{ fontSize: 9, color: "var(--text-faint)" }}>
-                            {count} title{count !== 1 ? "s" : ""}
-                          </div>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: t.color, marginBottom: 2 }}>{t.label}</div>
+                          <div style={{ fontSize: 9, color: "var(--text-faint)" }}>{count} title{count !== 1 ? "s" : ""}</div>
                         </button>
                       );
                     })}
@@ -281,15 +280,15 @@ export default function ExplorePage() {
                 </div>
               )}
 
-              {/* 4. Popular genres */}
-              {(mode === "all" || mode === "genre") && (
+              {/* BY GENRE mode: genre pills */}
+              {mode === "genre" && (
                 <div style={{ marginBottom: 32 }}>
                   <SectionLabel>Popular genres</SectionLabel>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {ALL_GENRES.slice(0, 20).map((g) => (
+                    {ALL_GENRES.slice(0, 24).map((g) => (
                       <button
                         key={g}
-                        onClick={() => { setSelectedGenre(g); setMode("genre"); }}
+                        onClick={() => { setSelectedGenre(g); }}
                         style={{
                           background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
                           borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
@@ -305,8 +304,8 @@ export default function ExplorePage() {
                 </div>
               )}
 
-              {/* 5. Browse by vibe */}
-              {(mode === "all" || mode === "vibe") && (
+              {/* BY VIBE mode: vibe pills */}
+              {mode === "vibe" && (
                 <div style={{ marginBottom: 32 }}>
                   <SectionLabel>Browse by vibe</SectionLabel>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -316,7 +315,7 @@ export default function ExplorePage() {
                       return (
                         <button
                           key={v}
-                          onClick={() => { setSelectedVibe(v); setMode("vibe"); }}
+                          onClick={() => { setSelectedVibe(v); }}
                           style={{
                             background: `${vibe.color}12`, border: `1px solid ${vibe.color}25`,
                             borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
@@ -335,18 +334,9 @@ export default function ExplorePage() {
                 </div>
               )}
 
-              {/* 6. Highest rated */}
-              {mode === "all" && highestRated.length > 0 && (
-                <div style={{ marginBottom: 32 }}>
-                  <ScrollRow label="Highest Rated" sub="Top-rated across all media" icon="⭐">
-                    {highestRated.map((item) => <Card key={item.id} item={item} />)}
-                  </ScrollRow>
-                </div>
-              )}
-
-              {/* 7. Coming soon */}
-              {mode === "all" && upcoming.length > 0 && (
-                <div>
+              {/* Coming soon — always at bottom */}
+              {upcoming.length > 0 && (
+                <div style={{ marginTop: 16 }}>
                   <ScrollRow label="Coming Soon" sub={`${upcoming.length} upcoming releases`} icon="🔥" iconBg="#E8485522">
                     {upcoming.map((item) => (
                       <UpcomingCard key={`upcoming-${item.id}`} item={item} />
@@ -358,6 +348,40 @@ export default function ExplorePage() {
           )}
         </>
       )}
+    </div>
+  );
+}
+
+/** Scroll row that fetches items for a specific media type */
+function MediaTypeRow({ type, label, sub }: { type: string; label: string; sub: string }) {
+  const [items, setItems] = useState<Item[] | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/catalog?type=${type}&limit=20`)
+      .then((r) => r.json())
+      .then((data) => setItems(Array.isArray(data) ? data : []))
+      .catch(() => setItems([]));
+  }, [type]);
+
+  if (items !== null && items.length < 4) return null;
+
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <ScrollRow label={label} sub={sub}>
+        {items === null ? (
+          <div style={{ display: "flex", gap: 10 }}>
+            {Array.from({ length: 8 }, (_, i) => (
+              <div key={i} style={{
+                minWidth: 120, maxWidth: 120, height: 145, borderRadius: 8,
+                background: "rgba(255,255,255,0.03)", flexShrink: 0,
+                border: "0.5px solid rgba(255,255,255,0.04)",
+              }} />
+            ))}
+          </div>
+        ) : (
+          items.map((item) => <Card key={item.id} item={item} />)
+        )}
+      </ScrollRow>
     </div>
   );
 }

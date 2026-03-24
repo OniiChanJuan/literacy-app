@@ -3,17 +3,18 @@ import { memo } from "react";
 const SkeletonCard = memo(function SkeletonCard() {
   return (
     <div style={{
-      minWidth: 162,
-      maxWidth: 162,
+      minWidth: 120,
+      maxWidth: 120,
       borderRadius: 8,
       overflow: "hidden",
       flexShrink: 0,
       border: "0.5px solid rgba(255,255,255,0.06)",
     }}>
-      <div className="skeleton-shimmer" style={{ height: 212, background: "rgba(255,255,255,0.04)" }} />
-      <div style={{ background: "var(--bg-card)", padding: "8px 8px 6px" }}>
-        <div className="skeleton-shimmer" style={{ height: 11, width: "80%", borderRadius: 3, marginBottom: 4, background: "rgba(255,255,255,0.06)" }} />
-        <div className="skeleton-shimmer" style={{ height: 9, width: "50%", borderRadius: 3, background: "rgba(255,255,255,0.04)" }} />
+      <div className="skeleton-shimmer" style={{ height: 95, background: "rgba(255,255,255,0.04)" }} />
+      <div style={{ background: "var(--bg-card)", padding: "5px 6px 4px" }}>
+        <div className="skeleton-shimmer" style={{ height: 10, width: "80%", borderRadius: 3, marginBottom: 3, background: "rgba(255,255,255,0.06)" }} />
+        <div className="skeleton-shimmer" style={{ height: 8, width: "55%", borderRadius: 3, marginBottom: 2, background: "rgba(255,255,255,0.04)" }} />
+        <div className="skeleton-shimmer" style={{ height: 7, width: "40%", borderRadius: 3, background: "rgba(255,255,255,0.03)" }} />
       </div>
     </div>
   );

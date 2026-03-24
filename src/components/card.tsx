@@ -12,30 +12,25 @@ function isImageUrl(cover: string | undefined | null): boolean {
   return !!cover && (cover.startsWith("http") || cover.startsWith("/"));
 }
 
-/** Get the best external score to display */
+/** Get the best external score for display */
 function getBestExtScore(ext: any): { label: string; value: number; display: string } | null {
   if (!ext || typeof ext !== "object") return null;
   const entries = Object.entries(ext) as [string, number][];
   if (entries.length === 0) return null;
 
-  // Prioritize: IMDb, RT, Meta, MAL, Goodreads, Pitchfork, IGN, Steam
   const priority = ["imdb", "rt", "meta", "mal", "goodreads", "pitchfork", "ign", "steam"];
   for (const key of priority) {
     const val = ext[key];
     if (val !== undefined && val !== null) {
-      // Normalize display
       if (key === "imdb" || key === "mal" || key === "ign" || key === "pitchfork") {
         return { label: key.toUpperCase(), value: val, display: val.toFixed?.(1) || String(val) };
       }
       if (key === "goodreads") {
         return { label: "GR", value: val, display: val.toFixed?.(1) || String(val) };
       }
-      // RT, Meta, Steam are 0-100
       return { label: key.toUpperCase(), value: val / 10, display: `${val}%` };
     }
   }
-
-  // Fallback: use the first entry
   const [k, v] = entries[0];
   return { label: k.toUpperCase(), value: v, display: String(v) };
 }
@@ -70,13 +65,19 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
 
   const extScore = getBestExtScore(item.ext);
 
+  // Fake Literacy score from ext score (in real app this comes from user ratings)
+  const literacyScore = extScore ? Math.min(5, extScore.value * 0.55).toFixed(1) : null;
+  const literacyScoreNum = literacyScore ? parseFloat(literacyScore) : 0;
+  const recPct = extScore ? Math.min(99, Math.round(extScore.value * 10.5)) : null;
+  const ratingCount = extScore ? Math.round(extScore.value * 137 + 42) : 0;
+
   return (
     <HoverPreview item={item}>
     <div
       onClick={handleClick}
       style={{
-        minWidth: 162,
-        maxWidth: 162,
+        minWidth: 120,
+        maxWidth: 120,
         borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
@@ -96,7 +97,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
     >
       {/* Cover — 65% of card */}
       <div style={{
-        height: 212,
+        height: 95,
         position: "relative",
         ...(hasImage && !imgError
           ? { background: "#1a1a2e" }
@@ -106,8 +107,8 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           <Image
             src={item.cover}
             alt={item.title}
-            width={162}
-            height={212}
+            width={120}
+            height={95}
             quality={70}
             sizes="120px"
             style={{
@@ -126,11 +127,11 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
             width: "100%", height: "100%",
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
-            padding: 8,
+            padding: 6,
           }}>
-            <span style={{ fontSize: 20, marginBottom: 2 }}>{t.icon}</span>
-            <span style={{ fontSize: 8, color: "rgba(255,255,255,0.4)", textAlign: "center", lineHeight: 1.2 }}>
-              {item.title?.slice(0, 30)}
+            <span style={{ fontSize: 18, marginBottom: 2 }}>{t.icon}</span>
+            <span style={{ fontSize: 7, color: "rgba(255,255,255,0.4)", textAlign: "center", lineHeight: 1.2 }}>
+              {item.title?.slice(0, 25)}
             </span>
           </div>
         )}
@@ -143,9 +144,9 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           background: "rgba(0,0,0,0.6)",
           backdropFilter: "blur(4px)",
           color: t.color,
-          fontSize: 8,
+          fontSize: 7,
           fontWeight: 700,
-          padding: "2px 6px",
+          padding: "1px 5px",
           borderRadius: 4,
           textTransform: "uppercase",
         }}>
@@ -160,7 +161,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
             right: 4,
             background: "rgba(0,0,0,0.7)",
             color: "#f1c40f",
-            fontSize: 8,
+            fontSize: 7,
             fontWeight: 700,
             padding: "1px 5px",
             borderRadius: 4,
@@ -177,24 +178,24 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
             left: 3,
             background: "rgba(232,72,85,0.8)",
             color: "#fff",
-            fontSize: 7,
+            fontSize: 6,
             fontWeight: 600,
-            padding: "1px 5px",
-            borderRadius: 4,
+            padding: "1px 4px",
+            borderRadius: 3,
           }}>
             Cross-media
           </div>
         )}
       </div>
 
-      {/* Info area — 35% of card */}
-      <div style={{ background: "var(--bg-card)", padding: "8px 8px 6px" }}>
+      {/* Info area — 35% */}
+      <div style={{ background: "var(--bg-card)", padding: "5px 6px 4px" }}>
         {/* Title */}
         <div style={{
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: 500,
           lineHeight: 1.2,
-          marginBottom: 3,
+          marginBottom: 2,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -203,28 +204,39 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           {item.title}
         </div>
 
-        {/* Score row */}
-        {extScore ? (
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 3,
-            marginBottom: 2,
-          }}>
+        {/* Score row: Literacy score + recommend % */}
+        {literacyScore ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 1 }}>
             <span style={{
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: 700,
-              color: scoreColor(extScore.value),
+              color: scoreColor(literacyScoreNum),
             }}>
-              {extScore.display}
+              {literacyScore} ★
             </span>
-            <span style={{ fontSize: 8, color: "rgba(255,255,255,0.25)" }}>
-              {extScore.label}
-            </span>
+            {recPct !== null && (
+              <>
+                <span style={{ fontSize: 7, color: "rgba(255,255,255,0.15)" }}>|</span>
+                <span style={{
+                  fontSize: 8,
+                  fontWeight: 600,
+                  color: recPct >= 70 ? "#2EC4B6" : recPct >= 40 ? "#F9A620" : "#E84855",
+                }}>
+                  {recPct}% 👍
+                </span>
+              </>
+            )}
           </div>
         ) : (
-          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", marginBottom: 2 }}>
+          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.2)", marginBottom: 1 }}>
             {item.year || "TBA"}
+          </div>
+        )}
+
+        {/* Rating count */}
+        {ratingCount > 0 && (
+          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.2)", marginBottom: 2 }}>
+            {formatCount(ratingCount)} ratings
           </div>
         )}
 
@@ -233,7 +245,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           <Stars
             rating={userRating}
             onRate={handleRate}
-            size={10}
+            size={9}
           />
         )}
       </div>
