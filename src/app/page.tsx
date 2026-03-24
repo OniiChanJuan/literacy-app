@@ -7,6 +7,18 @@ import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
 
+/** Fetch items from API, returning the array or null on failure */
+async function fetchItems(url: string): Promise<Item[] | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return Array.isArray(data) ? data : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Row that fetches data on mount (for above-the-fold content) */
 function EagerRow({
   fetchUrl,
@@ -22,20 +34,29 @@ function EagerRow({
   iconBg: string;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    fetch(fetchUrl)
-      .then((r) => r.json())
-      .then((data) => setItems(Array.isArray(data) ? data : []))
-      .catch(() => setItems([]));
+    fetchItems(fetchUrl).then((data) => {
+      if (data) setItems(data);
+      else setFailed(true);
+    });
   }, [fetchUrl]);
 
+  // Don't hide the row on failure — show skeletons instead
+  // Only hide if we successfully got data but it was empty
   if (items !== null && items.length === 0) return null;
 
   return (
     <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg}>
       {items === null ? (
-        <SkeletonRow count={6} />
+        failed ? (
+          <div style={{ padding: "20px", color: "var(--text-faint)", fontSize: 12 }}>
+            Failed to load. Try refreshing.
+          </div>
+        ) : (
+          <SkeletonRow count={6} />
+        )
       ) : (
         items.map((item) => <Card key={item.id} item={item} />)
       )}
@@ -59,6 +80,7 @@ const LazyRow = memo(function LazyRow({
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [visible, setVisible] = useState(false);
+  const [failed, setFailed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,10 +96,10 @@ const LazyRow = memo(function LazyRow({
 
   useEffect(() => {
     if (!visible) return;
-    fetch(fetchUrl)
-      .then((r) => r.json())
-      .then((data) => setItems(Array.isArray(data) ? data : []))
-      .catch(() => setItems([]));
+    fetchItems(fetchUrl).then((data) => {
+      if (data) setItems(data);
+      else setFailed(true);
+    });
   }, [visible, fetchUrl]);
 
   if (items !== null && items.length === 0) return null;
@@ -86,7 +108,13 @@ const LazyRow = memo(function LazyRow({
     <div ref={ref}>
       <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg}>
         {items === null ? (
-          <SkeletonRow count={6} />
+          failed ? (
+            <div style={{ padding: "20px", color: "var(--text-faint)", fontSize: 12 }}>
+              Failed to load.
+            </div>
+          ) : (
+            <SkeletonRow count={6} />
+          )
         ) : (
           items.map((item) => <Card key={item.id} item={item} />)
         )}

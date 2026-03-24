@@ -151,7 +151,10 @@ export async function GET(req: NextRequest) {
     return res;
   } catch (error: any) {
     console.error("Catalog API error:", error);
-    return NextResponse.json({ error: "Failed to fetch catalog" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch catalog" },
+      { status: 500, headers: { "Cache-Control": "no-store" } }
+    );
   }
 }
 
