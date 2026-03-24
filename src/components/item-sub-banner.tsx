@@ -220,7 +220,7 @@ export default function ItemSubBanner({ item, typeColor }: SubBannerProps) {
         {session?.user ? (
           <>
             {/* Stars */}
-            <Stars rating={currentRating} onRate={(s) => rate(item.id, s)} size={15} />
+            <Stars rating={currentRating} onRate={(s) => rate(item.id, s)} size={16} />
 
             {/* Rec tags — show after rating */}
             {currentRating > 0 && (
@@ -269,12 +269,12 @@ export default function ItemSubBanner({ item, typeColor }: SubBannerProps) {
                       display: "flex",
                       alignItems: "center",
                       gap: 3,
-                      padding: "4px 10px",
+                      padding: "6px 14px",
                       borderRadius: 6,
                       border: active ? `0.5px solid rgba(${hexToRgb(s.color)}, 0.25)` : "0.5px solid rgba(255,255,255,0.08)",
                       background: active ? `rgba(${hexToRgb(s.color)}, 0.15)` : "rgba(255,255,255,0.04)",
                       color: active ? s.color : "rgba(255,255,255,0.3)",
-                      fontSize: 9,
+                      fontSize: 11,
                       fontWeight: 600,
                       cursor: "pointer",
                     }}
@@ -288,12 +288,12 @@ export default function ItemSubBanner({ item, typeColor }: SubBannerProps) {
                 <button
                   onClick={() => setShowAllStatuses(true)}
                   style={{
-                    padding: "4px 6px",
+                    padding: "6px 8px",
                     borderRadius: 6,
                     border: "0.5px solid rgba(255,255,255,0.08)",
                     background: "rgba(255,255,255,0.04)",
                     color: "rgba(255,255,255,0.2)",
-                    fontSize: 9,
+                    fontSize: 11,
                     cursor: "pointer",
                   }}
                 >

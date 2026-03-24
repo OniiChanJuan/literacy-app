@@ -338,7 +338,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   });
 
   return (
-    <div style={{ maxWidth: "100vw", overflowX: "hidden" }}>
+    <div style={{ maxWidth: 1200, margin: "0 auto", overflowX: "hidden" }}>
       <BackButton />
 
       {/* DLC badge */}
@@ -363,27 +363,27 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           alignItems: "flex-start",
         }}>
           {/* Left — Cover art */}
-          <div style={{ flexShrink: 0, width: 95, height: (item.type === "book" || item.type === "manga") ? 145 : 140 }}>
+          <div style={{ flexShrink: 0, width: 120, height: (item.type === "book" || item.type === "manga") ? 180 : 170 }}>
             {hasImageCover ? (
               <Image
                 src={item.cover}
                 alt={item.title}
-                width={95}
-                height={(item.type === "book" || item.type === "manga") ? 145 : 140}
+                width={120}
+                height={(item.type === "book" || item.type === "manga") ? 180 : 170}
                 priority
-                sizes="95px"
+                sizes="120px"
                 style={{
                   objectFit: "cover",
                   borderRadius: 8,
                   border: "0.5px solid rgba(255,255,255,0.1)",
-                  width: 95,
-                  height: (item.type === "book" || item.type === "manga") ? 145 : 140,
+                  width: 120,
+                  height: (item.type === "book" || item.type === "manga") ? 180 : 170,
                 }}
               />
             ) : (
               <div style={{
-                width: 95,
-                height: (item.type === "book" || item.type === "manga") ? 145 : 140,
+                width: 120,
+                height: (item.type === "book" || item.type === "manga") ? 180 : 170,
                 borderRadius: 8,
                 border: "0.5px solid rgba(255,255,255,0.1)",
                 background: item.cover || `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
