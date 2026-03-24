@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, memo, useCallback } from "react";
 import { TYPES, type Item, type UpcomingItem } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
+import { useScrollRestore } from "@/lib/use-scroll-restore";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
@@ -220,6 +221,7 @@ function TasteDnaBar() {
 // ── Main Page ───────────────────────────────────────────────────────────
 
 export default function ForYouPage() {
+  useScrollRestore();
   const [upcoming, setUpcoming] = useState<UpcomingItem[] | null>(null);
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;

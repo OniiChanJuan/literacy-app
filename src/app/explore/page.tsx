@@ -5,6 +5,7 @@ import { TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, type MediaType, type I
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
+import { useScrollRestore } from "@/lib/use-scroll-restore";
 
 interface SearchResult extends Item {
   source: string;
@@ -25,6 +26,7 @@ function SectionLabel({ children }: { children: string }) {
 }
 
 export default function ExplorePage() {
+  useScrollRestore();
   const [search, setSearch] = useState("");
   const [mode, setMode] = useState<Mode>("all");
   const [selectedType, setSelectedType] = useState<MediaType | null>(null);

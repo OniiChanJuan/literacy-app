@@ -107,6 +107,7 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
       <div
         ref={ref}
         className="scrollbar-hide"
+        data-scroll-row={label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}
         style={{
           display: "flex",
           gap: 10,
