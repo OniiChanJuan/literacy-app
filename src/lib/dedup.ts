@@ -20,8 +20,12 @@ const MUSIC_NOISE = [
 ];
 
 const GAME_NOISE = [
-  /\s*[:\s-]+(?:game\s+of\s+the\s+year|goty|definitive|complete|ultimate|legendary|premium|gold|deluxe|enhanced|special|collector'?s|anniversary)\s*(?:edition)?$/i,
-  /\s*[:\s-]+(?:director'?s\s+cut|final\s+cut|remastered|hd\s+remaster)$/i,
+  /\s+-\s+(?:Game\s+of\s+the\s+Year|GOTY|Definitive|Complete|Ultimate|Legendary|Premium|Gold|Deluxe|Enhanced|Special|Collector'?s|Anniversary|Standard)\s*(?:Edition)?$/i,
+  /\s*:\s+(?:Game\s+of\s+the\s+Year|GOTY|Definitive|Complete|Ultimate|Legendary|Premium|Gold|Deluxe|Enhanced|Special|Collector'?s|Anniversary)\s*(?:Edition)?$/i,
+  /\s+-\s+(?:Remastered|HD\s+Remaster|Remake|Director'?s\s+Cut|Final\s+Cut)$/i,
+  /\s*:\s+(?:Director'?s\s+Cut|Final\s+Cut)$/i,
+  /\s+(?:Remastered|Remake|Anniversary)$/i,
+  /\s*\((?:Game\s+of\s+the\s+Year|GOTY|Definitive|Complete|Ultimate|Legendary|Deluxe|Enhanced|Special|Collector'?s|Remastered|Remake)\s*(?:Edition)?\)$/i,
 ];
 
 export function normalizeTitle(title: string, type: string): string {
