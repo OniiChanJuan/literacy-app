@@ -32,6 +32,7 @@ model User {
   following      Follow[]       @relation("follower")
   followers      Follow[]       @relation("followed")
   settings       UserSettings?
+  helpfulVotes   ReviewHelpfulVote[]
 
   @@map("users")
 }
@@ -229,19 +230,36 @@ model Rating {
 }
 
 model Review {
-  id           Int      @id @default(autoincrement())
-  userId       String   @map("user_id")
-  itemId       Int      @map("item_id")
-  text         String
-  helpfulCount Int      @default(0) @map("helpful_count")
-  createdAt    DateTime @default(now()) @map("created_at")
+  id               Int      @id @default(autoincrement())
+  userId           String   @map("user_id")
+  itemId           Int      @map("item_id")
+  text             String
+  containsSpoilers Boolean  @default(false) @map("contains_spoilers")
+  helpfulCount     Int      @default(0) @map("helpful_count")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item         Item               @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  helpfulVotes ReviewHelpfulVote[]
 
+  @@unique([userId, itemId])
   @@index([itemId])
   @@index([userId])
   @@map("reviews")
+}
+
+model ReviewHelpfulVote {
+  userId    String   @map("user_id")
+  reviewId  Int      @map("review_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@id([userId, reviewId])
+  @@index([reviewId])
+  @@map("review_helpful_votes")
 }
 
 model LibraryEntry {

@@ -79,6 +79,16 @@ export async function PUT(req: NextRequest) {
       create: { userId, itemId, score, recommendTag: recTag ?? null },
     });
 
+    // Auto-add to library as "completed" if not already tracked
+    const existingEntry = await prisma.libraryEntry.findUnique({
+      where: { userId_itemId: { userId, itemId } },
+    });
+    if (!existingEntry) {
+      await prisma.libraryEntry.create({
+        data: { userId, itemId, status: "completed" },
+      }).catch(() => {}); // Ignore if race condition
+    }
+
     return NextResponse.json({ itemId: rating.itemId, score: rating.score });
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

@@ -9,14 +9,21 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "itemId required" }, { status: 400 });
   }
 
+  // Get current user for helpful vote status
+  const session = await auth();
+  const currentUserId = session?.user?.id || null;
+
   try {
     const reviews = await prisma.review.findMany({
       where: { itemId },
       include: {
         user: { select: { id: true, name: true, image: true, avatar: true } },
+        helpfulVotes: currentUserId
+          ? { where: { userId: currentUserId }, select: { userId: true } }
+          : false,
       },
-      orderBy: { createdAt: "desc" },
-      take: 50, // Paginate — don't load all reviews at once
+      orderBy: [{ helpfulCount: "desc" }, { createdAt: "desc" }],
+      take: 50,
     });
 
     const userIds = reviews.map((r) => r.userId);
@@ -35,8 +42,13 @@ export async function GET(req: NextRequest) {
         score: rating?.score ?? 0,
         recommendTag: rating?.recommendTag ?? null,
         text: r.text,
+        containsSpoilers: r.containsSpoilers,
         helpfulCount: r.helpfulCount,
+        votedHelpful: currentUserId
+          ? (r.helpfulVotes as any[])?.length > 0
+          : false,
         createdAt: r.createdAt.toISOString(),
+        updatedAt: r.updatedAt.toISOString(),
       };
     });
 
@@ -54,7 +66,6 @@ export async function POST(req: NextRequest) {
 
   const userId = session.user.id;
 
-  // Rate limit: 30 reviews per minute per user
   if (!rateLimit(`review:${userId}`, 30, 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests. Slow down." }, { status: 429 });
   }
@@ -66,7 +77,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { itemId, text } = body;
+  const { itemId, text, containsSpoilers } = body;
 
   if (!itemId || typeof itemId !== "number") {
     return NextResponse.json({ error: "Valid itemId required" }, { status: 400 });
@@ -85,23 +96,65 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "You must rate this item before reviewing" }, { status: 400 });
     }
 
-    const existing = await prisma.review.findFirst({
-      where: { userId, itemId },
+    // Upsert review
+    const review = await prisma.review.upsert({
+      where: { userId_itemId: { userId, itemId } },
+      update: {
+        text: textResult.value,
+        containsSpoilers: !!containsSpoilers,
+      },
+      create: {
+        userId,
+        itemId,
+        text: textResult.value,
+        containsSpoilers: !!containsSpoilers,
+      },
     });
 
-    let review;
-    if (existing) {
-      review = await prisma.review.update({
-        where: { id: existing.id },
-        data: { text: textResult.value },
-      });
-    } else {
-      review = await prisma.review.create({
-        data: { userId, itemId, text: textResult.value },
+    // Auto-add to library as "completed" if not already tracked
+    const existing = await prisma.libraryEntry.findUnique({
+      where: { userId_itemId: { userId, itemId } },
+    });
+    if (!existing) {
+      await prisma.libraryEntry.create({
+        data: { userId, itemId, status: "completed" },
       });
     }
 
-    return NextResponse.json({ id: review.id }, { status: existing ? 200 : 201 });
+    return NextResponse.json({ id: review.id });
+  } catch {
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const userId = session.user.id;
+
+  let body: any;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
+  const { reviewId } = body;
+  if (!reviewId || typeof reviewId !== "number") {
+    return NextResponse.json({ error: "Valid reviewId required" }, { status: 400 });
+  }
+
+  try {
+    const review = await prisma.review.findUnique({ where: { id: reviewId } });
+    if (!review || review.userId !== userId) {
+      return NextResponse.json({ error: "Not found or not yours" }, { status: 404 });
+    }
+
+    await prisma.review.delete({ where: { id: reviewId } });
+    return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
