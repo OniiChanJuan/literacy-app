@@ -9,8 +9,8 @@ import { ScoreBadge } from "./aggregate-score";
 import Stars from "./stars";
 import HoverPreview from "./hover-preview";
 
-function isImageUrl(cover: string): boolean {
-  return cover.startsWith("http") || cover.startsWith("/");
+function isImageUrl(cover: string | undefined | null): boolean {
+  return !!cover && (cover.startsWith("http") || cover.startsWith("/"));
 }
 
 const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: string }) {

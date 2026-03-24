@@ -103,7 +103,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   if (!item) notFound();
 
   const upcoming = !isExternal && isUpcoming(item);
-  const hasImageCover = item.cover.startsWith("http");
+  const hasImageCover = item.cover?.startsWith("http") ?? false;
 
   const t = TYPES[item.type];
 
