@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
 import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
 import { parseIgdbId, getIgdbDetails } from "@/lib/igdb";
 import { parseGbookId, getGoogleBookDetails } from "@/lib/google-books";
@@ -59,7 +60,36 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
     item = await getComicVineDetails(cvParsed);
     isExternal = true;
   } else {
-    item = ALL_ITEMS.find((i) => i.id === parseInt(id)) || null;
+    // Try static data first, then database
+    const numId = parseInt(id);
+    item = ALL_ITEMS.find((i) => i.id === numId) || null;
+
+    if (!item && !isNaN(numId)) {
+      const dbItem = await prisma.item.findUnique({ where: { id: numId } });
+      if (dbItem) {
+        item = {
+          id: dbItem.id,
+          title: dbItem.title,
+          type: dbItem.type as Item["type"],
+          genre: dbItem.genre,
+          vibes: dbItem.vibes,
+          year: dbItem.year,
+          cover: dbItem.cover,
+          desc: dbItem.description,
+          people: (dbItem.people as any) || [],
+          awards: (dbItem.awards as any) || [],
+          platforms: (dbItem.platforms as any) || [],
+          ext: (dbItem.ext as any) || {},
+          totalEp: dbItem.totalEp,
+          ...(dbItem.isUpcoming ? {
+            isUpcoming: true,
+            releaseDate: dbItem.releaseDate || "",
+            hypeScore: dbItem.hypeScore || 0,
+            wantCount: dbItem.wantCount || 0,
+          } : {}),
+        } as Item;
+      }
+    }
   }
 
   if (!item) notFound();
