@@ -30,7 +30,7 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
     setShow(false);
   }, []);
 
-  const t = TYPES[item.type];
+  const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const extEntries = Object.entries(item.ext || {}) as [string, number][];
 
   return (

@@ -23,6 +23,30 @@ import FranchiseBadge from "@/components/franchise-badge";
 import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
 
+function dbItemToItem(dbItem: any): Item {
+  return {
+    id: dbItem.id,
+    title: dbItem.title,
+    type: dbItem.type,
+    genre: dbItem.genre || [],
+    vibes: dbItem.vibes || [],
+    year: dbItem.year,
+    cover: dbItem.cover || "",
+    desc: dbItem.description || "",
+    people: dbItem.people || [],
+    awards: dbItem.awards || [],
+    platforms: dbItem.platforms || [],
+    ext: dbItem.ext || {},
+    totalEp: dbItem.totalEp || 0,
+    ...(dbItem.isUpcoming ? {
+      isUpcoming: true,
+      releaseDate: dbItem.releaseDate || "",
+      hypeScore: dbItem.hypeScore || 0,
+      wantCount: dbItem.wantCount || 0,
+    } : {}),
+  } as Item;
+}
+
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
@@ -62,41 +86,21 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   } else {
     const numId = parseInt(id);
 
-    // Try database first (most items are in DB)
+    // Try static data first (instant, no DB needed)
     if (!isNaN(numId)) {
+      item = ALL_ITEMS.find((i) => i.id === numId) || null;
+    }
+
+    // If not in static data, fetch from database
+    if (!item && !isNaN(numId)) {
       try {
         const dbItem = await prisma.item.findUnique({ where: { id: numId } });
         if (dbItem) {
-          item = {
-            id: dbItem.id,
-            title: dbItem.title,
-            type: dbItem.type as Item["type"],
-            genre: dbItem.genre,
-            vibes: dbItem.vibes,
-            year: dbItem.year,
-            cover: dbItem.cover,
-            desc: dbItem.description,
-            people: (dbItem.people as any) || [],
-            awards: (dbItem.awards as any) || [],
-            platforms: (dbItem.platforms as any) || [],
-            ext: (dbItem.ext as any) || {},
-            totalEp: dbItem.totalEp,
-            ...(dbItem.isUpcoming ? {
-              isUpcoming: true,
-              releaseDate: dbItem.releaseDate || "",
-              hypeScore: dbItem.hypeScore || 0,
-              wantCount: dbItem.wantCount || 0,
-            } : {}),
-          } as Item;
+          item = dbItemToItem(dbItem);
         }
       } catch (e) {
         console.error("Failed to fetch item from DB:", e);
       }
-    }
-
-    // Fallback to static data
-    if (!item) {
-      item = ALL_ITEMS.find((i) => i.id === numId) || null;
     }
   }
 

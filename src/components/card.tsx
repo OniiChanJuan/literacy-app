@@ -16,7 +16,7 @@ function isImageUrl(cover: string | undefined | null): boolean {
 const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: string }) {
   const router = useRouter();
   const { ratings, rate } = useRatings();
-  const t = TYPES[item.type];
+  const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const userRating = ratings[item.id] || 0;
   const href = `/item/${routeId || item.id}`;
   const hasImage = isImageUrl(item.cover);
