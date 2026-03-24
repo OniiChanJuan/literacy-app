@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface ProviderData {
   name: string;
@@ -156,12 +157,13 @@ function ProviderPill({ provider }: { provider: ProviderData }) {
         e.currentTarget.style.boxShadow = "";
       }}
     >
-      <img
+      <Image
         src={provider.logo}
         alt={provider.name}
+        width={32}
+        height={32}
+        quality={75}
         style={{
-          width: 32,
-          height: 32,
           borderRadius: 8,
           objectFit: "cover",
         }}

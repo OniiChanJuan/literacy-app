@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useCallback, memo } from "react";
 
 interface ScrollRowProps {
   label: string;
@@ -10,12 +10,12 @@ interface ScrollRowProps {
   children: React.ReactNode;
 }
 
-export default function ScrollRow({ label, sub, icon, iconBg, children }: ScrollRowProps) {
+const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, children }: ScrollRowProps) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const scroll = (dir: "left" | "right") => {
+  const scroll = useCallback((dir: "left" | "right") => {
     ref.current?.scrollBy({ left: dir === "left" ? -320 : 320, behavior: "smooth" });
-  };
+  }, []);
 
   return (
     <div style={{ marginBottom: 36 }}>
@@ -38,7 +38,7 @@ export default function ScrollRow({ label, sub, icon, iconBg, children }: Scroll
             </span>
           )}
           <div>
-            <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 800, color: "#fff" }}>
+            <div style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, color: "#fff" }}>
               {label}
             </div>
             {sub && (
@@ -93,4 +93,6 @@ export default function ScrollRow({ label, sub, icon, iconBg, children }: Scroll
       </div>
     </div>
   );
-}
+});
+
+export default ScrollRow;

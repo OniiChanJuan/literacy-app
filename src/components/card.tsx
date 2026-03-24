@@ -1,6 +1,8 @@
 "use client";
 
+import { memo, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Item, TYPES } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import { ScoreBadge } from "./aggregate-score";
@@ -11,18 +13,27 @@ function isImageUrl(cover: string): boolean {
   return cover.startsWith("http") || cover.startsWith("/");
 }
 
-export default function Card({ item, routeId }: { item: Item; routeId?: string }) {
+const Card = memo(function Card({ item, routeId }: { item: Item; routeId?: string }) {
   const router = useRouter();
   const { ratings, rate } = useRatings();
   const t = TYPES[item.type];
   const userRating = ratings[item.id] || 0;
   const href = `/item/${routeId || item.id}`;
   const hasImage = isImageUrl(item.cover);
+  const [imgError, setImgError] = useState(false);
+
+  const handleClick = useCallback(() => {
+    router.push(href);
+  }, [router, href]);
+
+  const handleRate = useCallback((s: number) => {
+    rate(item.id, s);
+  }, [rate, item.id]);
 
   return (
     <HoverPreview item={item}>
     <div
-      onClick={() => router.push(href)}
+      onClick={handleClick}
       style={{
         minWidth: 190,
         maxWidth: 190,
@@ -46,21 +57,42 @@ export default function Card({ item, routeId }: { item: Item; routeId?: string }
       <div style={{
         height: 250,
         position: "relative",
-        ...(hasImage
+        ...(hasImage && !imgError
           ? { background: "#1a1a2e" }
-          : { background: item.cover }),
+          : { background: item.cover?.startsWith("linear") ? item.cover : "#1a1a2e" }),
       }}>
-        {hasImage && (
-          <img
+        {hasImage && !imgError && (
+          <Image
             src={item.cover}
             alt={item.title}
+            width={190}
+            height={250}
+            quality={75}
+            sizes="190px"
             style={{
               width: "100%",
               height: "100%",
               objectFit: "cover",
               display: "block",
             }}
+            onError={() => setImgError(true)}
           />
+        )}
+
+        {/* Fallback when image fails */}
+        {imgError && (
+          <div style={{
+            width: "100%", height: "100%",
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            background: `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+            padding: 16,
+          }}>
+            <span style={{ fontSize: 32, marginBottom: 8 }}>{t.icon}</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", textAlign: "center", lineHeight: 1.3 }}>
+              {item.title}
+            </span>
+          </div>
         )}
 
         {/* Type badge — top left */}
@@ -83,7 +115,7 @@ export default function Card({ item, routeId }: { item: Item; routeId?: string }
           <span style={{ fontSize: 12 }}>{t.icon}</span> {t.label.replace(/s$/, "")}
         </div>
 
-        {/* Gold rating badge — top right (only when user has rated) */}
+        {/* Gold rating badge — top right */}
         {userRating > 0 && (
           <div style={{
             position: "absolute",
@@ -140,7 +172,7 @@ export default function Card({ item, routeId }: { item: Item; routeId?: string }
         {!routeId && (
           <Stars
             rating={userRating}
-            onRate={(s) => rate(item.id, s)}
+            onRate={handleRate}
             size={14}
           />
         )}
@@ -148,4 +180,6 @@ export default function Card({ item, routeId }: { item: Item; routeId?: string }
     </div>
     </HoverPreview>
   );
-}
+});
+
+export default Card;

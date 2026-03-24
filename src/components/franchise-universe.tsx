@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { ALL_ITEMS, TYPES, isUpcoming, type Item } from "@/lib/data";
 import { getFranchiseForItem, type Franchise, type FranchiseItem } from "@/lib/franchises";
 
@@ -228,9 +229,13 @@ function MiniCard({
         background: isGradient ? item.cover : "#1a1a2e",
       }}>
         {hasImage && (
-          <img
+          <Image
             src={item.cover}
             alt={item.title}
+            width={90}
+            height={65}
+            quality={60}
+            sizes="90px"
             style={{
               width: "100%",
               height: "100%",

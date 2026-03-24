@@ -1,7 +1,22 @@
 import type { Metadata } from "next";
+import { Playfair_Display, DM_Sans } from "next/font/google";
 import Nav from "@/components/nav";
 import Providers from "@/components/providers";
 import "./globals.css";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "700", "800", "900"],
+  display: "swap",
+  variable: "--font-serif",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Literacy — Fluent in every medium",
@@ -14,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body style={{ minHeight: "100vh", background: "#0b0b10", fontFamily: "'DM Sans', sans-serif", color: "#fff", margin: 0, padding: 0 }}>
+    <html lang="en" className={`${playfair.variable} ${dmSans.variable}`}>
+      <body style={{ minHeight: "100vh", background: "#0b0b10", fontFamily: "var(--font-sans)", color: "#fff", margin: 0, padding: 0 }}>
         <Providers>
           <Nav />
           <main style={{ padding: "26px 28px 80px" }}>

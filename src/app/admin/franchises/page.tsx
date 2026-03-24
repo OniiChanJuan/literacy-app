@@ -240,7 +240,7 @@ export default function AdminFranchisesPage() {
                       background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
                     }}>
                       {fi.item.cover?.startsWith("http") && (
-                        <img src={fi.item.cover} alt="" style={{ width: 24, height: 36, objectFit: "cover", borderRadius: 4 }} />
+                        <img src={fi.item.cover} alt="" width={24} height={36} style={{ objectFit: "cover", borderRadius: 4 }} />
                       )}
                       <div>
                         <div style={{ fontSize: 11, fontWeight: 600, color: "#fff" }}>{fi.item.title}</div>

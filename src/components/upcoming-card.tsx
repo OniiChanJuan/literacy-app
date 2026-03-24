@@ -1,6 +1,8 @@
 "use client";
 
+import { memo } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { TYPES, type UpcomingItem } from "@/lib/data";
 import { useLibrary } from "@/lib/library-context";
 
@@ -52,9 +54,13 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
       }}>
         {/* Image cover */}
         {hasImage && (
-          <img
+          <Image
             src={item.cover}
             alt={item.title}
+            width={190}
+            height={250}
+            quality={75}
+            sizes="190px"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}

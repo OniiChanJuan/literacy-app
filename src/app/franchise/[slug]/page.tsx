@@ -258,9 +258,9 @@ function FranchiseItemView({ item, fi, franchise }: {
           <img
             src={item.cover}
             alt={item.title}
+            width={120}
+            height={180}
             style={{
-              width: 120,
-              height: 180,
               objectFit: "cover",
               borderRadius: 12,
               boxShadow: "0 8px 24px rgba(0,0,0,0.4)",

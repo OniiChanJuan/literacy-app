@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { ALL_ITEMS, TYPES, VIBES, isUpcoming, type Item } from "@/lib/data";
 import { parseTmdbId, getTmdbDetails } from "@/lib/tmdb";
@@ -86,14 +87,13 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       }}>
         {/* Blurred poster background for image covers */}
         {hasImageCover && (
-          <img
+          <Image
             src={item.cover}
             alt=""
+            fill
+            sizes="100vw"
+            quality={30}
             style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
               objectFit: "cover",
               filter: "blur(20px) brightness(0.4)",
             }}
@@ -111,12 +111,14 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         <div style={{ position: "relative", display: "flex", gap: 24, alignItems: "flex-end" }}>
           {/* Poster thumbnail for image covers */}
           {hasImageCover && (
-            <img
+            <Image
               src={item.cover}
               alt={item.title}
+              width={140}
+              height={210}
+              priority
+              sizes="140px"
               style={{
-                width: 140,
-                height: 210,
                 objectFit: "cover",
                 borderRadius: 12,
                 boxShadow: "0 8px 32px rgba(0,0,0,0.5)",

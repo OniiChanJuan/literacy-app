@@ -96,6 +96,12 @@ model Item {
   libraryEntries LibraryEntry[]
   franchiseItems FranchiseItem[]
 
+  @@index([type])
+  @@index([year])
+  @@index([createdAt])
+  @@index([isUpcoming])
+  @@index([type, year])
+  @@index([type, isUpcoming])
   @@map("items")
 }
 
@@ -123,6 +129,8 @@ model FranchiseItem {
   item      Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@id([franchiseId, itemId])
+  @@index([itemId])
+  @@index([franchiseId])
   @@map("franchise_items")
 }
 
@@ -150,6 +158,8 @@ model Rating {
   item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@id([userId, itemId])
+  @@index([itemId])
+  @@index([userId])
   @@map("ratings")
 }
 
@@ -164,6 +174,8 @@ model Review {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
+  @@index([itemId])
+  @@index([userId])
   @@map("reviews")
 }
 
@@ -180,6 +192,8 @@ model LibraryEntry {
   item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@id([userId, itemId])
+  @@index([userId])
+  @@index([userId, status])
   @@map("library_entries")
 }
 
