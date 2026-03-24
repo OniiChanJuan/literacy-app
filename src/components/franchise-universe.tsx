@@ -89,6 +89,14 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
 
   if (!loaded || !franchise || franchise.otherItems.length === 0) return null;
 
+  // Deduplicate items by normalized title + year
+  const deduped = franchise.otherItems.filter((item, idx, arr) => {
+    const norm = item.title.trim().toLowerCase();
+    return idx === arr.findIndex(
+      (other) => other.title.trim().toLowerCase() === norm && other.year === item.year
+    );
+  });
+
   const c = franchise.color;
 
   return (
@@ -97,7 +105,7 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
       border: `0.5px solid ${c}1F`,
       borderRadius: 10,
       padding: 14,
-      marginBottom: 24,
+      marginBottom: 16,
       overflow: "hidden",
       maxWidth: "100%",
       boxSizing: "border-box",
@@ -182,10 +190,11 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
             minWidth: "100%",
           }}
         >
-          {franchise.otherItems.map((item) => (
+          {deduped.map((item) => (
             <MiniCard
               key={item.id}
               item={item}
+              franchiseName={franchise.name}
               onClick={() => router.push(`/item/${item.id}`)}
             />
           ))}
@@ -207,9 +216,22 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
   );
 }
 
-function MiniCard({ item, onClick }: { item: FranchiseItemData; onClick: () => void }) {
+function stripFranchisePrefix(title: string, franchiseName: string): string {
+  const lower = title.toLowerCase();
+  const prefixLower = franchiseName.toLowerCase();
+  if (!lower.startsWith(prefixLower)) return title;
+  let rest = title.slice(franchiseName.length);
+  // Strip leading separators: ": ", " - ", " — ", " ", etc.
+  rest = rest.replace(/^[\s:—–\-]+/, "").trim();
+  // If the remainder is empty or very short, keep original
+  if (rest.length < 3) return title;
+  return rest;
+}
+
+function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; franchiseName: string; onClick: () => void }) {
   const t = TYPES[item.type as keyof typeof TYPES] || { color: "#888", icon: "?", label: "Unknown" };
   const hasImage = item.cover?.startsWith("http");
+  const displayTitle = stripFranchisePrefix(item.title, franchiseName);
 
   return (
     <button
@@ -312,7 +334,7 @@ function MiniCard({ item, onClick }: { item: FranchiseItemData; onClick: () => v
           whiteSpace: "nowrap", lineHeight: 1.3,
           maxWidth: 81, /* 95 - 7px padding each side */
         }}>
-          {item.title}
+          {displayTitle}
         </div>
         <div style={{
           fontSize: 8, marginTop: 2,

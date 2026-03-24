@@ -359,17 +359,17 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         {/* Three-column layout */}
         <div className="hero-layout" style={{
           display: "flex",
-          gap: 16,
+          gap: 14,
           alignItems: "flex-start",
         }}>
           {/* Left — Cover art */}
-          <div style={{ flexShrink: 0, width: 95, height: 140 }}>
+          <div style={{ flexShrink: 0, width: 95, height: (item.type === "book" || item.type === "manga") ? 145 : 140 }}>
             {hasImageCover ? (
               <Image
                 src={item.cover}
                 alt={item.title}
                 width={95}
-                height={140}
+                height={(item.type === "book" || item.type === "manga") ? 145 : 140}
                 priority
                 sizes="95px"
                 style={{
@@ -377,13 +377,13 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                   borderRadius: 8,
                   border: "0.5px solid rgba(255,255,255,0.1)",
                   width: 95,
-                  height: 140,
+                  height: (item.type === "book" || item.type === "manga") ? 145 : 140,
                 }}
               />
             ) : (
               <div style={{
                 width: 95,
-                height: 140,
+                height: (item.type === "book" || item.type === "manga") ? 145 : 140,
                 borderRadius: 8,
                 border: "0.5px solid rgba(255,255,255,0.1)",
                 background: item.cover || `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
@@ -607,13 +607,15 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           ═══════════════════════════════════════════════════════════════════ */}
       <div style={{ padding: "0 16px" }}>
         {/* A. Franchise universe */}
-        <div style={{ margin: "12px 0" }}>
+        <div style={{ marginTop: 12, marginBottom: 0 }}>
           <FranchiseUniverse itemId={typeof item.id === "number" ? item.id : parseInt(id)} />
         </div>
 
         {/* B. DLC / Expansions */}
         {dlcs.length > 0 && (
-          <DlcSection dlcs={dlcs} baseGameTitle={item.title} typeColor={t.color} />
+          <div style={{ marginBottom: 16 }}>
+            <DlcSection dlcs={dlcs} baseGameTitle={item.title} typeColor={t.color} />
+          </div>
         )}
 
         {/* C. Awards */}
@@ -621,7 +623,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
         {/* D. Community reviews */}
         {!upcoming && (
-          <section style={{ marginBottom: 32 }}>
+          <section style={{ marginTop: 16, marginBottom: 20 }}>
             <CommunityReviews itemId={item.id} />
           </section>
         )}

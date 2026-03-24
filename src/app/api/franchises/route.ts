@@ -73,6 +73,16 @@ export async function GET(req: NextRequest) {
       })
       .sort((a, b) => a.year - b.year);
 
+    // Deduplicate by normalized title + year
+    const seen = new Set<string>();
+    const deduped = otherItems.filter((item) => {
+      const normalized = item.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").trim();
+      const key = `${normalized}::${item.year}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
     const allTypes = new Set(franchise.items.map((fi) => fi.item.type));
 
     // Determine franchise color based on icon or dominant type
@@ -91,7 +101,7 @@ export async function GET(req: NextRequest) {
       color,
       totalItems: franchise.items.length,
       mediaTypes: allTypes.size,
-      otherItems,
+      otherItems: deduped,
       parentFranchise: franchise.parentFranchise || null,
     });
     res.headers.set("Cache-Control", "s-maxage=600, stale-while-revalidate=1200");
