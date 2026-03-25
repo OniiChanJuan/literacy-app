@@ -45,26 +45,41 @@ export default function UserMenu() {
     { icon: "⚙️", label: "Settings", href: "/settings" },
   ];
 
+  const isFounder = memberNumber !== null && memberNumber <= 100;
+
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      {/* Avatar button */}
-      <button
-        onClick={() => setOpen(!open)}
-        style={{
-          width: 32, height: 32, borderRadius: "50%",
-          border: "2px solid rgba(255,255,255,0.1)",
-          background: avatarUrl ? "transparent" : "linear-gradient(135deg, #E84855, #3185FC)",
-          cursor: "pointer", overflow: "hidden",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          padding: 0,
-        }}
-      >
-        {avatarUrl ? (
-          <img src={avatarUrl} alt="" width={32} height={32} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        ) : (
-          <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>{initial}</span>
+      {/* Avatar + member number */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+        <button
+          onClick={() => setOpen(!open)}
+          style={{
+            width: 32, height: 32, borderRadius: "50%",
+            border: isFounder ? "2px solid rgba(249,166,32,0.4)" : "2px solid rgba(255,255,255,0.1)",
+            background: avatarUrl ? "transparent" : "linear-gradient(135deg, #E84855, #3185FC)",
+            cursor: "pointer", overflow: "hidden",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: 0,
+          }}
+        >
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" width={32} height={32} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>{initial}</span>
+          )}
+        </button>
+        {memberNumber && (
+          <div style={{
+            fontSize: 8,
+            fontWeight: 600,
+            color: isFounder ? "#F9A620" : "rgba(255,255,255,0.25)",
+            whiteSpace: "nowrap",
+            lineHeight: 1,
+          }}>
+            {isFounder ? `★ #${memberNumber}` : `#${memberNumber}`}
+          </div>
         )}
-      </button>
+      </div>
 
       {/* Dropdown */}
       {open && (
