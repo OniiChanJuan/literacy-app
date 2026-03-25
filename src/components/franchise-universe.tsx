@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { TYPES } from "@/lib/data";
 
 interface FranchiseItemData {
@@ -273,10 +274,12 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
         background: showImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
       }}>
         {showImage ? (
-          <img
+          <Image
             src={item.cover}
             alt={item.title}
-            loading="lazy"
+            width={95}
+            height={70}
+            sizes="95px"
             onError={() => setImgError(true)}
             style={{
               width: 95,
