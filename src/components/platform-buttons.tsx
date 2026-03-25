@@ -82,6 +82,7 @@ const CONSOLE_STYLES: Record<string, { label: string; icon: string; color: strin
   apple_music: { label: "Apple Music",   icon: "♪",  color: "#fff",    bg: "#FA243C" },
   apple_pod:   { label: "Apple Podcasts",icon: "🎙", color: "#fff",    bg: "#872EC4" },
   theaters:    { label: "Theaters",      icon: "🎬", color: "#fff",    bg: "#E84855" },
+  google_books:{ label: "Google Books",  icon: "G",  color: "#fff",    bg: "#4285F4" },
 };
 
 const ACTION_LABELS: Record<MediaType, string> = {
@@ -95,6 +96,15 @@ const ACTION_LABELS: Record<MediaType, string> = {
   podcast: "Where to Listen",
 };
 
+// Platforms that have linkable URLs (non-retro, non-hardware-only)
+const LINKABLE_PLATFORMS = new Set([
+  "netflix", "prime", "hbo", "hulu", "apple", "disney", "theaters",
+  "kindle", "audible", "library", "google_books",
+  "steam", "ps5", "ps4", "ps", "xsx", "xone", "xbox", "switch", "switch2",
+  "spotify", "apple_music", "apple_pod",
+  "mangaplus", "viz", "comixology",
+]);
+
 interface PlatformObj {
   key: string;
   label: string;
@@ -102,13 +112,53 @@ interface PlatformObj {
   icon: string;
 }
 
-export default function PlatformButtons({ platforms, mediaType }: { platforms: any[]; mediaType: MediaType }) {
+// Category grouping
+const CATEGORY_CONFIG: { key: string; label: string }[] = [
+  { key: "stream", label: "Stream" },
+  { key: "play", label: "Play On" },
+  { key: "buy", label: "Buy / Rent" },
+  { key: "free", label: "Free" },
+];
+
+const PLATFORM_CATEGORIES: Record<string, string> = {
+  netflix: "stream", prime: "stream", hbo: "stream", hulu: "stream",
+  apple: "stream", disney: "stream", theaters: "stream",
+  spotify: "stream", apple_music: "stream", apple_pod: "stream",
+  viz: "stream",
+  kindle: "buy", audible: "buy", comixology: "buy", google_books: "buy",
+  library: "free", mangaplus: "free", browser: "free",
+  steam: "play", pc: "play", mac: "play", linux: "play",
+  ps5: "play", ps4: "play", ps3: "play", ps2: "play", ps1: "play", ps: "play",
+  psp: "play", vita: "play",
+  xsx: "play", xone: "play", x360: "play", xbox: "play",
+  switch: "play", switch2: "play", wiiu: "play", wii: "play",
+  gc: "play", n64: "play", snes: "play", nes: "play",
+  "3ds": "play", ds: "play", gba: "play", gbc: "play", gb: "play",
+  dc: "play", genesis: "play", saturn: "play", segacd: "play",
+  gg: "play", sms: "play",
+  ios: "play", android: "play",
+  arcade: "play", stadia: "play",
+  amiga: "play", c64: "play", atari2600: "play", jaguar: "play",
+  dos: "play",
+};
+
+export default function PlatformButtons({
+  platforms,
+  mediaType,
+  itemId,
+  showAffiliate,
+}: {
+  platforms: any[];
+  mediaType: MediaType;
+  itemId: number | string;
+  showAffiliate?: boolean;
+}) {
   if (!platforms || platforms.length === 0) return null;
 
   const label = ACTION_LABELS[mediaType];
 
   // Normalize platform data — handle both string keys and object format
-  const normalized: { key: string; display: { label: string; icon: string; color: string; bg: string } }[] = [];
+  const normalized: { key: string; display: { label: string; icon: string; color: string; bg: string }; hasLink: boolean }[] = [];
   const seen = new Set<string>();
 
   for (const p of platforms) {
@@ -120,7 +170,6 @@ export default function PlatformButtons({ platforms, mediaType }: { platforms: a
       display = CONSOLE_STYLES[p] || { label: p, icon: "🎮", color: "#fff", bg: "#555" };
     } else if (p && typeof p === "object" && p.key) {
       key = p.key;
-      // Use our curated styles if available, otherwise use IGDB data
       display = CONSOLE_STYLES[p.key] || {
         label: p.label || p.key,
         icon: p.icon || "🎮",
@@ -134,10 +183,22 @@ export default function PlatformButtons({ platforms, mediaType }: { platforms: a
     // Deduplicate
     if (seen.has(key)) continue;
     seen.add(key);
-    normalized.push({ key, display });
+    normalized.push({ key, display, hasLink: LINKABLE_PLATFORMS.has(key) });
   }
 
   if (normalized.length === 0) return null;
+
+  // Group by category
+  const grouped: Record<string, typeof normalized> = {};
+  for (const item of normalized) {
+    const cat = PLATFORM_CATEGORIES[item.key] || "play";
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(item);
+  }
+
+  // Check if we should show grouped view (multiple categories with links) or flat
+  const categoriesWithItems = CATEGORY_CONFIG.filter(c => grouped[c.key]?.length);
+  const showGrouped = categoriesWithItems.length > 1 && normalized.some(n => n.hasLink);
 
   return (
     <section style={{ marginBottom: 24 }}>
@@ -152,46 +213,149 @@ export default function PlatformButtons({ platforms, mediaType }: { platforms: a
       }}>
         {label}
       </h2>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-        {normalized.map(({ key, display }) => (
-          <div
-            key={key}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "7px 12px",
-              background: display.bg,
-              borderRadius: 8,
-              cursor: "default",
-              transition: "transform 0.15s, box-shadow 0.15s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-1px)";
-              e.currentTarget.style.boxShadow = `0 4px 12px ${display.bg}55`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "";
-              e.currentTarget.style.boxShadow = "";
-            }}
-          >
-            <span style={{
-              fontSize: display.icon.length > 1 ? 12 : 11,
-              fontWeight: 900,
-              color: display.color,
-            }}>
-              {display.icon}
-            </span>
-            <span style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: display.color,
-            }}>
-              {display.label}
-            </span>
-          </div>
-        ))}
-      </div>
+
+      {showGrouped ? (
+        // Grouped by category
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {categoriesWithItems.map(cat => (
+            <div key={cat.key}>
+              <div style={{
+                fontSize: 10,
+                color: "rgba(255,255,255,0.3)",
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                fontWeight: 600,
+                marginBottom: 6,
+              }}>
+                {cat.label}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {grouped[cat.key]!.map(({ key, display, hasLink }) => (
+                  <PlatformPill
+                    key={key}
+                    platformKey={key}
+                    display={display}
+                    hasLink={hasLink}
+                    itemId={itemId}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        // Flat list
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {normalized.map(({ key, display, hasLink }) => (
+            <PlatformPill
+              key={key}
+              platformKey={key}
+              display={display}
+              hasLink={hasLink}
+              itemId={itemId}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* FTC affiliate disclosure */}
+      {showAffiliate && (
+        <div style={{
+          fontSize: 9,
+          color: "rgba(255,255,255,0.2)",
+          marginTop: 8,
+          lineHeight: 1.4,
+        }}>
+          Some links may earn us a commission at no extra cost to you.
+        </div>
+      )}
     </section>
+  );
+}
+
+function PlatformPill({
+  platformKey,
+  display,
+  hasLink,
+  itemId,
+}: {
+  platformKey: string;
+  display: { label: string; icon: string; color: string; bg: string };
+  hasLink: boolean;
+  itemId: number | string;
+}) {
+  const inner = (
+    <>
+      <span style={{
+        fontSize: display.icon.length > 1 ? 12 : 11,
+        fontWeight: 900,
+        color: display.color,
+      }}>
+        {display.icon}
+      </span>
+      <span style={{
+        fontSize: 11,
+        fontWeight: 600,
+        color: display.color,
+      }}>
+        {display.label}
+      </span>
+      {hasLink && (
+        <span style={{
+          fontSize: 9,
+          color: display.color,
+          opacity: 0.5,
+          marginLeft: 2,
+        }}>
+          ↗
+        </span>
+      )}
+    </>
+  );
+
+  const baseStyle: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "7px 12px",
+    background: display.bg,
+    borderRadius: 8,
+    transition: "transform 0.15s, box-shadow 0.15s",
+    textDecoration: "none",
+    cursor: hasLink ? "pointer" : "default",
+  };
+
+  const handleEnter = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.transform = "translateY(-1px)";
+    e.currentTarget.style.boxShadow = `0 4px 12px ${display.bg}55`;
+  };
+  const handleLeave = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.transform = "";
+    e.currentTarget.style.boxShadow = "";
+  };
+
+  if (hasLink) {
+    return (
+      <a
+        href={`/api/go/${itemId}/${platformKey}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={baseStyle}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return (
+    <div
+      style={baseStyle}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      {inner}
+    </div>
   );
 }

@@ -137,6 +137,7 @@ model Item {
   primaryColor    String?  @map("primary_color")
   secondaryColor  String?  @map("secondary_color")
   itemDimensions  Json?    @map("item_dimensions")
+  platformLinks   Json?    @map("platform_links")
 
   createdAt       DateTime @default(now()) @map("created_at")
 
@@ -377,6 +378,20 @@ model Report {
   @@index([reviewId])
   @@index([status])
   @@map("reports")
+}
+
+model PlatformClick {
+  id         Int      @id @default(autoincrement())
+  itemId     Int      @map("item_id")
+  platform   String   // e.g. "netflix", "steam", "spotify"
+  userId     String?  @map("user_id")
+  referrer   String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([itemId])
+  @@index([platform])
+  @@index([createdAt])
+  @@map("platform_clicks")
 }
 
 model Import {

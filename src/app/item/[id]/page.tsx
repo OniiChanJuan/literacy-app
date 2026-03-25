@@ -656,16 +656,24 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                     {compactPlatforms.map((p) => (
-                      <div key={p.key} style={{
-                        fontSize: 10,
-                        padding: "4px 10px",
-                        borderRadius: 5,
-                        background: p.color,
-                        color: "#fff",
-                        fontWeight: 500,
-                      }}>
-                        {p.label}
-                      </div>
+                      <a
+                        key={p.key}
+                        href={`/api/go/${item.id}/${p.key}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontSize: 10,
+                          padding: "4px 10px",
+                          borderRadius: 5,
+                          background: p.color,
+                          color: "#fff",
+                          fontWeight: 500,
+                          textDecoration: "none",
+                          transition: "transform 0.15s",
+                        }}
+                      >
+                        {p.label} ↗
+                      </a>
                     ))}
                   </div>
                 </div>
@@ -712,6 +720,18 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
         {/* C. Awards */}
         <AwardBadges awards={item.awards} />
+
+        {/* C2. Platform links (full section) */}
+        {!upcoming && (item.platforms || []).length > 0 && (
+          <div style={{ marginTop: 16 }}>
+            <PlatformButtons
+              platforms={item.platforms}
+              mediaType={item.type as any}
+              itemId={item.id}
+              showAffiliate={false}
+            />
+          </div>
+        )}
 
         {/* D. Community reviews */}
         {!upcoming && (
