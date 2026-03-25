@@ -513,7 +513,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             <div className="hero-right" style={{
               flex: "0 0 25%",
               minWidth: 180,
-              maxWidth: 300,
+              maxWidth: 360,
               borderLeft: "0.5px solid rgba(255,255,255,0.06)",
               paddingLeft: 16,
             }}>
@@ -673,7 +673,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           ZONE 2 — SCORES AND ACTIONS SUB-BANNER (full-width background)
           ═══════════════════════════════════════════════════════════════════ */}
       {upcoming ? (
-        <div className="content-width" style={{ padding: "12px 40px" }}>
+        <div className="content-width" style={{ padding: "12px 24px" }}>
           <UpcomingDetailSidebar item={item} />
         </div>
       ) : (

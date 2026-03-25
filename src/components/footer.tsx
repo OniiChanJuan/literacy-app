@@ -51,7 +51,7 @@ export default function Footer() {
       `}</style>
       <div
         className="content-width"
-        style={{ maxWidth: 1400, margin: "0 auto" }}
+        style={{ maxWidth: 1600, margin: "0 auto" }}
       >
         {/* Columns */}
         <div
