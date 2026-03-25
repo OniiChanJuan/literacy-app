@@ -563,7 +563,7 @@ function MediaTypeRow({ type, label, sub }: { type: string; label: string; sub: 
         {items === null ? (
           <div style={{ display: "flex", gap: 10 }}>
             {Array.from({ length: 8 }, (_, i) => (
-              <div key={i} style={{ flex: "1 0 130px", maxWidth: 180, minWidth: 130, height: 145, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
+              <div key={i} style={{ flex: "0 0 150px", width: 150, height: 280, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
             ))}
           </div>
         ) : items.map((item) => <Card key={item.id} item={item} />)}
@@ -586,7 +586,7 @@ function GenreRow({ type, genre, label }: { type: string; genre: string | null; 
         {items === null ? (
           <div style={{ display: "flex", gap: 10 }}>
             {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} style={{ flex: "1 0 130px", maxWidth: 180, minWidth: 130, height: 145, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
+              <div key={i} style={{ flex: "0 0 150px", width: 150, height: 280, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
             ))}
           </div>
         ) : items.map((item) => <Card key={item.id} item={item} />)}

@@ -41,7 +41,7 @@ function DismissableCard({ item, onDismiss }: { item: Item; onDismiss: (id: numb
         opacity: 0,
         transform: "scale(0.9)",
         transition: "opacity 0.3s, transform 0.3s",
-        flex: "1 0 130px", maxWidth: 180, minWidth: 130,
+        flex: "0 0 150px", width: 150,
       }} />
     );
   }

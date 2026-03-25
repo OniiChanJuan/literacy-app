@@ -28,15 +28,15 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
     <div
       onClick={() => router.push(`/item/${item.id}`)}
       style={{
-        flex: "1 0 130px",
-        maxWidth: 180,
-        minWidth: 130,
+        flex: "0 0 150px",
+        width: 150,
         borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
         transition: "transform 0.2s, box-shadow 0.2s",
         boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
         border: "0.5px solid rgba(255,255,255,0.06)",
+        scrollSnapAlign: "start",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-3px)";
@@ -47,26 +47,24 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
         e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)";
       }}
     >
-      {/* Cover */}
+      {/* Cover — fixed 210px height */}
       <div style={{
-        height: 95,
+        height: 210,
         position: "relative",
         ...(hasGradient ? { background: item.cover } : { background: "#1a1a2e" }),
       }}>
-        {/* Image cover */}
         {hasImage && (
           <Image
             src={item.cover}
             alt={item.title}
-            width={180}
-            height={95}
+            width={150}
+            height={210}
             quality={70}
-            sizes="(max-width: 768px) 130px, 180px"
+            sizes="150px"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
 
-        {/* Styled placeholder for items with no cover */}
         {!hasImage && !hasGradient && (
           <div style={{
             width: "100%",
@@ -99,35 +97,35 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
         {/* Type badge — top left */}
         <div style={{
           position: "absolute",
-          top: 10,
-          left: 10,
+          top: 6,
+          left: 6,
           background: "rgba(0,0,0,0.55)",
           backdropFilter: "blur(8px)",
           color: t.color,
-          fontSize: 10,
+          fontSize: 8,
           fontWeight: 700,
-          padding: "3px 9px",
-          borderRadius: 8,
+          padding: "2px 6px",
+          borderRadius: 6,
           textTransform: "uppercase",
           display: "flex",
           alignItems: "center",
-          gap: 4,
+          gap: 3,
         }}>
-          <span style={{ fontSize: 12 }}>{t.icon}</span> {t.label.replace(/s$/, "")}
+          <span style={{ fontSize: 10 }}>{t.icon}</span> {t.label.replace(/s$/, "")}
         </div>
 
         {/* Release date badge — top right */}
         <div style={{
           position: "absolute",
-          top: 10,
-          right: 10,
+          top: 6,
+          right: 6,
           background: "rgba(0,0,0,0.6)",
           backdropFilter: "blur(8px)",
           color: "#f1c40f",
-          fontSize: 10,
+          fontSize: 8,
           fontWeight: 700,
-          padding: "3px 8px",
-          borderRadius: 8,
+          padding: "2px 6px",
+          borderRadius: 6,
         }}>
           {month} {day}, {year}
         </div>
@@ -152,13 +150,12 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
       </div>
 
       {/* Info */}
-      <div style={{ background: "var(--bg-card)", padding: "12px 12px 10px" }}>
+      <div style={{ background: "var(--bg-card)", padding: "8px 8px 6px" }}>
         <div style={{
-          fontFamily: "var(--font-serif)",
-          fontSize: 14,
-          fontWeight: 700,
+          fontSize: 11,
+          fontWeight: 600,
           lineHeight: 1.25,
-          marginBottom: 6,
+          marginBottom: 4,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -173,8 +170,8 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
           justifyContent: "space-between",
           alignItems: "center",
         }}>
-          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
-            {(item.wantCount || 0).toLocaleString()} want this
+          <span style={{ fontSize: 9, color: "var(--text-muted)" }}>
+            {(item.wantCount || 0).toLocaleString()} want
           </span>
           <button
             onClick={(e) => {
@@ -185,10 +182,10 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
               background: isWanted ? "#9B5DE522" : "rgba(255,255,255,0.06)",
               border: isWanted ? "1px solid #9B5DE555" : "1px solid rgba(255,255,255,0.1)",
               color: isWanted ? "#9B5DE5" : "var(--text-muted)",
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: 700,
-              padding: "4px 10px",
-              borderRadius: 8,
+              padding: "3px 8px",
+              borderRadius: 6,
               cursor: "pointer",
               transition: "all 0.15s",
             }}

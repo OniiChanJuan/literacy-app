@@ -51,6 +51,7 @@ body {
   background: var(--bg-page);
   color: var(--foreground);
   font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
 /* ── Content width container ─────────────────────────────── */

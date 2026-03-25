@@ -76,15 +76,15 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
     <div
       onClick={handleClick}
       style={{
-        flex: "1 0 130px",
-        maxWidth: 180,
-        minWidth: 130,
+        flex: "0 0 150px",
+        width: 150,
         borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
         transition: "transform 0.2s, box-shadow 0.2s",
         boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
         border: "0.5px solid rgba(255,255,255,0.06)",
+        scrollSnapAlign: "start",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-3px)";
@@ -95,9 +95,9 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
         e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)";
       }}
     >
-      {/* Cover — 65% of card */}
+      {/* Cover — fixed 210px height */}
       <div style={{
-        height: 95,
+        height: 210,
         position: "relative",
         ...(hasImage && !imgError
           ? { background: "#1a1a2e" }
@@ -107,10 +107,10 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           <Image
             src={item.cover}
             alt={item.title}
-            width={180}
-            height={95}
+            width={150}
+            height={210}
             quality={70}
-            sizes="(max-width: 768px) 130px, 180px"
+            sizes="150px"
             style={{
               width: "100%",
               height: "100%",
@@ -129,9 +129,9 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
             alignItems: "center", justifyContent: "center",
             padding: 6,
           }}>
-            <span style={{ fontSize: 18, marginBottom: 2 }}>{t.icon}</span>
-            <span style={{ fontSize: 7, color: "rgba(255,255,255,0.4)", textAlign: "center", lineHeight: 1.2 }}>
-              {item.title?.slice(0, 25)}
+            <span style={{ fontSize: 28, marginBottom: 4 }}>{t.icon}</span>
+            <span style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", textAlign: "center", lineHeight: 1.3 }}>
+              {item.title?.slice(0, 30)}
             </span>
           </div>
         )}
@@ -188,8 +188,8 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
         )}
       </div>
 
-      {/* Info area — 35% */}
-      <div style={{ background: "var(--bg-card)", padding: "5px 6px 4px" }}>
+      {/* Info area */}
+      <div style={{ background: "var(--bg-card)", padding: "6px 8px 5px" }}>
         {/* Title */}
         <div style={{
           fontSize: 11,
