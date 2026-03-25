@@ -98,7 +98,11 @@ function ExploreContent() {
   // Load counts
   useEffect(() => {
     fetch("/api/catalog/counts").then((r) => r.json()).then((d) => { if (d.byType) setTypeCounts(d.byType); }).catch(() => {});
-    fetch("/api/upcoming").then((r) => r.json()).then((d) => setUpcoming(Array.isArray(d) ? d : [])).catch(() => {});
+    fetch("/api/upcoming").then((r) => r.json()).then((d) => {
+      if (d && Array.isArray(d.upcoming)) setUpcoming(d.upcoming);
+      else if (Array.isArray(d)) setUpcoming(d);
+      else setUpcoming([]);
+    }).catch(() => {});
   }, []);
 
   // Search — grouped results

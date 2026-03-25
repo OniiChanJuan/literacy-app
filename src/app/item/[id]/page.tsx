@@ -10,6 +10,7 @@ import { parseGbookId, getGoogleBookDetails } from "@/lib/google-books";
 import { parseSpotifyId, getSpotifyAlbumDetails, getSpotifyShowDetails } from "@/lib/spotify";
 import { parseJikanId, getJikanMangaDetails, getJikanAnimeDetails } from "@/lib/jikan";
 import { parseCvId, getComicVineDetails } from "@/lib/comicvine";
+import { lookupUpcomingItem } from "@/lib/upcoming";
 import BackButton from "@/components/back-button";
 import RatingPanel from "@/components/rating-panel";
 import { AggregateScorePanel } from "@/components/aggregate-score";
@@ -258,7 +259,12 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       item = ALL_ITEMS.find((i) => i.id === numId) || null;
     }
 
-    // If not in static data, fetch from database
+    // If not in static data, check if it's an upcoming item from API (offset IDs 600000+)
+    if (!item && !isNaN(numId) && numId >= 600000 && numId < 1000000) {
+      item = await lookupUpcomingItem(numId);
+    }
+
+    // If not in static data or upcoming, fetch from database
     if (!item && !isNaN(numId)) {
       try {
         const dbItem = await prisma.item.findUnique({ where: { id: numId } });

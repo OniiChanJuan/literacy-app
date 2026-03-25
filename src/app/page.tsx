@@ -8,6 +8,19 @@ import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
+import Link from "next/link";
+import Image from "next/image";
+
+interface ReturningSoonItem {
+  id: number;
+  title: string;
+  type: "tv";
+  cover: string;
+  seasonNumber: number;
+  airDate: string;
+  overview: string;
+  year: number;
+}
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 
@@ -265,6 +278,7 @@ function TasteDnaBar({ tasteProfile }: { tasteProfile: TasteProfile | null }) {
 export default function ForYouPage() {
   useScrollRestore();
   const [upcoming, setUpcoming] = useState<UpcomingItem[] | null>(null);
+  const [returningSoon, setReturningSoon] = useState<ReturningSoonItem[]>([]);
   const [forYouData, setForYouData] = useState<{
     personalPicks: Item[];
     discoverAcrossMedia: Item[];
@@ -276,7 +290,18 @@ export default function ForYouPage() {
   useEffect(() => {
     fetch("/api/upcoming")
       .then((r) => r.json())
-      .then((data) => setUpcoming(Array.isArray(data) ? data : []))
+      .then((data) => {
+        // New format: { upcoming: [...], returningSoon: [...] }
+        if (data && Array.isArray(data.upcoming)) {
+          setUpcoming(data.upcoming);
+          setReturningSoon(data.returningSoon || []);
+        } else if (Array.isArray(data)) {
+          // Backwards compat: old format was just an array
+          setUpcoming(data);
+        } else {
+          setUpcoming([]);
+        }
+      })
       .catch(() => setUpcoming([]));
   }, []);
 
@@ -433,7 +458,7 @@ export default function ForYouPage() {
         seeAllHref="/explore"
       />
 
-      {/* Coming Soon */}
+      {/* Coming Soon — only truly unreleased titles */}
       <ScrollRow
         label="Coming soon"
         sub={upcoming === null ? "" : `${upcoming.length} upcoming`}
@@ -442,7 +467,7 @@ export default function ForYouPage() {
       >
         {upcoming === null ? (
           <SkeletonRow count={8} />
-        ) : upcoming.length >= 4 ? (
+        ) : upcoming.length >= 1 ? (
           upcoming.map((item) => (
             <UpcomingCard key={`upcoming-${item.id}`} item={item} />
           ))
@@ -452,6 +477,115 @@ export default function ForYouPage() {
           </div>
         )}
       </ScrollRow>
+
+      {/* Returning Soon — existing shows with upcoming new seasons */}
+      {returningSoon.length > 0 && (
+        <ScrollRow
+          label="Returning soon"
+          sub="New seasons of shows you know"
+          icon="📺"
+          iconBg="rgba(196,91,170,0.15)"
+        >
+          {returningSoon.map((show) => (
+            <ReturningSoonCard key={`returning-${show.id}`} show={show} />
+          ))}
+        </ScrollRow>
+      )}
     </div>
+  );
+}
+
+// ── Returning Soon Card ─────────────────────────────────────────────────
+
+function ReturningSoonCard({ show }: { show: ReturningSoonItem }) {
+  const airDate = new Date(show.airDate);
+  const month = airDate.toLocaleString("en-US", { month: "short" });
+  const day = airDate.getDate();
+
+  return (
+    <Link
+      href={`/item/tmdb-tv-${show.id}`}
+      style={{
+        flex: "0 0 150px",
+        width: 150,
+        borderRadius: 8,
+        overflow: "hidden",
+        textDecoration: "none",
+        transition: "transform 0.2s, box-shadow 0.2s",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
+        border: "0.5px solid rgba(196,91,170,0.15)",
+        scrollSnapAlign: "start",
+        display: "block",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)";
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(0,0,0,0.35)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = "";
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)";
+      }}
+    >
+      {/* Cover */}
+      <div style={{ height: 210, position: "relative", background: "#1a1a2e" }}>
+        {show.cover && (
+          <img
+            src={show.cover}
+            alt={show.title}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+
+        {/* Season badge */}
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: "linear-gradient(to top, rgba(196,91,170,0.9), transparent)",
+          padding: "18px 8px 6px",
+          textAlign: "center",
+        }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: "1px" }}>
+            Season {show.seasonNumber}
+          </div>
+        </div>
+
+        {/* Date badge */}
+        <div style={{
+          position: "absolute",
+          top: 6,
+          right: 6,
+          background: "rgba(0,0,0,0.6)",
+          backdropFilter: "blur(8px)",
+          color: "#f1c40f",
+          fontSize: 8,
+          fontWeight: 700,
+          padding: "2px 6px",
+          borderRadius: 6,
+        }}>
+          {month} {day}
+        </div>
+      </div>
+
+      {/* Info */}
+      <div style={{ background: "var(--bg-card)", padding: "6px 8px 5px" }}>
+        <div style={{
+          fontSize: 11,
+          fontWeight: 500,
+          lineHeight: 1.2,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          color: "#fff",
+          marginBottom: 2,
+        }}>
+          {show.title}
+        </div>
+        <div style={{ fontSize: 9, color: "#C45BAA" }}>
+          Season {show.seasonNumber} — {month} {day}
+        </div>
+      </div>
+    </Link>
   );
 }

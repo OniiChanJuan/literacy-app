@@ -62,17 +62,27 @@ async function fetchUpcomingMovies(): Promise<UpcomingItem[]> {
   } catch { return []; }
 }
 
-// ── Upcoming TV from TMDB ───────────────────────────────────────────────
+// ── Upcoming TV from TMDB — only brand new shows that haven't premiered ──
 async function fetchUpcomingTV(): Promise<UpcomingItem[]> {
   try {
-    // Use "airing today" + popular to find notable upcoming/new shows
-    const res = await fetch(`${TMDB_BASE}/tv/on_the_air?api_key=${TMDB_KEY()}&page=1`);
-    if (!res.ok) return [];
-    const data = await res.json();
+    const today = new Date().toISOString().split("T")[0];
 
-    return (data.results || [])
-      .filter((t: { poster_path: string | null; vote_count: number }) =>
-        t.poster_path && t.vote_count > 20
+    // Fetch multiple pages of discover results for shows premiering in the future
+    const pages = [1, 2];
+    const allResults: any[] = [];
+
+    for (const page of pages) {
+      const res = await fetch(
+        `${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY()}&sort_by=popularity.desc&first_air_date.gte=${today}&page=${page}`
+      );
+      if (!res.ok) continue;
+      const data = await res.json();
+      allResults.push(...(data.results || []));
+    }
+
+    return allResults
+      .filter((t: { first_air_date: string; poster_path: string | null; vote_count: number }) =>
+        t.poster_path && t.first_air_date && t.first_air_date > today
       )
       .slice(0, 6)
       .map((t: { id: number; name: string; overview: string; first_air_date: string; poster_path: string; genre_ids: number[]; vote_count: number }) => ({
@@ -94,6 +104,67 @@ async function fetchUpcomingTV(): Promise<UpcomingItem[]> {
         wantCount: Math.round(t.vote_count * 5 + 300),
         upcoming: true as const,
       }));
+  } catch { return []; }
+}
+
+// ── Returning Soon — existing shows with confirmed upcoming seasons ──────
+export interface ReturningSoonItem {
+  id: number;
+  title: string;
+  type: "tv";
+  cover: string;
+  seasonNumber: number;
+  airDate: string;
+  overview: string;
+  year: number;
+}
+
+async function fetchReturningSoonTV(): Promise<ReturningSoonItem[]> {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+
+    // Get currently "on the air" shows — these are existing shows with recent/upcoming episodes
+    const res = await fetch(`${TMDB_BASE}/tv/on_the_air?api_key=${TMDB_KEY()}&page=1`);
+    if (!res.ok) return [];
+    const data = await res.json();
+
+    const results: ReturningSoonItem[] = [];
+
+    for (const show of (data.results || [])) {
+      // Only include shows that have ALREADY premiered (first_air_date in the past)
+      if (!show.first_air_date || show.first_air_date >= today) continue;
+      if (!show.poster_path) continue;
+      if (!show.vote_count || show.vote_count < 50) continue;
+
+      // Fetch show details to get next_episode_to_air and season info
+      try {
+        const detailRes = await fetch(`${TMDB_BASE}/tv/${show.id}?api_key=${TMDB_KEY()}`);
+        if (!detailRes.ok) continue;
+        const detail = await detailRes.json();
+
+        const nextEp = detail.next_episode_to_air;
+        if (!nextEp || !nextEp.air_date) continue;
+        // Only include if next episode is in the future
+        if (nextEp.air_date <= today) continue;
+
+        results.push({
+          id: show.id,
+          title: show.name,
+          type: "tv",
+          cover: `${TMDB_IMG}${show.poster_path}`,
+          seasonNumber: nextEp.season_number || detail.number_of_seasons || 1,
+          airDate: nextEp.air_date,
+          overview: show.overview || "",
+          year: parseInt(show.first_air_date.split("-")[0]),
+        });
+
+        if (results.length >= 10) break;
+      } catch { continue; }
+    }
+
+    // Sort by nearest air date
+    results.sort((a, b) => a.airDate.localeCompare(b.airDate));
+    return results;
   } catch { return []; }
 }
 
@@ -154,7 +225,6 @@ async function fetchUpcomingBooks(): Promise<UpcomingItem[]> {
   try {
     const today = new Date();
     const year = today.getFullYear();
-    // Search for highly anticipated books with future dates
     const queries = [
       `subject:fiction+${year}`,
       `subject:fantasy+${year + 1}`,
@@ -211,7 +281,7 @@ async function fetchUpcomingBooks(): Promise<UpcomingItem[]> {
   } catch { return []; }
 }
 
-// ── Curated upcoming music + podcasts ───────────────────────────────────
+// ── Curated upcoming music ──────────────────────────────────────────────
 function getCuratedUpcomingMusic(): UpcomingItem[] {
   return [
     {
@@ -273,9 +343,9 @@ function getCuratedUpcomingComics(): UpcomingItem[] {
   ];
 }
 
-// ── Main export ─────────────────────────────────────────────────────────
+// ── Main exports ────────────────────────────────────────────────────────
 
-/** Fetch all upcoming items from all APIs */
+/** Fetch all upcoming items from all APIs — only truly unreleased titles */
 export async function fetchAllUpcoming(): Promise<UpcomingItem[]> {
   const [movies, tv, games, books] = await Promise.all([
     fetchUpcomingMovies(),
@@ -289,9 +359,124 @@ export async function fetchAllUpcoming(): Promise<UpcomingItem[]> {
 
   // Combine and sort by release date
   const all = [...movies, ...tv, ...games, ...books, ...music, ...comics];
-  all.sort((a, b) => a.releaseDate.localeCompare(b.releaseDate));
 
-  return all;
+  // Final safety filter: exclude anything with a release date in the past
+  const today = new Date().toISOString().split("T")[0];
+  const filtered = all.filter((item) => item.releaseDate >= today);
+
+  filtered.sort((a, b) => a.releaseDate.localeCompare(b.releaseDate));
+  return filtered;
+}
+
+/** Fetch returning soon TV shows (existing shows with upcoming new seasons) */
+export async function fetchReturningSoon(): Promise<ReturningSoonItem[]> {
+  return fetchReturningSoonTV();
+}
+
+/** Look up a single upcoming item by its offset ID (for detail page) */
+export async function lookupUpcomingItem(id: number): Promise<UpcomingItem | null> {
+  // Determine source from ID range
+  if (id >= 900000 && id < 1000000) {
+    // TMDB movie
+    const tmdbId = id - 900000;
+    try {
+      const res = await fetch(`${TMDB_BASE}/movie/${tmdbId}?api_key=${TMDB_KEY()}`);
+      if (!res.ok) return null;
+      const m = await res.json();
+      return {
+        id,
+        title: m.title,
+        type: "movie" as MediaType,
+        genre: (m.genres || []).map((g: { name: string }) => g.name).slice(0, 3),
+        vibes: [],
+        year: parseInt((m.release_date || "0").split("-")[0]),
+        cover: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : "",
+        desc: m.overview || "",
+        people: [] as Person[],
+        awards: [],
+        platforms: ["theaters"],
+        ext: {} as Partial<Record<ExternalSource, number>>,
+        totalEp: 1,
+        releaseDate: m.release_date || "",
+        hypeScore: Math.min(99, Math.round(50 + (m.vote_count || 0) / 10)),
+        wantCount: Math.round((m.vote_count || 0) * 3 + 500),
+        upcoming: true as const,
+      };
+    } catch { return null; }
+  }
+
+  if (id >= 800000 && id < 900000) {
+    // TMDB TV
+    const tmdbId = id - 800000;
+    try {
+      const res = await fetch(`${TMDB_BASE}/tv/${tmdbId}?api_key=${TMDB_KEY()}`);
+      if (!res.ok) return null;
+      const t = await res.json();
+      return {
+        id,
+        title: t.name,
+        type: "tv" as MediaType,
+        genre: (t.genres || []).map((g: { name: string }) => g.name).slice(0, 3),
+        vibes: [],
+        year: parseInt((t.first_air_date || "0").split("-")[0]),
+        cover: t.poster_path ? `${TMDB_IMG}${t.poster_path}` : "",
+        desc: t.overview || "",
+        people: [] as Person[],
+        awards: [],
+        platforms: [],
+        ext: {} as Partial<Record<ExternalSource, number>>,
+        totalEp: t.number_of_episodes || 0,
+        releaseDate: t.first_air_date || "",
+        hypeScore: Math.min(99, Math.round(40 + (t.vote_count || 0) / 20)),
+        wantCount: Math.round((t.vote_count || 0) * 5 + 300),
+        upcoming: true as const,
+      };
+    } catch { return null; }
+  }
+
+  if (id >= 700000 && id < 800000) {
+    // IGDB game
+    const igdbId = id - 700000;
+    try {
+      const token = await getIgdbToken();
+      const res = await fetch("https://api.igdb.com/v4/games", {
+        method: "POST",
+        headers: {
+          "Client-ID": IGDB_CID(),
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "text/plain",
+        },
+        body: `fields name,cover.image_id,first_release_date,hypes,summary,genres.name,platforms.name; where id = ${igdbId};`,
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data[0]) return null;
+      const g = data[0];
+      const date = g.first_release_date ? new Date(g.first_release_date * 1000) : new Date();
+      return {
+        id,
+        title: g.name,
+        type: "game" as MediaType,
+        genre: (g.genres || []).map((ge: { name: string }) => ge.name).slice(0, 3),
+        vibes: [],
+        year: date.getFullYear(),
+        cover: g.cover ? `${IGDB_IMG}/${g.cover.image_id}.jpg` : "",
+        desc: g.summary || "",
+        people: [] as Person[],
+        awards: [],
+        platforms: mapIgdbPlatforms(g.platforms || []),
+        ext: {} as Partial<Record<ExternalSource, number>>,
+        totalEp: 0,
+        releaseDate: date.toISOString().split("T")[0],
+        hypeScore: Math.min(99, Math.round(50 + (g.hypes || 0) / 5)),
+        wantCount: Math.round((g.hypes || 0) * 40 + 1000),
+        upcoming: true as const,
+      };
+    } catch { return null; }
+  }
+
+  // 600000+ range: Google Books — can't easily reverse lookup, return null
+  return null;
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────
