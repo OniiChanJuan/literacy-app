@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-type Section = "profile" | "account" | "privacy" | "notifications" | "appearance";
+type Section = "profile" | "account" | "privacy" | "notifications" | "appearance" | "import";
 
 const SECTIONS: { id: Section; label: string; icon: string }[] = [
   { id: "profile", label: "Profile", icon: "👤" },
@@ -13,6 +13,7 @@ const SECTIONS: { id: Section; label: string; icon: string }[] = [
   { id: "privacy", label: "Privacy", icon: "🔒" },
   { id: "notifications", label: "Notifications", icon: "🔔" },
   { id: "appearance", label: "Appearance", icon: "🎨" },
+  { id: "import", label: "Import Data", icon: "📥" },
 ];
 
 const MEDIA_TYPES = ["Movies", "TV", "Books", "Manga", "Comics", "Games", "Music", "Podcasts"];
@@ -602,8 +603,669 @@ export default function SettingsPage() {
               </button>
             </div>
           )}
+
+          {/* IMPORT DATA */}
+          {section === "import" && <ImportSection />}
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─── Import Section Component ─────────────────────────────────────────
+
+interface ImportRecord {
+  id: number;
+  source: string;
+  status: string;
+  totalItems: number;
+  importedItems: number;
+  skippedItems: number;
+  failedItems: number;
+  duplicateItems: number;
+  startedAt: string;
+  completedAt: string | null;
+}
+
+interface ImportResult {
+  importId: number;
+  imported: number;
+  skipped: number;
+  failed: number;
+  duplicates: number;
+  total: number;
+  errors: string[];
+}
+
+type ImportSource = "letterboxd" | "goodreads" | "myanimelist" | "steam" | "spotify";
+type ImportStep = "idle" | "uploading" | "parsing" | "matching" | "importing" | "done" | "error";
+
+const PLATFORM_CONFIG: { id: ImportSource; name: string; icon: string; color: string; desc: string; method: string }[] = [
+  { id: "letterboxd", name: "Letterboxd", icon: "🎬", color: "#00D735", desc: "Import your movie ratings, watchlist, and reviews", method: "Upload ZIP or CSV export" },
+  { id: "goodreads", name: "Goodreads", icon: "📖", color: "#553B08", desc: "Import your book ratings, shelves, and reviews", method: "Upload CSV export" },
+  { id: "myanimelist", name: "MyAnimeList", icon: "🗾", color: "#2E51A2", desc: "Import your anime and manga lists with ratings", method: "Enter your MAL username" },
+  { id: "steam", name: "Steam", icon: "🎮", color: "#1B2838", desc: "Import your game library with playtime data", method: "Enter your Steam ID or profile URL" },
+  { id: "spotify", name: "Spotify", icon: "🎵", color: "#1DB954", desc: "Import your saved albums and listening data", method: "Connect via Spotify" },
+];
+
+function ImportSection() {
+  const [activeImport, setActiveImport] = useState<ImportSource | null>(null);
+  const [step, setStep] = useState<ImportStep>("idle");
+  const [progress, setProgress] = useState({ current: 0, total: 0, label: "" });
+  const [result, setResult] = useState<ImportResult | null>(null);
+  const [error, setError] = useState("");
+  const [history, setHistory] = useState<ImportRecord[]>([]);
+  const [conflictMode, setConflictMode] = useState<"skip" | "overwrite" | "keep_higher">("skip");
+
+  // MAL/Steam inputs
+  const [malUsername, setMalUsername] = useState("");
+  const [steamId, setSteamId] = useState("");
+
+  // Load import history
+  useEffect(() => {
+    fetch("/api/imports")
+      .then(r => r.json())
+      .then(data => { if (data.imports) setHistory(data.imports); })
+      .catch(() => {});
+  }, [result]); // refresh after each import
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid var(--border)",
+    background: "var(--surface-1)", color: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box",
+  };
+
+  // ── File import (Letterboxd / Goodreads) ───────────────
+
+  const handleFileImport = async (source: ImportSource, file: File) => {
+    setActiveImport(source);
+    setStep("uploading");
+    setError("");
+    setResult(null);
+    setProgress({ current: 0, total: 0, label: "Reading file..." });
+
+    try {
+      let parsedItems: any[] = [];
+
+      if (source === "letterboxd") {
+        parsedItems = await parseLetterboxdFile(file);
+      } else if (source === "goodreads") {
+        parsedItems = await parseGoodreadsFile(file);
+      }
+
+      if (parsedItems.length === 0) {
+        setError("No items found in the file. Make sure you uploaded the correct export file.");
+        setStep("error");
+        return;
+      }
+
+      setStep("matching");
+      setProgress({ current: 0, total: parsedItems.length, label: `Matching ${parsedItems.length} items...` });
+
+      // Send to batch import API
+      const res = await fetch("/api/import/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source, items: parsedItems, conflictMode }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Import failed");
+      }
+
+      const data: ImportResult = await res.json();
+      setResult(data);
+      setStep("done");
+    } catch (err: any) {
+      setError(err.message || "Import failed");
+      setStep("error");
+    }
+  };
+
+  // ── Letterboxd file parsing (ZIP or CSV) ───────────────
+
+  const parseLetterboxdFile = async (file: File): Promise<any[]> => {
+    setStep("parsing");
+    setProgress({ current: 0, total: 0, label: "Parsing Letterboxd export..." });
+
+    const { parseLetterboxdCSV, parseLetterboxdWatchlist, parseLetterboxdReviews } = await import("@/lib/import-parsers");
+
+    if (file.name.endsWith(".zip")) {
+      const JSZip = (await import("jszip")).default;
+      const zip = await JSZip.loadAsync(file);
+
+      let items: any[] = [];
+
+      // ratings.csv — main file with rated films
+      const ratingsFile = zip.file("ratings.csv");
+      if (ratingsFile) {
+        const text = await ratingsFile.async("text");
+        items = parseLetterboxdCSV(text);
+      }
+
+      // watchlist.csv — want to watch
+      const watchlistFile = zip.file("watchlist.csv");
+      if (watchlistFile) {
+        const text = await watchlistFile.async("text");
+        items.push(...parseLetterboxdWatchlist(text));
+      }
+
+      // reviews.csv — reviews
+      const reviewsFile = zip.file("reviews.csv");
+      if (reviewsFile) {
+        const text = await reviewsFile.async("text");
+        const reviews = parseLetterboxdReviews(text);
+        // Merge reviews into existing items
+        for (const rev of reviews) {
+          const existing = items.find(i => i.title === rev.title && i.year === rev.year);
+          if (existing) {
+            existing.review = rev.review;
+          } else {
+            items.push(rev);
+          }
+        }
+      }
+
+      return items;
+    } else {
+      // Direct CSV upload
+      const text = await file.text();
+      return parseLetterboxdCSV(text);
+    }
+  };
+
+  // ── Goodreads file parsing ─────────────────────────────
+
+  const parseGoodreadsFile = async (file: File): Promise<any[]> => {
+    setStep("parsing");
+    setProgress({ current: 0, total: 0, label: "Parsing Goodreads export..." });
+
+    const { parseGoodreadsCSV } = await import("@/lib/import-parsers");
+    const text = await file.text();
+    return parseGoodreadsCSV(text);
+  };
+
+  // ── MAL import ─────────────────────────────────────────
+
+  const handleMALImport = async () => {
+    if (!malUsername.trim()) return;
+    setActiveImport("myanimelist");
+    setStep("matching");
+    setError("");
+    setResult(null);
+
+    try {
+      const allItems: any[] = [];
+
+      // Fetch anime list (paginated)
+      for (const type of ["anime", "manga"] as const) {
+        let page = 1;
+        let hasMore = true;
+        setProgress({ current: 0, total: 0, label: `Fetching ${type} list...` });
+
+        while (hasMore) {
+          const res = await fetch(`/api/import/mal?username=${encodeURIComponent(malUsername.trim())}&type=${type}&page=${page}`);
+          if (!res.ok) {
+            if (res.status === 404) throw new Error(`MAL user "${malUsername}" not found`);
+            throw new Error(`Failed to fetch ${type} list`);
+          }
+
+          const data = await res.json();
+          const { parseMALItems } = await import("@/lib/import-parsers");
+          const parsed = parseMALItems(data.items, type);
+          allItems.push(...parsed);
+
+          setProgress({ current: allItems.length, total: data.totalItems || allItems.length, label: `Found ${allItems.length} ${type} entries...` });
+
+          hasMore = data.hasMore;
+          page++;
+
+          // Rate limit: Jikan allows 3 req/sec
+          if (hasMore) await new Promise(r => setTimeout(r, 400));
+        }
+      }
+
+      if (allItems.length === 0) {
+        setError("No items found. Make sure the MAL profile is public.");
+        setStep("error");
+        return;
+      }
+
+      setProgress({ current: 0, total: allItems.length, label: `Importing ${allItems.length} items...` });
+
+      const res = await fetch("/api/import/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "myanimelist", items: allItems, conflictMode }),
+      });
+
+      if (!res.ok) throw new Error("Import failed");
+      const data: ImportResult = await res.json();
+      setResult(data);
+      setStep("done");
+    } catch (err: any) {
+      setError(err.message || "MAL import failed");
+      setStep("error");
+    }
+  };
+
+  // ── Steam import ───────────────────────────────────────
+
+  const handleSteamImport = async () => {
+    if (!steamId.trim()) return;
+    setActiveImport("steam");
+    setStep("matching");
+    setError("");
+    setResult(null);
+    setProgress({ current: 0, total: 0, label: "Fetching Steam library..." });
+
+    try {
+      const res = await fetch(`/api/import/steam?steamid=${encodeURIComponent(steamId.trim())}`);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to fetch Steam library");
+      }
+
+      const data = await res.json();
+      const { parseSteamGames } = await import("@/lib/import-parsers");
+      const items = parseSteamGames(data.games);
+
+      if (items.length === 0) {
+        setError("No games found. Make sure your Steam profile is public.");
+        setStep("error");
+        return;
+      }
+
+      setProgress({ current: 0, total: items.length, label: `Importing ${items.length} games...` });
+
+      const importRes = await fetch("/api/import/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "steam", items, conflictMode }),
+      });
+
+      if (!importRes.ok) throw new Error("Import failed");
+      const result: ImportResult = await importRes.json();
+      setResult(result);
+      setStep("done");
+    } catch (err: any) {
+      setError(err.message || "Steam import failed");
+      setStep("error");
+    }
+  };
+
+  // ── Spotify import ────────────────────────────────────
+
+  const handleSpotifyImport = async () => {
+    setActiveImport("spotify");
+    setStep("matching");
+    setError("");
+    setResult(null);
+    setProgress({ current: 0, total: 0, label: "Fetching Spotify saved albums..." });
+
+    try {
+      // First get a Spotify access token via our API
+      const tokenRes = await fetch("/api/import/spotify");
+      if (!tokenRes.ok) {
+        const data = await tokenRes.json();
+        if (data.authUrl) {
+          // Need to authenticate — redirect to Spotify
+          window.location.href = data.authUrl;
+          return;
+        }
+        throw new Error(data.error || "Spotify connection failed");
+      }
+
+      const tokenData = await tokenRes.json();
+      const { parseSpotifyAlbums } = await import("@/lib/import-parsers");
+      const items = parseSpotifyAlbums(tokenData.albums);
+
+      if (items.length === 0) {
+        setError("No saved albums found on your Spotify account.");
+        setStep("error");
+        return;
+      }
+
+      setProgress({ current: 0, total: items.length, label: `Importing ${items.length} albums...` });
+
+      const importRes = await fetch("/api/import/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "spotify", items, conflictMode }),
+      });
+
+      if (!importRes.ok) throw new Error("Import failed");
+      const result: ImportResult = await importRes.json();
+      setResult(result);
+      setStep("done");
+    } catch (err: any) {
+      setError(err.message || "Spotify import failed");
+      setStep("error");
+    }
+  };
+
+  const resetImport = () => {
+    setActiveImport(null);
+    setStep("idle");
+    setProgress({ current: 0, total: 0, label: "" });
+    setResult(null);
+    setError("");
+  };
+
+  return (
+    <div>
+      <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Import Data</h2>
+      <p style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 20, lineHeight: 1.5 }}>
+        Bring your ratings, reviews, and libraries from other platforms. Your existing Literacy data is safe — imports never delete anything.
+      </p>
+
+      {/* Conflict resolution setting */}
+      <div style={{
+        marginBottom: 20, padding: "12px 14px", background: "var(--surface-1)",
+        borderRadius: 10, border: "1px solid var(--border)",
+      }}>
+        <label style={{ fontSize: 12, fontWeight: 600, color: "var(--text-faint)", display: "block", marginBottom: 8 }}>
+          When an item already has a rating:
+        </label>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {([
+            { id: "skip" as const, label: "Keep existing" },
+            { id: "overwrite" as const, label: "Use imported" },
+            { id: "keep_higher" as const, label: "Keep higher" },
+          ]).map(opt => (
+            <button
+              key={opt.id}
+              onClick={() => setConflictMode(opt.id)}
+              style={{
+                padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                background: conflictMode === opt.id ? "#E8485522" : "rgba(255,255,255,0.04)",
+                border: conflictMode === opt.id ? "1px solid #E84855" : "1px solid var(--border)",
+                color: conflictMode === opt.id ? "#E84855" : "var(--text-faint)",
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Active import progress */}
+      {step !== "idle" && step !== "done" && step !== "error" && (
+        <div style={{
+          marginBottom: 20, padding: 16, background: "var(--surface-1)",
+          borderRadius: 10, border: "1px solid var(--border)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <div style={{
+              width: 20, height: 20, borderRadius: "50%",
+              border: "2px solid #3185FC", borderTopColor: "transparent",
+              animation: "spin 1s linear infinite",
+            }} />
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>
+              {step === "uploading" ? "Reading file..." :
+               step === "parsing" ? "Parsing data..." :
+               step === "matching" ? "Matching & importing..." :
+               "Importing..."}
+            </span>
+          </div>
+          <p style={{ fontSize: 12, color: "var(--text-faint)", margin: 0 }}>{progress.label}</p>
+          {progress.total > 0 && (
+            <div style={{ marginTop: 8 }}>
+              <div style={{ width: "100%", height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
+                <div style={{
+                  width: `${Math.min(100, (progress.current / progress.total) * 100)}%`,
+                  height: "100%", background: "#3185FC", borderRadius: 2,
+                  transition: "width 0.3s ease",
+                }} />
+              </div>
+              <span style={{ fontSize: 11, color: "var(--text-faint)", marginTop: 4, display: "block" }}>
+                {progress.current} / {progress.total}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Import result */}
+      {step === "done" && result && (
+        <div style={{
+          marginBottom: 20, padding: 16, background: "#2EC4B608",
+          borderRadius: 10, border: "1px solid #2EC4B622",
+        }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#2EC4B6", marginBottom: 8 }}>
+            Import Complete!
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px", fontSize: 12 }}>
+            <span style={{ color: "var(--text-faint)" }}>Total items:</span>
+            <span style={{ color: "#fff", fontWeight: 600 }}>{result.total}</span>
+            <span style={{ color: "var(--text-faint)" }}>Imported:</span>
+            <span style={{ color: "#2EC4B6", fontWeight: 600 }}>{result.imported}</span>
+            {result.duplicates > 0 && <>
+              <span style={{ color: "var(--text-faint)" }}>Duplicates:</span>
+              <span style={{ color: "#F9A620", fontWeight: 600 }}>{result.duplicates}</span>
+            </>}
+            {result.skipped > 0 && <>
+              <span style={{ color: "var(--text-faint)" }}>Skipped:</span>
+              <span style={{ color: "var(--text-faint)" }}>{result.skipped}</span>
+            </>}
+            {result.failed > 0 && <>
+              <span style={{ color: "var(--text-faint)" }}>Not found:</span>
+              <span style={{ color: "#E84855" }}>{result.failed}</span>
+            </>}
+          </div>
+          {result.errors.length > 0 && (
+            <details style={{ marginTop: 10 }}>
+              <summary style={{ fontSize: 11, color: "var(--text-faint)", cursor: "pointer" }}>
+                Show errors ({result.errors.length})
+              </summary>
+              <div style={{ marginTop: 6, fontSize: 11, color: "#E84855", lineHeight: 1.6 }}>
+                {result.errors.map((e, i) => <div key={i}>{e}</div>)}
+              </div>
+            </details>
+          )}
+          <button onClick={resetImport} style={{
+            marginTop: 12, padding: "6px 16px", borderRadius: 8, border: "1px solid var(--border)",
+            background: "var(--surface-2)", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer",
+          }}>
+            Import more
+          </button>
+        </div>
+      )}
+
+      {/* Error */}
+      {step === "error" && (
+        <div style={{
+          marginBottom: 20, padding: "12px 16px", background: "#E8485508",
+          borderRadius: 10, border: "1px solid #E8485522",
+        }}>
+          <span style={{ fontSize: 13, color: "#E84855" }}>{error}</span>
+          <button onClick={resetImport} style={{
+            marginLeft: 12, padding: "4px 12px", borderRadius: 6, border: "1px solid #E84855",
+            background: "transparent", color: "#E84855", fontSize: 11, fontWeight: 600, cursor: "pointer",
+          }}>
+            Try again
+          </button>
+        </div>
+      )}
+
+      {/* Platform cards */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 28 }}>
+        {PLATFORM_CONFIG.map(platform => (
+          <div
+            key={platform.id}
+            style={{
+              padding: 16, borderRadius: 10, background: "var(--surface-1)",
+              border: activeImport === platform.id ? `1px solid ${platform.color}44` : "1px solid var(--border)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <span style={{ fontSize: 20 }}>{platform.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{platform.name}</div>
+                <div style={{ fontSize: 11, color: "var(--text-faint)" }}>{platform.desc}</div>
+              </div>
+            </div>
+
+            {/* File upload platforms */}
+            {(platform.id === "letterboxd" || platform.id === "goodreads") && (
+              <div>
+                <p style={{ fontSize: 11, color: "var(--text-faint)", marginBottom: 8 }}>
+                  {platform.id === "letterboxd"
+                    ? "Go to Letterboxd Settings → Import & Export → Export your data. Upload the ZIP file or ratings.csv."
+                    : "Go to Goodreads → My Books → Import/Export → Export Library. Upload the CSV file."}
+                </p>
+                <label style={{
+                  display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 16px",
+                  borderRadius: 8, background: `${platform.color}22`, border: `1px solid ${platform.color}44`,
+                  color: platform.color === "#553B08" ? "#D4A94D" : platform.color,
+                  fontSize: 12, fontWeight: 600, cursor: step !== "idle" ? "not-allowed" : "pointer",
+                  opacity: step !== "idle" && step !== "done" && step !== "error" ? 0.5 : 1,
+                }}>
+                  <input
+                    type="file"
+                    accept={platform.id === "letterboxd" ? ".zip,.csv" : ".csv"}
+                    style={{ display: "none" }}
+                    disabled={step !== "idle" && step !== "done" && step !== "error"}
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileImport(platform.id, file);
+                      e.target.value = "";
+                    }}
+                  />
+                  Upload {platform.id === "letterboxd" ? "ZIP or CSV" : "CSV"}
+                </label>
+              </div>
+            )}
+
+            {/* MAL */}
+            {platform.id === "myanimelist" && (
+              <div>
+                <p style={{ fontSize: 11, color: "var(--text-faint)", marginBottom: 8 }}>
+                  Enter your MyAnimeList username. Your anime and manga lists must be set to public.
+                </p>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <input
+                    value={malUsername}
+                    onChange={e => setMalUsername(e.target.value)}
+                    placeholder="MAL username"
+                    style={{ ...inputStyle, flex: 1 }}
+                    onKeyDown={e => { if (e.key === "Enter") handleMALImport(); }}
+                  />
+                  <button
+                    onClick={handleMALImport}
+                    disabled={!malUsername.trim() || (step !== "idle" && step !== "done" && step !== "error")}
+                    style={{
+                      padding: "8px 16px", borderRadius: 8, border: "none",
+                      background: "#2E51A2", color: "#fff", fontSize: 12, fontWeight: 600,
+                      cursor: "pointer", opacity: !malUsername.trim() ? 0.5 : 1, whiteSpace: "nowrap",
+                    }}
+                  >
+                    Import
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Steam */}
+            {platform.id === "steam" && (
+              <div>
+                <p style={{ fontSize: 11, color: "var(--text-faint)", marginBottom: 8 }}>
+                  Enter your Steam ID, profile URL, or vanity name. Your profile and game details must be public.
+                </p>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <input
+                    value={steamId}
+                    onChange={e => setSteamId(e.target.value)}
+                    placeholder="Steam ID, URL, or username"
+                    style={{ ...inputStyle, flex: 1 }}
+                    onKeyDown={e => { if (e.key === "Enter") handleSteamImport(); }}
+                  />
+                  <button
+                    onClick={handleSteamImport}
+                    disabled={!steamId.trim() || (step !== "idle" && step !== "done" && step !== "error")}
+                    style={{
+                      padding: "8px 16px", borderRadius: 8, border: "none",
+                      background: "#1B2838", color: "#fff", fontSize: 12, fontWeight: 600,
+                      cursor: "pointer", opacity: !steamId.trim() ? 0.5 : 1, whiteSpace: "nowrap",
+                    }}
+                  >
+                    Import
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Spotify */}
+            {platform.id === "spotify" && (
+              <div>
+                <p style={{ fontSize: 11, color: "var(--text-faint)", marginBottom: 8 }}>
+                  Connect your Spotify account to import your saved albums.
+                </p>
+                <button
+                  onClick={handleSpotifyImport}
+                  disabled={step !== "idle" && step !== "done" && step !== "error"}
+                  style={{
+                    padding: "8px 16px", borderRadius: 8, border: "none",
+                    background: "#1DB954", color: "#fff", fontSize: 12, fontWeight: 600,
+                    cursor: "pointer",
+                    opacity: step !== "idle" && step !== "done" && step !== "error" ? 0.5 : 1,
+                  }}
+                >
+                  Connect Spotify
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Import History */}
+      {history.length > 0 && (
+        <div>
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 12 }}>Import History</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {history.map(imp => {
+              const platformConfig = PLATFORM_CONFIG.find(p => p.id === imp.source);
+              return (
+                <div
+                  key={imp.id}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 10, padding: "10px 14px",
+                    background: "var(--surface-1)", borderRadius: 8, border: "1px solid var(--border)",
+                  }}
+                >
+                  <span style={{ fontSize: 16 }}>{platformConfig?.icon || "📥"}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>
+                      {platformConfig?.name || imp.source}
+                    </div>
+                    <div style={{ fontSize: 11, color: "var(--text-faint)" }}>
+                      {new Date(imp.startedAt).toLocaleDateString("en-US", {
+                        month: "short", day: "numeric", year: "numeric",
+                        hour: "numeric", minute: "2-digit",
+                      })}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: imp.status === "completed" ? "#2EC4B6" : imp.status === "failed" ? "#E84855" : "#F9A620" }}>
+                      {imp.status === "completed" ? `${imp.importedItems} imported` : imp.status}
+                    </div>
+                    {imp.failedItems > 0 && (
+                      <div style={{ fontSize: 10, color: "#E84855" }}>{imp.failedItems} failed</div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

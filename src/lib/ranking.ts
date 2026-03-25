@@ -106,11 +106,18 @@ export function meetsQualityFloor(item: {
     case "book":
       return norm >= 0.6 && votes >= 20;
     case "music":
-      return norm >= 0.5 && (item.ext.spotify_popularity !== undefined ? item.ext.spotify_popularity >= 15 : true);
+      // Music: accept if has any ext score >= 0.5, OR has spotify_popularity >= 15, OR popularityScore > 0
+      if (norm >= 0.5) return true;
+      if (item.ext.spotify_popularity !== undefined && item.ext.spotify_popularity >= 15) return true;
+      return (item.popularityScore || 0) > 0;
     case "comic":
-      return norm >= 0.6;
+      // Comics: accept if has ext score >= 0.6 OR popularityScore > 0
+      if (norm >= 0.6) return true;
+      return (item.popularityScore || 0) > 0;
     case "podcast":
-      return norm >= 0.5;
+      // Podcasts: accept if has ext score >= 0.5 OR popularityScore > 0
+      if (norm >= 0.5) return true;
+      return (item.popularityScore || 0) > 0;
     default:
       return norm >= 0.5;
   }

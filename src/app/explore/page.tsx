@@ -506,14 +506,19 @@ function ExploreContent() {
         </>
       )}
 
-      {/* Coming soon — always at bottom */}
-      {upcoming.length > 0 && (
-        <div style={{ marginTop: 16 }}>
-          <ScrollRow label="Coming Soon" sub={`${upcoming.length} upcoming releases`} icon="🔥" iconBg="#E8485522">
-            {upcoming.map((item) => <UpcomingCard key={`upcoming-${item.id}`} item={item} />)}
-          </ScrollRow>
-        </div>
-      )}
+      {/* Coming soon — filtered by selected type */}
+      {(() => {
+        const filteredUpcoming = selectedType
+          ? upcoming.filter((item) => item.type === selectedType)
+          : upcoming;
+        return filteredUpcoming.length > 0 ? (
+          <div style={{ marginTop: 16 }}>
+            <ScrollRow label="Coming Soon" sub={`${filteredUpcoming.length} upcoming releases`} icon="🔥" iconBg="#E8485522">
+              {filteredUpcoming.map((item) => <UpcomingCard key={`upcoming-${item.id}`} item={item} />)}
+            </ScrollRow>
+          </div>
+        ) : null;
+      })()}
     </div>
   );
 }

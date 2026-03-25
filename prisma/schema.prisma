@@ -38,6 +38,7 @@ model User {
   dismissedItems  DismissedItem[]
   notifications  Notification[]
   reports        Report[]         @relation("reporter")
+  imports        Import[]
 
   @@map("users")
 }
@@ -228,6 +229,7 @@ model Rating {
   itemId       Int      @map("item_id")
   score        Int
   recommendTag String?  @map("recommend_tag")
+  importSource String?  @map("import_source")
   createdAt    DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -375,4 +377,25 @@ model Report {
   @@index([reviewId])
   @@index([status])
   @@map("reports")
+}
+
+model Import {
+  id             Int      @id @default(autoincrement())
+  userId         String   @map("user_id")
+  source         String   // letterboxd, goodreads, myanimelist, steam, spotify
+  status         String   @default("pending") // pending, processing, completed, failed
+  totalItems     Int      @default(0) @map("total_items")
+  importedItems  Int      @default(0) @map("imported_items")
+  skippedItems   Int      @default(0) @map("skipped_items")
+  failedItems    Int      @default(0) @map("failed_items")
+  duplicateItems Int      @default(0) @map("duplicate_items")
+  details        Json?    // extra info: filename, username, errors array, etc.
+  startedAt      DateTime @default(now()) @map("started_at")
+  completedAt    DateTime? @map("completed_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, source])
+  @@map("imports")
 }
