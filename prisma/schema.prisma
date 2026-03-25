@@ -39,6 +39,7 @@ model User {
   notifications  Notification[]
   reports        Report[]         @relation("reporter")
   imports        Import[]
+  tagSuggestions UserTagSuggestion[]
 
   @@map("users")
 }
@@ -138,6 +139,7 @@ model Item {
   secondaryColor  String?  @map("secondary_color")
   itemDimensions  Json?    @map("item_dimensions")
   platformLinks   Json?    @map("platform_links")
+  itemTags        Json?    @map("item_tags")
 
   createdAt       DateTime @default(now()) @map("created_at")
 
@@ -151,6 +153,7 @@ model Item {
   externalScores ExternalScore[]
   implicitSignals ImplicitSignal[]
   dismissedItems  DismissedItem[]
+  tagSuggestions UserTagSuggestion[]
 
   @@index([type])
   @@index([year])
@@ -378,6 +381,38 @@ model Report {
   @@index([reviewId])
   @@index([status])
   @@map("reports")
+}
+
+model Tag {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  displayName String   @map("display_name")
+  category    String   // theme, setting, character, tone, narrative, pacing, music, game, anime, tv, book, podcast, comic
+  appliesTo   String[] @map("applies_to") // empty = universal
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  suggestions UserTagSuggestion[]
+
+  @@index([category])
+  @@index([slug])
+  @@map("tags")
+}
+
+model UserTagSuggestion {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("user_id")
+  itemId    Int      @map("item_id")
+  tagSlug   String   @map("tag_slug")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagSlug], references: [slug], onDelete: Cascade)
+
+  @@unique([userId, itemId, tagSlug])
+  @@index([itemId, tagSlug])
+  @@index([userId])
+  @@map("user_tag_suggestions")
 }
 
 model PlatformClick {

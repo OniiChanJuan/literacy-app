@@ -26,6 +26,8 @@ import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
 import DlcSection, { DlcBadge } from "@/components/dlc-section";
 import ItemSubBanner from "@/components/item-sub-banner";
+import { getTopTags, getTagDisplayName } from "@/lib/tags";
+import TagSuggest from "@/components/tag-suggest";
 
 function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null; secondaryColor?: string | null } {
   return {
@@ -44,6 +46,7 @@ function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null; secon
     totalEp: dbItem.totalEp || 0,
     primaryColor: dbItem.primaryColor || null,
     secondaryColor: dbItem.secondaryColor || null,
+    itemTags: dbItem.itemTags || null,
     ...(dbItem.isUpcoming ? {
       isUpcoming: true,
       releaseDate: dbItem.releaseDate || "",
@@ -488,26 +491,59 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 {item.title}
               </h1>
 
-              {/* Vibe tags */}
-              {item.vibes.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
-                  {item.vibes.slice(0, 5).map((v) => {
-                    const vibe = VIBES[v];
-                    if (!vibe) return null;
-                    return (
-                      <Link key={v} href={`/vibe/${v}`} style={{
-                        fontSize: 9,
-                        padding: "2px 7px",
-                        borderRadius: 8,
-                        background: "rgba(255,255,255,0.04)",
-                        border: "0.5px solid rgba(255,255,255,0.06)",
-                        color: "rgba(255,255,255,0.45)",
-                        textDecoration: "none",
-                      }}>
-                        {vibe.label}
-                      </Link>
-                    );
-                  })}
+              {/* Tags (weighted) — falls back to vibes if no tags */}
+              {(() => {
+                const tags = getTopTags((item as any).itemTags, 7, 0.4);
+                if (tags.length > 0) {
+                  return (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+                      {tags.map((t) => (
+                        <Link key={t.slug} href={`/explore?tag=${t.slug}`} style={{
+                          fontSize: 9,
+                          padding: "2px 7px",
+                          borderRadius: 8,
+                          background: `rgba(255,255,255,${0.03 + t.weight * 0.04})`,
+                          border: `0.5px solid rgba(255,255,255,${0.05 + t.weight * 0.06})`,
+                          color: `rgba(255,255,255,${0.35 + t.weight * 0.25})`,
+                          textDecoration: "none",
+                        }}>
+                          {getTagDisplayName(t.slug)}
+                        </Link>
+                      ))}
+                    </div>
+                  );
+                }
+                // Fallback to vibes
+                if (item.vibes.length > 0) {
+                  return (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+                      {item.vibes.slice(0, 5).map((v) => {
+                        const vibe = VIBES[v];
+                        if (!vibe) return null;
+                        return (
+                          <Link key={v} href={`/vibe/${v}`} style={{
+                            fontSize: 9,
+                            padding: "2px 7px",
+                            borderRadius: 8,
+                            background: "rgba(255,255,255,0.04)",
+                            border: "0.5px solid rgba(255,255,255,0.06)",
+                            color: "rgba(255,255,255,0.45)",
+                            textDecoration: "none",
+                          }}>
+                            {vibe.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
+              {/* Suggest a tag link */}
+              {!upcoming && typeof item.id === "number" && (
+                <div style={{ marginBottom: 6 }}>
+                  <TagSuggest itemId={item.id} itemType={item.type} />
                 </div>
               )}
 

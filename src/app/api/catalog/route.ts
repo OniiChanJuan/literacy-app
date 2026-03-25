@@ -20,10 +20,41 @@ export async function GET(req: NextRequest) {
   const sort = searchParams.get("sort") || "quality";
   const genre = searchParams.get("genre");
   const vibe = searchParams.get("vibe");
+  const tag = searchParams.get("tag");
   const curated = searchParams.get("curated");
   const excludeIds = searchParams.get("exclude")?.split(",").map(Number).filter(Boolean) || [];
 
   try {
+    // If tag filter is active, get matching item IDs via raw SQL first
+    let tagFilterIds: number[] | null = null;
+    if (tag) {
+      let tagItems: { id: number }[];
+      if (type) {
+        tagItems = await prisma.$queryRaw<{ id: number }[]>`
+          SELECT id FROM items
+          WHERE item_tags IS NOT NULL
+          AND item_tags::jsonb ? ${tag}
+          AND is_upcoming = false AND parent_item_id IS NULL
+          AND type = ${type}
+          ORDER BY (item_tags::jsonb -> ${tag} ->> 'weight')::float DESC
+          LIMIT 200
+        `.catch(() => []);
+      } else {
+        tagItems = await prisma.$queryRaw<{ id: number }[]>`
+          SELECT id FROM items
+          WHERE item_tags IS NOT NULL
+          AND item_tags::jsonb ? ${tag}
+          AND is_upcoming = false AND parent_item_id IS NULL
+          ORDER BY (item_tags::jsonb -> ${tag} ->> 'weight')::float DESC
+          LIMIT 200
+        `.catch(() => []);
+      }
+      tagFilterIds = tagItems.map(i => i.id);
+      if (tagFilterIds.length === 0) {
+        return NextResponse.json([]);
+      }
+    }
+
     const where: any = { isUpcoming: false, parentItemId: null };
     if (type) where.type = type;
     if (genre) {
@@ -32,7 +63,12 @@ export async function GET(req: NextRequest) {
       else if (genres.length > 1) where.genre = { hasSome: genres };
     }
     if (vibe) where.vibes = { has: vibe };
-    if (excludeIds.length > 0) where.id = { notIn: excludeIds };
+    if (tagFilterIds) {
+      where.id = { in: tagFilterIds };
+    }
+    if (excludeIds.length > 0) {
+      where.id = where.id ? { ...where.id, notIn: excludeIds } : { notIn: excludeIds };
+    }
 
     // Fetch pool of items (larger than needed for ranking/diversity)
     const poolSize = Math.max(limit * 5, 200);

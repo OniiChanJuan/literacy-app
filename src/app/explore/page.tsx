@@ -4,12 +4,54 @@ import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, type MediaType, type Item, type UpcomingItem } from "@/lib/data";
+import { getTagDisplayName } from "@/lib/tags";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
 
 interface SearchResult extends Item { source: string; routeId: string; }
+
+// Popular tags for browsing — curated mix of universal + type-specific tags
+const POPULAR_TAGS: { slug: string; color: string }[] = [
+  // Themes
+  { slug: "revenge", color: "#E84855" },
+  { slug: "survival", color: "#FF6B6B" },
+  { slug: "coming-of-age", color: "#F9A620" },
+  { slug: "betrayal", color: "#C45BAA" },
+  { slug: "redemption", color: "#2EC4B6" },
+  { slug: "identity", color: "#3185FC" },
+  { slug: "found-family", color: "#9B5DE5" },
+  { slug: "war", color: "#888" },
+  { slug: "forbidden-love", color: "#FF6B6B" },
+  { slug: "political-intrigue", color: "#C45BAA" },
+  // Settings
+  { slug: "cyberpunk", color: "#00BBF9" },
+  { slug: "post-apocalyptic", color: "#F9A620" },
+  { slug: "medieval", color: "#A0522D" },
+  { slug: "space", color: "#3185FC" },
+  { slug: "dystopian", color: "#888" },
+  { slug: "noir", color: "#aaa" },
+  // Characters
+  { slug: "anti-hero", color: "#E84855" },
+  { slug: "morally-gray", color: "#888" },
+  { slug: "ensemble-cast", color: "#9B5DE5" },
+  { slug: "lone-wolf", color: "#2EC4B6" },
+  // Tone
+  { slug: "philosophical", color: "#3185FC" },
+  { slug: "brutal", color: "#E84855" },
+  { slug: "cozy", color: "#F9A620" },
+  { slug: "suspenseful", color: "#C45BAA" },
+  { slug: "melancholic", color: "#9B5DE5" },
+  { slug: "darkly-comic", color: "#2EC4B6" },
+  // Pacing
+  { slug: "slow-burn", color: "#F9A620" },
+  { slug: "fast-paced", color: "#E84855" },
+  { slug: "bingeable", color: "#00BBF9" },
+  // Narrative
+  { slug: "twist-ending", color: "#C45BAA" },
+  { slug: "based-on-true-story", color: "#888" },
+];
 
 // Genre lists per media type
 const TYPE_GENRES: Record<string, string[]> = {
@@ -70,6 +112,7 @@ function ExploreContent() {
   const [selectedType, setSelectedType] = useState<MediaType | null>((searchParams.get("type") as MediaType) || null);
   const [selectedGenres, setSelectedGenres] = useState<string[]>(searchParams.get("genre")?.split(",").filter(Boolean) || []);
   const [selectedVibe, setSelectedVibe] = useState<string | null>(searchParams.get("vibe") || null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(searchParams.get("tag") || null);
   const [sort, setSort] = useState<SortOption>((searchParams.get("sort") as SortOption) || "rating");
   const [searchResults, setSearchResults] = useState<any | null>(null);
   const [searching, setSearching] = useState(false);
@@ -78,7 +121,7 @@ function ExploreContent() {
   const [gridLoading, setGridLoading] = useState(false);
   const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
 
-  const hasGenreOrVibe = selectedGenres.length > 0 || selectedVibe !== null;
+  const hasGenreOrVibe = selectedGenres.length > 0 || selectedVibe !== null || selectedTag !== null;
 
   // Sync state to URL
   useEffect(() => {
@@ -87,13 +130,14 @@ function ExploreContent() {
     if (selectedType) params.set("type", selectedType);
     if (selectedGenres.length) params.set("genre", selectedGenres.join(","));
     if (selectedVibe) params.set("vibe", selectedVibe);
+    if (selectedTag) params.set("tag", selectedTag);
     if (sort !== "rating") params.set("sort", sort);
     const qs = params.toString();
     const newUrl = qs ? `/explore?${qs}` : "/explore";
     if (window.location.pathname + window.location.search !== newUrl) {
       router.replace(newUrl, { scroll: false });
     }
-  }, [search, selectedType, selectedGenres, selectedVibe, sort, router]);
+  }, [search, selectedType, selectedGenres, selectedVibe, selectedTag, sort, router]);
 
   // Load counts
   useEffect(() => {
@@ -119,11 +163,13 @@ function ExploreContent() {
 
   // Fetch grid items when genre/vibe filter active
   useEffect(() => {
-    if (!selectedType || !hasGenreOrVibe) { setGridItems([]); return; }
+    if ((!selectedType && !selectedTag) || !hasGenreOrVibe) { setGridItems([]); return; }
     setGridLoading(true);
-    let url = `/api/catalog?type=${selectedType}&limit=60`;
+    let url = `/api/catalog?limit=60`;
+    if (selectedType) url += `&type=${selectedType}`;
     if (selectedGenres.length) url += `&genre=${encodeURIComponent(selectedGenres.join(","))}`;
     if (selectedVibe) url += `&vibe=${encodeURIComponent(selectedVibe)}`;
+    if (selectedTag) url += `&tag=${encodeURIComponent(selectedTag)}`;
     fetch(url).then((r) => r.json()).then((d) => {
       let items = Array.isArray(d) ? d : [];
       // Client-side sort
@@ -133,7 +179,7 @@ function ExploreContent() {
       setGridItems(items);
       setGridLoading(false);
     }).catch(() => { setGridItems([]); setGridLoading(false); });
-  }, [selectedType, selectedGenres, selectedVibe, sort, hasGenreOrVibe]);
+  }, [selectedType, selectedGenres, selectedVibe, selectedTag, sort, hasGenreOrVibe]);
 
   const toggleGenre = (g: string) => {
     setSelectedGenres((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]);
@@ -378,12 +424,13 @@ function ExploreContent() {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
                   Showing: {selectedGenres.length > 0 ? selectedGenres.join(", ") + " " : ""}
-                  {TYPES[selectedType].label.toLowerCase()}
+                  {selectedType ? TYPES[selectedType].label.toLowerCase() : "all media"}
                   {selectedVibe && VIBES[selectedVibe] ? ` · ${VIBES[selectedVibe].label}` : ""}
+                  {selectedTag ? ` · ${getTagDisplayName(selectedTag)}` : ""}
                   {" · sorted by "}{SORT_OPTIONS.find((o) => o.value === sort)?.label}
                 </div>
                 <button
-                  onClick={() => { setSelectedGenres([]); setSelectedVibe(null); }}
+                  onClick={() => { setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); }}
                   style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", cursor: "pointer", fontSize: 11 }}
                 >
                   ✕ Clear filters
@@ -490,6 +537,33 @@ function ExploreContent() {
                   >
                     <span>{vibe.icon}</span>
                     {vibe.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Browse by tag */}
+          <div style={{ marginBottom: 28 }}>
+            <SectionLabel>Browse by tag</SectionLabel>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {POPULAR_TAGS.map((t) => {
+                const active = selectedTag === t.slug;
+                return (
+                  <button
+                    key={t.slug}
+                    onClick={() => { setSelectedTag(active ? null : t.slug); }}
+                    style={{
+                      background: active ? `${t.color}30` : "rgba(255,255,255,0.04)",
+                      border: `1px solid ${active ? t.color + "50" : "rgba(255,255,255,0.08)"}`,
+                      borderRadius: 16, padding: "5px 12px", fontSize: 11, fontWeight: 500,
+                      color: active ? t.color : "rgba(255,255,255,0.5)",
+                      cursor: "pointer", transition: "all 0.15s",
+                    }}
+                    onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
+                    onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                  >
+                    {getTagDisplayName(t.slug)}
                   </button>
                 );
               })}

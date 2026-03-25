@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { normalizeScore, meetsQualityFloor } from "@/lib/ranking";
 import { tasteSimilarity, type TasteDimensions } from "@/lib/taste-dimensions";
+import { tagSimilarity, type ItemTags } from "@/lib/tags";
 
 /**
  * GET /api/recommendations?itemId=123
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
       select: {
         id: true, title: true, type: true, genre: true, vibes: true,
         year: true, cover: true, description: true, ext: true, totalEp: true,
-        voteCount: true, popularityScore: true, itemDimensions: true,
+        voteCount: true, popularityScore: true, itemDimensions: true, itemTags: true,
         parentItemId: true, people: true,
         franchiseItems: { select: { franchiseId: true } },
       },
@@ -31,6 +32,7 @@ export async function GET(req: NextRequest) {
     if (!sourceItem) return NextResponse.json({ error: "Item not found" }, { status: 404 });
 
     const sourceDims = sourceItem.itemDimensions as TasteDimensions | null;
+    const sourceTags = sourceItem.itemTags as ItemTags | null;
     const sourceFranchiseIds = sourceItem.franchiseItems.map((fi) => fi.franchiseId);
     const sourcePeople = (sourceItem.people as any[] || []);
     const sourceCreator = sourcePeople[0]?.name?.toLowerCase() || "";
@@ -68,7 +70,7 @@ export async function GET(req: NextRequest) {
       select: {
         id: true, title: true, type: true, genre: true, vibes: true,
         year: true, cover: true, description: true, ext: true, totalEp: true,
-        voteCount: true, popularityScore: true, itemDimensions: true,
+        voteCount: true, popularityScore: true, itemDimensions: true, itemTags: true,
         people: true,
         franchiseItems: { select: { franchiseId: true } },
       },
@@ -86,16 +88,16 @@ export async function GET(req: NextRequest) {
     const usedIds = new Set<number>();
 
     // ─── SECTION 1: More [Type] ──────────────────────────────────────
-    const moreSameType = buildMoreSameType(sourceItem, pool, sourceDims, usedIds);
+    const moreSameType = buildMoreSameType(sourceItem, pool, sourceDims, sourceTags, usedIds);
 
     // ─── SECTION 2: Across Media ─────────────────────────────────────
-    const acrossMedia = buildAcrossMedia(sourceItem, pool, sourceDims, sourceFranchiseIds, usedIds);
+    const acrossMedia = buildAcrossMedia(sourceItem, pool, sourceDims, sourceTags, sourceFranchiseIds, usedIds);
 
     // ─── SECTION 3: Fans Also Loved ──────────────────────────────────
-    const fansAlsoLoved = buildFansAlsoLoved(sourceItem, pool, sourceDims, sourceFranchiseIds, usedIds);
+    const fansAlsoLoved = buildFansAlsoLoved(sourceItem, pool, sourceDims, sourceTags, sourceFranchiseIds, usedIds);
 
     // ─── SECTION 4: Hidden Gems ──────────────────────────────────────
-    const hiddenGems = buildHiddenGems(sourceItem, pool, sourceDims, usedIds);
+    const hiddenGems = buildHiddenGems(sourceItem, pool, sourceDims, sourceTags, usedIds);
 
     const res = NextResponse.json({
       moreSameType: moreSameType.map(toClientItem),
@@ -121,7 +123,7 @@ export async function GET(req: NextRequest) {
 type PoolItem = {
   id: number; title: string; type: string; genre: string[]; vibes: string[];
   year: number; cover: string; description: string; ext: any; totalEp: number;
-  voteCount: number; popularityScore: number; itemDimensions: any;
+  voteCount: number; popularityScore: number; itemDimensions: any; itemTags: any;
   people: any; franchiseItems: { franchiseId: number }[];
 };
 
@@ -177,25 +179,29 @@ function pickAndMark(items: PoolItem[], usedIds: Set<number>, limit: number): Po
 // ─── Section builders ───────────────────────────────────────────────
 
 function buildMoreSameType(
-  source: any, pool: PoolItem[], sourceDims: TasteDimensions | null, usedIds: Set<number>,
+  source: any, pool: PoolItem[], sourceDims: TasteDimensions | null, sourceTags: ItemTags | null, usedIds: Set<number>,
 ): PoolItem[] {
   const sameType = pool.filter((c) => c.type === source.type);
 
   const scored = sameType.map((c) => {
     const gOverlap = genreOverlap(source.genre, c.genre);
     const vOverlap = vibeOverlap(source.vibes, c.vibes);
-    const genreVibeScore = gOverlap * 2 + vOverlap;
+    const genreVibeScore = (gOverlap * 2 + vOverlap) / Math.max(1, source.genre.length + source.vibes.length);
 
     let dimScore = 0;
     if (sourceDims && c.itemDimensions) {
       dimScore = tasteSimilarity(sourceDims, c.itemDimensions as TasteDimensions);
     }
 
-    // Quality factor — prefer higher quality items
+    // Tag similarity (most granular signal)
+    const tSim = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
+
+    // Quality factor
     const norm = normalizeScore(c.ext || {}, c.type);
     const quality = norm > 0 ? norm : 0.5;
 
-    const finalScore = genreVibeScore * 0.4 + dimScore * 0.35 + quality * 0.25;
+    // Blended score: tags 0.30, taste 0.25, genre/vibe 0.25, quality 0.20
+    const finalScore = tSim * 0.30 + dimScore * 0.25 + genreVibeScore * 0.25 + quality * 0.20;
     return { item: c, score: finalScore };
   });
 
@@ -206,7 +212,7 @@ function buildMoreSameType(
 
 function buildAcrossMedia(
   source: any, pool: PoolItem[], sourceDims: TasteDimensions | null,
-  sourceFranchiseIds: number[], usedIds: Set<number>,
+  sourceTags: ItemTags | null, sourceFranchiseIds: number[], usedIds: Set<number>,
 ): PoolItem[] {
   const diffType = pool.filter((c) => c.type !== source.type);
 
@@ -219,11 +225,15 @@ function buildAcrossMedia(
       dimScore = tasteSimilarity(sourceDims, c.itemDimensions as TasteDimensions);
     }
 
-    let score = dimScore;
+    // Tag similarity — critical for cross-media (tags are the bridge)
+    const tSim = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
+
+    // Cross-media: tags 0.35 (higher weight — tags bridge media types), taste 0.25, genre/vibe 0.20, freshness 0.20
+    let score = tSim * 0.35 + dimScore * 0.25 + (gOverlap + vOverlap) * 0.05;
 
     // Boosts
-    if (gOverlap >= 2) score *= 1.3;
-    if (vOverlap >= 2) score *= 1.3;
+    if (gOverlap >= 2) score *= 1.2;
+    if (vOverlap >= 2) score *= 1.2;
 
     // Franchise bonus (same franchise, different type)
     const cFranchiseIds = c.franchiseItems.map((fi) => fi.franchiseId);
@@ -252,11 +262,8 @@ function buildAcrossMedia(
 
 function buildFansAlsoLoved(
   source: any, pool: PoolItem[], sourceDims: TasteDimensions | null,
-  sourceFranchiseIds: number[], usedIds: Set<number>,
+  sourceTags: ItemTags | null, sourceFranchiseIds: number[], usedIds: Set<number>,
 ): PoolItem[] {
-  // For now (before we have enough user data): genre + vibe overlap approach
-  // Include franchise items of different types first
-
   const scored = pool.map((c) => {
     const gOverlap = genreOverlap(source.genre, c.genre);
     const vOverlap = vibeOverlap(source.vibes, c.vibes);
@@ -266,7 +273,9 @@ function buildFansAlsoLoved(
       dimScore = tasteSimilarity(sourceDims, c.itemDimensions as TasteDimensions);
     }
 
-    let score = (gOverlap + vOverlap) * 0.4 + dimScore * 0.4;
+    const tSim = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
+
+    let score = tSim * 0.30 + (gOverlap + vOverlap) * 0.1 + dimScore * 0.30;
 
     // Franchise items of different type get big boost
     const cFranchiseIds = c.franchiseItems.map((fi) => fi.franchiseId);
@@ -286,7 +295,7 @@ function buildFansAlsoLoved(
 }
 
 function buildHiddenGems(
-  source: any, pool: PoolItem[], sourceDims: TasteDimensions | null, usedIds: Set<number>,
+  source: any, pool: PoolItem[], sourceDims: TasteDimensions | null, sourceTags: ItemTags | null, usedIds: Set<number>,
 ): PoolItem[] {
   // Must have high quality + low popularity + genre/vibe overlap
   const gems = pool.filter((c) => {
@@ -302,10 +311,11 @@ function buildHiddenGems(
     const isLowPop = checkLowPopularity(c.type, c.voteCount, ext);
     if (!isLowPop) return false;
 
-    // Must share at least 2 genres OR 2 vibes
+    // Must share at least 2 genres OR 2 vibes OR have tag similarity > 0.15
     const gOverlap = genreOverlap(source.genre, c.genre);
     const vOverlap = vibeOverlap(source.vibes, c.vibes);
-    if (gOverlap < 2 && vOverlap < 2) return false;
+    const tSim = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
+    if (gOverlap < 2 && vOverlap < 2 && tSim < 0.15) return false;
 
     return true;
   });
@@ -317,9 +327,10 @@ function buildHiddenGems(
       dimScore = tasteSimilarity(sourceDims, c.itemDimensions as TasteDimensions);
     }
     const norm = normalizeScore(c.ext || {}, c.type);
+    const tSim2 = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
     // Reward low vote count (more hidden)
     const hiddenBonus = c.voteCount < 500 ? 0.2 : c.voteCount < 2000 ? 0.1 : 0;
-    return { item: c, score: dimScore * 0.5 + norm * 0.3 + hiddenBonus };
+    return { item: c, score: tSim2 * 0.25 + dimScore * 0.35 + norm * 0.25 + hiddenBonus };
   });
 
   scored.sort((a, b) => b.score - a.score);
