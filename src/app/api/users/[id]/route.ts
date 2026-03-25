@@ -58,6 +58,7 @@ export async function GET(
       ratingsCount: showLibrary ? user._count.ratings : 0,
       reviewsCount: showLibrary ? user._count.reviews : 0,
       trackedCount: showLibrary ? user._count.libraryEntries : 0,
+      memberNumber: user.memberNumber,
     },
     topRatings,
     library: showLibrary ? library : null,

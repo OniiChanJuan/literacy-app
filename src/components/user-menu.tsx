@@ -17,7 +17,7 @@ export default function UserMenu() {
     if (session?.user?.id) {
       fetch(`/api/users/${session.user.id}`)
         .then((r) => r.json())
-        .then((data) => { if (data.memberNumber) setMemberNumber(data.memberNumber); })
+        .then((data) => { if (data.user?.memberNumber) setMemberNumber(data.user.memberNumber); })
         .catch(() => {});
     }
   }, [session?.user?.id]);
@@ -70,7 +70,7 @@ export default function UserMenu() {
         </button>
         {memberNumber && (
           <div style={{
-            fontSize: 8,
+            fontSize: 10,
             fontWeight: 600,
             color: isFounder ? "#F9A620" : "rgba(255,255,255,0.25)",
             whiteSpace: "nowrap",
