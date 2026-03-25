@@ -411,6 +411,25 @@ export default function SettingsPage() {
                 </div>
               </div>
 
+              {/* Data Export */}
+              <div style={{ marginBottom: 24, padding: 16, background: "var(--surface-1)", borderRadius: 10, border: "1px solid var(--border)" }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 8 }}>Your Data</h3>
+                <p style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 12, lineHeight: 1.5 }}>
+                  Download a copy of all your data including profile info, ratings, reviews, library entries, follows, taste profile, and activity history.
+                </p>
+                <button
+                  onClick={() => {
+                    window.location.href = "/api/export-data";
+                  }}
+                  style={{
+                    padding: "8px 18px", borderRadius: 8, border: "1px solid var(--border)",
+                    background: "var(--surface-2)", color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  }}
+                >
+                  Download my data
+                </button>
+              </div>
+
               <div style={{ borderTop: "1px solid rgba(232,72,85,0.15)", paddingTop: 20 }}>
                 <button
                   onClick={() => setShowDelete(!showDelete)}

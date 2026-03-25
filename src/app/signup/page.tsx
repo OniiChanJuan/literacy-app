@@ -28,6 +28,7 @@ export default function SignupPage() {
   const [confirm, setConfirm] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [confirmedAge, setConfirmedAge] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -63,6 +64,7 @@ export default function SignupPage() {
     if (!/[A-Z]/.test(password)) { setError("Password needs at least one uppercase letter"); return; }
     if (!/[a-z]/.test(password)) { setError("Password needs at least one lowercase letter"); return; }
     if (!/[0-9]/.test(password)) { setError("Password needs at least one number"); return; }
+    if (!confirmedAge) { setError("You must confirm you are at least 13 years old"); return; }
     if (!agreedToTerms) { setError("You must agree to the Terms of Service and Privacy Policy"); return; }
 
     setLoading(true);
@@ -70,7 +72,7 @@ export default function SignupPage() {
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, username: username.toLowerCase().trim(), email, password, honeypot, agreedToTerms }),
+      body: JSON.stringify({ name, username: username.toLowerCase().trim(), email, password, honeypot, agreedToTerms, confirmedAge }),
     });
 
     if (!res.ok) {
@@ -250,6 +252,17 @@ export default function SignupPage() {
           <input type="text" name="website" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" />
         </div>
 
+        {/* Age confirmation */}
+        <div style={{ marginBottom: 12 }}>
+          <label style={{
+            display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer",
+            fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5,
+          }}>
+            <input type="checkbox" checked={confirmedAge} onChange={(e) => setConfirmedAge(e.target.checked)} style={{ marginTop: 2, accentColor: "#E84855" }} />
+            <span>I confirm I am at least 13 years old</span>
+          </label>
+        </div>
+
         {/* Terms */}
         <div style={{ marginBottom: 24 }}>
           <label style={{
@@ -259,21 +272,21 @@ export default function SignupPage() {
             <input type="checkbox" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} style={{ marginTop: 2, accentColor: "#E84855" }} />
             <span>
               I agree to the{" "}
-              <Link href="/terms" target="_blank" style={{ color: "#3185FC", textDecoration: "none" }}>Terms of Service</Link>{" "}
+              <Link href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#3185FC", textDecoration: "none" }}>Terms of Service</Link>{" "}
               and{" "}
-              <Link href="/privacy" target="_blank" style={{ color: "#3185FC", textDecoration: "none" }}>Privacy Policy</Link>
+              <Link href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "#3185FC", textDecoration: "none" }}>Privacy Policy</Link>
             </span>
           </label>
         </div>
 
         <button
           type="submit"
-          disabled={loading || usernameStatus !== "available"}
+          disabled={loading || usernameStatus !== "available" || !confirmedAge || !agreedToTerms}
           style={{
             width: "100%", padding: "12px 16px", borderRadius: 12, border: "none",
             background: "#E84855", color: "#fff", fontSize: 14, fontWeight: 700,
             cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading || usernameStatus !== "available" ? 0.6 : 1,
+            opacity: loading || usernameStatus !== "available" || !confirmedAge || !agreedToTerms ? 0.6 : 1,
           }}
         >
           {loading ? "Creating account..." : "Create Account"}

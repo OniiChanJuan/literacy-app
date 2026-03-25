@@ -63,16 +63,21 @@ export async function POST(req: NextRequest) {
       if (!valid) return NextResponse.json({ error: "Incorrect password" }, { status: 403 });
     }
 
-    // Delete everything in order (due to foreign keys)
-    await prisma.franchiseItem.deleteMany({ where: {} }); // no user FK, skip
-    await prisma.follow.deleteMany({ where: { OR: [{ followerId: session.user.id }, { followedId: session.user.id }] } });
-    await prisma.libraryEntry.deleteMany({ where: { userId: session.user.id } });
-    await prisma.review.deleteMany({ where: { userId: session.user.id } });
-    await prisma.rating.deleteMany({ where: { userId: session.user.id } });
-    await prisma.userSettings.deleteMany({ where: { userId: session.user.id } });
-    await prisma.session.deleteMany({ where: { userId: session.user.id } });
-    await prisma.account.deleteMany({ where: { userId: session.user.id } });
-    await prisma.user.delete({ where: { id: session.user.id } });
+    // Hard delete ALL user data across every related table
+    const uid = session.user.id;
+    await prisma.report.deleteMany({ where: { reporterUserId: uid } });
+    await prisma.notification.deleteMany({ where: { userId: uid } });
+    await prisma.dismissedItem.deleteMany({ where: { userId: uid } });
+    await prisma.implicitSignal.deleteMany({ where: { userId: uid } });
+    await prisma.reviewHelpfulVote.deleteMany({ where: { userId: uid } });
+    await prisma.follow.deleteMany({ where: { OR: [{ followerId: uid }, { followedId: uid }] } });
+    await prisma.libraryEntry.deleteMany({ where: { userId: uid } });
+    await prisma.review.deleteMany({ where: { userId: uid } });
+    await prisma.rating.deleteMany({ where: { userId: uid } });
+    await prisma.userSettings.deleteMany({ where: { userId: uid } });
+    await prisma.session.deleteMany({ where: { userId: uid } });
+    await prisma.account.deleteMany({ where: { userId: uid } });
+    await prisma.user.delete({ where: { id: uid } });
 
     return NextResponse.json({ success: true, deleted: true });
   }

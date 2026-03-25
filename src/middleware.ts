@@ -4,6 +4,14 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
+  // ── Global Privacy Control (GPC) Detection ──────────────────────────
+  // Respect GPC signal as opt-out per CCPA. Since we don't sell data or
+  // use tracking, behavior doesn't change, but we document detection.
+  const gpcHeader = request.headers.get("sec-gpc");
+  if (gpcHeader === "1") {
+    response.headers.set("X-GPC-Acknowledged", "true");
+  }
+
   // ── Security Headers ──────────────────────────────────────────────────
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "DENY");

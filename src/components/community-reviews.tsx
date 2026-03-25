@@ -524,14 +524,130 @@ function ReviewCard({
   const recEmoji = review.recommendTag ? REC_EMOJI[review.recommendTag] || "" : "";
   const isSpoiler = review.containsSpoilers && !revealed;
   const isOwnReview = currentUserId === review.userId;
+  const [showReport, setShowReport] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [reportDetails, setReportDetails] = useState("");
+  const [reportSent, setReportSent] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const handleReport = async () => {
+    if (!reportReason) return;
+    try {
+      const res = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviewId: review.id, reason: reportReason, details: reportDetails }),
+      });
+      if (res.ok) {
+        setReportSent(true);
+        setTimeout(() => { setShowReport(false); setReportSent(false); setReportReason(""); setReportDetails(""); }, 2000);
+      }
+    } catch {}
+  };
 
   return (
-    <div style={{
-      padding: "16px 18px",
-      background: `rgba(${heroRgb}, 0.03)`,
-      border: `0.5px solid rgba(${heroRgb}, 0.06)`,
-      borderRadius: 12,
-    }}>
+    <div
+      style={{
+        padding: "16px 18px",
+        background: `rgba(${heroRgb}, 0.03)`,
+        border: `0.5px solid rgba(${heroRgb}, 0.06)`,
+        borderRadius: 12,
+        position: "relative",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Report flag — visible on hover for other users' reviews */}
+      {currentUserId && !isOwnReview && hovered && !showReport && (
+        <button
+          onClick={() => setShowReport(true)}
+          aria-label="Report review"
+          style={{
+            position: "absolute", top: 10, right: 10,
+            background: "none", border: "none",
+            color: "rgba(255,255,255,0.15)", fontSize: 12,
+            cursor: "pointer", padding: "2px 4px",
+          }}
+        >
+          ⚑
+        </button>
+      )}
+
+      {/* Report modal */}
+      {showReport && (
+        <div style={{
+          position: "absolute", top: 8, right: 8, zIndex: 10,
+          background: "#1a1a24", border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 10, padding: 14, width: 220,
+          boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+        }}>
+          {reportSent ? (
+            <div style={{ fontSize: 12, color: "#2EC4B6", textAlign: "center", padding: 8 }}>
+              Report submitted. Thank you.
+            </div>
+          ) : (
+            <>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "#fff", marginBottom: 10 }}>Report this review</div>
+              {["spam", "harassment", "hate_speech", "spoilers", "other"].map((r) => (
+                <label key={r} style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  fontSize: 11, color: "rgba(255,255,255,0.6)", marginBottom: 6, cursor: "pointer",
+                }}>
+                  <input
+                    type="radio"
+                    name={`report-${review.id}`}
+                    checked={reportReason === r}
+                    onChange={() => setReportReason(r)}
+                    style={{ accentColor: "#E84855" }}
+                  />
+                  {r === "hate_speech" ? "Hate speech" : r === "spoilers" ? "Spoilers without warning" : r.charAt(0).toUpperCase() + r.slice(1)}
+                </label>
+              ))}
+              {reportReason === "other" && (
+                <textarea
+                  value={reportDetails}
+                  onChange={(e) => setReportDetails(e.target.value)}
+                  placeholder="Details..."
+                  maxLength={500}
+                  rows={2}
+                  style={{
+                    width: "100%", fontSize: 11, padding: "6px 8px", borderRadius: 6,
+                    background: "rgba(255,255,255,0.04)", border: "0.5px solid rgba(255,255,255,0.1)",
+                    color: "#fff", resize: "none", outline: "none", boxSizing: "border-box",
+                    marginBottom: 6,
+                  }}
+                />
+              )}
+              <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                <button
+                  onClick={handleReport}
+                  disabled={!reportReason}
+                  style={{
+                    flex: 1, padding: "5px 10px", borderRadius: 6, border: "none",
+                    background: reportReason ? "#E84855" : "rgba(255,255,255,0.06)",
+                    color: "#fff", fontSize: 11, fontWeight: 600, cursor: reportReason ? "pointer" : "default",
+                    opacity: reportReason ? 1 : 0.4,
+                  }}
+                >
+                  Submit
+                </button>
+                <button
+                  onClick={() => { setShowReport(false); setReportReason(""); setReportDetails(""); }}
+                  style={{
+                    padding: "5px 10px", borderRadius: 6,
+                    border: "0.5px solid rgba(255,255,255,0.1)",
+                    background: "none", color: "rgba(255,255,255,0.4)",
+                    fontSize: 11, cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
         <div style={{

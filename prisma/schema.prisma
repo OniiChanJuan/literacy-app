@@ -36,6 +36,8 @@ model User {
   helpfulVotes   ReviewHelpfulVote[]
   implicitSignals ImplicitSignal[]
   dismissedItems  DismissedItem[]
+  notifications  Notification[]
+  reports        Report[]         @relation("reporter")
 
   @@map("users")
 }
@@ -250,6 +252,7 @@ model Review {
   user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   item         Item               @relation(fields: [itemId], references: [id], onDelete: Cascade)
   helpfulVotes ReviewHelpfulVote[]
+  reports      Report[]
 
   @@unique([userId, itemId])
   @@index([itemId])
@@ -326,4 +329,50 @@ model DismissedItem {
 
   @@id([userId, itemId])
   @@map("dismissed_items")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("user_id")
+  message   String
+  type      String   // content_removed, account_warning, system
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model DmcaNotice {
+  id              Int      @id @default(autoincrement())
+  reporterName    String   @map("reporter_name")
+  reporterEmail   String   @map("reporter_email")
+  copyrightedWork String   @map("copyrighted_work")
+  infringingUrl   String   @map("infringing_url")
+  statement       String
+  status          String   @default("pending") // pending, reviewed, actioned, rejected
+  createdAt       DateTime @default(now()) @map("created_at")
+  reviewedAt      DateTime? @map("reviewed_at")
+
+  @@map("dmca_notices")
+}
+
+model Report {
+  id             Int      @id @default(autoincrement())
+  reporterUserId String   @map("reporter_user_id")
+  reviewId       Int      @map("review_id")
+  reason         String   // spam, harassment, hate_speech, spoilers, other
+  details        String   @default("")
+  status         String   @default("pending") // pending, reviewed, dismissed, actioned
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  reporter User   @relation("reporter", fields: [reporterUserId], references: [id], onDelete: Cascade)
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@index([reviewId])
+  @@index([status])
+  @@map("reports")
 }

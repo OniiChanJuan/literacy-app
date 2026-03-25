@@ -70,6 +70,17 @@ body {
   }
 }
 
+/* ── Accessibility: focus-visible outlines for keyboard nav ─ */
+*:focus-visible {
+  outline: 2px solid rgba(49, 133, 252, 0.5);
+  outline-offset: 2px;
+}
+
+/* Remove default focus ring when using mouse */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* ── Utility: hide scrollbar in scroll rows ──────────────── */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { scrollbar-width: none; }

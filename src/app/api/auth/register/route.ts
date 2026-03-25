@@ -22,11 +22,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { name, username, email, password, honeypot, agreedToTerms } = body;
+  const { name, username, email, password, honeypot, agreedToTerms, confirmedAge } = body;
 
   // Honeypot check
   if (honeypot) {
     return NextResponse.json({ id: "ok", email, name }, { status: 201 });
+  }
+
+  if (!confirmedAge) {
+    return NextResponse.json({ error: "You must confirm you are at least 13 years old" }, { status: 400 });
   }
 
   if (!agreedToTerms) {

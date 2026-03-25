@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Nav from "@/components/nav";
+import Footer from "@/components/footer";
+import CookieBanner from "@/components/cookie-banner";
 import Providers from "@/components/providers";
 import "./globals.css";
 
@@ -36,6 +38,8 @@ export default function RootLayout({
           <main style={{ paddingTop: 26, paddingBottom: 80 }}>
             {children}
           </main>
+          <Footer />
+          <CookieBanner />
         </Providers>
       </body>
     </html>
