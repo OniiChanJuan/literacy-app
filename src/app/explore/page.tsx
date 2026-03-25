@@ -151,7 +151,7 @@ function ExploreContent() {
     const hasResults = totalResults > 0;
 
     return (
-      <div>
+      <div className="content-width">
         <SearchBar search={search} setSearch={setSearch} />
         {searching && <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 16 }}>Searching across all media...</div>}
         {!searching && searchResults && (
@@ -388,7 +388,7 @@ function ExploreContent() {
               {gridLoading ? (
                 <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-faint)", fontSize: 13 }}>Loading...</div>
               ) : gridItems.length > 0 ? (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
                   {gridItems.map((item) => <Card key={item.id} item={item} />)}
                 </div>
               ) : (
@@ -563,7 +563,7 @@ function MediaTypeRow({ type, label, sub }: { type: string; label: string; sub: 
         {items === null ? (
           <div style={{ display: "flex", gap: 10 }}>
             {Array.from({ length: 8 }, (_, i) => (
-              <div key={i} style={{ minWidth: 120, maxWidth: 120, height: 145, borderRadius: 8, background: "rgba(255,255,255,0.03)", flexShrink: 0, border: "0.5px solid rgba(255,255,255,0.04)" }} />
+              <div key={i} style={{ flex: "1 0 130px", maxWidth: 180, minWidth: 130, height: 145, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
             ))}
           </div>
         ) : items.map((item) => <Card key={item.id} item={item} />)}
@@ -586,7 +586,7 @@ function GenreRow({ type, genre, label }: { type: string; genre: string | null; 
         {items === null ? (
           <div style={{ display: "flex", gap: 10 }}>
             {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} style={{ minWidth: 120, maxWidth: 120, height: 145, borderRadius: 8, background: "rgba(255,255,255,0.03)", flexShrink: 0, border: "0.5px solid rgba(255,255,255,0.04)" }} />
+              <div key={i} style={{ flex: "1 0 130px", maxWidth: 180, minWidth: 130, height: 145, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
             ))}
           </div>
         ) : items.map((item) => <Card key={item.id} item={item} />)}

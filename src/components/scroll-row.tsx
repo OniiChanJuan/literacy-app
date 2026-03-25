@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useEffect, memo } from "react";
+import { useRef, memo } from "react";
 
 interface ScrollRowProps {
   label: string;
@@ -13,30 +13,8 @@ interface ScrollRowProps {
   children: React.ReactNode;
 }
 
-const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref, onLoadMore, loadingMore, children }: ScrollRowProps) {
+const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref, loadingMore, children }: ScrollRowProps) {
   const ref = useRef<HTMLDivElement>(null);
-
-  const scroll = useCallback((dir: "left" | "right") => {
-    ref.current?.scrollBy({ left: dir === "left" ? -340 : 340, behavior: "smooth" });
-  }, []);
-
-  // Detect scroll near end to trigger load more
-  useEffect(() => {
-    if (!onLoadMore) return;
-    const el = ref.current;
-    if (!el) return;
-
-    const handleScroll = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = el;
-      // When within 300px of the end, load more
-      if (scrollWidth - scrollLeft - clientWidth < 300) {
-        onLoadMore();
-      }
-    };
-
-    el.addEventListener("scroll", handleScroll, { passive: true });
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, [onLoadMore]);
 
   return (
     <div style={{ marginBottom: 18 }}>
@@ -70,57 +48,30 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {seeAllHref && (
-            <a href={seeAllHref} style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textDecoration: "none" }}>
-              See all →
-            </a>
-          )}
-          {(["left", "right"] as const).map((dir) => (
-            <button
-              key={dir}
-              onClick={() => scroll(dir)}
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: "50%",
-                border: "0.5px solid rgba(255,255,255,0.08)",
-                background: "rgba(255,255,255,0.04)",
-                color: "rgba(255,255,255,0.4)",
-                cursor: "pointer",
-                fontSize: 11,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "background 0.15s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
-            >
-              {dir === "left" ? "←" : "→"}
-            </button>
-          ))}
-        </div>
+        {seeAllHref && (
+          <a href={seeAllHref} style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textDecoration: "none" }}>
+            See all →
+          </a>
+        )}
       </div>
 
-      {/* Scrollable items */}
+      {/* Items — flex wrap to fill width */}
       <div
         ref={ref}
-        className="scrollbar-hide"
         data-scroll-row={label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}
         style={{
           display: "flex",
+          flexWrap: "wrap",
           gap: 10,
-          overflowX: "auto",
           paddingBottom: 4,
         }}
       >
         {children}
         {loadingMore && (
           <div style={{
-            minWidth: 120, maxWidth: 120, height: 145,
+            flex: "1 0 130px", maxWidth: 180, minWidth: 130, height: 145,
             display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0, borderRadius: 8,
+            borderRadius: 8,
             background: "rgba(255,255,255,0.02)",
             border: "0.5px solid rgba(255,255,255,0.04)",
           }}>

@@ -28,14 +28,14 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
     <div
       onClick={() => router.push(`/item/${item.id}`)}
       style={{
-        minWidth: 120,
-        maxWidth: 120,
+        flex: "1 0 130px",
+        maxWidth: 180,
+        minWidth: 130,
         borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
         transition: "transform 0.2s, box-shadow 0.2s",
         boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
-        flexShrink: 0,
         border: "0.5px solid rgba(255,255,255,0.06)",
       }}
       onMouseEnter={(e) => {
@@ -58,10 +58,10 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
           <Image
             src={item.cover}
             alt={item.title}
-            width={120}
+            width={180}
             height={95}
             quality={70}
-            sizes="120px"
+            sizes="(max-width: 768px) 130px, 180px"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}

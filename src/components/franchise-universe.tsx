@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TYPES } from "@/lib/data";
@@ -42,8 +42,6 @@ function scoreColor(val: number): string {
 export default function FranchiseUniverse({ itemId }: { itemId: number }) {
   const [franchise, setFranchise] = useState<FranchiseData | null>(null);
   const [loaded, setLoaded] = useState(false);
-  const [showLeft, setShowLeft] = useState(false);
-  const [showRight, setShowRight] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -53,40 +51,6 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
       .then((data) => { setFranchise(data); setLoaded(true); })
       .catch(() => setLoaded(true));
   }, [itemId]);
-
-  const updateArrows = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setShowLeft(el.scrollLeft > 5);
-    setShowRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 5);
-  }, []);
-
-  // Update arrows after franchise loads AND after a short delay for images
-  useEffect(() => {
-    if (!franchise) return;
-    // Immediate check
-    updateArrows();
-    // Delayed check after images might have loaded
-    const t1 = setTimeout(updateArrows, 100);
-    const t2 = setTimeout(updateArrows, 500);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [franchise, updateArrows]);
-
-  // Listen to scroll events
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", updateArrows, { passive: true });
-    window.addEventListener("resize", updateArrows);
-    return () => {
-      el.removeEventListener("scroll", updateArrows);
-      window.removeEventListener("resize", updateArrows);
-    };
-  }, [updateArrows]);
-
-  const scroll = (dir: number) => {
-    scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
-  };
 
   if (!loaded || !franchise || franchise.otherItems.length === 0) return null;
 
@@ -138,60 +102,14 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
         </a>
       </div>
 
-      {/* Card row with scroll arrows */}
-      <div style={{ position: "relative", overflow: "hidden" }}>
-        {/* Left arrow */}
-        {showLeft && (
-          <button
-            onClick={() => scroll(-1)}
-            aria-label="Scroll left"
-            style={{
-              position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)",
-              width: 28, height: 28, borderRadius: "50%",
-              background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
-              border: "0.5px solid rgba(255,255,255,0.1)",
-              color: "#fff", fontSize: 12, cursor: "pointer", zIndex: 2,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 0,
-            }}
-          >
-            ←
-          </button>
-        )}
-
-        {/* Right arrow */}
-        {showRight && (
-          <button
-            onClick={() => scroll(1)}
-            aria-label="Scroll right"
-            style={{
-              position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)",
-              width: 28, height: 28, borderRadius: "50%",
-              background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
-              border: "0.5px solid rgba(255,255,255,0.1)",
-              color: "#fff", fontSize: 12, cursor: "pointer", zIndex: 2,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 0,
-            }}
-          >
-            →
-          </button>
-        )}
-
-        {/* Scrollable cards — width:0 + minWidth:100% prevents flex children from expanding parent */}
+      {/* Card row */}
+      <div>
         <div
           ref={scrollRef}
-          className="scrollbar-hide"
           style={{
             display: "flex",
+            flexWrap: "wrap",
             gap: 10,
-            overflowX: "auto",
-            scrollBehavior: "smooth",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-            WebkitOverflowScrolling: "touch",
-            width: 0,
-            minWidth: "100%",
           }}
         >
           {deduped.map((item) => (
@@ -243,9 +161,8 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
     <button
       onClick={onClick}
       style={{
-        minWidth: 95,
+        flex: "0 0 95px",
         maxWidth: 95,
-        width: 95,
         borderRadius: 8,
         overflow: "hidden",
         border: "0.5px solid rgba(255,255,255,0.06)",
@@ -254,7 +171,6 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
         cursor: "pointer",
         textAlign: "left",
         transition: "transform 0.15s, box-shadow 0.15s",
-        flexShrink: 0,
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";

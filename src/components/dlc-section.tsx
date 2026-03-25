@@ -94,8 +94,7 @@ export default function DlcSection({ dlcs, baseGameTitle, typeColor }: DlcSectio
 
       {/* Cards row */}
       <div style={{
-        display: "flex", gap: 10, overflowX: "auto",
-        scrollbarWidth: "none",
+        display: "flex", flexWrap: "wrap", gap: 10,
         paddingBottom: 4,
       }}>
         {dlcs.map((dlc) => {
@@ -109,8 +108,8 @@ export default function DlcSection({ dlcs, baseGameTitle, typeColor }: DlcSectio
               key={dlc.id}
               href={`/item/${dlc.id}`}
               style={{
-                minWidth: 140, maxWidth: 140, borderRadius: 8,
-                overflow: "hidden", flexShrink: 0, textDecoration: "none",
+                flex: "1 0 130px", maxWidth: 180, minWidth: 130, borderRadius: 8,
+                overflow: "hidden", textDecoration: "none",
                 border: `0.5px solid ${isEdition ? "rgba(155,93,229,0.15)" : "rgba(255,255,255,0.08)"}`,
                 background: "#141419",
                 transition: "transform 0.15s, box-shadow 0.15s",

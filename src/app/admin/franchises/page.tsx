@@ -144,7 +144,7 @@ export default function AdminFranchisesPage() {
   ];
 
   return (
-    <div className="content-width" style={{ maxWidth: 900, paddingTop: 40 }}>
+    <div className="content-width" style={{ paddingTop: 40 }}>
       <h1 style={{
         fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 900,
         color: "#fff", marginBottom: 8,

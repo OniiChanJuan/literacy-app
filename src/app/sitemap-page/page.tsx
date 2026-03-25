@@ -10,7 +10,7 @@ export default function SitemapPage() {
   const linkStyle: React.CSSProperties = { color: "#E84855", textDecoration: "none" };
 
   return (
-    <div className="content-width" style={{ maxWidth: 700, marginTop: 40 }}>
+    <div className="content-width" style={{ maxWidth: 800, marginTop: 40 }}>
       <h1 style={heading}>Sitemap</h1>
       <p style={updated}>Last updated: March 24, 2026</p>
 

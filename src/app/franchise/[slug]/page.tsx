@@ -112,7 +112,7 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
   ];
 
   return (
-    <div className="content-width" style={{ maxWidth: 900 }}>
+    <div className="content-width">
       <BackButton />
 
       {/* Parent link */}
@@ -141,7 +141,7 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
         </div>
 
         {data.description && (
-          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 12, maxWidth: 600 }}>
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 12, maxWidth: 800 }}>
             {data.description}
           </p>
         )}
