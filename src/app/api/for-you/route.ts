@@ -1,0 +1,174 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { normalizeScore, meetsQualityFloor } from "@/lib/ranking";
+import { tasteSimilarity, neutralDimensions, type TasteDimensions } from "@/lib/taste-dimensions";
+
+const ITEM_SELECT = {
+  id: true, title: true, type: true, genre: true, vibes: true,
+  year: true, cover: true, description: true, people: true,
+  awards: true, platforms: true, ext: true, totalEp: true,
+  popularityScore: true, voteCount: true, itemDimensions: true,
+} as const;
+
+/**
+ * GET /api/for-you — Personalized recommendations based on user's taste profile
+ * Returns: { personalPicks: Item[], discoverAcrossMedia: Item[], tasteProfile: TasteDimensions | null }
+ */
+export async function GET(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { tasteProfile: true },
+    });
+
+    const tasteProfile = (user?.tasteProfile as unknown as TasteDimensions) || null;
+    if (!tasteProfile) {
+      return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
+    }
+
+    // Get user's rated items to exclude + learn preferred types
+    const ratings = await prisma.rating.findMany({
+      where: { userId: session.user.id },
+      select: { itemId: true, score: true, item: { select: { type: true } } },
+    });
+
+    const ratedIds = new Set(ratings.map((r) => r.itemId));
+    const ratingCount = ratings.length;
+
+    if (ratingCount < 5) {
+      return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile });
+    }
+
+    // Find user's most/least rated types
+    const typeCounts: Record<string, number> = {};
+    const highRatedTypes: Record<string, number> = {};
+    for (const r of ratings) {
+      typeCounts[r.item.type] = (typeCounts[r.item.type] || 0) + 1;
+      if (r.score >= 4) {
+        highRatedTypes[r.item.type] = (highRatedTypes[r.item.type] || 0) + 1;
+      }
+    }
+
+    // Get dismissed items
+    const dismissed = await prisma.dismissedItem.findMany({
+      where: { userId: session.user.id },
+      select: { itemId: true },
+    });
+    const dismissedIds = new Set(dismissed.map((d) => d.itemId));
+
+    // Fetch candidate pool
+    const candidates = await prisma.item.findMany({
+      where: {
+        isUpcoming: false,
+        parentItemId: null,
+      },
+      select: ITEM_SELECT,
+    });
+
+    // Filter pool
+    const pool = candidates.filter((c) => {
+      if (ratedIds.has(c.id)) return false;
+      if (dismissedIds.has(c.id)) return false;
+      if (!c.cover || !c.cover.startsWith("http")) return false;
+      if (!c.description || c.description.length < 20) return false;
+      if (!meetsQualityFloor({ ...c, ext: (c.ext || {}) as Record<string, number> })) return false;
+      return true;
+    });
+
+    // Score all candidates by taste similarity
+    const scored = pool.map((c) => {
+      let dimScore = 0;
+      if (c.itemDimensions) {
+        dimScore = tasteSimilarity(tasteProfile, c.itemDimensions as unknown as TasteDimensions);
+      }
+
+      const norm = normalizeScore(c.ext as any, c.type);
+      const quality = norm > 0 ? norm : 0.5;
+
+      // Taste similarity is primary, quality is secondary
+      const score = dimScore * 0.6 + quality * 0.4;
+      return { item: c, score, dimScore };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+
+    // ─── Personal Picks: best taste matches across all types ───
+    const usedIds = new Set<number>();
+    const personalPicks: any[] = [];
+    const typeCountsPP: Record<string, number> = {};
+    const maxPerType = 5;
+
+    for (const s of scored) {
+      if (usedIds.has(s.item.id)) continue;
+      const tc = typeCountsPP[s.item.type] || 0;
+      if (tc >= maxPerType) continue;
+      typeCountsPP[s.item.type] = tc + 1;
+      personalPicks.push(s.item);
+      usedIds.add(s.item.id);
+      if (personalPicks.length >= 20) break;
+    }
+
+    // ─── Discover Across Media: types user hasn't explored much ───
+    const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+    const unexplored = scored.filter((s) => {
+      if (usedIds.has(s.item.id)) return false;
+      // Prefer types user hasn't rated much
+      const typeRateCount = typeCounts[s.item.type] || 0;
+      return typeRateCount < 3 && s.item.type !== topType;
+    });
+
+    const discoverAcrossMedia: any[] = [];
+    const typeCountsDAM: Record<string, number> = {};
+
+    for (const s of unexplored) {
+      const tc = typeCountsDAM[s.item.type] || 0;
+      if (tc >= 4) continue;
+      typeCountsDAM[s.item.type] = tc + 1;
+      discoverAcrossMedia.push(s.item);
+      usedIds.add(s.item.id);
+      if (discoverAcrossMedia.length >= 15) break;
+    }
+
+    // If not enough from unexplored types, fill with high-match different types
+    if (discoverAcrossMedia.length < 8) {
+      for (const s of scored) {
+        if (usedIds.has(s.item.id)) continue;
+        if (s.item.type === topType) continue;
+        const tc = typeCountsDAM[s.item.type] || 0;
+        if (tc >= 4) continue;
+        typeCountsDAM[s.item.type] = tc + 1;
+        discoverAcrossMedia.push(s.item);
+        usedIds.add(s.item.id);
+        if (discoverAcrossMedia.length >= 15) break;
+      }
+    }
+
+    const res = NextResponse.json({
+      personalPicks: personalPicks.map(mapItem),
+      discoverAcrossMedia: discoverAcrossMedia.map(mapItem),
+      tasteProfile,
+    });
+    res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
+    return res;
+  } catch (error: any) {
+    console.error("For You API error:", error);
+    return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
+  }
+}
+
+function mapItem(item: any) {
+  return {
+    id: item.id, title: item.title, type: item.type,
+    genre: item.genre || [], vibes: item.vibes || [],
+    year: item.year, cover: item.cover || "",
+    desc: item.description || "", people: item.people || [],
+    awards: item.awards || [], platforms: item.platforms || [],
+    ext: item.ext || {}, totalEp: item.totalEp || 0,
+  };
+}

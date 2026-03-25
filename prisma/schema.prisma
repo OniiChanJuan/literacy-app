@@ -21,6 +21,7 @@ model User {
   memberNumber  Int?      @unique @map("member_number")
   isPrivate     Boolean   @default(false) @map("is_private")
   termsAcceptedAt DateTime? @map("terms_accepted_at")
+  tasteProfile  Json?     @map("taste_profile")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
 
@@ -33,6 +34,8 @@ model User {
   followers      Follow[]       @relation("followed")
   settings       UserSettings?
   helpfulVotes   ReviewHelpfulVote[]
+  implicitSignals ImplicitSignal[]
+  dismissedItems  DismissedItem[]
 
   @@map("users")
 }
@@ -130,6 +133,7 @@ model Item {
   itemSubtype     String?  @map("item_subtype")
   primaryColor    String?  @map("primary_color")
   secondaryColor  String?  @map("secondary_color")
+  itemDimensions  Json?    @map("item_dimensions")
 
   createdAt       DateTime @default(now()) @map("created_at")
 
@@ -141,6 +145,8 @@ model Item {
   libraryEntries LibraryEntry[]
   franchiseItems FranchiseItem[]
   externalScores ExternalScore[]
+  implicitSignals ImplicitSignal[]
+  dismissedItems  DismissedItem[]
 
   @@index([type])
   @@index([year])
@@ -292,4 +298,32 @@ model Follow {
 
   @@id([followerId, followedId])
   @@map("follows")
+}
+
+model ImplicitSignal {
+  id         Int      @id @default(autoincrement())
+  userId     String   @map("user_id")
+  itemId     Int      @map("item_id")
+  signalType String   @map("signal_type") // page_view, want_to_add, franchise_view, genre_filter
+  value      Float    @default(1)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([userId, signalType])
+  @@index([userId, itemId])
+  @@map("implicit_signals")
+}
+
+model DismissedItem {
+  userId    String   @map("user_id")
+  itemId    Int      @map("item_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemId])
+  @@map("dismissed_items")
 }

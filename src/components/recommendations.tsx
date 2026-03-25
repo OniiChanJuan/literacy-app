@@ -1,30 +1,147 @@
 "use client";
 
+import { useEffect, useState, useCallback } from "react";
 import { Item, TYPES } from "@/lib/data";
-import { useRatings } from "@/lib/ratings-context";
-import { getMoreSameType, getAcrossMedia, getDeepCuts, getSomethingDifferent } from "@/lib/recommendations";
 import Card from "./card";
 import ScrollRow from "./scroll-row";
 
+interface RecommendationData {
+  moreSameType: Item[];
+  acrossMedia: Item[];
+  fansAlsoLoved: Item[];
+  hiddenGems: Item[];
+}
+
+function DismissableCard({ item, onDismiss }: { item: Item; onDismiss: (id: number) => void }) {
+  const [hovered, setHovered] = useState(false);
+  const [fading, setFading] = useState(false);
+
+  const handleDismiss = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setFading(true);
+    // Track dismiss signal
+    fetch("/api/signals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId: item.id, signalType: "dismiss" }),
+    }).catch(() => {});
+    // Also save to dismissed_items for exclusion
+    fetch("/api/dismiss", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId: item.id }),
+    }).catch(() => {});
+    setTimeout(() => onDismiss(item.id), 300);
+  };
+
+  if (fading) {
+    return (
+      <div style={{
+        opacity: 0,
+        transform: "scale(0.9)",
+        transition: "opacity 0.3s, transform 0.3s",
+        minWidth: 160,
+      }} />
+    );
+  }
+
+  return (
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {hovered && (
+        <button
+          onClick={handleDismiss}
+          aria-label="Dismiss recommendation"
+          style={{
+            position: "absolute",
+            top: 6,
+            right: 6,
+            zIndex: 10,
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: "rgba(0,0,0,0.7)",
+            backdropFilter: "blur(4px)",
+            border: "0.5px solid rgba(255,255,255,0.15)",
+            color: "rgba(255,255,255,0.6)",
+            fontSize: 11,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 0,
+            lineHeight: 1,
+          }}
+        >
+          ✕
+        </button>
+      )}
+      <Card item={item} />
+    </div>
+  );
+}
+
 export default function Recommendations({ item }: { item: Item }) {
-  const { ratings } = useRatings();
-  const userRating = ratings[item.id] || 0;
+  const [data, setData] = useState<RecommendationData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [dismissedIds, setDismissedIds] = useState<Set<number>>(new Set());
+
+  const handleDismiss = useCallback((id: number) => {
+    setDismissedIds((prev) => new Set(prev).add(id));
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setData(null);
+    fetch(`/api/recommendations?itemId=${item.id}`)
+      .then((r) => r.json())
+      .then((d) => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
+
+    // Track page view signal (fire-and-forget)
+    fetch("/api/signals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId: item.id, signalType: "page_view" }),
+    }).catch(() => {});
+  }, [item.id]);
 
   const t = TYPES[item.type];
-  const moreSame = getMoreSameType(item);
-  const acrossMedia = getAcrossMedia(item);
 
-  // Third column depends on user rating
-  const liked = userRating >= 4;
-  const disliked = userRating > 0 && userRating <= 2;
-  const thirdItems = disliked ? getSomethingDifferent(item) : getDeepCuts(item);
-  const thirdLabel = disliked ? "Something Different" : "Deep Cuts";
-  const thirdSub = disliked
-    ? "Didn\u2019t vibe? Try something totally different"
-    : liked
-      ? "You loved this \u2014 go deeper"
-      : "Hidden gems with a similar feel";
-  const thirdIcon = disliked ? "\uD83D\uDD00" : "\uD83D\uDC8E";
+  if (loading) {
+    return (
+      <section style={{ marginTop: 48 }}>
+        <h2 style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 24,
+          fontWeight: 800,
+          color: "#fff",
+          marginBottom: 28,
+        }}>
+          Recommendations
+        </h2>
+        <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, padding: "20px 0" }}>
+          Loading recommendations…
+        </div>
+      </section>
+    );
+  }
+
+  if (!data) return null;
+
+  const filterDismissed = (items: Item[]) => items.filter((i) => !dismissedIds.has(i.id));
+
+  const moreSame = filterDismissed(data.moreSameType);
+  const across = filterDismissed(data.acrossMedia);
+  const fans = filterDismissed(data.fansAlsoLoved);
+  const gems = filterDismissed(data.hiddenGems);
+  const hasAny = moreSame.length > 0 || across.length > 0 || fans.length > 0 || gems.length > 0;
+
+  if (!hasAny) return null;
 
   return (
     <section style={{ marginTop: 48 }}>
@@ -45,27 +162,37 @@ export default function Recommendations({ item }: { item: Item }) {
           icon={t.icon}
           iconBg={t.color + "33"}
         >
-          {moreSame.map((i) => <Card key={i.id} item={i} />)}
+          {moreSame.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
         </ScrollRow>
       )}
 
-      {acrossMedia.length > 0 && (
+      {across.length > 0 && (
         <ScrollRow
           label="Across Media"
           sub="Same vibes, different medium"
           icon="🌐"
         >
-          {acrossMedia.map((i) => <Card key={i.id} item={i} />)}
+          {across.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
         </ScrollRow>
       )}
 
-      {thirdItems.length > 0 && (
+      {fans.length > 0 && (
         <ScrollRow
-          label={thirdLabel}
-          sub={thirdSub}
-          icon={thirdIcon}
+          label="Fans Also Loved"
+          sub="Popular picks with a similar feel"
+          icon="❤️"
         >
-          {thirdItems.map((i) => <Card key={i.id} item={i} />)}
+          {fans.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
+        </ScrollRow>
+      )}
+
+      {gems.length > 0 && (
+        <ScrollRow
+          label="Hidden Gems Like This"
+          sub="Underrated finds you might love"
+          icon="💎"
+        >
+          {gems.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
         </ScrollRow>
       )}
     </section>

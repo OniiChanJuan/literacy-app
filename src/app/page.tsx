@@ -186,12 +186,52 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
 
 // ── Taste DNA Bar ───────────────────────────────────────────────────────
 
-function TasteDnaBar() {
+interface TasteProfile {
+  dark_vs_light: number;
+  serious_vs_fun: number;
+  slow_vs_fast: number;
+  complex_vs_simple: number;
+  realistic_vs_fantastical: number;
+  violence_tolerance: number;
+  emotional_intensity: number;
+  world_building_preference: number;
+  character_vs_plot: number;
+  novelty_vs_familiar: number;
+}
+
+const TASTE_LABELS: Record<keyof TasteProfile, [string, string]> = {
+  dark_vs_light: ["Dark & Intense", "Light & Uplifting"],
+  serious_vs_fun: ["Serious Drama", "Fun & Lighthearted"],
+  slow_vs_fast: ["Slow Burn", "Fast-Paced"],
+  complex_vs_simple: ["Complex & Layered", "Straightforward"],
+  realistic_vs_fantastical: ["Fantastical Worlds", "Grounded & Realistic"],
+  violence_tolerance: ["Gritty & Intense", "Mild & Gentle"],
+  emotional_intensity: ["Emotionally Rich", "Light Emotional Tone"],
+  world_building_preference: ["Deep World-Building", "Focused Narratives"],
+  character_vs_plot: ["Character-Driven", "Plot-Driven"],
+  novelty_vs_familiar: ["Hidden Gems", "Popular Favorites"],
+};
+
+function getTasteTags(profile: TasteProfile): string[] {
+  const entries = Object.entries(profile) as [keyof TasteProfile, number][];
+  // Sort by how extreme (far from 0.5) each dimension is
+  const ranked = entries
+    .map(([key, val]) => ({ key, val, extremity: Math.abs(val - 0.5) }))
+    .sort((a, b) => b.extremity - a.extremity);
+
+  // Pick top 5 most extreme dimensions
+  return ranked.slice(0, 5).map(({ key, val }) => {
+    const [highLabel, lowLabel] = TASTE_LABELS[key];
+    return val >= 0.5 ? highLabel : lowLabel;
+  });
+}
+
+function TasteDnaBar({ tasteProfile }: { tasteProfile: TasteProfile | null }) {
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;
   if (ratingCount < 3) return null;
 
-  const topTags = ["Sci-Fi", "Dark", "Epic", "Atmospheric", "Thriller"];
+  const tags = tasteProfile ? getTasteTags(tasteProfile) : [];
 
   return (
     <div style={{
@@ -205,14 +245,16 @@ function TasteDnaBar() {
         <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>Your taste</span>
         <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)" }}>{ratingCount} rated</span>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 8 }}>
-        {topTags.map((tag) => (
-          <span key={tag} style={{
-            fontSize: 9, padding: "3px 8px", borderRadius: 8,
-            background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)",
-          }}>{tag}</span>
-        ))}
-      </div>
+      {tags.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 8 }}>
+          {tags.map((tag) => (
+            <span key={tag} style={{
+              fontSize: 9, padding: "3px 8px", borderRadius: 8,
+              background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)",
+            }}>{tag}</span>
+          ))}
+        </div>
+      )}
       <a href="/library" style={{ fontSize: 10, color: "#E84855", textDecoration: "none" }}>View profile →</a>
     </div>
   );
@@ -223,6 +265,11 @@ function TasteDnaBar() {
 export default function ForYouPage() {
   useScrollRestore();
   const [upcoming, setUpcoming] = useState<UpcomingItem[] | null>(null);
+  const [forYouData, setForYouData] = useState<{
+    personalPicks: Item[];
+    discoverAcrossMedia: Item[];
+    tasteProfile: TasteProfile | null;
+  } | null>(null);
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;
 
@@ -231,6 +278,13 @@ export default function ForYouPage() {
       .then((r) => r.json())
       .then((data) => setUpcoming(Array.isArray(data) ? data : []))
       .catch(() => setUpcoming([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/for-you")
+      .then((r) => r.json())
+      .then((data) => setForYouData(data))
+      .catch(() => setForYouData({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null }));
   }, []);
 
   return (
@@ -257,17 +311,30 @@ export default function ForYouPage() {
       </div>
 
       {/* 2. Taste DNA bar (3+ ratings) */}
-      <TasteDnaBar />
+      <TasteDnaBar tasteProfile={forYouData?.tasteProfile || null} />
 
-      {/* 3. Personalized rows (5+ ratings) */}
-      {ratingCount >= 5 && (
-        <PaginatedRow
-          fetchUrl="/api/catalog?limit=20"
-          label="Because you rated highly"
-          sub="Items matching your top-rated genres and vibes"
+      {/* 3. Personalized rows (5+ ratings) — taste-matched */}
+      {forYouData && forYouData.personalPicks.length > 0 && (
+        <ScrollRow
+          label="Picked for you"
+          sub="Matched to your taste profile across all media"
           icon="✨"
           iconBg="rgba(232,72,85,0.15)"
-        />
+        >
+          {forYouData.personalPicks.map((item) => <Card key={item.id} item={item} />)}
+        </ScrollRow>
+      )}
+
+      {/* 3b. Discover across media — types user hasn't explored */}
+      {forYouData && forYouData.discoverAcrossMedia.length > 0 && (
+        <ScrollRow
+          label="Discover across media"
+          sub="Your taste says you'd love these — in media you haven't tried yet"
+          icon="🌐"
+          iconBg="rgba(49,133,252,0.15)"
+        >
+          {forYouData.discoverAcrossMedia.map((item) => <Card key={item.id} item={item} />)}
+        </ScrollRow>
       )}
 
       {/* 4. Universal curated rows */}

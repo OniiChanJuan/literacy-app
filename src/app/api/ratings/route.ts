@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { isValidScore, isValidRecTag, rateLimit } from "@/lib/validation";
+import { updateTasteProfile, neutralDimensions, type TasteDimensions } from "@/lib/taste-dimensions";
 
 export async function GET() {
   const session = await auth();
@@ -87,6 +88,28 @@ export async function PUT(req: NextRequest) {
       await prisma.libraryEntry.create({
         data: { userId, itemId, status: "completed" },
       }).catch(() => {}); // Ignore if race condition
+    }
+
+    // Update user taste profile based on this rating
+    try {
+      const item = await prisma.item.findUnique({
+        where: { id: itemId },
+        select: { itemDimensions: true },
+      });
+      if (item?.itemDimensions) {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { tasteProfile: true },
+        });
+        const currentProfile = (user?.tasteProfile as unknown as TasteDimensions) || neutralDimensions();
+        const updatedProfile = updateTasteProfile(currentProfile, item.itemDimensions as unknown as TasteDimensions, score);
+        await prisma.user.update({
+          where: { id: userId },
+          data: { tasteProfile: updatedProfile as any },
+        });
+      }
+    } catch {
+      // Non-critical — don't fail the rating if taste update fails
     }
 
     return NextResponse.json({ itemId: rating.itemId, score: rating.score });
