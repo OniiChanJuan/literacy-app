@@ -27,23 +27,39 @@ export async function GET(
   const isOwn = session?.user?.id === id;
   const showLibrary = !user.isPrivate || isOwn;
 
-  // Top rated items — only show if profile is public or own
-  let topRatings: { itemId: number; score: number; recommendTag: string | null }[] = [];
+  // Top rated items — include item data
+  let topRatings: any[] = [];
   if (showLibrary) {
     topRatings = await prisma.rating.findMany({
       where: { userId: id },
       orderBy: { score: "desc" },
       take: 10,
-      select: { itemId: true, score: true, recommendTag: true },
+      select: {
+        itemId: true, score: true, recommendTag: true,
+        item: {
+          select: {
+            id: true, title: true, type: true, genre: true, vibes: true,
+            year: true, cover: true, description: true, totalEp: true, ext: true,
+          },
+        },
+      },
     });
   }
 
-  // Library entries (only if public or own profile)
-  let library: { itemId: number; status: string; progressCurrent: number }[] = [];
+  // Library entries with item data
+  let library: any[] = [];
   if (showLibrary) {
     library = await prisma.libraryEntry.findMany({
       where: { userId: id },
-      select: { itemId: true, status: true, progressCurrent: true },
+      select: {
+        itemId: true, status: true, progressCurrent: true,
+        item: {
+          select: {
+            id: true, title: true, type: true, genre: true, vibes: true,
+            year: true, cover: true, description: true, totalEp: true, ext: true,
+          },
+        },
+      },
     });
   }
 

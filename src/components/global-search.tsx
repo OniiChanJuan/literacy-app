@@ -219,8 +219,13 @@ export default function GlobalSearch() {
           )}
 
           {!loading && results && !hasResults && (
-            <div style={{ padding: "16px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: 12 }}>
-              No results for &ldquo;{query}&rdquo;
+            <div style={{ padding: "16px", textAlign: "center" }}>
+              <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 12, marginBottom: 6 }}>
+                No results for &ldquo;{query}&rdquo;
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.2)", fontSize: 10 }}>
+                Try a different spelling or search by creator
+              </div>
             </div>
           )}
 

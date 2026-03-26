@@ -6,20 +6,54 @@ import { isValidStatus, rateLimit } from "@/lib/validation";
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ entries: {} });
+    return NextResponse.json({ entries: {}, items: {} });
   }
 
   try {
     const rows = await prisma.libraryEntry.findMany({
       where: { userId: session.user.id },
+      include: {
+        item: {
+          select: {
+            id: true,
+            title: true,
+            type: true,
+            genre: true,
+            vibes: true,
+            year: true,
+            cover: true,
+            description: true,
+            totalEp: true,
+            ext: true,
+          },
+        },
+      },
     });
 
     const entries: Record<number, { status: string; progress: number }> = {};
+    const items: Record<number, any> = {};
     for (const r of rows) {
       entries[r.itemId] = { status: r.status, progress: r.progressCurrent };
+      if (r.item) {
+        items[r.itemId] = {
+          id: r.item.id,
+          title: r.item.title,
+          type: r.item.type,
+          genre: r.item.genre || [],
+          vibes: r.item.vibes || [],
+          year: r.item.year,
+          cover: r.item.cover || "",
+          desc: r.item.description || "",
+          totalEp: r.item.totalEp || 0,
+          ext: r.item.ext || {},
+          people: [],
+          awards: [],
+          platforms: [],
+        };
+      }
     }
 
-    return NextResponse.json({ entries });
+    return NextResponse.json({ entries, items });
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }

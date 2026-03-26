@@ -316,8 +316,16 @@ function ExploreContent() {
             ))}
 
             {!hasResults && !searching && (
-              <div style={{ textAlign: "center", padding: "40px 20px", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
-                No matches found. Try a different search.
+              <div style={{ textAlign: "center", padding: "40px 20px" }}>
+                <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, marginBottom: 8 }}>
+                  No results for &ldquo;{search}&rdquo;
+                </div>
+                <div style={{ color: "rgba(255,255,255,0.2)", fontSize: 12, marginBottom: 16 }}>
+                  Try a different spelling or search for the author/creator instead
+                </div>
+                <Link href="/explore" onClick={() => setSearch("")} style={{ fontSize: 12, color: "#E84855", textDecoration: "none" }}>
+                  Browse titles on Explore →
+                </Link>
               </div>
             )}
           </>

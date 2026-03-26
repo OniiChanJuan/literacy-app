@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from "react";
-import type { MediaType } from "./data";
+import type { MediaType, Item } from "./data";
 
 export type LibraryStatus = "completed" | "in_progress" | "want_to" | "dropped";
 
@@ -31,6 +31,7 @@ export function isOngoing(type: MediaType): boolean {
 
 interface LibraryState {
   entries: Record<number, LibraryEntry>;
+  items: Record<number, Item>;
   setStatus: (id: number, status: LibraryStatus | null) => void;
   setProgress: (id: number, progress: number) => void;
 }
@@ -39,20 +40,23 @@ const LibraryContext = createContext<LibraryState | null>(null);
 
 export function LibraryProvider({ children }: { children: ReactNode }) {
   const [entries, setEntries] = useState<Record<number, LibraryEntry>>({});
+  const [items, setItems] = useState<Record<number, Item>>({});
 
-  // Load library entries from database on mount
+  // Load library entries + item data from database on mount
   useEffect(() => {
     fetch("/api/library")
       .then((r) => r.json())
       .then((data) => {
         if (data.entries) {
-          // Convert status strings to LibraryStatus type
           const typed: Record<number, LibraryEntry> = {};
           for (const [id, entry] of Object.entries(data.entries)) {
             const e = entry as { status: string; progress: number };
             typed[Number(id)] = { status: e.status as LibraryStatus, progress: e.progress };
           }
           setEntries(typed);
+        }
+        if (data.items) {
+          setItems(data.items);
         }
       })
       .catch((e) => console.error("Failed to load library:", e));
@@ -97,8 +101,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ entries, setStatus, setProgress }),
-    [entries, setStatus, setProgress]
+    () => ({ entries, items, setStatus, setProgress }),
+    [entries, items, setStatus, setProgress]
   );
 
   return (

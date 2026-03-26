@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { ITEMS, TYPES, TYPE_ORDER, type MediaType } from "@/lib/data";
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import { ITEMS, TYPES, TYPE_ORDER, type MediaType, type Item } from "@/lib/data";
 import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";
 import Card from "@/components/card";
 
@@ -12,8 +13,14 @@ const STATUSES: { key: LibraryStatus; label: string; icon: string; color: string
   { key: "dropped",     label: "Dropped",      icon: "✕", color: "#E84855" },
 ];
 
+// Build a lookup from static ITEMS for fallback
+const STATIC_ITEMS_MAP = new Map<number, Item>();
+for (const item of ITEMS) {
+  STATIC_ITEMS_MAP.set(item.id, item);
+}
+
 export default function LibraryPage() {
-  const { entries } = useLibrary();
+  const { entries, items: dbItems } = useLibrary();
   const [sectionFilters, setSectionFilters] = useState<Record<LibraryStatus, MediaType | "all">>({
     completed: "all",
     in_progress: "all",
@@ -21,17 +28,38 @@ export default function LibraryPage() {
     dropped: "all",
   });
 
+  // Merge static items with DB items — DB items take priority
+  const resolvedItems = useMemo(() => {
+    const result: Record<number, Item> = {};
+    for (const idStr of Object.keys(entries)) {
+      const id = Number(idStr);
+      // Try DB items first (includes all rated/reviewed items), then static fallback
+      if (dbItems[id]) {
+        result[id] = dbItems[id];
+      } else if (STATIC_ITEMS_MAP.has(id)) {
+        result[id] = STATIC_ITEMS_MAP.get(id)!;
+      }
+    }
+    return result;
+  }, [entries, dbItems]);
+
   // Group items by status
-  const grouped: Record<LibraryStatus, typeof ITEMS> = {
-    completed: [],
-    in_progress: [],
-    want_to: [],
-    dropped: [],
-  };
-  for (const item of ITEMS) {
-    const entry = entries[item.id];
-    if (entry) grouped[entry.status].push(item);
-  }
+  const grouped = useMemo(() => {
+    const g: Record<LibraryStatus, Item[]> = {
+      completed: [],
+      in_progress: [],
+      want_to: [],
+      dropped: [],
+    };
+    for (const [idStr, entry] of Object.entries(entries)) {
+      const id = Number(idStr);
+      const item = resolvedItems[id];
+      if (item && g[entry.status]) {
+        g[entry.status].push(item);
+      }
+    }
+    return g;
+  }, [entries, resolvedItems]);
 
   const totalTracked = Object.keys(entries).length;
 
@@ -52,11 +80,24 @@ export default function LibraryPage() {
             fontSize: 13,
             color: "rgba(255,255,255,0.4)",
             maxWidth: 340,
-            margin: "0 auto",
+            margin: "0 auto 20px",
             lineHeight: 1.6,
           }}>
-            Open any item and add it to your library.
+            Rate or track media to add it to your library.
           </div>
+          <Link href="/explore" style={{
+            display: "inline-block",
+            padding: "8px 20px",
+            borderRadius: 10,
+            background: "rgba(232,72,85,0.1)",
+            border: "1px solid rgba(232,72,85,0.3)",
+            color: "#E84855",
+            fontSize: 13,
+            fontWeight: 600,
+            textDecoration: "none",
+          }}>
+            Browse titles →
+          </Link>
         </div>
       </div>
     );

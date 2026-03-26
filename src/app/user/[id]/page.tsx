@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ALL_ITEMS, TYPES, type Item } from "@/lib/data";
+import { TYPES, type Item } from "@/lib/data";
 import Card from "@/components/card";
 
 interface ProfileData {
@@ -18,8 +18,8 @@ interface ProfileData {
     reviewsCount: number;
     trackedCount: number;
   };
-  topRatings: { itemId: number; score: number; recommendTag: string | null }[];
-  library: { itemId: number; status: string; progressCurrent: number }[] | null;
+  topRatings: { itemId: number; score: number; recommendTag: string | null; item?: any }[];
+  library: { itemId: number; status: string; progressCurrent: number; item?: any }[] | null;
   isOwn: boolean;
 }
 
@@ -101,14 +101,24 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const initial = user.name?.[0]?.toUpperCase() || "?";
   const joinDate = new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
-  // Resolve items for top ratings and library
-  const itemMap = new Map<number, Item>(ALL_ITEMS.map((i) => [i.id, i]));
+  // Resolve items from API response (includes DB item data)
+  function toItem(raw: any): Item | null {
+    if (!raw) return null;
+    return {
+      id: raw.id, title: raw.title, type: raw.type,
+      genre: raw.genre || [], vibes: raw.vibes || [],
+      year: raw.year, cover: raw.cover || "",
+      desc: raw.description || raw.desc || "",
+      totalEp: raw.totalEp || 0, ext: raw.ext || {},
+      people: [], awards: [], platforms: [],
+    };
+  }
 
   // Group library by status
   const libraryByStatus: Record<string, Item[]> = {};
   if (library) {
     for (const entry of library) {
-      const item = itemMap.get(entry.itemId);
+      const item = toItem(entry.item);
       if (item) {
         if (!libraryByStatus[entry.status]) libraryByStatus[entry.status] = [];
         libraryByStatus[entry.status].push(item);
@@ -348,26 +358,37 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       </div>
 
       {/* Top Rated */}
-      {topRatings.length > 0 && (
-        <section style={{ marginBottom: 40 }}>
-          <h2 style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: 18,
-            fontWeight: 800,
-            color: "#fff",
-            marginBottom: 16,
-          }}>
-            Top Rated
-          </h2>
+      <section style={{ marginBottom: 40 }}>
+        <h2 style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 18,
+          fontWeight: 800,
+          color: "#fff",
+          marginBottom: 16,
+        }}>
+          Top Rated
+        </h2>
+        {topRatings.length > 0 ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
             {topRatings.map((r) => {
-              const item = itemMap.get(r.itemId);
+              const item = toItem(r.item);
               if (!item) return null;
               return <Card key={item.id} item={item} />;
             })}
           </div>
-        </section>
-      )}
+        ) : (
+          <div style={{
+            padding: "24px",
+            background: "rgba(255,255,255,0.02)",
+            border: "1px solid rgba(255,255,255,0.05)",
+            borderRadius: 14,
+            textAlign: "center",
+          }}>
+            <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 8 }}>No ratings yet</div>
+            <Link href="/explore" style={{ fontSize: 11, color: "#E84855", textDecoration: "none" }}>Start exploring →</Link>
+          </div>
+        )}
+      </section>
 
       {/* Library by status */}
       {library === null ? (
@@ -383,10 +404,10 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             This user&apos;s library is private
           </div>
         </div>
-      ) : (
+      ) : Object.keys(libraryByStatus).length > 0 ? (
         Object.entries(STATUS_META).map(([status, meta]) => {
-          const items = libraryByStatus[status];
-          if (!items || items.length === 0) return null;
+          const statusItems = libraryByStatus[status];
+          if (!statusItems || statusItems.length === 0) return null;
           return (
             <section key={status} style={{ marginBottom: 36 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
@@ -394,14 +415,25 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                 <span style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, color: "#fff" }}>
                   {meta.label}
                 </span>
-                <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{items.length}</span>
+                <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{statusItems.length}</span>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-                {items.map((item) => <Card key={item.id} item={item} />)}
+                {statusItems.map((item) => <Card key={item.id} item={item} />)}
               </div>
             </section>
           );
         })
+      ) : (
+        <div style={{
+          padding: "24px",
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.05)",
+          borderRadius: 14,
+          textAlign: "center",
+        }}>
+          <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 8 }}>No items tracked yet</div>
+          <Link href="/explore" style={{ fontSize: 11, color: "#E84855", textDecoration: "none" }}>Start exploring →</Link>
+        </div>
       )}
     </div>
   );
