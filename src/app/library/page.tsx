@@ -21,12 +21,7 @@ for (const item of ITEMS) {
 
 export default function LibraryPage() {
   const { entries, items: dbItems } = useLibrary();
-  const [sectionFilters, setSectionFilters] = useState<Record<LibraryStatus, MediaType | "all">>({
-    completed: "all",
-    in_progress: "all",
-    want_to: "all",
-    dropped: "all",
-  });
+  const [globalFilter, setGlobalFilter] = useState<MediaType | "all">("all");
 
   // Merge static items with DB items — DB items take priority
   const resolvedItems = useMemo(() => {
@@ -106,7 +101,7 @@ export default function LibraryPage() {
   return (
     <div className="content-width">
       {/* Status summary pills */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 28, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
         {STATUSES.map((s) => {
           const count = grouped[s.key].length;
           return (
@@ -131,16 +126,69 @@ export default function LibraryPage() {
         })}
       </div>
 
+      {/* Global media type filter — applies to ALL sections */}
+      {(() => {
+        const allTypes = new Set<MediaType>();
+        for (const items of Object.values(grouped)) {
+          for (const item of items) allTypes.add(item.type);
+        }
+        if (allTypes.size <= 1) return null;
+        return (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 28 }}>
+            <button
+              onClick={() => setGlobalFilter("all")}
+              style={{
+                background: globalFilter === "all" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
+                color: globalFilter === "all" ? "#fff" : "rgba(255,255,255,0.5)",
+                border: globalFilter === "all" ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
+                borderRadius: 12,
+                padding: "5px 12px",
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              All
+            </button>
+            {TYPE_ORDER.filter((t) => allTypes.has(t)).map((t) => {
+              const typeInfo = TYPES[t];
+              const active = globalFilter === t;
+              return (
+                <button
+                  key={t}
+                  onClick={() => setGlobalFilter(active ? "all" : t)}
+                  style={{
+                    background: active ? typeInfo.color + "25" : "rgba(255,255,255,0.05)",
+                    color: active ? typeInfo.color : "rgba(255,255,255,0.5)",
+                    border: active ? `1px solid ${typeInfo.color}55` : "1px solid transparent",
+                    borderRadius: 12,
+                    padding: "5px 12px",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  <span style={{ fontSize: 11 }}>{typeInfo.icon}</span>
+                  {typeInfo.label}
+                </button>
+              );
+            })}
+          </div>
+        );
+      })()}
+
       {/* Status sections */}
       {STATUSES.map((s) => {
         const items = grouped[s.key];
         if (items.length === 0) return null;
 
-        const filter = sectionFilters[s.key];
-        const filtered = filter === "all" ? items : items.filter((i) => i.type === filter);
+        const filtered = globalFilter === "all" ? items : items.filter((i) => i.type === globalFilter);
 
-        // Which media types exist in this section?
-        const typesInSection = new Set(items.map((i) => i.type));
+        // Hide entire section if global filter results in 0 items
+        if (filtered.length === 0 && globalFilter !== "all") return null;
 
         return (
           <div key={s.key} style={{ marginBottom: 40 }}>
@@ -150,55 +198,8 @@ export default function LibraryPage() {
               <span style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, color: "#fff" }}>
                 {s.label}
               </span>
-              <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{items.length}</span>
+              <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{filtered.length}</span>
             </div>
-
-            {/* Per-section media type filter pills */}
-            {typesInSection.size > 1 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
-                <button
-                  onClick={() => setSectionFilters((p) => ({ ...p, [s.key]: "all" }))}
-                  style={{
-                    background: filter === "all" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
-                    color: filter === "all" ? "#fff" : "rgba(255,255,255,0.5)",
-                    border: filter === "all" ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
-                    borderRadius: 12,
-                    padding: "5px 12px",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  All
-                </button>
-                {TYPE_ORDER.filter((t) => typesInSection.has(t)).map((t) => {
-                  const typeInfo = TYPES[t];
-                  const active = filter === t;
-                  return (
-                    <button
-                      key={t}
-                      onClick={() => setSectionFilters((p) => ({ ...p, [s.key]: active ? "all" : t }))}
-                      style={{
-                        background: active ? typeInfo.color + "25" : "rgba(255,255,255,0.05)",
-                        color: active ? typeInfo.color : "rgba(255,255,255,0.5)",
-                        border: active ? `1px solid ${typeInfo.color}55` : "1px solid transparent",
-                        borderRadius: 12,
-                        padding: "5px 12px",
-                        fontSize: 11,
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                      }}
-                    >
-                      <span style={{ fontSize: 11 }}>{typeInfo.icon}</span>
-                      {typeInfo.label}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
 
             {/* Items grid */}
             <div className="library-grid" style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
@@ -241,7 +242,7 @@ export default function LibraryPage() {
                 color: "var(--text-faint)",
                 textAlign: "center",
               }}>
-                No {filter !== "all" ? TYPES[filter].label.toLowerCase() : "items"} in this section
+                No {globalFilter !== "all" ? TYPES[globalFilter].label.toLowerCase() : "items"} in this section
               </div>
             )}
           </div>
