@@ -199,3 +199,10 @@ body {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+.filter-pill-row {
+  scrollbar-width: none;
+}
+.filter-pill-row::-webkit-scrollbar {
+  display: none;
+}
