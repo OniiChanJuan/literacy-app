@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sanitize, isValidEmail, validateName, rateLimit, getClientIp } from "@/lib/validation";
 
@@ -101,6 +102,24 @@ export async function POST(req: NextRequest) {
         memberNumber: nextMemberNumber,
       },
     });
+
+    // Generate email verification token
+    // TODO: Send verification email using Resend/SendGrid/Vercel Email
+    const verifyToken = crypto.randomUUID();
+    const verifyExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    await prisma.emailVerificationToken.create({
+      data: {
+        token: verifyToken,
+        userId: user.id,
+        expiresAt: verifyExpires,
+      },
+    });
+
+    const baseUrl = process.env.NEXTAUTH_URL || "https://literacy-app.vercel.app";
+    const verifyUrl = `${baseUrl}/verify-email?token=${verifyToken}`;
+    console.log(`\n[Auth] Email verification link for new user ${email.slice(0, 3)}***:`);
+    console.log(`[Auth] Verify link: ${verifyUrl}\n`);
 
     return NextResponse.json({ id: user.id, name: user.name }, { status: 201 });
   } catch (error) {

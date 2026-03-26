@@ -71,14 +71,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           (user as any).needsUsername = true;
         }
 
-        // Assign member number if missing (new Google user)
+        // Assign member number if missing (new Google user) + auto-verify email
         if (existing && !existing.memberNumber) {
           const maxResult = await prisma.user.aggregate({ _max: { memberNumber: true } });
           const next = (maxResult._max.memberNumber || 0) + 1;
           await prisma.user.update({
             where: { email: user.email },
-            data: { memberNumber: next },
+            data: { memberNumber: next, emailVerified: new Date() },
           });
+        }
+
+        // Auto-verify Google users' emails (Google already verified it)
+        if (existing && !existing.username) {
+          // New Google user — emailVerified gets set by the adapter
+        } else if (existing) {
+          // Existing user signing in with Google — ensure email is verified
+          const fullUser = await prisma.user.findUnique({
+            where: { email: user.email },
+            select: { emailVerified: true },
+          });
+          if (fullUser && !fullUser.emailVerified) {
+            await prisma.user.update({
+              where: { email: user.email },
+              data: { emailVerified: new Date() },
+            });
+          }
         }
       }
       return true;

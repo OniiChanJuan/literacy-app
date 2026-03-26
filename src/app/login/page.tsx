@@ -1,16 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect if already logged in
+  if (session?.user) {
+    router.push(callbackUrl);
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,9 +36,13 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid email or password");
+      if (result.error.includes("Too many")) {
+        setError("Too many login attempts. Try again in 15 minutes.");
+      } else {
+        setError("Invalid email or password");
+      }
     } else {
-      router.push("/");
+      router.push(callbackUrl);
       router.refresh();
     }
   };
@@ -57,7 +71,7 @@ export default function LoginPage() {
 
       {/* Google sign-in */}
       <button
-        onClick={() => signIn("google", { callbackUrl: "/" })}
+        onClick={() => signIn("google", { callbackUrl })}
         style={{
           width: "100%",
           padding: "12px 16px",
@@ -129,7 +143,7 @@ export default function LoginPage() {
           />
         </div>
 
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 8 }}>
           <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
             Password
           </label>
@@ -153,13 +167,12 @@ export default function LoginPage() {
         </div>
 
         <div style={{ textAlign: "right", marginBottom: 16 }}>
-          <button
-            type="button"
-            onClick={() => alert("Password reset coming soon — contact support for now.")}
-            style={{ background: "none", border: "none", color: "#3185FC", fontSize: 12, cursor: "pointer", padding: 0 }}
+          <Link
+            href="/forgot-password"
+            style={{ color: "#3185FC", fontSize: 12, textDecoration: "none" }}
           >
             Forgot password?
-          </button>
+          </Link>
         </div>
 
         <button
@@ -189,5 +202,17 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="content-width" style={{ maxWidth: 400, marginTop: 60, textAlign: "center" }}>
+        <p style={{ color: "var(--text-muted)" }}>Loading...</p>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

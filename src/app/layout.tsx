@@ -3,6 +3,7 @@ import { Playfair_Display, DM_Sans } from "next/font/google";
 import Nav from "@/components/nav";
 import Footer from "@/components/footer";
 import CookieBanner from "@/components/cookie-banner";
+import EmailVerificationBanner from "@/components/email-verification-banner";
 import Providers from "@/components/providers";
 import "./globals.css";
 
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body style={{ minHeight: "100vh", background: "#0b0b10", fontFamily: "var(--font-sans)", color: "#fff", margin: 0, padding: 0 }}>
         <Providers>
           <Nav />
+          <EmailVerificationBanner />
           <main style={{ paddingTop: 26, paddingBottom: 80 }}>
             {children}
           </main>

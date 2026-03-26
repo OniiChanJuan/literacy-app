@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -20,6 +20,12 @@ function passwordStrength(pw: string): { level: "weak" | "medium" | "strong"; co
 
 export default function SignupPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (session?.user) router.push("/");
+  }, [session, router]);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken" | "invalid">("idle");
