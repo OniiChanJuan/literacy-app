@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRatings } from "@/lib/ratings-context";
+import Stars from "./stars";
+import RecTag from "./rec-tag";
 
 interface ReviewData {
   id: number;
@@ -62,7 +64,7 @@ function userColor(name: string): string {
 
 export default function CommunityReviews({ itemId, heroColor }: { itemId: number; heroColor?: string }) {
   const { data: session } = useSession();
-  const { ratings, recTags } = useRatings();
+  const { ratings, recTags, rate, setRecTag } = useRatings();
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -293,12 +295,12 @@ export default function CommunityReviews({ itemId, heroColor }: { itemId: number
   const userName = session?.user?.name || "You";
   const userInitial = userName[0]?.toUpperCase() || "?";
 
-  // Disabled reason for tooltip
+  // Clear, visible disabled reason
   const disabledReason =
     currentRating === 0
-      ? "Rate this item first"
+      ? "Select a star rating to post"
       : reviewText.trim().length < 10
-        ? "Write at least 10 characters"
+        ? `Write at least 10 characters (${reviewText.trim().length}/10)`
         : "";
 
   return (
@@ -363,7 +365,8 @@ export default function CommunityReviews({ itemId, heroColor }: { itemId: number
           borderRadius: 10,
           marginBottom: 16,
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+          {/* User info */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
             <div style={{
               width: 28, height: 28, borderRadius: "50%",
               background: userColor(userName),
@@ -372,34 +375,43 @@ export default function CommunityReviews({ itemId, heroColor }: { itemId: number
             }}>
               {userInitial}
             </div>
-            <div style={{ flex: 1 }}>
-              <span style={{ fontSize: 13, fontWeight: 500, color: "#fff" }}>{userName}</span>
-              <span style={{ marginLeft: 10, fontSize: 10, color: "rgba(255,255,255,0.3)" }}>
-                {currentRating > 0 ? (
-                  <>
-                    <span style={{ color: "#f1c40f" }}>{"★".repeat(currentRating)}{"☆".repeat(5 - currentRating)}</span>
-                    {currentRec && <span style={{ marginLeft: 4 }}>{REC_EMOJI[currentRec]}</span>}
-                  </>
-                ) : (
-                  "Rate this item above to unlock reviewing"
-                )}
-              </span>
-            </div>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#fff" }}>{userName}</span>
           </div>
 
+          {/* Inline star rating + rec tag */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 16, marginBottom: 14,
+            padding: "10px 14px",
+            background: currentRating > 0 ? `rgba(${hRgb}, 0.04)` : "rgba(255,255,255,0.02)",
+            border: currentRating > 0 ? `0.5px solid rgba(${hRgb}, 0.1)` : "0.5px solid rgba(255,255,255,0.06)",
+            borderRadius: 8,
+            flexWrap: "wrap",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontWeight: 500 }}>Your rating</span>
+              <Stars rating={currentRating} onRate={(s) => rate(itemId, s)} size={20} />
+            </div>
+            {currentRating > 0 && (
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>|</span>
+                <RecTag value={currentRec} onChange={(tag) => setRecTag(itemId, tag)} />
+              </div>
+            )}
+          </div>
+
+          {/* Textarea */}
           <textarea
             value={reviewText}
             onChange={(e) => {
               if (e.target.value.length <= 10000) setReviewText(e.target.value);
             }}
-            placeholder={currentRating > 0 ? "What did you think? Share your thoughts, reactions, or analysis..." : "Rate this item above to unlock reviewing"}
-            disabled={currentRating === 0}
+            placeholder="What did you think? Share your thoughts, reactions, or analysis..."
             style={{
               width: "100%",
               minHeight: 100,
               maxHeight: 300,
               padding: 12,
-              background: currentRating > 0 ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.01)",
+              background: "rgba(255,255,255,0.04)",
               border: "0.5px solid rgba(255,255,255,0.08)",
               borderRadius: 8,
               color: "#fff",
@@ -409,10 +421,10 @@ export default function CommunityReviews({ itemId, heroColor }: { itemId: number
               outline: "none",
               fontFamily: "'DM Sans', sans-serif",
               boxSizing: "border-box",
-              opacity: currentRating > 0 ? 1 : 0.4,
             }}
           />
 
+          {/* Bottom row */}
           <div style={{
             display: "flex",
             alignItems: "center",
@@ -444,29 +456,40 @@ export default function CommunityReviews({ itemId, heroColor }: { itemId: number
                 <span style={{ fontSize: 11, color: "#E84855" }}>{error}</span>
               )}
 
-              <div style={{ position: "relative" }}>
-                <button
-                  onClick={handleSubmit}
-                  disabled={!canSubmit || submitting}
-                  title={disabledReason}
-                  style={{
-                    padding: "8px 24px",
-                    borderRadius: 8,
-                    border: "none",
-                    background: canSubmit && !submitting ? typeColor : "rgba(255,255,255,0.06)",
-                    color: canSubmit && !submitting ? "#fff" : "rgba(255,255,255,0.2)",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    cursor: canSubmit && !submitting ? "pointer" : "not-allowed",
-                    opacity: canSubmit && !submitting ? 1 : 0.3,
-                    transition: "all 0.15s",
-                  }}
-                >
-                  {submitting ? "Posting..." : "Post Review"}
-                </button>
-              </div>
+              <button
+                onClick={handleSubmit}
+                disabled={!canSubmit || submitting}
+                title={disabledReason}
+                style={{
+                  padding: "8px 24px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: canSubmit && !submitting ? typeColor : "rgba(255,255,255,0.06)",
+                  color: canSubmit && !submitting ? "#fff" : "rgba(255,255,255,0.2)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: canSubmit && !submitting ? "pointer" : "not-allowed",
+                  opacity: canSubmit && !submitting ? 1 : 0.3,
+                  transition: "all 0.15s",
+                }}
+              >
+                {submitting ? "Posting..." : "Post Review"}
+              </button>
             </div>
           </div>
+
+          {/* Disabled reason — visible text, not just tooltip */}
+          {disabledReason && (
+            <div style={{
+              marginTop: 8,
+              fontSize: 11,
+              color: "#E84855",
+              textAlign: "right",
+              opacity: 0.7,
+            }}>
+              {disabledReason}
+            </div>
+          )}
         </div>
       )}
 
