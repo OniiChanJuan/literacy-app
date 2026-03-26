@@ -1,0 +1,13 @@
+{
+  "name": "Literacy",
+  "short_name": "Literacy",
+  "description": "Rate, review, and discover across every medium",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0b10",
+  "theme_color": "#E84855",
+  "icons": [
+    { "src": "/icon", "sizes": "32x32", "type": "image/png" },
+    { "src": "/apple-icon", "sizes": "180x180", "type": "image/png" }
+  ]
+}

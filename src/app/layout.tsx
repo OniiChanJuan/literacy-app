@@ -3,6 +3,7 @@ import { Playfair_Display, DM_Sans } from "next/font/google";
 import Nav from "@/components/nav";
 import Footer from "@/components/footer";
 import CookieBanner from "@/components/cookie-banner";
+import ScrollToTop from "@/components/scroll-to-top";
 import EmailVerificationBanner from "@/components/email-verification-banner";
 import Providers from "@/components/providers";
 import "./globals.css";
@@ -23,7 +24,17 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Literacy — Fluent in every medium",
-  description: "A cross-media review and recommendation platform for movies, TV, books, manga, comics, games, music, and podcasts.",
+  description: "Rate, review, and discover across movies, TV, books, manga, comics, games, music, and podcasts.",
+  manifest: "/manifest.json",
+  openGraph: {
+    siteName: "Literacy",
+    type: "website",
+    title: "Literacy — Fluent in Every Medium",
+    description: "Rate, review, and discover across movies, TV, books, manga, comics, games, music, and podcasts.",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
@@ -42,6 +53,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <CookieBanner />
+          <ScrollToTop />
         </Providers>
       </body>
     </html>

@@ -28,6 +28,49 @@ import DlcSection, { DlcBadge } from "@/components/dlc-section";
 import ItemSubBanner from "@/components/item-sub-banner";
 import { getTopTags, getTagDisplayName } from "@/lib/tags";
 import TagSuggest from "@/components/tag-suggest";
+import ShareButton from "@/components/share-button";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const numId = parseInt(id);
+  let title = "Literacy";
+  let description = "Rate, review, and discover across every medium.";
+  let image: string | undefined;
+
+  // Try static data first
+  if (!isNaN(numId)) {
+    const item = ALL_ITEMS.find((i) => i.id === numId);
+    if (item) {
+      title = `${item.title} — Literacy`;
+      description = (item.desc || "").slice(0, 160).replace(/<[^>]*>/g, "");
+      if (item.cover?.startsWith("http")) image = item.cover;
+    }
+  }
+
+  // Try DB if not in static
+  if (title === "Literacy" && !isNaN(numId)) {
+    try {
+      const dbItem = await prisma.item.findUnique({ where: { id: numId }, select: { title: true, description: true, cover: true } });
+      if (dbItem) {
+        title = `${dbItem.title} — Literacy`;
+        description = (dbItem.description || "").slice(0, 160).replace(/<[^>]*>/g, "");
+        if (dbItem.cover?.startsWith("http")) image = dbItem.cover;
+      }
+    } catch {}
+  }
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      ...(image ? { images: [{ url: image, width: 300, height: 450 }] } : {}),
+    },
+    twitter: { card: image ? "summary_large_image" : "summary" },
+  };
+}
 
 function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null; secondaryColor?: string | null } {
   return {
@@ -490,6 +533,10 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               }}>
                 {item.title}
               </h1>
+
+              <div style={{ marginBottom: 6 }}>
+                <ShareButton title={item.title} />
+              </div>
 
               {/* Tags (weighted) — falls back to vibes if no tags */}
               {(() => {
