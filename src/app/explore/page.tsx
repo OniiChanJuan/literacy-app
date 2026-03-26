@@ -65,18 +65,6 @@ const TYPE_GENRES: Record<string, string[]> = {
   podcast: ["True Crime", "Comedy", "Interview", "Education", "Tech", "History", "Science", "Culture"],
 };
 
-// Approximate total titles available across all connected APIs (static, updated during weekly sync)
-const API_UNIVERSE_COUNTS: Record<string, string> = {
-  movie: "800K+ titles",
-  tv: "160K+ titles",
-  book: "40M+ titles",
-  manga: "65K+ titles",
-  comic: "150K+ titles",
-  game: "200K+ titles",
-  music: "100M+ titles",
-  podcast: "6M+ titles",
-};
-
 type SortOption = "rating" | "popular" | "newest" | "oldest" | "az";
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "rating", label: "Highest rated" },
@@ -338,11 +326,12 @@ function ExploreContent() {
     <div className="content-width">
       <SearchBar search={search} setSearch={setSearch} />
 
-      {/* Media type pills — always visible */}
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 20 }}>
+      {/* Compact media type row */}
+      <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10, marginBottom: 20 }}>
         {TYPE_ORDER.map((k) => {
           const t = TYPES[k];
           const active = selectedType === k;
+          const count = typeCounts[k] || 0;
           return (
             <button
               key={k}
@@ -350,15 +339,19 @@ function ExploreContent() {
                 if (active) { clearAll(); } else { setSelectedType(k); setSelectedGenres([]); setSelectedVibe(null); }
               }}
               style={{
-                padding: "6px 12px", borderRadius: 10, fontSize: 12, fontWeight: 600,
-                cursor: "pointer", transition: "all 0.15s", display: "flex", alignItems: "center", gap: 4,
-                background: active ? `${t.color}22` : "rgba(255,255,255,0.04)",
-                border: active ? `1px solid ${t.color}55` : "1px solid rgba(255,255,255,0.06)",
-                color: active ? t.color : "rgba(255,255,255,0.4)",
+                display: "flex", alignItems: "center", gap: 7,
+                padding: "7px 14px", borderRadius: 8,
+                background: active ? `${t.color}33` : `${t.color}14`,
+                border: active ? `1px solid ${t.color}80` : `0.5px solid ${t.color}2E`,
+                cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                transition: "background 0.15s ease",
               }}
+              onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = `${t.color}1F`; }}
+              onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = active ? `${t.color}33` : `${t.color}14`; }}
             >
-              {t.icon} {t.label}
-              <span style={{ fontSize: 9, opacity: 0.5 }}>{typeCounts[k] || 0}</span>
+              <MediaTypeIcon type={k} color={t.color} />
+              <span style={{ fontSize: 12, fontWeight: 500, color: t.color }}>{t.label}</span>
+              <span style={{ fontSize: 10, color: `${t.color}66` }}>{count}</span>
             </button>
           );
         })}
@@ -473,34 +466,6 @@ function ExploreContent() {
       {/* ── DEFAULT STOREFRONT: no type selected ───────────────────────── */}
       {!selectedType && (
         <>
-          {/* Browse by media type tiles */}
-          <div style={{ marginBottom: 24 }}>
-            <SectionLabel>Browse by media type</SectionLabel>
-            <div className="explore-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
-              {TYPE_ORDER.map((k) => {
-                const t = TYPES[k];
-                const count = typeCounts[k] || 0;
-                return (
-                  <button
-                    key={k}
-                    onClick={() => { setSelectedType(k); setSelectedGenres([]); setSelectedVibe(null); }}
-                    style={{
-                      background: `${t.color}0A`, border: `1px solid ${t.color}33`,
-                      borderRadius: 11, padding: "14px 12px", cursor: "pointer",
-                      textAlign: "left", transition: "all 0.15s",
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = `${t.color}18`; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = `${t.color}0A`; e.currentTarget.style.transform = ""; }}
-                  >
-                    <div style={{ fontSize: 22, marginBottom: 5 }}>{t.icon}</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: t.color, marginBottom: 2 }}>{t.label}</div>
-                    <div style={{ fontSize: 9, color: "var(--text-faint)" }}>{API_UNIVERSE_COUNTS[k] || "Explore all"}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {/* Popular genres */}
           <div style={{ marginBottom: 24 }}>
             <SectionLabel>Popular genres</SectionLabel>
@@ -638,6 +603,30 @@ function SearchBar({ search, setSearch }: { search: string; setSearch: (s: strin
       )}
     </div>
   );
+}
+
+function MediaTypeIcon({ type, color }: { type: string; color: string }) {
+  const props = { width: 14, height: 14, viewBox: "0 0 24 24", fill: "none", stroke: color, strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  switch (type) {
+    case "movie":
+      return <svg {...props}><rect x="2" y="2" width="20" height="20" rx="2" /><line x1="7" y1="2" x2="7" y2="22" /><line x1="17" y1="2" x2="17" y2="22" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="2" y1="7" x2="7" y2="7" /><line x1="2" y1="17" x2="7" y2="17" /><line x1="17" y1="7" x2="22" y2="7" /><line x1="17" y1="17" x2="22" y2="17" /></svg>;
+    case "tv":
+      return <svg {...props}><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>;
+    case "book":
+      return <svg {...props}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>;
+    case "manga":
+      return <svg {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /><line x1="14" y1="11" x2="20" y2="11" /><line x1="14" y1="15" x2="20" y2="15" /></svg>;
+    case "comic":
+      return <svg {...props}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>;
+    case "game":
+      return <svg {...props}><line x1="6" y1="11" x2="10" y2="11" /><line x1="8" y1="9" x2="8" y2="13" /><line x1="15" y1="12" x2="15.01" y2="12" /><line x1="18" y1="10" x2="18.01" y2="10" /><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z" /></svg>;
+    case "music":
+      return <svg {...props}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /><line x1="12" y1="12" x2="12" y2="2" /></svg>;
+    case "podcast":
+      return <svg {...props}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>;
+    default:
+      return null;
+  }
 }
 
 function MediaTypeRow({ type, label, sub }: { type: string; label: string; sub: string }) {
