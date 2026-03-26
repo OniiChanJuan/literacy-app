@@ -28,8 +28,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Check review exists and user isn't voting on own review
-    const review = await prisma.review.findUnique({ where: { id: reviewId } });
+    const review = await prisma.review.findUnique({
+      where: { id: reviewId },
+      include: { item: { select: { title: true } } },
+    });
     if (!review) {
       return NextResponse.json({ error: "Review not found" }, { status: 404 });
     }
@@ -65,9 +67,35 @@ export async function POST(req: NextRequest) {
           data: { helpfulCount: { increment: 1 } },
         }),
       ]);
+
+      // Create notification for the review author (batched message)
+      if (review.userId !== userId) {
+        const itemTitle = review.item?.title || "an item";
+        // Check for existing unread helpful notification for this review
+        const recentNotif = await prisma.notification.findFirst({
+          where: {
+            userId: review.userId,
+            type: "review_helpful",
+            read: false,
+            message: { contains: `review of ${itemTitle}` },
+          },
+        });
+
+        if (!recentNotif) {
+          await prisma.notification.create({
+            data: {
+              userId: review.userId,
+              type: "review_helpful",
+              message: `Someone found your review of ${itemTitle} helpful`,
+            },
+          }).catch(() => {}); // Non-critical
+        }
+      }
+
       return NextResponse.json({ voted: true });
     }
-  } catch {
+  } catch (e) {
+    console.error("POST /api/reviews/helpful error:", e);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

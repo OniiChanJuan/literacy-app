@@ -263,6 +263,8 @@ model Review {
   @@unique([userId, itemId])
   @@index([itemId])
   @@index([userId])
+  @@index([itemId, helpfulCount, createdAt])
+  @@index([itemId, createdAt])
   @@map("reviews")
 }
 

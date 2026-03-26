@@ -33,11 +33,12 @@ export function validateBio(bio: string): { valid: boolean; error?: string; valu
   return { valid: true, value: cleaned };
 }
 
-/** Validate review text (1-5000 chars) */
+/** Validate review text (10-10000 chars) */
 export function validateReviewText(text: string): { valid: boolean; error?: string; value: string } {
   const cleaned = sanitize(text);
   if (!cleaned) return { valid: false, error: "Review text is required", value: "" };
-  if (cleaned.length > 5000) return { valid: false, error: "Review must be 5000 characters or less", value: cleaned };
+  if (cleaned.length < 10) return { valid: false, error: "Review must be at least 10 characters", value: cleaned };
+  if (cleaned.length > 10000) return { valid: false, error: "Review must be 10,000 characters or less", value: cleaned };
   return { valid: true, value: cleaned };
 }
 
