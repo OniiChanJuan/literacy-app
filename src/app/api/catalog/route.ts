@@ -71,7 +71,8 @@ export async function GET(req: NextRequest) {
     }
 
     // Fetch pool of items (larger than needed for ranking/diversity)
-    const poolSize = Math.max(limit * 5, 200);
+    // Scale pool with offset so deep pagination still has items to rank
+    const poolSize = Math.max((offset + limit) * 5, 200);
 
     // ── Critically acclaimed ──────────────────────────────────────────
     if (curated === "top_rated") {

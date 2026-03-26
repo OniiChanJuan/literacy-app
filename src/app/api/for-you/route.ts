@@ -13,11 +13,25 @@ const ITEM_SELECT = {
 
 /**
  * GET /api/for-you — Personalized recommendations based on user's taste profile
- * Returns: { personalPicks: Item[], discoverAcrossMedia: Item[], tasteProfile: TasteDimensions | null }
+ *
+ * Without section param:
+ *   Returns: { personalPicks: Item[], discoverAcrossMedia: Item[], tasteProfile }
+ *   (legacy format for taste profile + initial preview)
+ *
+ * With section param (paginated):
+ *   ?section=personalPicks&limit=20&offset=0
+ *   ?section=discoverAcrossMedia&limit=20&offset=0
+ *   Returns: Item[] (array, compatible with PaginatedRow)
  */
 export async function GET(req: NextRequest) {
   const session = await auth();
+  const { searchParams } = new URL(req.url);
+  const section = searchParams.get("section");
+  const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 100);
+  const offset = parseInt(searchParams.get("offset") || "0");
+
   if (!session?.user?.id) {
+    if (section) return NextResponse.json([]);
     return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
   }
 
@@ -29,6 +43,7 @@ export async function GET(req: NextRequest) {
 
     const tasteProfile = (user?.tasteProfile as unknown as TasteDimensions) || null;
     if (!tasteProfile) {
+      if (section) return NextResponse.json([]);
       return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
     }
 
@@ -42,6 +57,7 @@ export async function GET(req: NextRequest) {
     const ratingCount = ratings.length;
 
     if (ratingCount < 5) {
+      if (section) return NextResponse.json([]);
       return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile });
     }
 
@@ -98,7 +114,67 @@ export async function GET(req: NextRequest) {
 
     scored.sort((a, b) => b.score - a.score);
 
-    // ─── Personal Picks: best taste matches across all types ───
+    // ─── Section-based paginated response ───
+    if (section === "personalPicks") {
+      // Best taste matches across all types, relaxed diversity for deep scroll
+      const personalPicks: any[] = [];
+      const typeCountsPP: Record<string, number> = {};
+      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.2), 8);
+
+      for (const s of scored) {
+        const tc = typeCountsPP[s.item.type] || 0;
+        if (tc >= maxPerType) continue;
+        typeCountsPP[s.item.type] = tc + 1;
+        personalPicks.push(s.item);
+        if (personalPicks.length >= offset + limit) break;
+      }
+
+      const page = personalPicks.slice(offset, offset + limit).map(mapItem);
+      const res = NextResponse.json(page);
+      res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
+      return res;
+    }
+
+    if (section === "discoverAcrossMedia") {
+      const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+      // Collect from underexplored types, then fill with cross-type matches
+      const allDiscover: any[] = [];
+      const typeCountsDAM: Record<string, number> = {};
+      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.25), 6);
+
+      // First pass: truly unexplored types
+      for (const s of scored) {
+        const typeRateCount = typeCounts[s.item.type] || 0;
+        if (typeRateCount >= 3 || s.item.type === topType) continue;
+        const tc = typeCountsDAM[s.item.type] || 0;
+        if (tc >= maxPerType) continue;
+        typeCountsDAM[s.item.type] = tc + 1;
+        allDiscover.push(s.item);
+        if (allDiscover.length >= offset + limit) break;
+      }
+
+      // Fill with cross-type high matches if not enough
+      if (allDiscover.length < offset + limit) {
+        const usedIds = new Set(allDiscover.map((i: any) => i.id));
+        for (const s of scored) {
+          if (usedIds.has(s.item.id)) continue;
+          if (s.item.type === topType) continue;
+          const tc = typeCountsDAM[s.item.type] || 0;
+          if (tc >= maxPerType) continue;
+          typeCountsDAM[s.item.type] = tc + 1;
+          allDiscover.push(s.item);
+          usedIds.add(s.item.id);
+          if (allDiscover.length >= offset + limit) break;
+        }
+      }
+
+      const page = allDiscover.slice(offset, offset + limit).map(mapItem);
+      const res = NextResponse.json(page);
+      res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
+      return res;
+    }
+
+    // ─── Legacy format: both sections + taste profile (no pagination) ───
     const usedIds = new Set<number>();
     const personalPicks: any[] = [];
     const typeCountsPP: Record<string, number> = {};
@@ -158,6 +234,7 @@ export async function GET(req: NextRequest) {
     return res;
   } catch (error: any) {
     console.error("For You API error:", error);
+    if (section) return NextResponse.json([]);
     return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
   }
 }

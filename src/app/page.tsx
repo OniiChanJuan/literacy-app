@@ -482,25 +482,27 @@ export default function ForYouPage() {
       {/* 2. Taste DNA bar (3+ ratings) */}
       <TasteDnaBar tasteProfile={forYouData?.tasteProfile || null} />
 
-      {/* 3. Personalized rows (5+ ratings) — taste-matched */}
-      {forYouData && forYouData.personalPicks.length > 0 && (() => {
-        const filtered = activeFilter ? forYouData.personalPicks.filter(i => i.type === activeFilter) : forYouData.personalPicks;
-        return filtered.length > 0 ? (
-          <ScrollRow label="Picked for you" sub="Matched to your taste profile across all media" icon="✨" iconBg="rgba(232,72,85,0.15)">
-            {filtered.map((item) => <Card key={item.id} item={item} />)}
-          </ScrollRow>
-        ) : null;
-      })()}
+      {/* 3. Personalized rows (5+ ratings) — taste-matched, now with infinite scroll */}
+      {ratingCount >= 5 && (
+        <PaginatedRow
+          fetchUrl="/api/for-you?section=personalPicks&limit=20"
+          label="Picked for you"
+          sub="Matched to your taste profile across all media"
+          icon="✨" iconBg="rgba(232,72,85,0.15)"
+          mediaFilter={activeFilter}
+        />
+      )}
 
-      {/* 3b. Discover across media — types user hasn't explored */}
-      {forYouData && forYouData.discoverAcrossMedia.length > 0 && (() => {
-        const filtered = activeFilter ? forYouData.discoverAcrossMedia.filter(i => i.type === activeFilter) : forYouData.discoverAcrossMedia;
-        return filtered.length > 0 ? (
-          <ScrollRow label="Discover across media" sub="Your taste says you'd love these — in media you haven't tried yet" icon="🌐" iconBg="rgba(49,133,252,0.15)">
-            {filtered.map((item) => <Card key={item.id} item={item} />)}
-          </ScrollRow>
-        ) : null;
-      })()}
+      {/* 3b. Discover across media — types user hasn't explored, now with infinite scroll */}
+      {ratingCount >= 5 && (
+        <PaginatedRow
+          fetchUrl="/api/for-you?section=discoverAcrossMedia&limit=20"
+          label="Discover across media"
+          sub="Your taste says you'd love these — in media you haven't tried yet"
+          icon="🌐" iconBg="rgba(49,133,252,0.15)"
+          mediaFilter={activeFilter}
+        />
+      )}
 
       {/* 4. Universal curated rows */}
       <PaginatedRow
@@ -572,14 +574,6 @@ export default function ForYouPage() {
         ) : null;
       })()}
 
-      {/* Empty state when filter yields no results across all rows */}
-      {activeFilter && forYouData && upcoming !== null && (() => {
-        const hasPersonal = forYouData.personalPicks.some(i => i.type === activeFilter);
-        const hasDiscover = forYouData.discoverAcrossMedia.some(i => i.type === activeFilter);
-        // If we have personalized items or the curated rows will handle it, don't show empty state
-        if (hasPersonal || hasDiscover) return null;
-        return null; // PaginatedRow/LazyRow handle their own visibility
-      })()}
     </div>
   );
 }
