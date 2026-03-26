@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { rateLimit } from "@/lib/validation";
 import { TAG_MAP, tagAppliesTo } from "@/lib/tags";
 
 /**
@@ -8,6 +9,11 @@ import { TAG_MAP, tagAppliesTo } from "@/lib/tags";
  * POST /api/tags — Submit a tag suggestion { itemId, tagSlug }
  */
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`tags:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const search = req.nextUrl.searchParams.get("search") || "";
   const itemType = req.nextUrl.searchParams.get("type") || "";
 
@@ -27,6 +33,10 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (!rateLimit(`tags-post:${session.user.id}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
   const body = await req.json();

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sanitize } from "@/lib/validation";
+import { sanitize, rateLimit } from "@/lib/validation";
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]{3,20}$/;
 
@@ -9,6 +9,10 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (!rateLimit(`set-username:${session.user.id}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
   let body: any;

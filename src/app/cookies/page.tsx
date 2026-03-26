@@ -42,17 +42,22 @@ export default function CookiesPage() {
       <ul style={ul}>
         <li><strong>Advertising cookies:</strong> We do not serve ads and do not use cookies for ad targeting or retargeting</li>
         <li><strong>Third-party tracking cookies:</strong> We do not allow third parties to place tracking cookies on our site</li>
-        <li><strong>Analytics cookies:</strong> We do not use Google Analytics, Mixpanel, Hotjar, or any other cookie-based analytics service</li>
+        <li><strong>Analytics cookies:</strong> We do not use Google Analytics, Mixpanel, Hotjar, or any other cookie-based analytics service. We use Vercel Analytics for basic, anonymous page view tracking — this does not use cookies and does not collect personal information</li>
         <li><strong>Social media tracking cookies:</strong> We do not embed social media widgets that place tracking cookies (such as Facebook Pixel, Twitter tracking, etc.)</li>
         <li><strong>Preference cookies:</strong> We store user preferences (such as theme settings) server-side in your account, not in cookies</li>
       </ul>
+
+      <h2 style={h2Style}>Analytics</h2>
+      <p style={p}>
+        We use Vercel Analytics for basic, anonymous page view tracking. This does not use cookies and does not collect personal information. Vercel Analytics is privacy-respecting and GDPR-compliant by design — it tracks aggregate page views and web performance metrics without identifying individual users.
+      </p>
 
       <h2 style={h2Style}>Legal Basis</h2>
       <p style={p}>
         Our use of cookies is limited to those that are strictly necessary for the operation of the Service. Under GDPR Article 5(3) and the ePrivacy Directive (Directive 2002/58/EC, as amended by Directive 2009/136/EC), strictly necessary cookies do not require user consent.
       </p>
       <p style={p}>
-        Because we only use strictly necessary cookies, we do not display a cookie consent banner. If we ever introduce non-essential cookies in the future, we will update this policy and implement a consent mechanism before doing so.
+        Because we only use strictly necessary cookies (and our analytics solution is cookie-free), we do not display a cookie consent banner. If we ever introduce non-essential cookies in the future, we will update this policy and implement a consent mechanism before doing so.
       </p>
 
       <h2 style={h2Style}>How to Manage Cookies</h2>

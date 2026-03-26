@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getJikanMangaDetails, getJikanAnimeDetails } from "@/lib/jikan";
+import { rateLimit } from "@/lib/validation";
 
 // GET /api/jikan/manga/12345 or /api/jikan/anime/12345
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ type: string; malId: string }> }
 ) {
+  const ip = _req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`jikan:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const { type, malId } = await params;
 
   if (type !== "manga" && type !== "anime") {

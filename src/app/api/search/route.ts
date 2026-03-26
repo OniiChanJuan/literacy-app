@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 import { searchTmdb, tmdbItemId } from "@/lib/tmdb";
 import { searchIgdb, igdbItemId } from "@/lib/igdb";
 import { searchGoogleBooks, gbookItemId } from "@/lib/google-books";
@@ -48,6 +49,11 @@ function computeSearchRank(item: any, query: string): number {
 
 // GET /api/search?q=query&grouped=true
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`search:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const q = req.nextUrl.searchParams.get("q")?.trim();
   const grouped = req.nextUrl.searchParams.get("grouped") === "true";
 

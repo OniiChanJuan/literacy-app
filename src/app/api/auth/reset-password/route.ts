@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 
 /**
  * POST /api/auth/reset-password
  * Validates the reset token and updates the user's password.
  */
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`reset-password:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   let body: any;
   try {
     body = await req.json();

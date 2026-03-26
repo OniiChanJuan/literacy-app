@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 import { detectFranchiseForItem } from "@/lib/dedup";
 import { cleanDescription } from "@/lib/clean-description";
 
@@ -9,6 +10,11 @@ import { cleanDescription } from "@/lib/clean-description";
  * Returns: the newly created (or existing) item with its local database ID
  */
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`import:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   let body: any;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid request" }, { status: 400 }); }
 

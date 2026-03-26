@@ -26,6 +26,7 @@ import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
 import DlcSection, { DlcBadge } from "@/components/dlc-section";
 import ItemSubBanner from "@/components/item-sub-banner";
+import ErrorBoundary from "@/components/error-boundary";
 import { getTopTags, getTagDisplayName } from "@/lib/tags";
 import TagSuggest from "@/components/tag-suggest";
 import ShareButton from "@/components/share-button";
@@ -780,7 +781,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           borderBottom: "0.5px solid rgba(255,255,255,0.04)",
         }}>
           <div className="content-width">
-            <ItemSubBanner item={item} typeColor={t.color} heroColor={primaryColor || t.color} />
+            <ErrorBoundary>
+              <ItemSubBanner item={item} typeColor={t.color} heroColor={primaryColor || t.color} />
+            </ErrorBoundary>
           </div>
         </div>
       )}
@@ -791,7 +794,9 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       <div className="content-width">
         {/* A. Franchise universe */}
         <div style={{ marginTop: 12, marginBottom: 0 }}>
-          <FranchiseUniverse itemId={typeof item.id === "number" ? item.id : parseInt(id)} />
+          <ErrorBoundary>
+            <FranchiseUniverse itemId={typeof item.id === "number" ? item.id : parseInt(id)} />
+          </ErrorBoundary>
         </div>
 
         {/* B. DLC / Expansions */}
@@ -819,12 +824,14 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         {/* D. Community reviews */}
         {!upcoming && (
           <section style={{ marginTop: 16, marginBottom: 20 }}>
-            <CommunityReviews itemId={item.id} heroColor={primaryColor || t.color} />
+            <ErrorBoundary>
+              <CommunityReviews itemId={item.id} heroColor={primaryColor || t.color} />
+            </ErrorBoundary>
           </section>
         )}
 
         {/* E. Recommendations */}
-        {!upcoming && !isExternal && <Recommendations item={item} />}
+        {!upcoming && !isExternal && <ErrorBoundary><Recommendations item={item} /></ErrorBoundary>}
       </div>
 
       {/* Responsive styles */}

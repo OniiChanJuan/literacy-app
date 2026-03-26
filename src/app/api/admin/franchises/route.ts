@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 
 /** GET /api/admin/franchises — List all franchises with their items */
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`admin-franchises:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   try {
     const franchises = await prisma.franchise.findMany({
       orderBy: { createdAt: "desc" },
@@ -25,6 +31,11 @@ export async function GET() {
 
 /** POST /api/admin/franchises — Create a new franchise manually */
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`admin-franchises-post:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   try {
     const body = await req.json();
     const { name, icon, description, itemIds } = body;
@@ -66,6 +77,11 @@ export async function POST(req: NextRequest) {
 
 /** DELETE /api/admin/franchises?id=X — Delete a franchise */
 export async function DELETE(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`admin-franchises-delete:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const id = parseInt(req.nextUrl.searchParams.get("id") || "0");
   if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
 

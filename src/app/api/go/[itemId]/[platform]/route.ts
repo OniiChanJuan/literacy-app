@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { rateLimit } from "@/lib/validation";
 import { buildPlatformUrl } from "@/lib/platform-links";
 
 /**
@@ -12,6 +13,11 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ itemId: string; platform: string }> },
 ) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`go:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const { itemId, platform } = await params;
   const numericId = parseInt(itemId);
 

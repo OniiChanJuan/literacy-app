@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/validation";
 
 const API_KEY = process.env.TMDB_API_KEY || "";
 const BASE = "https://api.themoviedb.org/3";
@@ -13,6 +14,11 @@ interface Provider {
 // GET /api/watch-providers?title=...&year=...&type=movie|tv
 // Or: /api/watch-providers?tmdbId=...&type=movie|tv
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`watch-providers:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const type = req.nextUrl.searchParams.get("type");
   if (type !== "movie" && type !== "tv") {
     return NextResponse.json({ error: "type must be movie or tv" }, { status: 400 });

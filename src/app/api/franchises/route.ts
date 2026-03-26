@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 
 /**
  * GET /api/franchises?itemId=123 — Get franchise data for a specific item
  * Returns the most specific (smallest) franchise + parent universe info
  */
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`franchises:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const itemId = parseInt(req.nextUrl.searchParams.get("itemId") || "0");
   if (!itemId) return NextResponse.json(null);
 

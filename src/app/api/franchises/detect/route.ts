@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 
 /**
  * POST /api/franchises/detect — Real-time franchise detection for a single item.
@@ -11,6 +12,11 @@ import { prisma } from "@/lib/prisma";
  * 3. API-specific relationship data
  */
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`franchises-detect:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   try {
     const { itemId } = await req.json();
     if (!itemId) return NextResponse.json({ error: "itemId required" }, { status: 400 });

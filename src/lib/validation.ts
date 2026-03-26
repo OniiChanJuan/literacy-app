@@ -1,3 +1,6 @@
+// TODO: For production at scale, upgrade to Redis-based rate limiting (e.g. Upstash Redis)
+// since in-memory rate limiting doesn't persist across serverless cold starts.
+
 /**
  * Input validation and sanitization utilities.
  * Used by all API routes that accept user input.

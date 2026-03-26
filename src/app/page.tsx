@@ -8,6 +8,7 @@ import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
+import ErrorBoundary from "@/components/error-boundary";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -480,64 +481,76 @@ export default function ForYouPage() {
       `}</style>
 
       {/* 2. Taste DNA bar (3+ ratings) */}
-      <TasteDnaBar tasteProfile={forYouData?.tasteProfile || null} />
+      <ErrorBoundary>
+        <TasteDnaBar tasteProfile={forYouData?.tasteProfile || null} />
+      </ErrorBoundary>
 
       {/* 3. Personalized rows (5+ ratings) — taste-matched, now with infinite scroll */}
       {ratingCount >= 5 && (
-        <PaginatedRow
-          fetchUrl="/api/for-you?section=personalPicks&limit=20"
-          label="Picked for you"
-          sub="Matched to your taste profile across all media"
-          icon="✨" iconBg="rgba(232,72,85,0.15)"
-          mediaFilter={activeFilter}
-        />
+        <ErrorBoundary>
+          <PaginatedRow
+            fetchUrl="/api/for-you?section=personalPicks&limit=20"
+            label="Picked for you"
+            sub="Matched to your taste profile across all media"
+            icon="✨" iconBg="rgba(232,72,85,0.15)"
+            mediaFilter={activeFilter}
+          />
+        </ErrorBoundary>
       )}
 
       {/* 3b. Discover across media — types user hasn't explored, now with infinite scroll */}
       {ratingCount >= 5 && (
-        <PaginatedRow
-          fetchUrl="/api/for-you?section=discoverAcrossMedia&limit=20"
-          label="Discover across media"
-          sub="Your taste says you'd love these — in media you haven't tried yet"
-          icon="🌐" iconBg="rgba(49,133,252,0.15)"
-          mediaFilter={activeFilter}
-        />
+        <ErrorBoundary>
+          <PaginatedRow
+            fetchUrl="/api/for-you?section=discoverAcrossMedia&limit=20"
+            label="Discover across media"
+            sub="Your taste says you'd love these — in media you haven't tried yet"
+            icon="🌐" iconBg="rgba(49,133,252,0.15)"
+            mediaFilter={activeFilter}
+          />
+        </ErrorBoundary>
       )}
 
       {/* 4. Universal curated rows */}
-      <PaginatedRow
-        fetchUrl="/api/catalog?curated=top_rated&limit=20"
-        label="Critically acclaimed"
-        sub="Highest rated across all media"
-        icon="⭐" iconBg="#D4AF3722" seeAllHref="/explore" delay={0}
-        mediaFilter={activeFilter}
-      />
+      <ErrorBoundary>
+        <PaginatedRow
+          fetchUrl="/api/catalog?curated=top_rated&limit=20"
+          label="Critically acclaimed"
+          sub="Highest rated across all media"
+          icon="⭐" iconBg="#D4AF3722" seeAllHref="/explore" delay={0}
+          mediaFilter={activeFilter}
+        />
+      </ErrorBoundary>
 
-      <PaginatedRow
-        fetchUrl="/api/catalog?curated=popular&limit=20"
-        label="Popular right now"
-        sub="Recent releases making waves"
-        icon="🔥" iconBg="#E8485522" seeAllHref="/explore" delay={200}
-        mediaFilter={activeFilter}
-      />
+      <ErrorBoundary>
+        <PaginatedRow
+          fetchUrl="/api/catalog?curated=popular&limit=20"
+          label="Popular right now"
+          sub="Recent releases making waves"
+          icon="🔥" iconBg="#E8485522" seeAllHref="/explore" delay={200}
+          mediaFilter={activeFilter}
+        />
+      </ErrorBoundary>
 
-      <PaginatedRow
-        fetchUrl="/api/catalog?curated=hidden_gems&limit=20"
-        label="Hidden gems"
-        sub="High scores, low radar"
-        icon="💎" iconBg="#3185FC22" seeAllHref="/explore" delay={400}
-        mediaFilter={activeFilter}
-      />
+      <ErrorBoundary>
+        <PaginatedRow
+          fetchUrl="/api/catalog?curated=hidden_gems&limit=20"
+          label="Hidden gems"
+          sub="High scores, low radar"
+          icon="💎" iconBg="#3185FC22" seeAllHref="/explore" delay={400}
+          mediaFilter={activeFilter}
+        />
+      </ErrorBoundary>
 
       {/* Per-editorial-label rows — these are the curated "best of" per type */}
-      <LazyRow fetchUrl="/api/catalog?type=movie&limit=20" label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore" mediaFilter={activeFilter} />
-      <LazyRow fetchUrl="/api/catalog?type=game&limit=20" label="Most discussed games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore" mediaFilter={activeFilter} />
-      <LazyRow fetchUrl="/api/catalog?type=manga&limit=20" label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore" mediaFilter={activeFilter} />
-      <LazyRow fetchUrl="/api/catalog?type=book&limit=20" label="The community is reading" icon="📖" iconBg="#3185FC22" seeAllHref="/explore" mediaFilter={activeFilter} />
-      <LazyRow fetchUrl="/api/catalog?type=tv&limit=20" label="Top shows" icon="📺" iconBg="#C45BAA22" seeAllHref="/explore" mediaFilter={activeFilter} />
-      <LazyRow fetchUrl="/api/catalog?type=music&limit=20" label="Albums worth hearing" icon="🎵" iconBg="#9B5DE522" seeAllHref="/explore" mediaFilter={activeFilter} />
-      <LazyRow fetchUrl="/api/catalog?type=comic&limit=20" label="Comics to pick up" icon="💥" iconBg="#F9A62022" seeAllHref="/explore" mediaFilter={activeFilter} />
-      <LazyRow fetchUrl="/api/catalog?type=podcast&limit=20" label="Podcasts worth your time" icon="🎙️" iconBg="#00BBF922" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=movie&limit=20" label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=game&limit=20" label="Most discussed games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=manga&limit=20" label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=book&limit=20" label="The community is reading" icon="📖" iconBg="#3185FC22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=tv&limit=20" label="Top shows" icon="📺" iconBg="#C45BAA22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=music&limit=20" label="Albums worth hearing" icon="🎵" iconBg="#9B5DE522" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=comic&limit=20" label="Comics to pick up" icon="💥" iconBg="#F9A62022" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=podcast&limit=20" label="Podcasts worth your time" icon="🎙️" iconBg="#00BBF922" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
 
       {/* Coming Soon — only truly unreleased titles */}
       {(() => {

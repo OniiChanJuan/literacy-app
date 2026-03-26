@@ -6,6 +6,8 @@ import CookieBanner from "@/components/cookie-banner";
 import ScrollToTop from "@/components/scroll-to-top";
 import EmailVerificationBanner from "@/components/email-verification-banner";
 import Providers from "@/components/providers";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -55,6 +57,8 @@ export default function RootLayout({
           <CookieBanner />
           <ScrollToTop />
         </Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

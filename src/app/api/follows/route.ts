@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { rateLimit } from "@/lib/validation";
 
 // GET /api/follows — get current user's following list
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`follows:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ following: [], followers: [] });
@@ -34,6 +40,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  if (!rateLimit(`follows-post:${session.user.id}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const { userId } = await req.json() as { userId: string };
   if (!userId || userId === session.user.id) {
     return NextResponse.json({ error: "Invalid user" }, { status: 400 });
@@ -58,6 +68,10 @@ export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (!rateLimit(`follows-delete:${session.user.id}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
   const { userId } = await req.json() as { userId: string };

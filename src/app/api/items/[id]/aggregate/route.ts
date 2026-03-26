@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 
 // GET /api/items/[id]/aggregate — compute aggregate rating data
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const ip = _req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`item-aggregate:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const { id } = await params;
   const itemId = parseInt(id);
   if (!itemId) {

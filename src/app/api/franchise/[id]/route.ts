@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 
 /**
  * GET /api/franchise/[id] — Get full franchise detail with all items
@@ -8,6 +9,11 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`franchise-detail:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const { id } = await params;
   const franchiseId = parseInt(id);
   if (!franchiseId) {

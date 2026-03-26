@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 import { qualityRank, meetsQualityFloor, normalizeScore, applyDiversity } from "@/lib/ranking";
 
 const ITEM_SELECT = {
@@ -13,6 +14,11 @@ const ITEM_SELECT = {
  * GET /api/catalog — Fetch items with quality ranking + diversity + dedup
  */
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`catalog:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
   const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 100);

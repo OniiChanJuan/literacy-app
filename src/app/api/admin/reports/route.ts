@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/validation";
 
 // Simple admin check — in production, use a proper admin role system
 const ADMIN_EMAILS = ["admin@literacy.app"];
@@ -17,6 +18,11 @@ async function isAdmin() {
  * GET /api/admin/reports — List reports
  */
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`admin-reports:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
@@ -45,6 +51,11 @@ export async function GET(req: NextRequest) {
  * PUT /api/admin/reports — Update report status
  */
 export async function PUT(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  if (!rateLimit(`admin-reports-put:${ip}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+
   if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }

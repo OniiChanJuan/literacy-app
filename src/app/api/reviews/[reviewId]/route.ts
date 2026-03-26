@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { validateReviewText } from "@/lib/validation";
+import { validateReviewText, rateLimit } from "@/lib/validation";
 
 /**
  * PUT /api/reviews/[reviewId] — edit a review (author only)
@@ -13,6 +13,10 @@ export async function PUT(
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (!rateLimit(`review-edit:${session.user.id}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
   const { reviewId: rid } = await params;
@@ -93,6 +97,10 @@ export async function DELETE(
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  if (!rateLimit(`review-delete:${session.user.id}`, 120, 60_000)) {
+    return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
   const { reviewId: rid } = await params;
