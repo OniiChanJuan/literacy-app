@@ -27,6 +27,13 @@ interface ChildFranchise {
   itemCount: number;
 }
 
+interface SubFranchiseGroup {
+  name: string;
+  id: number;
+  icon: string;
+  items: FranchiseItem[];
+}
+
 interface FranchiseDetail {
   id: number;
   name: string;
@@ -38,6 +45,7 @@ interface FranchiseDetail {
   decades: Record<string, FranchiseItem[]>;
   parentFranchise: { id: number; name: string; icon: string } | null;
   childFranchises: ChildFranchise[];
+  subFranchiseItems?: SubFranchiseGroup[];
 }
 
 function isImageUrl(s: string) { return s?.startsWith("http"); }
@@ -56,6 +64,79 @@ function bestScore(ext: Record<string, number>): { display: string; color: strin
     }
   }
   return null;
+}
+
+function ItemCard({ item }: { item: FranchiseItem }) {
+  const t = TYPES[item.type as MediaType] || { color: "#888", icon: "?", label: "?" };
+  const score = bestScore(item.ext || {});
+  const hasImage = isImageUrl(item.cover);
+
+  return (
+    <Link
+      href={`/item/${item.id}`}
+      style={{
+        width: 140, borderRadius: 10, overflow: "hidden",
+        border: "0.5px solid rgba(255,255,255,0.06)",
+        textDecoration: "none", transition: "transform 0.15s",
+        background: "#141419",
+      }}
+    >
+      <div style={{
+        height: 85, position: "relative", overflow: "hidden",
+        background: hasImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+      }}>
+        {hasImage && (
+          <Image
+            src={item.cover}
+            alt={item.title}
+            width={140}
+            height={85}
+            quality={65}
+            sizes="140px"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        )}
+        <div style={{
+          position: "absolute", top: 4, left: 4,
+          background: "rgba(0,0,0,0.6)", color: t.color,
+          fontSize: 8, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
+        }}>
+          {t.icon} {t.label}
+        </div>
+        {item.isUpcoming && (
+          <div style={{
+            position: "absolute", top: 4, right: 4,
+            background: "linear-gradient(135deg, #9B5DE5, #C45BAA)",
+            color: "#fff", fontSize: 7, fontWeight: 700, padding: "2px 6px", borderRadius: 4,
+          }}>
+            Upcoming
+          </div>
+        )}
+      </div>
+      <div style={{ padding: "8px 10px" }}>
+        <div style={{
+          fontSize: 11, fontWeight: 500, color: "#fff",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          marginBottom: 4,
+        }}>
+          {item.title}
+        </div>
+        {score && (
+          <div style={{ fontSize: 9 }}>
+            <span style={{ color: score.color, fontWeight: 600 }}>{score.display}</span>
+          </div>
+        )}
+        {item.genre?.length > 0 && (
+          <div style={{
+            fontSize: 8, color: "var(--text-faint)", marginTop: 3,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          }}>
+            {item.genre.slice(0, 3).join(" · ")}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
 }
 
 export default function FranchisePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -214,116 +295,78 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
         })}
       </div>
 
-      {/* Timeline */}
-      <div style={{ position: "relative", paddingLeft: 24 }}>
-        {/* Timeline line */}
-        <div style={{
-          position: "absolute", left: 8, top: 0, bottom: 0,
-          width: 1, background: "rgba(255,255,255,0.06)",
-        }} />
-
-        {sortedYears.map(([year, items]) => (
-          <div key={year} style={{ marginBottom: 24 }}>
-            {/* Year marker */}
-            <div style={{
-              position: "relative", marginBottom: 12,
-              display: "flex", alignItems: "center", gap: 12,
-            }}>
+      {/* Parent universe: grouped by sub-franchise */}
+      {data.subFranchiseItems && data.subFranchiseItems.length > 0 ? (
+        <div>
+          {data.subFranchiseItems.map((group) => (
+            <div key={group.id || group.name} style={{ marginBottom: 32 }}>
               <div style={{
-                position: "absolute", left: -20,
-                width: 10, height: 10, borderRadius: "50%",
-                background: "rgba(255,255,255,0.1)", border: "2px solid rgba(255,255,255,0.2)",
-              }} />
-              <span style={{
-                fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 700,
-                color: "rgba(255,255,255,0.4)",
+                display: "flex", alignItems: "center", gap: 8, marginBottom: 14,
+                borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 8,
               }}>
-                {year}
-              </span>
-            </div>
-
-            {/* Items for this year */}
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              {items.map((item) => {
-                const t = TYPES[item.type as MediaType] || { color: "#888", icon: "?", label: "?" };
-                const score = bestScore(item.ext || {});
-                const hasImage = isImageUrl(item.cover);
-
-                return (
+                {group.icon && <span style={{ fontSize: 16 }}>{group.icon}</span>}
+                <h2 style={{
+                  fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 700,
+                  color: "rgba(255,255,255,0.8)", margin: 0,
+                }}>
+                  {group.name}
+                </h2>
+                <span style={{ fontSize: 10, color: "var(--text-faint)" }}>
+                  {group.items.length} items
+                </span>
+                {group.id > 0 && (
                   <Link
-                    key={item.id}
-                    href={`/item/${item.id}`}
-                    style={{
-                      width: 140, borderRadius: 10, overflow: "hidden",
-                      border: "0.5px solid rgba(255,255,255,0.06)",
-                      textDecoration: "none", transition: "transform 0.15s",
-                      background: "#141419",
-                    }}
+                    href={`/franchise/${group.id}`}
+                    style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textDecoration: "none", marginLeft: "auto" }}
                   >
-                    {/* Cover */}
-                    <div style={{
-                      height: 85, position: "relative", overflow: "hidden",
-                      background: hasImage ? "#1a1a2e" : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
-                    }}>
-                      {hasImage && (
-                        <Image
-                          src={item.cover}
-                          alt={item.title}
-                          width={140}
-                          height={85}
-                          quality={65}
-                          sizes="140px"
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      )}
-                      <div style={{
-                        position: "absolute", top: 4, left: 4,
-                        background: "rgba(0,0,0,0.6)", color: t.color,
-                        fontSize: 8, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
-                      }}>
-                        {t.icon} {t.label}
-                      </div>
-                      {item.isUpcoming && (
-                        <div style={{
-                          position: "absolute", top: 4, right: 4,
-                          background: "linear-gradient(135deg, #9B5DE5, #C45BAA)",
-                          color: "#fff", fontSize: 7, fontWeight: 700, padding: "2px 6px", borderRadius: 4,
-                        }}>
-                          Upcoming
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Info */}
-                    <div style={{ padding: "8px 10px" }}>
-                      <div style={{
-                        fontSize: 11, fontWeight: 500, color: "#fff",
-                        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                        marginBottom: 4,
-                      }}>
-                        {item.title}
-                      </div>
-                      {score && (
-                        <div style={{ fontSize: 9 }}>
-                          <span style={{ color: score.color, fontWeight: 600 }}>{score.display}</span>
-                        </div>
-                      )}
-                      {item.genre?.length > 0 && (
-                        <div style={{
-                          fontSize: 8, color: "var(--text-faint)", marginTop: 3,
-                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                        }}>
-                          {item.genre.slice(0, 3).join(" · ")}
-                        </div>
-                      )}
-                    </div>
+                    View series →
                   </Link>
-                );
-              })}
+                )}
+              </div>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                {group.items.map((item) => (
+                  <ItemCard key={item.id} item={item} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        /* Timeline view for non-parent franchises */
+        <div style={{ position: "relative", paddingLeft: 24 }}>
+          <div style={{
+            position: "absolute", left: 8, top: 0, bottom: 0,
+            width: 1, background: "rgba(255,255,255,0.06)",
+          }} />
+
+          {sortedYears.map(([year, items]) => (
+            <div key={year} style={{ marginBottom: 24 }}>
+              <div style={{
+                position: "relative", marginBottom: 12,
+                display: "flex", alignItems: "center", gap: 12,
+              }}>
+                <div style={{
+                  position: "absolute", left: -20,
+                  width: 10, height: 10, borderRadius: "50%",
+                  background: "rgba(255,255,255,0.1)", border: "2px solid rgba(255,255,255,0.2)",
+                }} />
+                <span style={{
+                  fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 700,
+                  color: "rgba(255,255,255,0.4)",
+                }}>
+                  {year}
+                </span>
+              </div>
+
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                {items.map((item) => (
+                  <ItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

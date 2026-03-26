@@ -56,6 +56,55 @@ export async function GET(
       decades.get(decade)!.push(item);
     }
 
+    // For parent universes: group items by sub-franchise
+    let subFranchiseItems: { name: string; id: number; icon: string; items: typeof items }[] = [];
+    if (franchise.childFranchises.length > 0) {
+      // Fetch child franchise items
+      const childIds = franchise.childFranchises.map(cf => cf.id);
+      const childLinks = await prisma.franchiseItem.findMany({
+        where: { franchiseId: { in: childIds } },
+        select: { franchiseId: true, itemId: true },
+      });
+      // Map item IDs to child franchises
+      const itemToChild = new Map<number, number>();
+      for (const cl of childLinks) {
+        itemToChild.set(cl.itemId, cl.franchiseId);
+      }
+
+      // Group items by sub-franchise
+      const grouped = new Map<number, typeof items>();
+      const ungrouped: typeof items = [];
+      for (const item of items) {
+        const childId = itemToChild.get(item.id);
+        if (childId) {
+          if (!grouped.has(childId)) grouped.set(childId, []);
+          grouped.get(childId)!.push(item);
+        } else {
+          ungrouped.push(item);
+        }
+      }
+
+      for (const cf of franchise.childFranchises) {
+        const cfItems = grouped.get(cf.id) || [];
+        if (cfItems.length > 0) {
+          subFranchiseItems.push({
+            name: cf.name,
+            id: cf.id,
+            icon: cf.icon || "",
+            items: cfItems.sort((a, b) => a.year - b.year),
+          });
+        }
+      }
+      if (ungrouped.length > 0) {
+        subFranchiseItems.push({
+          name: "Other",
+          id: 0,
+          icon: "",
+          items: ungrouped.sort((a, b) => a.year - b.year),
+        });
+      }
+    }
+
     const res = NextResponse.json({
       id: franchise.id,
       name: franchise.name,
@@ -69,6 +118,7 @@ export async function GET(
       childFranchises: franchise.childFranchises.map((cf) => ({
         id: cf.id, name: cf.name, icon: cf.icon, itemCount: cf._count.items,
       })),
+      subFranchiseItems: subFranchiseItems.length > 0 ? subFranchiseItems : undefined,
     });
     res.headers.set("Cache-Control", "s-maxage=600, stale-while-revalidate=1200");
     return res;
