@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, memo, useCallback } from "react";
-import { TYPES, type Item, type UpcomingItem } from "@/lib/data";
+import { TYPES, type Item, type UpcomingItem, type MediaType } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
 import Card from "@/components/card";
@@ -10,6 +10,78 @@ import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
 import Link from "next/link";
 import Image from "next/image";
+
+// ── Media Type Filter SVG Icons ──────────────────────────────────────────
+const MEDIA_FILTER_ICONS: Record<MediaType, (color: string) => React.ReactNode> = {
+  movie: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <rect x="2" y="2" width="20" height="20" rx="2" />
+      <line x1="7" y1="2" x2="7" y2="22" /><line x1="17" y1="2" x2="17" y2="22" />
+      <line x1="2" y1="7" x2="7" y2="7" /><line x1="2" y1="12" x2="7" y2="12" /><line x1="2" y1="17" x2="7" y2="17" />
+      <line x1="17" y1="7" x2="22" y2="7" /><line x1="17" y1="12" x2="22" y2="12" /><line x1="17" y1="17" x2="22" y2="17" />
+    </svg>
+  ),
+  tv: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <line x1="8" y1="22" x2="16" y2="22" /><line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="7" y1="2" x2="12" y2="5" /><line x1="17" y1="2" x2="12" y2="5" />
+    </svg>
+  ),
+  book: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <path d="M4 4h2v16H4z" /><rect x="6" y="3" width="14" height="18" rx="1" />
+      <line x1="10" y1="7" x2="16" y2="7" /><line x1="10" y1="11" x2="16" y2="11" />
+    </svg>
+  ),
+  manga: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <path d="M2 4c0-1 1-2 2-2h7v20H4c-1 0-2-1-2-2z" />
+      <path d="M11 2h7c1 0 2 1 2 2v16c0 1-1 2-2 2h-7z" />
+      <line x1="5" y1="7" x2="8" y2="7" /><line x1="5" y1="10" x2="8" y2="10" /><line x1="5" y1="13" x2="7" y2="13" />
+      <line x1="14" y1="7" x2="17" y2="7" /><line x1="14" y1="10" x2="17" y2="10" /><line x1="14" y1="13" x2="16" y2="13" />
+    </svg>
+  ),
+  game: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <rect x="2" y="6" width="20" height="12" rx="4" />
+      <circle cx="8" cy="12" r="1.5" /><line x1="8" y1="9" x2="8" y2="15" /><line x1="5" y1="12" x2="11" y2="12" />
+      <circle cx="16" cy="10" r="1" fill={c} /><circle cx="18" cy="12" r="1" fill={c} />
+    </svg>
+  ),
+  music: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" />
+      <line x1="12" y1="2" x2="14" y2="5" />
+    </svg>
+  ),
+  comic: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      <line x1="8" y1="8" x2="16" y2="8" /><line x1="8" y1="12" x2="13" y2="12" />
+    </svg>
+  ),
+  podcast: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <rect x="9" y="2" width="6" height="12" rx="3" />
+      <path d="M5 10a7 7 0 0 0 14 0" /><line x1="12" y1="18" x2="12" y2="22" />
+      <line x1="8" y1="22" x2="16" y2="22" />
+    </svg>
+  ),
+};
+
+function hexToRgb(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r},${g},${b}`;
+}
+
+const MEDIA_FILTER_ORDER: MediaType[] = ["movie", "tv", "book", "manga", "game", "music", "comic", "podcast"];
+const MEDIA_FILTER_LABELS: Record<MediaType, string> = {
+  movie: "Movies", tv: "TV", book: "Books", manga: "Manga",
+  game: "Games", music: "Music", comic: "Comics", podcast: "Podcasts",
+};
 
 interface ReturningSoonItem {
   id: number;
@@ -50,8 +122,8 @@ function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
 
 // ── Paginated Row (with infinite scroll) ────────────────────────────────
 
-function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0 }: {
-  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number;
+function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter }: {
+  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number; mediaFilter?: MediaType | null;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -122,18 +194,21 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   }
   if (!items || items.length === 0) return null;
 
+  const displayed = mediaFilter ? items.filter((i) => i.type === mediaFilter) : items;
+  if (mediaFilter && displayed.length === 0) return null;
+
   return (
     <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
       onLoadMore={hasMore ? handleLoadMore : undefined} loadingMore={loadingMore}>
-      {items.map((item) => <Card key={item.id} item={item} />)}
+      {displayed.map((item) => <Card key={item.id} item={item} />)}
     </ScrollRow>
   );
 }
 
 // ── Lazy Row (loads on scroll into view) ────────────────────────────────
 
-const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref }: {
-  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string;
+const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, mediaFilter }: {
+  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; mediaFilter?: MediaType | null;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [visible, setVisible] = useState(false);
@@ -187,11 +262,14 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
 
   if (items !== null && items.length === 0) return null;
 
+  const displayed = mediaFilter && items ? items.filter((i) => i.type === mediaFilter) : items;
+  if (mediaFilter && displayed && displayed.length === 0) return null;
+
   return (
     <div ref={visRef}>
       <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
         onLoadMore={hasMore ? handleLoadMore : undefined} loadingMore={loadingMore}>
-        {items === null ? <SkeletonRow count={8} /> : items.map((item) => <Card key={item.id} item={item} />)}
+        {displayed === null ? <SkeletonRow count={8} /> : displayed.map((item) => <Card key={item.id} item={item} />)}
       </ScrollRow>
     </div>
   );
@@ -284,6 +362,7 @@ export default function ForYouPage() {
     discoverAcrossMedia: Item[];
     tasteProfile: TasteProfile | null;
   } | null>(null);
+  const [activeFilter, setActiveFilter] = useState<MediaType | null>(null);
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;
 
@@ -314,183 +393,193 @@ export default function ForYouPage() {
 
   return (
     <div className="content-width">
-      {/* 1. Welcome banner */}
-      <div style={{
-        background: "linear-gradient(135deg, rgba(232,72,85,0.08), rgba(49,133,252,0.08), rgba(46,196,182,0.08))",
-        border: "1px solid rgba(255,255,255,0.06)",
-        borderRadius: 18,
-        padding: "28px 24px",
+      {/* 1. Compact banner with media type filters */}
+      <div className="compact-banner" style={{
+        background: "linear-gradient(135deg, rgba(232,72,85,0.06), rgba(155,93,229,0.03))",
+        borderBottom: "0.5px solid rgba(255,255,255,0.04)",
+        padding: "14px 20px",
         marginBottom: 20,
-        textAlign: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 20,
+        borderRadius: 12,
       }}>
-        <div style={{ fontSize: 32, marginBottom: 8 }}>📚 🎬 🎮 🎵</div>
-        <div style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, marginBottom: 5, color: "#fff" }}>
-          Rate anything. Discover everything.
+        {/* Left: tagline */}
+        <div style={{ flexShrink: 0 }}>
+          <div style={{ fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 500, color: "#fff" }}>
+            Rate anything. Discover everything.
+          </div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginTop: 2 }}>
+            Your taste shapes recommendations across every medium
+          </div>
         </div>
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", maxWidth: 380, margin: "0 auto", lineHeight: 1.5 }}>
-          Rate below and Literacy will find connections across media you&apos;d never expect.
-        </div>
-        <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 6 }}>
-          Your taste shapes your recommendations across every medium
+
+        {/* Right: media type filter buttons (desktop grid) */}
+        <div className="media-filter-grid" style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(8, 56px)",
+          gap: 6,
+        }}>
+          {MEDIA_FILTER_ORDER.map((type) => {
+            const color = TYPES[type].color;
+            const isActive = activeFilter === type;
+            return (
+              <button
+                key={type}
+                onClick={() => setActiveFilter(isActive ? null : type)}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 4,
+                  height: 48,
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  background: isActive ? `rgba(${hexToRgb(color)}, 0.2)` : `rgba(${hexToRgb(color)}, 0.08)`,
+                  border: isActive ? `1px solid rgba(${hexToRgb(color)}, 0.5)` : `0.5px solid rgba(${hexToRgb(color)}, 0.2)`,
+                  transition: "background 150ms ease",
+                  padding: 0,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.12)`;
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.08)`;
+                }}
+              >
+                {MEDIA_FILTER_ICONS[type](color)}
+                <span style={{ fontSize: 9, color, lineHeight: 1 }}>{MEDIA_FILTER_LABELS[type]}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
+
+      {/* Responsive styles for filter grid */}
+      <style>{`
+        @media (max-width: 768px) {
+          .compact-banner {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+          }
+          .media-filter-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+            width: 100% !important;
+          }
+          .media-filter-grid button {
+            height: 42px !important;
+          }
+          .media-filter-grid svg {
+            width: 14px !important;
+            height: 14px !important;
+          }
+        }
+      `}</style>
 
       {/* 2. Taste DNA bar (3+ ratings) */}
       <TasteDnaBar tasteProfile={forYouData?.tasteProfile || null} />
 
       {/* 3. Personalized rows (5+ ratings) — taste-matched */}
-      {forYouData && forYouData.personalPicks.length > 0 && (
-        <ScrollRow
-          label="Picked for you"
-          sub="Matched to your taste profile across all media"
-          icon="✨"
-          iconBg="rgba(232,72,85,0.15)"
-        >
-          {forYouData.personalPicks.map((item) => <Card key={item.id} item={item} />)}
-        </ScrollRow>
-      )}
+      {forYouData && forYouData.personalPicks.length > 0 && (() => {
+        const filtered = activeFilter ? forYouData.personalPicks.filter(i => i.type === activeFilter) : forYouData.personalPicks;
+        return filtered.length > 0 ? (
+          <ScrollRow label="Picked for you" sub="Matched to your taste profile across all media" icon="✨" iconBg="rgba(232,72,85,0.15)">
+            {filtered.map((item) => <Card key={item.id} item={item} />)}
+          </ScrollRow>
+        ) : null;
+      })()}
 
       {/* 3b. Discover across media — types user hasn't explored */}
-      {forYouData && forYouData.discoverAcrossMedia.length > 0 && (
-        <ScrollRow
-          label="Discover across media"
-          sub="Your taste says you'd love these — in media you haven't tried yet"
-          icon="🌐"
-          iconBg="rgba(49,133,252,0.15)"
-        >
-          {forYouData.discoverAcrossMedia.map((item) => <Card key={item.id} item={item} />)}
-        </ScrollRow>
-      )}
+      {forYouData && forYouData.discoverAcrossMedia.length > 0 && (() => {
+        const filtered = activeFilter ? forYouData.discoverAcrossMedia.filter(i => i.type === activeFilter) : forYouData.discoverAcrossMedia;
+        return filtered.length > 0 ? (
+          <ScrollRow label="Discover across media" sub="Your taste says you'd love these — in media you haven't tried yet" icon="🌐" iconBg="rgba(49,133,252,0.15)">
+            {filtered.map((item) => <Card key={item.id} item={item} />)}
+          </ScrollRow>
+        ) : null;
+      })()}
 
       {/* 4. Universal curated rows */}
       <PaginatedRow
         fetchUrl="/api/catalog?curated=top_rated&limit=20"
         label="Critically acclaimed"
         sub="Highest rated across all media"
-        icon="⭐"
-        iconBg="#D4AF3722"
-        seeAllHref="/explore"
-        delay={0}
+        icon="⭐" iconBg="#D4AF3722" seeAllHref="/explore" delay={0}
+        mediaFilter={activeFilter}
       />
 
       <PaginatedRow
         fetchUrl="/api/catalog?curated=popular&limit=20"
         label="Popular right now"
         sub="Recent releases making waves"
-        icon="🔥"
-        iconBg="#E8485522"
-        seeAllHref="/explore"
-        delay={200}
+        icon="🔥" iconBg="#E8485522" seeAllHref="/explore" delay={200}
+        mediaFilter={activeFilter}
       />
 
       <PaginatedRow
         fetchUrl="/api/catalog?curated=hidden_gems&limit=20"
         label="Hidden gems"
         sub="High scores, low radar"
-        icon="💎"
-        iconBg="#3185FC22"
-        seeAllHref="/explore"
-        delay={400}
+        icon="💎" iconBg="#3185FC22" seeAllHref="/explore" delay={400}
+        mediaFilter={activeFilter}
       />
 
       {/* Per-editorial-label rows — these are the curated "best of" per type */}
-      <LazyRow
-        fetchUrl="/api/catalog?type=movie&limit=20"
-        label="Highest reviewed movies"
-        icon="🎬"
-        iconBg="#E8485522"
-        seeAllHref="/explore"
-      />
-
-      <LazyRow
-        fetchUrl="/api/catalog?type=game&limit=20"
-        label="Most discussed games"
-        icon="🎮"
-        iconBg="#2EC4B622"
-        seeAllHref="/explore"
-      />
-
-      <LazyRow
-        fetchUrl="/api/catalog?type=manga&limit=20"
-        label="Top manga"
-        icon="🗾"
-        iconBg="#FF6B6B22"
-        seeAllHref="/explore"
-      />
-
-      <LazyRow
-        fetchUrl="/api/catalog?type=book&limit=20"
-        label="The community is reading"
-        icon="📖"
-        iconBg="#3185FC22"
-        seeAllHref="/explore"
-      />
-
-      <LazyRow
-        fetchUrl="/api/catalog?type=tv&limit=20"
-        label="Top shows"
-        icon="📺"
-        iconBg="#C45BAA22"
-        seeAllHref="/explore"
-      />
-
-      <LazyRow
-        fetchUrl="/api/catalog?type=music&limit=20"
-        label="Albums worth hearing"
-        icon="🎵"
-        iconBg="#9B5DE522"
-        seeAllHref="/explore"
-      />
-
-      <LazyRow
-        fetchUrl="/api/catalog?type=comic&limit=20"
-        label="Comics to pick up"
-        icon="💥"
-        iconBg="#F9A62022"
-        seeAllHref="/explore"
-      />
-
-      <LazyRow
-        fetchUrl="/api/catalog?type=podcast&limit=20"
-        label="Podcasts worth your time"
-        icon="🎙️"
-        iconBg="#00BBF922"
-        seeAllHref="/explore"
-      />
+      <LazyRow fetchUrl="/api/catalog?type=movie&limit=20" label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <LazyRow fetchUrl="/api/catalog?type=game&limit=20" label="Most discussed games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <LazyRow fetchUrl="/api/catalog?type=manga&limit=20" label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <LazyRow fetchUrl="/api/catalog?type=book&limit=20" label="The community is reading" icon="📖" iconBg="#3185FC22" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <LazyRow fetchUrl="/api/catalog?type=tv&limit=20" label="Top shows" icon="📺" iconBg="#C45BAA22" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <LazyRow fetchUrl="/api/catalog?type=music&limit=20" label="Albums worth hearing" icon="🎵" iconBg="#9B5DE522" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <LazyRow fetchUrl="/api/catalog?type=comic&limit=20" label="Comics to pick up" icon="💥" iconBg="#F9A62022" seeAllHref="/explore" mediaFilter={activeFilter} />
+      <LazyRow fetchUrl="/api/catalog?type=podcast&limit=20" label="Podcasts worth your time" icon="🎙️" iconBg="#00BBF922" seeAllHref="/explore" mediaFilter={activeFilter} />
 
       {/* Coming Soon — only truly unreleased titles */}
-      <ScrollRow
-        label="Coming soon"
-        sub={upcoming === null ? "" : `${upcoming.length} upcoming`}
-        icon="📅"
-        iconBg="rgba(155,93,229,0.15)"
-      >
-        {upcoming === null ? (
-          <SkeletonRow count={8} />
-        ) : upcoming.length >= 1 ? (
-          upcoming.map((item) => (
-            <UpcomingCard key={`upcoming-${item.id}`} item={item} />
-          ))
-        ) : (
-          <div style={{ padding: "20px", color: "var(--text-faint)", fontSize: 12 }}>
-            No upcoming releases
-          </div>
-        )}
-      </ScrollRow>
+      {(() => {
+        const filteredUpcoming = activeFilter && upcoming ? upcoming.filter(i => i.type === activeFilter) : upcoming;
+        if (activeFilter && filteredUpcoming && filteredUpcoming.length === 0) return null;
+        return (
+          <ScrollRow
+            label="Coming soon"
+            sub={filteredUpcoming === null ? "" : `${filteredUpcoming.length} upcoming`}
+            icon="📅" iconBg="rgba(155,93,229,0.15)"
+          >
+            {filteredUpcoming === null ? (
+              <SkeletonRow count={8} />
+            ) : filteredUpcoming.length >= 1 ? (
+              filteredUpcoming.map((item) => (
+                <UpcomingCard key={`upcoming-${item.id}`} item={item} />
+              ))
+            ) : (
+              <div style={{ padding: "20px", color: "var(--text-faint)", fontSize: 12 }}>No upcoming releases</div>
+            )}
+          </ScrollRow>
+        );
+      })()}
 
       {/* Returning Soon — existing shows with upcoming new seasons */}
-      {returningSoon.length > 0 && (
-        <ScrollRow
-          label="Returning soon"
-          sub="New seasons of shows you know"
-          icon="📺"
-          iconBg="rgba(196,91,170,0.15)"
-        >
-          {returningSoon.map((show) => (
-            <ReturningSoonCard key={`returning-${show.id}`} show={show} />
-          ))}
-        </ScrollRow>
-      )}
+      {(() => {
+        if (activeFilter && activeFilter !== "tv") return null;
+        return returningSoon.length > 0 ? (
+          <ScrollRow label="Returning soon" sub="New seasons of shows you know" icon="📺" iconBg="rgba(196,91,170,0.15)">
+            {returningSoon.map((show) => (
+              <ReturningSoonCard key={`returning-${show.id}`} show={show} />
+            ))}
+          </ScrollRow>
+        ) : null;
+      })()}
+
+      {/* Empty state when filter yields no results across all rows */}
+      {activeFilter && forYouData && upcoming !== null && (() => {
+        const hasPersonal = forYouData.personalPicks.some(i => i.type === activeFilter);
+        const hasDiscover = forYouData.discoverAcrossMedia.some(i => i.type === activeFilter);
+        // If we have personalized items or the curated rows will handle it, don't show empty state
+        if (hasPersonal || hasDiscover) return null;
+        return null; // PaginatedRow/LazyRow handle their own visibility
+      })()}
     </div>
   );
 }
