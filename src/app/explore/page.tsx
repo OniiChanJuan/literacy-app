@@ -468,7 +468,7 @@ function ExploreContent() {
           {/* Browse by media type tiles */}
           <div style={{ marginBottom: 24 }}>
             <SectionLabel>Browse by media type</SectionLabel>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+            <div className="explore-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
               {TYPE_ORDER.map((k) => {
                 const t = TYPES[k];
                 const count = typeCounts[k] || 0;

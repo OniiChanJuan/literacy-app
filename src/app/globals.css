@@ -100,3 +100,102 @@ body {
   background-repeat: no-repeat;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+
+/* ── Mobile Responsive ──────────────────────────────────────── */
+
+/* Nav mobile: hide labels on very small screens */
+@media (max-width: 480px) {
+  .nav-tab-label {
+    display: none;
+  }
+  .nav-tab-icon {
+    font-size: 16px;
+  }
+}
+
+/* Cards: slightly narrower on mobile */
+@media (max-width: 768px) {
+  .card-mobile {
+    flex: 0 0 130px !important;
+    width: 130px !important;
+  }
+  .card-mobile .card-cover {
+    height: 182px !important;
+  }
+}
+
+/* Explore page: 2-column grid on mobile */
+@media (max-width: 768px) {
+  .explore-type-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .explore-genre-pill {
+    padding: 3px 6px !important;
+    font-size: 10px !important;
+  }
+  .explore-vibe-pill {
+    padding: 3px 8px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* Library page: 2-column wrapping grid on mobile */
+@media (max-width: 768px) {
+  .library-grid {
+    gap: 10px !important;
+  }
+}
+
+/* Item detail page: additional mobile tweaks */
+@media (max-width: 768px) {
+  .hero-cover {
+    width: 80px !important;
+    max-width: 80px !important;
+  }
+  .hero-title {
+    font-size: 18px !important;
+  }
+  .item-sub-banner-layout {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+}
+
+/* Touch targets: minimum 44px for interactive elements */
+@media (max-width: 768px) {
+  .touch-target {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Search dropdown: full width on mobile */
+@media (max-width: 768px) {
+  .search-dropdown {
+    width: calc(100vw - 32px) !important;
+    right: -60px !important;
+  }
+  .search-input-expanded {
+    width: 200px !important;
+  }
+}
+
+/* Skeleton pulse animation (enhanced) */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: rgba(255,255,255,0.04);
+}
+
+/* Fade-in transition for loaded content */
+.fade-in {
+  animation: fadeIn 200ms ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

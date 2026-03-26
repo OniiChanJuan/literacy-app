@@ -131,7 +131,7 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
   const statusButtons = showAllStatuses ? ALL_STATUSES : STATUSES;
 
   return (
-    <div style={{
+    <div className="item-sub-banner-layout" style={{
       padding: "10px 0",
       display: "flex",
       alignItems: "center",

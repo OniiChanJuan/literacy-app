@@ -160,7 +160,7 @@ export default function LibraryPage() {
             )}
 
             {/* Items grid */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+            <div className="library-grid" style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
               {filtered.map((item) => {
                 const entry = entries[item.id];
                 return (

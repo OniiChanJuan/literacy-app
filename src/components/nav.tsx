@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -20,6 +20,7 @@ export default function Nav() {
   const { data: session } = useSession();
   const { entries } = useLibrary();
   const trackedCount = Object.keys(entries).length;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const initial = session?.user?.name?.[0]?.toUpperCase() || "?";
 
@@ -31,14 +32,26 @@ export default function Nav() {
       top: 0,
       zIndex: 50,
     }}>
+      <style>{`
+        .nav-logo-text { font-size: 32px; }
+        .nav-tabs { display: flex; }
+        .nav-hamburger { display: none; }
+        .nav-tab-link { min-height: auto; }
+        @media (max-width: 640px) {
+          .nav-logo-text { font-size: 24px !important; }
+          .nav-tabs { display: none !important; }
+          .nav-hamburger { display: flex !important; }
+          .nav-tab-link { min-height: 44px; }
+        }
+      `}</style>
+
       {/* Top row: logo + right side */}
       <div className="content-width" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 28, marginBottom: 26 }}>
 
         {/* Logo */}
         <div>
-          <h1 style={{
+          <h1 className="nav-logo-text" style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: 32,
             fontWeight: 900,
             letterSpacing: "-0.5px",
             lineHeight: 1,
@@ -59,7 +72,7 @@ export default function Nav() {
           </div>
         </div>
 
-        {/* Right side: search + auth */}
+        {/* Right side: search + auth + hamburger */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <Suspense fallback={null}><GlobalSearch /></Suspense>
           {session?.user ? (
@@ -86,17 +99,36 @@ export default function Nav() {
               Sign In
             </Link>
           )}
+          {/* Hamburger button — visible only on mobile */}
+          <button
+            className="nav-hamburger"
+            onClick={() => setMobileMenuOpen(true)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#fff",
+              fontSize: 24,
+              cursor: "pointer",
+              padding: 4,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            aria-label="Open navigation menu"
+          >
+            ☰
+          </button>
         </div>
       </div>
 
-      {/* Tab bar */}
-      <div className="content-width" style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingTop: 0, paddingBottom: 0 }}>
+      {/* Tab bar — hidden on mobile via className */}
+      <div className="nav-tabs content-width" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingTop: 0, paddingBottom: 0 }}>
         {tabs.map((t) => {
           const active = pathname === t.href;
           return (
             <Link
               key={t.id}
               href={t.href}
+              className="nav-tab-link"
               style={{
                 background: "none",
                 border: "none",
@@ -120,6 +152,86 @@ export default function Nav() {
           );
         })}
       </div>
+
+      {/* Mobile slide-out panel */}
+      {mobileMenuOpen && (
+        <>
+          {/* Backdrop overlay */}
+          <div
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(0,0,0,0.5)",
+              zIndex: 199,
+            }}
+          />
+          {/* Slide-out panel */}
+          <nav
+            className="nav-mobile-panel"
+            style={{
+              position: "fixed",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: 260,
+              background: "#141419",
+              borderLeft: "1px solid rgba(255,255,255,0.08)",
+              zIndex: 200,
+              display: "flex",
+              flexDirection: "column",
+              paddingTop: 56,
+            }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                position: "absolute",
+                top: 16,
+                right: 16,
+                background: "none",
+                border: "none",
+                color: "#fff",
+                fontSize: 22,
+                cursor: "pointer",
+                padding: 4,
+              }}
+              aria-label="Close navigation menu"
+            >
+              ✕
+            </button>
+            {tabs.map((t) => {
+              const active = pathname === t.href;
+              return (
+                <Link
+                  key={t.id}
+                  href={t.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    padding: "16px 24px",
+                    fontSize: 15,
+                    fontWeight: active ? 700 : 500,
+                    color: active ? "#fff" : "rgba(255,255,255,0.5)",
+                    borderBottom: "1px solid rgba(255,255,255,0.06)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    textDecoration: "none",
+                    transition: "color 0.15s",
+                  }}
+                >
+                  <span style={{ fontSize: 16 }}>{t.icon}</span>
+                  {t.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </>
+      )}
     </header>
   );
 }

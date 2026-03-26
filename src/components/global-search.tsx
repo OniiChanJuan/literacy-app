@@ -141,6 +141,7 @@ export default function GlobalSearch() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") handleSubmit(); }}
+            className="search-input-expanded"
             style={{
               width: 280,
               padding: "8px 32px 8px 34px",
@@ -189,7 +190,7 @@ export default function GlobalSearch() {
 
       {/* Dropdown results */}
       {open && query.trim().length >= 2 && (
-        <div style={{
+        <div className="search-dropdown" style={{
           position: "absolute",
           top: "calc(100% + 8px)",
           right: 0,
@@ -204,8 +205,16 @@ export default function GlobalSearch() {
           padding: "6px 0",
         }}>
           {loading && !results && (
-            <div style={{ padding: "16px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: 12 }}>
-              Searching...
+            <div style={{ padding: "8px 0" }}>
+              {[1, 2, 3].map((i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 14px" }}>
+                  <div className="skeleton-shimmer" style={{ width: 30, height: 42, borderRadius: 4, background: "rgba(255,255,255,0.04)", flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <div className="skeleton-shimmer" style={{ height: 10, width: `${60 + i * 10}%`, borderRadius: 3, marginBottom: 6, background: "rgba(255,255,255,0.06)" }} />
+                    <div className="skeleton-shimmer" style={{ height: 8, width: "30%", borderRadius: 3, background: "rgba(255,255,255,0.04)" }} />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

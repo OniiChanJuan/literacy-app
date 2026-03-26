@@ -409,7 +409,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             minHeight: 180,
           }}>
             {/* Left — Cover art (fills full hero height) */}
-            <div style={{ flexShrink: 0, width: 120, maxWidth: 120, position: "relative" }}>
+            <div className="hero-cover" style={{ flexShrink: 0, width: 120, maxWidth: 120, position: "relative" }}>
               {hasImageCover ? (
                 <Image
                   src={item.cover}
@@ -475,7 +475,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               </div>
 
               {/* Title */}
-              <h1 style={{
+              <h1 className="hero-title" style={{
                 fontFamily: "var(--font-serif)",
                 fontSize: 22,
                 fontWeight: 500,
