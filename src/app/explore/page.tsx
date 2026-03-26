@@ -173,7 +173,36 @@ function ExploreContent() {
     setSelectedGenres((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]);
   };
 
-  const clearAll = () => { setSelectedType(null); setSelectedGenres([]); setSelectedVibe(null); setSort("rating"); };
+  // For the default storefront: single exclusive filter across genre/vibe/tag
+  const selectGenreExclusive = (g: string) => {
+    const isActive = selectedGenres.length === 1 && selectedGenres[0] === g;
+    setSelectedGenres(isActive ? [] : [g]);
+    setSelectedVibe(null);
+    setSelectedTag(null);
+  };
+  const selectVibeExclusive = (v: string) => {
+    const isActive = selectedVibe === v;
+    setSelectedVibe(isActive ? null : v);
+    setSelectedGenres([]);
+    setSelectedTag(null);
+  };
+  const selectTagExclusive = (t: string) => {
+    const isActive = selectedTag === t;
+    setSelectedTag(isActive ? null : t);
+    setSelectedGenres([]);
+    setSelectedVibe(null);
+  };
+  const clearFilters = () => { setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); };
+
+  const clearAll = () => { setSelectedType(null); setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); setSort("rating"); };
+
+  // Active filter label for storefront view
+  const activeFilterLabel = useMemo(() => {
+    if (selectedGenres.length > 0) return selectedGenres.join(", ");
+    if (selectedVibe && VIBES[selectedVibe]) return VIBES[selectedVibe].label;
+    if (selectedTag) return getTagDisplayName(selectedTag);
+    return null;
+  }, [selectedGenres, selectedVibe, selectedTag]);
 
   const typeGenres = selectedType ? (TYPE_GENRES[selectedType] || ALL_GENRES.slice(0, 12)) : [];
   const typeColor = selectedType ? TYPES[selectedType].color : "#fff";
@@ -336,7 +365,7 @@ function ExploreContent() {
             <button
               key={k}
               onClick={() => {
-                if (active) { clearAll(); } else { setSelectedType(k); setSelectedGenres([]); setSelectedVibe(null); }
+                if (active) { clearAll(); } else { setSelectedType(k); setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); }
               }}
               style={{
                 display: "flex", alignItems: "center", gap: 7,
@@ -470,21 +499,25 @@ function ExploreContent() {
           <div style={{ marginBottom: 24 }}>
             <SectionLabel>Popular genres</SectionLabel>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {ALL_GENRES.slice(0, 20).map((g) => (
-                <button
-                  key={g}
-                  onClick={() => { setSelectedGenres([g]); }}
-                  style={{
-                    background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
-                    color: "rgba(255,255,255,0.6)", cursor: "pointer", transition: "all 0.15s",
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#fff"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; }}
-                >
-                  {g}
-                </button>
-              ))}
+              {ALL_GENRES.slice(0, 20).map((g) => {
+                const active = selectedGenres.length === 1 && selectedGenres[0] === g;
+                return (
+                  <button
+                    key={g}
+                    onClick={() => selectGenreExclusive(g)}
+                    style={{
+                      background: active ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.04)",
+                      border: active ? "0.5px solid rgba(255,255,255,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
+                      color: active ? "#fff" : "rgba(255,255,255,0.6)", cursor: "pointer", transition: "all 0.15s",
+                    }}
+                    onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#fff"; } }}
+                    onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "rgba(255,255,255,0.6)"; } }}
+                  >
+                    {g}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -495,18 +528,20 @@ function ExploreContent() {
               {ALL_VIBES.map((v) => {
                 const vibe = VIBES[v];
                 if (!vibe) return null;
+                const active = selectedVibe === v;
                 return (
                   <button
                     key={v}
-                    onClick={() => { setSelectedVibe(v); }}
+                    onClick={() => selectVibeExclusive(v)}
                     style={{
-                      background: `${vibe.color}12`, border: `1px solid ${vibe.color}25`,
+                      background: active ? `${vibe.color}33` : `${vibe.color}12`,
+                      border: active ? `0.5px solid ${vibe.color}80` : `1px solid ${vibe.color}25`,
                       borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600,
                       color: vibe.color, cursor: "pointer", transition: "all 0.15s",
                       display: "flex", alignItems: "center", gap: 5,
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = `${vibe.color}25`; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = `${vibe.color}12`; }}
+                    onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = `${vibe.color}25`; }}
+                    onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = active ? `${vibe.color}33` : `${vibe.color}12`; }}
                   >
                     <span>{vibe.icon}</span>
                     {vibe.label}
@@ -525,16 +560,16 @@ function ExploreContent() {
                 return (
                   <button
                     key={t.slug}
-                    onClick={() => { setSelectedTag(active ? null : t.slug); }}
+                    onClick={() => selectTagExclusive(t.slug)}
                     style={{
-                      background: active ? `${t.color}30` : "rgba(255,255,255,0.04)",
-                      border: `1px solid ${active ? t.color + "50" : "rgba(255,255,255,0.08)"}`,
+                      background: active ? `${t.color}33` : "rgba(255,255,255,0.04)",
+                      border: active ? `0.5px solid ${t.color}80` : `1px solid rgba(255,255,255,0.08)`,
                       borderRadius: 16, padding: "5px 12px", fontSize: 11, fontWeight: 500,
                       color: active ? t.color : "rgba(255,255,255,0.5)",
                       cursor: "pointer", transition: "all 0.15s",
                     }}
                     onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-                    onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                    onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = active ? `${t.color}33` : "rgba(255,255,255,0.04)"; }}
                   >
                     {getTagDisplayName(t.slug)}
                   </button>
@@ -543,13 +578,45 @@ function ExploreContent() {
             </div>
           </div>
 
+          {/* Active filter indicator */}
+          {activeFilterLabel && (
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8, marginBottom: 16,
+              fontSize: 12, color: "rgba(255,255,255,0.4)",
+            }}>
+              <span>Showing: {activeFilterLabel} across all media</span>
+              <button
+                onClick={clearFilters}
+                style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", cursor: "pointer", fontSize: 11 }}
+              >
+                ✕ Clear filter
+              </button>
+            </div>
+          )}
+
           {/* Media type scroll rows */}
           {TYPE_ORDER.map((k) => {
             const t = TYPES[k];
             const count = typeCounts[k] || 0;
-            if (count === 0) return null;
-            return <MediaTypeRow key={k} type={k} label={`${t.icon} ${t.label}`} sub={`${count} titles`} />;
+            if (count === 0 && !hasGenreOrVibe) return null;
+            const filterLabel = activeFilterLabel ? `${activeFilterLabel} ` : "";
+            return (
+              <MediaTypeRow
+                key={`${k}-${selectedGenres.join(",")}-${selectedVibe}-${selectedTag}`}
+                type={k}
+                genre={selectedGenres.length === 1 ? selectedGenres[0] : undefined}
+                vibe={selectedVibe || undefined}
+                tag={selectedTag || undefined}
+                label={`${t.icon} ${filterLabel}${t.label}`}
+                sub={hasGenreOrVibe ? undefined : `${count} titles`}
+              />
+            );
           })}
+
+          {/* No results across all types */}
+          {hasGenreOrVibe && (
+            <NoFilterResults filterLabel={activeFilterLabel} types={TYPE_ORDER} genre={selectedGenres.length === 1 ? selectedGenres[0] : undefined} vibe={selectedVibe || undefined} tag={selectedTag || undefined} onClear={clearFilters} />
+          )}
         </>
       )}
 
@@ -629,17 +696,23 @@ function MediaTypeIcon({ type, color }: { type: string; color: string }) {
   }
 }
 
-function MediaTypeRow({ type, label, sub }: { type: string; label: string; sub: string }) {
+function MediaTypeRow({ type, label, sub, genre, vibe, tag }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string }) {
   const [items, setItems] = useState<Item[] | null>(null);
   useEffect(() => {
-    fetch(`/api/catalog?type=${type}&limit=20`)
+    let url = `/api/catalog?type=${type}&limit=20`;
+    if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+    if (vibe) url += `&vibe=${encodeURIComponent(vibe)}`;
+    if (tag) url += `&tag=${encodeURIComponent(tag)}`;
+    fetch(url)
       .then((r) => r.json()).then((d) => setItems(Array.isArray(d) ? d : []))
       .catch(() => setItems([]));
-  }, [type]);
-  if (items !== null && items.length < 4) return null;
+  }, [type, genre, vibe, tag]);
+  // Hide row if no items match the filter
+  if (items !== null && items.length === 0) return null;
+  if (items !== null && items.length < 4 && !genre && !vibe && !tag) return null;
   return (
     <div style={{ marginBottom: 16 }}>
-      <ScrollRow label={label} sub={sub}>
+      <ScrollRow label={label} sub={sub || `${items?.length || "..."} titles`}>
         {items === null ? (
           <div style={{ display: "flex", gap: 10 }}>
             {Array.from({ length: 8 }, (_, i) => (
@@ -648,6 +721,29 @@ function MediaTypeRow({ type, label, sub }: { type: string; label: string; sub: 
           </div>
         ) : items.map((item) => <Card key={item.id} item={item} />)}
       </ScrollRow>
+    </div>
+  );
+}
+
+function NoFilterResults({ filterLabel, types, genre, vibe, tag, onClear }: { filterLabel: string | null; types: readonly string[]; genre?: string; vibe?: string; tag?: string; onClear: () => void }) {
+  const [totalCount, setTotalCount] = useState<number | null>(null);
+  useEffect(() => {
+    // Check if ANY type has results for this filter
+    let url = `/api/catalog?limit=1`;
+    if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+    if (vibe) url += `&vibe=${encodeURIComponent(vibe)}`;
+    if (tag) url += `&tag=${encodeURIComponent(tag)}`;
+    fetch(url).then((r) => r.json()).then((d) => setTotalCount(Array.isArray(d) ? d.length : 0)).catch(() => setTotalCount(0));
+  }, [genre, vibe, tag]);
+  if (totalCount === null || totalCount > 0) return null;
+  return (
+    <div style={{ textAlign: "center", padding: "40px 20px" }}>
+      <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, marginBottom: 8 }}>
+        No items found for &ldquo;{filterLabel}&rdquo;
+      </div>
+      <button onClick={onClear} style={{ background: "none", border: "none", color: "#E84855", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
+        Browse all titles →
+      </button>
     </div>
   );
 }
