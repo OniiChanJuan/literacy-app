@@ -159,20 +159,23 @@ export default function SignupPage() {
 
         {/* Name */}
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+          <label htmlFor="signup-displayName" style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
             Display Name
           </label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required maxLength={30} style={inputStyle} />
+          <input id="signup-displayName" type="text" name="displayName" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required maxLength={30} style={inputStyle} />
         </div>
 
         {/* Username */}
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+          <label htmlFor="signup-username" style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
             Username
           </label>
           <div style={{ position: "relative" }}>
             <input
+              id="signup-username"
               type="text"
+              name="username"
+              autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ""))}
               required
@@ -205,14 +208,14 @@ export default function SignupPage() {
 
         {/* Email */}
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
+          <label htmlFor="signup-email" style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>Email</label>
+          <input id="signup-email" type="email" name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
         </div>
 
         {/* Password */}
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} placeholder="Min 8 chars, uppercase, lowercase, number" />
+          <label htmlFor="signup-password" style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>Password</label>
+          <input id="signup-password" type="password" name="new-password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} placeholder="Min 8 chars, uppercase, lowercase, number" />
           {password && (
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
               <div style={{ flex: 1, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.06)" }}>
@@ -236,9 +239,12 @@ export default function SignupPage() {
 
         {/* Confirm Password */}
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>Confirm Password</label>
+          <label htmlFor="signup-confirmPassword" style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>Confirm Password</label>
           <input
+            id="signup-confirmPassword"
             type="password"
+            name="confirmPassword"
+            autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required

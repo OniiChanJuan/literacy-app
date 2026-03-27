@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRatings } from "@/lib/ratings-context";
 import Stars from "./stars";
 import RecTag from "./rec-tag";
@@ -511,7 +512,7 @@ export default function CommunityReviews({ itemId, heroColor }: { itemId: number
               fontSize: 10, fontWeight: 700, color: "#fff", flexShrink: 0,
             }}>
               {myReview.userAvatar ? (
-                <img src={myReview.userAvatar} alt="" style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover" }} />
+                <Image src={myReview.userAvatar} alt="" width={26} height={26} style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover" }} />
               ) : myReview.userName[0]?.toUpperCase() || "?"}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -1042,7 +1043,7 @@ function ReviewCard({
           overflow: "hidden",
         }}>
           {review.userAvatar ? (
-            <img src={review.userAvatar} alt="" style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover" }} />
+            <Image src={review.userAvatar} alt="" width={26} height={26} style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover" }} />
           ) : (
             review.userName[0]?.toUpperCase() || "?"
           )}

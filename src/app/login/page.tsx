@@ -121,11 +121,14 @@ function LoginForm() {
         )}
 
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+          <label htmlFor="login-email" style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
             Email
           </label>
           <input
+            id="login-email"
             type="email"
+            name="email"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -144,11 +147,14 @@ function LoginForm() {
         </div>
 
         <div style={{ marginBottom: 8 }}>
-          <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+          <label htmlFor="login-password" style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
             Password
           </label>
           <input
+            id="login-password"
             type="password"
+            name="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

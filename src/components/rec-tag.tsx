@@ -21,6 +21,7 @@ export default function RecTag({ value, onChange }: RecTagProps) {
         return (
           <button
             key={o.key}
+            aria-label={o.label}
             onClick={(e) => {
               e.stopPropagation();
               onChange(active ? null : o.key);

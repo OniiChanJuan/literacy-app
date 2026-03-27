@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { Item, TYPES } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
@@ -47,17 +47,12 @@ function formatCount(n: number): string {
 }
 
 const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; routeId?: string; crossMedia?: boolean }) {
-  const router = useRouter();
   const { ratings, rate } = useRatings();
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const userRating = ratings[item.id] || 0;
   const href = `/item/${routeId || item.id}`;
   const hasImage = isImageUrl(item.cover);
   const [imgError, setImgError] = useState(false);
-
-  const handleClick = useCallback(() => {
-    router.push(href);
-  }, [router, href]);
 
   const handleRate = useCallback((s: number) => {
     rate(item.id, s);
@@ -73,8 +68,8 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
 
   return (
     <HoverPreview item={item}>
-    <div
-      onClick={handleClick}
+    <Link
+      href={href}
       style={{
         flex: "0 0 150px",
         width: 150,
@@ -85,6 +80,9 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
         boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
         border: "0.5px solid rgba(255,255,255,0.06)",
         scrollSnapAlign: "start",
+        display: "block",
+        textDecoration: "none",
+        color: "inherit",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-3px)";
@@ -144,7 +142,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           background: "rgba(0,0,0,0.6)",
           backdropFilter: "blur(4px)",
           color: t.color,
-          fontSize: 7,
+          fontSize: 10,
           fontWeight: 700,
           padding: "1px 5px",
           borderRadius: 4,
@@ -161,7 +159,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
             right: 4,
             background: "rgba(0,0,0,0.7)",
             color: "#f1c40f",
-            fontSize: 7,
+            fontSize: 10,
             fontWeight: 700,
             padding: "1px 5px",
             borderRadius: 4,
@@ -178,7 +176,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
             left: 3,
             background: "rgba(232,72,85,0.8)",
             color: "#fff",
-            fontSize: 6,
+            fontSize: 10,
             fontWeight: 600,
             padding: "1px 4px",
             borderRadius: 3,
@@ -249,7 +247,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           />
         )}
       </div>
-    </div>
+    </Link>
     </HoverPreview>
   );
 });

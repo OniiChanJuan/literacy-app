@@ -77,6 +77,7 @@ export default function StatusTracker({ item }: { item: Item }) {
           return (
             <button
               key={s.key}
+              aria-label={label}
               onClick={() => setStatus(item.id, active ? null : s.key)}
               style={{
                 display: "flex",

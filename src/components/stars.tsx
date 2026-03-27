@@ -17,6 +17,7 @@ export default function Stars({ rating, onRate, size = 18 }: StarsProps) {
         <span
           key={s}
           role="button"
+          aria-label={`Rate ${s} star${s > 1 ? "s" : ""}`}
           onClick={(e) => {
             e.stopPropagation();
             onRate(s === rating ? 0 : s);

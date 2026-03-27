@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import NextImage from "next/image";
 import { TYPES, VIBES, TYPE_ORDER, ALL_GENRES, ALL_VIBES, type MediaType, type Item, type UpcomingItem } from "@/lib/data";
 import { getTagDisplayName } from "@/lib/tags";
 import Card from "@/components/card";
@@ -264,7 +265,7 @@ function ExploreContent() {
                 >
                   {bestMatch.cover?.startsWith("http") && (
                     <div style={{ width: 80, height: 110, borderRadius: 6, overflow: "hidden", flexShrink: 0, position: "relative" }}>
-                      <img src={bestMatch.cover} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <NextImage src={bestMatch.cover} alt={bestMatch.title || ""} width={80} height={110} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     </div>
                   )}
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -706,9 +707,10 @@ function MediaTypeRow({ type, label, sub, genre, vibe, tag }: { type: string; la
   // Hide row if no items match the filter
   if (items !== null && items.length === 0) return null;
   if (items !== null && items.length < 4 && !genre && !vibe && !tag) return null;
+  const seeAllHref = `/explore?type=${type}`;
   return (
     <div style={{ marginBottom: 16 }}>
-      <ScrollRow label={label} sub={sub || `${items?.length || "..."} titles`}>
+      <ScrollRow label={label} sub={sub || `${items?.length || "..."} titles`} seeAllHref={seeAllHref}>
         {items === null ? (
           <div style={{ display: "flex", gap: 10 }}>
             {Array.from({ length: 8 }, (_, i) => (

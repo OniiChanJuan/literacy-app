@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface FranchiseItemData {
   item: { id: number; title: string; type: string; year: number; cover: string };
@@ -240,7 +241,7 @@ export default function AdminFranchisesPage() {
                       background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
                     }}>
                       {fi.item.cover?.startsWith("http") && (
-                        <img src={fi.item.cover} alt="" width={24} height={36} style={{ objectFit: "cover", borderRadius: 4 }} />
+                        <Image src={fi.item.cover} alt={fi.item.title || ""} width={24} height={36} style={{ objectFit: "cover", borderRadius: 4 }} />
                       )}
                       <div>
                         <div style={{ fontSize: 11, fontWeight: 600, color: "#fff" }}>{fi.item.title}</div>

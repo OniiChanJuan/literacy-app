@@ -492,7 +492,7 @@ export default function ForYouPage() {
             fetchUrl="/api/for-you?section=personalPicks&limit=20"
             label="Picked for you"
             sub="Matched to your taste profile across all media"
-            icon="✨" iconBg="rgba(232,72,85,0.15)"
+            icon="✨" iconBg="rgba(232,72,85,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
           />
         </ErrorBoundary>
@@ -505,7 +505,7 @@ export default function ForYouPage() {
             fetchUrl="/api/for-you?section=discoverAcrossMedia&limit=20"
             label="Discover across media"
             sub="Your taste says you'd love these — in media you haven't tried yet"
-            icon="🌐" iconBg="rgba(49,133,252,0.15)"
+            icon="🌐" iconBg="rgba(49,133,252,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
           />
         </ErrorBoundary>

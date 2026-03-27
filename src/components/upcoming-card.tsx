@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { TYPES, type UpcomingItem } from "@/lib/data";
 import { useLibrary } from "@/lib/library-context";
@@ -11,7 +11,6 @@ function isImageUrl(cover: string): boolean {
 }
 
 export default function UpcomingCard({ item }: { item: UpcomingItem }) {
-  const router = useRouter();
   const { entries, setStatus } = useLibrary();
   const t = TYPES[item.type];
   const isWanted = entries[item.id]?.status === "want_to";
@@ -25,8 +24,8 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
   const hasGradient = item.cover && !isImageUrl(item.cover);
 
   return (
-    <div
-      onClick={() => router.push(`/item/${item.id}`)}
+    <Link
+      href={`/item/${item.id}`}
       style={{
         flex: "0 0 150px",
         width: 150,
@@ -37,6 +36,9 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
         boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
         border: "0.5px solid rgba(255,255,255,0.06)",
         scrollSnapAlign: "start",
+        display: "block",
+        textDecoration: "none",
+        color: "inherit",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-3px)";
@@ -194,6 +196,6 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

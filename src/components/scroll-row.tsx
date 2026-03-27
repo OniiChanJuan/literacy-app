@@ -78,6 +78,7 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
           {(["left", "right"] as const).map((dir) => (
             <button
               key={dir}
+              aria-label={dir === "left" ? "Scroll left" : "Scroll right"}
               onClick={() => scroll(dir)}
               style={{
                 width: 24,

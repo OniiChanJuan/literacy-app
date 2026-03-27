@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function UserMenu() {
   const { data: session } = useSession();
@@ -52,6 +53,7 @@ export default function UserMenu() {
       {/* Avatar + member number */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         <button
+          aria-label="User menu"
           onClick={() => setOpen(!open)}
           style={{
             width: 32, height: 32, borderRadius: "50%",
@@ -63,7 +65,7 @@ export default function UserMenu() {
           }}
         >
           {avatarUrl ? (
-            <img src={avatarUrl} alt="" width={32} height={32} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <Image src={avatarUrl} alt="" width={32} height={32} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>{initial}</span>
           )}
