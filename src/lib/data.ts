@@ -2,7 +2,13 @@ export type MediaType = "movie" | "tv" | "book" | "manga" | "comic" | "game" | "
 
 export type RecTag = "recommend" | "mixed" | "skip";
 
-export type ExternalSource = "imdb" | "rt" | "meta" | "mal" | "ign" | "goodreads" | "pitchfork" | "steam";
+export type ExternalSource =
+  // Correct source keys (used by new seeds)
+  | "tmdb" | "igdb" | "igdb_critics" | "google_books" | "spotify_popularity"
+  // Real external sources (legacy or from OMDb sync)
+  | "imdb" | "rt" | "rt_critics" | "rt_audience" | "meta" | "metacritic"
+  | "mal" | "anilist" | "ign" | "goodreads" | "pitchfork" | "steam"
+  | "letterboxd" | "storygraph" | "rym" | "aoty" | "opencritic";
 
 export interface Person {
   role: string;

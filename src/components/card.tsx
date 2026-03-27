@@ -12,27 +12,52 @@ function isImageUrl(cover: string | undefined | null): boolean {
   return !!cover && (cover.startsWith("http") || cover.startsWith("/"));
 }
 
+const EXT_SCORE_META: Record<string, { label: string; max: number }> = {
+  tmdb:              { label: "TMDB",    max: 10  },
+  imdb:              { label: "IMDb",    max: 10  },
+  mal:               { label: "MAL",     max: 10  },
+  igdb_critics:      { label: "Critics", max: 100 },
+  igdb:              { label: "IGDB",    max: 100 },
+  google_books:      { label: "Books",   max: 5   },
+  goodreads:         { label: "GR",      max: 5   },
+  rt_critics:        { label: "RT",      max: 100 },
+  rt:                { label: "RT",      max: 100 },
+  meta:              { label: "Meta",    max: 100 },
+  metacritic:        { label: "Meta",    max: 100 },
+  pitchfork:         { label: "Pitchfork", max: 10 },
+  ign:               { label: "IGN",     max: 10  },
+  steam:             { label: "Steam",   max: 100 },
+  spotify_popularity:{ label: "Spotify", max: 100 },
+  aoty:              { label: "AOTY",    max: 100 },
+  opencritic:        { label: "OpenCritic", max: 100 },
+  anilist:           { label: "AniList", max: 100 },
+};
+
+const EXT_SCORE_PRIORITY = [
+  "tmdb", "imdb", "mal", "igdb_critics", "igdb",
+  "google_books", "goodreads", "rt_critics", "rt",
+  "meta", "metacritic", "pitchfork", "ign", "steam",
+  "spotify_popularity", "aoty", "opencritic", "anilist",
+];
+
 /** Get the best external score for display */
 function getBestExtScore(ext: any): { label: string; value: number; display: string } | null {
   if (!ext || typeof ext !== "object") return null;
   const entries = Object.entries(ext) as [string, number][];
   if (entries.length === 0) return null;
 
-  const priority = ["imdb", "rt", "meta", "mal", "goodreads", "pitchfork", "ign", "steam"];
-  for (const key of priority) {
+  for (const key of EXT_SCORE_PRIORITY) {
     const val = ext[key];
     if (val !== undefined && val !== null) {
-      if (key === "imdb" || key === "mal" || key === "ign" || key === "pitchfork") {
-        return { label: key.toUpperCase(), value: val, display: val.toFixed?.(1) || String(val) };
-      }
-      if (key === "goodreads") {
-        return { label: "GR", value: val, display: val.toFixed?.(1) || String(val) };
-      }
-      return { label: key.toUpperCase(), value: val / 10, display: `${val}%` };
+      const m = EXT_SCORE_META[key] || { label: key.toUpperCase(), max: 10 };
+      const normalized = (val / m.max) * 10; // Normalize to 0-10 for Literacy score calc
+      const scoreStr = m.max <= 10 ? val.toFixed(1) : String(Math.round(val));
+      return { label: m.label, value: normalized, display: `${scoreStr} ${m.label}` };
     }
   }
   const [k, v] = entries[0];
-  return { label: k.toUpperCase(), value: v, display: String(v) };
+  const m = EXT_SCORE_META[k] || { label: k.toUpperCase(), max: 10 };
+  return { label: m.label, value: (v / m.max) * 10, display: `${v} ${m.label}` };
 }
 
 function scoreColor(val: number): string {
@@ -41,10 +66,6 @@ function scoreColor(val: number): string {
   return "#E84855";
 }
 
-function formatCount(n: number): string {
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
-  return String(n);
-}
 
 const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; routeId?: string; crossMedia?: boolean }) {
   const { ratings, rate } = useRatings();
@@ -60,11 +81,10 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
 
   const extScore = getBestExtScore(item.ext);
 
-  // Fake Literacy score from ext score (in real app this comes from user ratings)
+  // Literacy score derived from external score until real community ratings are available
   const literacyScore = extScore ? Math.min(5, extScore.value * 0.55).toFixed(1) : null;
   const literacyScoreNum = literacyScore ? parseFloat(literacyScore) : 0;
   const recPct = extScore ? Math.min(99, Math.round(extScore.value * 10.5)) : null;
-  const ratingCount = extScore ? Math.round(extScore.value * 137 + 42) : 0;
 
   return (
     <HoverPreview item={item}>
@@ -231,10 +251,10 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           </div>
         )}
 
-        {/* Rating count */}
-        {ratingCount > 0 && (
-          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.2)", marginBottom: 2 }}>
-            {formatCount(ratingCount)} ratings
+        {/* External score source label */}
+        {extScore && (
+          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", marginBottom: 2 }}>
+            {extScore.display}
           </div>
         )}
 

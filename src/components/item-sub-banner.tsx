@@ -23,27 +23,35 @@ interface AggregateData {
   recPct: number;
 }
 
-const SOURCE_META: Record<string, { displayName: string; suffix: string }> = {
-  imdb: { displayName: "IMDb", suffix: "/10" },
-  rt_critics: { displayName: "RT Critics", suffix: "%" },
-  rt_audience: { displayName: "RT Audience", suffix: "%" },
-  rt: { displayName: "Rotten Tomatoes", suffix: "%" },
-  meta: { displayName: "Metacritic", suffix: "" },
-  metacritic: { displayName: "Metacritic", suffix: "" },
-  mal: { displayName: "MAL", suffix: "/10" },
-  anilist: { displayName: "AniList", suffix: "/100" },
-  ign: { displayName: "IGN", suffix: "/10" },
-  goodreads: { displayName: "Goodreads", suffix: "/5" },
-  pitchfork: { displayName: "Pitchfork", suffix: "/10" },
-  steam: { displayName: "Steam", suffix: "%" },
-  letterboxd: { displayName: "Letterboxd", suffix: "/5" },
-  storygraph: { displayName: "StoryGraph", suffix: "/5" },
-  rym: { displayName: "RYM", suffix: "/5" },
-  aoty: { displayName: "AOTY", suffix: "/100" },
-  opencritic: { displayName: "OpenCritic", suffix: "/100" },
+const SOURCE_META: Record<string, { displayName: string; suffix: string; max: number }> = {
+  // Correct source keys (used by new seeds)
+  tmdb:              { displayName: "TMDB",         suffix: "/10",  max: 10  },
+  igdb:              { displayName: "IGDB",         suffix: "/100", max: 100 },
+  igdb_critics:      { displayName: "IGDB Critics", suffix: "/100", max: 100 },
+  google_books:      { displayName: "Google Books", suffix: "/5",   max: 5   },
+  spotify_popularity:{ displayName: "Spotify",      suffix: "/100", max: 100 },
+  // Legacy / real external sources
+  imdb:              { displayName: "IMDb",          suffix: "/10",  max: 10  },
+  rt_critics:        { displayName: "RT Critics",   suffix: "%",    max: 100 },
+  rt_audience:       { displayName: "RT Audience",  suffix: "%",    max: 100 },
+  rt:                { displayName: "Rotten Tomatoes", suffix: "%", max: 100 },
+  meta:              { displayName: "Metacritic",   suffix: "/100", max: 100 },
+  metacritic:        { displayName: "Metacritic",   suffix: "/100", max: 100 },
+  mal:               { displayName: "MAL",          suffix: "/10",  max: 10  },
+  anilist:           { displayName: "AniList",      suffix: "/100", max: 100 },
+  ign:               { displayName: "IGN",          suffix: "/10",  max: 10  },
+  goodreads:         { displayName: "Goodreads",    suffix: "/5",   max: 5   },
+  pitchfork:         { displayName: "Pitchfork",    suffix: "/10",  max: 10  },
+  steam:             { displayName: "Steam",        suffix: "%",    max: 100 },
+  letterboxd:        { displayName: "Letterboxd",   suffix: "/5",   max: 5   },
+  storygraph:        { displayName: "StoryGraph",   suffix: "/5",   max: 5   },
+  rym:               { displayName: "RYM",          suffix: "/5",   max: 5   },
+  aoty:              { displayName: "AOTY",         suffix: "/100", max: 100 },
+  opencritic:        { displayName: "OpenCritic",   suffix: "/100", max: 100 },
 };
 
-const HIDDEN_SOURCES = new Set(["igdb_user", "spotify_popularity"]);
+// Only hide the raw IGDB user score (too similar to the blended igdb score)
+const HIDDEN_SOURCES = new Set(["igdb_user"]);
 
 function sColor(score: number, maxScore: number): string {
   const pct = score / maxScore;
@@ -84,6 +92,7 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
   const [agg, setAgg] = useState<AggregateData | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [showAllStatuses, setShowAllStatuses] = useState(false);
+  const [showAllScores, setShowAllScores] = useState(false);
 
   const currentRating = ratings[item.id] || 0;
   const currentRec = recTags[item.id] ?? null;
@@ -112,19 +121,12 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
     return entries
       .filter(([source]) => !HIDDEN_SOURCES.has(source))
       .map(([source, value]) => {
-        const config: Record<string, { maxScore: number; scoreType: string }> = {
-          imdb: { maxScore: 10, scoreType: "community" },
-          rt: { maxScore: 100, scoreType: "critics" },
-          meta: { maxScore: 100, scoreType: "critics" },
-          metacritic: { maxScore: 100, scoreType: "critics" },
-          mal: { maxScore: 10, scoreType: "community" },
-          goodreads: { maxScore: 5, scoreType: "community" },
-          pitchfork: { maxScore: 10, scoreType: "critics" },
-          ign: { maxScore: 10, scoreType: "critics" },
-          steam: { maxScore: 100, scoreType: "community" },
-        };
-        const c = config[source] || { maxScore: 10, scoreType: "community" };
-        return { source, score: value, maxScore: c.maxScore, scoreType: c.scoreType, label: "" };
+        const meta = SOURCE_META[source];
+        const maxScore = meta?.max ?? 10;
+        const scoreType = source.includes("critic") ? "critics"
+          : source === "spotify_popularity" ? "popularity"
+          : "community";
+        return { source, score: value, maxScore, scoreType, label: "" };
       });
   })();
 
@@ -140,10 +142,13 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
     }}>
       {/* Left — scores (external + community) */}
       <div style={{ flex: 1, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", minWidth: 0 }}>
-        {displayScores.map((s) => {
-          const meta = SOURCE_META[s.source] || { displayName: s.source, suffix: "" };
+        {(showAllScores ? displayScores : displayScores.slice(0, 3)).map((s) => {
+          const meta = SOURCE_META[s.source] || { displayName: s.source, suffix: "", max: s.maxScore };
           const color = sColor(s.score, s.maxScore);
-          const displayScore = s.maxScore <= 10 ? s.score.toFixed(1) : Math.round(s.score);
+          // Format: 1 decimal for ≤10 scale, integer for 100-scale, 1 decimal for 5-scale
+          const scoreStr = s.maxScore <= 5 ? s.score.toFixed(1)
+            : s.maxScore <= 10 ? s.score.toFixed(1)
+            : Math.round(s.score).toString();
 
           return (
             <div key={s.source} style={{
@@ -154,7 +159,10 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
               textAlign: "center",
             }}>
               <div style={{ fontSize: 16, fontWeight: 500, color, lineHeight: 1.2 }}>
-                {displayScore}
+                {scoreStr}
+                <span style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", fontWeight: 400 }}>
+                  {meta.suffix}
+                </span>
               </div>
               <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1 }}>
                 {meta.displayName}
@@ -162,6 +170,24 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
             </div>
           );
         })}
+
+        {/* Show all toggle when more than 3 scores */}
+        {displayScores.length > 3 && !showAllScores && (
+          <button
+            onClick={() => setShowAllScores(true)}
+            style={{
+              background: `rgba(${rgb}, 0.04)`,
+              border: `0.5px solid rgba(${rgb}, 0.10)`,
+              borderRadius: 6,
+              padding: "5px 10px",
+              color: "rgba(255,255,255,0.3)",
+              fontSize: 9,
+              cursor: "pointer",
+            }}
+          >
+            +{displayScores.length - 3} more ▾
+          </button>
+        )}
 
         {/* Literacy community score */}
         {agg && (

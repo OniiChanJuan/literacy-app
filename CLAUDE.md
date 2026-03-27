@@ -160,5 +160,36 @@ Literacy is a cross-media review and recommendation platform. Think Goodreads me
 ## Prototype
 A working React prototype exists (literacy.jsx) that demonstrates all V1 features interactively. The prototype code can serve as a starting point for the frontend — it's written in React with functional components and hooks. Real implementation should use Next.js App Router with server components where appropriate.
 
+## Data Sync Scripts (run these to populate/maintain the database)
+
+### One-time setup (run in order):
+1. `npx tsx scripts/seed-catalog.ts` — Initial population from all APIs
+2. `npx tsx scripts/migrate-score-keys.ts` — Rename legacy score keys (imdb→tmdb, ign→igdb, goodreads→google_books)
+3. `npx tsx scripts/backfill-book-votes.ts` — Populate voteCount for books so they appear in catalog
+4. `npx tsx scripts/fetch-external-scores.ts` — Populate ExternalScore table from ext JSON + APIs
+
+### Real external scores (run daily, OMDb limit 1,000 req/day):
+- `npx tsx scripts/sync-omdb-scores.ts` — Fetch real IMDb/RT/Metacritic for movies+TV
+- Use `--skip-existing` to avoid re-fetching: `npx tsx scripts/sync-omdb-scores.ts --skip-existing`
+- Use `--limit=100` for testing: `npx tsx scripts/sync-omdb-scores.ts --limit=10`
+- Run daily until all ~800 movies/TV are covered, then run weekly for new items
+- After first run: popular movies show real IMDb + RT + Metacritic scores instead of mislabeled TMDB average
+
+### Anime cross-referencing and cleanup:
+- `npx tsx scripts/cross-reference-anime.ts` — Add TMDB scores to Jikan-sourced anime (uses --limit=50 first to test)
+- `npx tsx scripts/deduplicate-anime.ts --dry-run` — Report TMDB/Jikan duplicate pairs (review before changing)
+- `npx tsx scripts/deduplicate-anime.ts` — Link anime seasons into franchises + merge duplicate scores
+
+### Score key conventions (enforced after migrate-score-keys.ts):
+- `tmdb` — TMDB community vote_average (0-10); used for movies + TV
+- `imdb` — Real IMDb rating from OMDb API (0-10); replaces tmdb for movies/TV after OMDb sync
+- `igdb` — IGDB total_rating, community blend (0-100); used for games
+- `igdb_critics` — IGDB aggregated_rating, critics only (0-100); used for games
+- `google_books` — Google Books averageRating (0-5); used for books
+- `mal` — MyAnimeList score (0-10); used for manga + anime
+- `spotify_popularity` — Spotify popularity index (0-100); used for music + podcasts
+- `rt_critics` — Rotten Tomatoes critic % (0-100); populated by OMDb sync
+- `metacritic` — Metacritic score (0-100); populated by OMDb sync or IGDB for games
+
 ## Project Owner Context
 The project owner is non-technical but deeply involved in all product decisions. They are learning coding through this project with AI assistance. All technical decisions should be explained in plain language. The owner wants to understand what's happening at every step, not just have code generated blindly. They prefer building incrementally — one feature at a time, tested and understood before moving to the next.

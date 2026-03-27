@@ -74,15 +74,27 @@ async function main() {
   console.log("═══ Step 1: Migrate existing ext JSON scores ═══\n");
 
   const sourceConfig: Record<string, { maxScore: number; scoreType: string }> = {
-    imdb: { maxScore: 10, scoreType: "community" },
-    rt: { maxScore: 100, scoreType: "critics" },
-    meta: { maxScore: 100, scoreType: "critics" },
-    mal: { maxScore: 10, scoreType: "community" },
-    goodreads: { maxScore: 5, scoreType: "community" },
-    pitchfork: { maxScore: 10, scoreType: "critics" },
-    ign: { maxScore: 10, scoreType: "critics" },
-    steam: { maxScore: 100, scoreType: "community" },
-    anilist: { maxScore: 100, scoreType: "community" },
+    // New correct source keys
+    tmdb:              { maxScore: 10,  scoreType: "community" },
+    igdb:              { maxScore: 100, scoreType: "community" },
+    igdb_critics:      { maxScore: 100, scoreType: "critics"   },
+    google_books:      { maxScore: 5,   scoreType: "community" },
+    spotify_popularity:{ maxScore: 100, scoreType: "popularity" },
+    // Legacy keys (real external sources or backward compat)
+    imdb:     { maxScore: 10,  scoreType: "community" },
+    rt:       { maxScore: 100, scoreType: "critics"   },
+    rt_critics:{ maxScore: 100, scoreType: "critics"  },
+    rt_audience:{ maxScore: 100, scoreType: "community" },
+    meta:     { maxScore: 100, scoreType: "critics"   },
+    metacritic:{ maxScore: 100, scoreType: "critics"  },
+    mal:      { maxScore: 10,  scoreType: "community" },
+    goodreads:{ maxScore: 5,   scoreType: "community" },
+    pitchfork:{ maxScore: 10,  scoreType: "critics"   },
+    ign:      { maxScore: 10,  scoreType: "critics"   },
+    steam:    { maxScore: 100, scoreType: "community" },
+    anilist:  { maxScore: 100, scoreType: "community" },
+    aoty:     { maxScore: 100, scoreType: "critics"   },
+    opencritic:{ maxScore: 100, scoreType: "critics"  },
   };
 
   for (const item of items) {
@@ -102,18 +114,18 @@ async function main() {
   console.log("═══ Step 2: TMDB scores (movies + TV) ═══\n");
 
   const movieTv = items.filter((i) => ["movie", "tv"].includes(i.type));
-  // Only fetch for items that don't already have an IMDb score
-  const existingImdb = await prisma.externalScore.findMany({
-    where: { source: "imdb" },
+  // Only fetch for items that don't already have a TMDB score (using correct key)
+  const existingTmdb = await prisma.externalScore.findMany({
+    where: { source: { in: ["tmdb", "imdb"] } },
     select: { itemId: true },
   });
-  const hasImdb = new Set(existingImdb.map((e: any) => e.itemId));
-  const needImdb = movieTv.filter((i) => !hasImdb.has(i.id)).slice(0, 200);
+  const hasTmdb = new Set(existingTmdb.map((e: any) => e.itemId));
+  const needTmdb = movieTv.filter((i) => !hasTmdb.has(i.id)).slice(0, 200);
 
-  console.log(`  ${needImdb.length} movies/TV without IMDb scores, fetching...`);
+  console.log(`  ${needTmdb.length} movies/TV without TMDB scores, fetching...`);
 
-  for (let i = 0; i < needImdb.length; i++) {
-    const item = needImdb[i];
+  for (let i = 0; i < needTmdb.length; i++) {
+    const item = needTmdb[i];
     try {
       const mediaType = item.type === "movie" ? "movie" : "tv";
       const searchData = await fetchJson(
@@ -124,14 +136,15 @@ async function main() {
       ) || searchData.results?.[0];
 
       if (match && match.vote_average > 0) {
-        await upsertScore(prisma, item.id, "imdb", Math.round(match.vote_average * 10) / 10, 10, "community");
+        // Store as 'tmdb' — this is TMDB community data, not IMDb
+        await upsertScore(prisma, item.id, "tmdb", Math.round(match.vote_average * 10) / 10, 10, "community", "TMDB");
         stats.tmdb_fetched++;
       }
       await sleep(260);
     } catch {}
-    if (i % 50 === 0 && i > 0) console.log(`    ${i}/${needImdb.length}...`);
+    if (i % 50 === 0 && i > 0) console.log(`    ${i}/${needTmdb.length}...`);
   }
-  console.log(`  Fetched ${stats.tmdb_fetched} TMDB/IMDb scores\n`);
+  console.log(`  Fetched ${stats.tmdb_fetched} TMDB scores\n`);
 
   // ── STEP 3: Fetch MAL scores for anime/manga ─────────────────────────
   console.log("═══ Step 3: MAL scores (anime + manga) ═══\n");
@@ -191,13 +204,13 @@ async function main() {
   if (igdbToken) {
     const gameItems = items.filter((i) => i.type === "game");
     const existingIgdb = await prisma.externalScore.findMany({
-      where: { source: "metacritic", itemId: { in: gameItems.map((g) => g.id) } },
+      where: { source: { in: ["igdb", "igdb_critics"] }, itemId: { in: gameItems.map((g) => g.id) } },
       select: { itemId: true },
     });
     const hasIgdb = new Set(existingIgdb.map((e: any) => e.itemId));
     const needIgdb = gameItems.filter((i) => !hasIgdb.has(i.id)).slice(0, 100);
 
-    console.log(`  ${needIgdb.length} games without Metacritic scores, fetching...`);
+    console.log(`  ${needIgdb.length} games without IGDB scores, fetching...`);
 
     // Process in batches of 10
     for (let batch = 0; batch < needIgdb.length; batch += 10) {
@@ -207,7 +220,7 @@ async function main() {
         const res = await fetch("https://api.igdb.com/v4/games", {
           method: "POST",
           headers: { "Client-ID": IGDB_ID, Authorization: `Bearer ${igdbToken}`, "Content-Type": "text/plain" },
-          body: `fields name,aggregated_rating,aggregated_rating_count,rating,rating_count; where name = (${titles}); limit 10;`,
+          body: `fields name,aggregated_rating,aggregated_rating_count,total_rating,total_rating_count; where name = (${titles}); limit 10;`,
         });
         const games = await res.json();
 
@@ -215,12 +228,14 @@ async function main() {
           const dbMatch = batchItems.find((i) => i.title.toLowerCase() === (g.name || "").toLowerCase());
           if (!dbMatch) continue;
 
+          // igdb_critics = aggregated_rating (critic-only, 0-100)
           if (g.aggregated_rating) {
-            await upsertScore(prisma, dbMatch.id, "metacritic", Math.round(g.aggregated_rating), 100, "critics");
+            await upsertScore(prisma, dbMatch.id, "igdb_critics", Math.round(g.aggregated_rating), 100, "critics", "IGDB Critics");
             stats.igdb_fetched++;
           }
-          if (g.rating) {
-            await upsertScore(prisma, dbMatch.id, "igdb_user", Math.round(g.rating), 100, "community");
+          // igdb = total_rating (community blend, 0-100)
+          if (g.total_rating) {
+            await upsertScore(prisma, dbMatch.id, "igdb", Math.round(g.total_rating), 100, "community", "IGDB");
           }
         }
         await sleep(300);

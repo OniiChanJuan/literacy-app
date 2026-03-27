@@ -5,22 +5,28 @@
 
 // ── Normalized score ────────────────────────────────────────────────────
 export function normalizeScore(ext: Record<string, number>, type: string): number {
-  // Priority order per type
+  // Priority order per type — prefer new correct source keys, fall back to legacy
   const priorities: Record<string, string[]> = {
-    movie: ["imdb", "rt", "meta", "rt_audience"],
-    tv: ["imdb", "rt", "meta", "mal"],
-    game: ["meta", "ign", "steam", "igdb"],
-    book: ["goodreads"],
+    movie: ["tmdb", "imdb", "rt_critics", "rt", "meta", "metacritic"],
+    tv:    ["tmdb", "imdb", "rt_critics", "rt", "meta", "mal"],
+    game:  ["igdb_critics", "igdb", "meta", "metacritic", "opencritic", "ign", "steam"],
+    book:  ["google_books", "goodreads"],
     manga: ["mal", "anilist"],
-    comic: ["goodreads", "comicvine"],
-    music: ["pitchfork", "spotify_popularity", "aoty"],
+    comic: ["google_books", "goodreads", "comicvine"],
+    music: ["pitchfork", "spotify_popularity", "aoty", "rym"],
     podcast: ["spotify_popularity"],
   };
 
   const maxScales: Record<string, number> = {
-    imdb: 10, rt: 100, rt_audience: 100, meta: 100, mal: 10, anilist: 100,
-    goodreads: 5, ign: 10, steam: 100, pitchfork: 10, spotify_popularity: 100,
-    igdb: 100, comicvine: 5, aoty: 100,
+    // New correct keys
+    tmdb: 10, igdb: 100, igdb_critics: 100, google_books: 5,
+    spotify_popularity: 100,
+    // Legacy / real external sources
+    imdb: 10, rt: 100, rt_critics: 100, rt_audience: 100,
+    meta: 100, metacritic: 100, mal: 10, anilist: 100,
+    goodreads: 5, ign: 10, steam: 100, pitchfork: 10,
+    comicvine: 5, aoty: 100, opencritic: 100, rym: 5,
+    letterboxd: 5, storygraph: 5,
   };
 
   const order = priorities[type] || Object.keys(ext);
@@ -104,11 +110,13 @@ export function meetsQualityFloor(item: {
     case "manga":
       return norm >= 0.6 && votes >= 100;
     case "book":
-      return norm >= 0.6 && votes >= 20;
+      // Don't require votes — Google Books ratingsCount is often missing for older books.
+      // Accept any book with a reasonable score. Backfill script will populate voteCount.
+      return norm >= 0.5;
     case "music":
-      // Music: accept if has any ext score >= 0.5, OR has spotify_popularity >= 15, OR popularityScore > 0
+      // Accept if scored, has any spotify popularity, or has popularityScore
       if (norm >= 0.5) return true;
-      if (item.ext.spotify_popularity !== undefined && item.ext.spotify_popularity >= 15) return true;
+      if ((item.ext as any).spotify_popularity !== undefined && (item.ext as any).spotify_popularity >= 15) return true;
       return (item.popularityScore || 0) > 0;
     case "comic":
       // Comics: accept if has ext score >= 0.6 OR popularityScore > 0

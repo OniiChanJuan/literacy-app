@@ -32,6 +32,7 @@ interface SeedItem {
   platforms: string[];
   ext: Record<string, number>;
   totalEp: number;
+  voteCount?: number;
 }
 
 const counts: Record<string, number> = {};
@@ -105,7 +106,7 @@ async function fetchTmdbList(path: string, pages: number): Promise<SeedItem[]> {
           people: [],
           awards: [],
           platforms: [],
-          ext: r.vote_average ? { imdb: Math.round(r.vote_average * 10) / 10 } : {},
+          ext: r.vote_average ? { tmdb: Math.round(r.vote_average * 10) / 10 } : {},
           totalEp: isMovie ? 1 : 0,
         });
       }
@@ -217,20 +218,25 @@ function igdbToItem(g: any): SeedItem | null {
     if ([3, 6, 14].includes(pid)) platforms.push("steam");
   }
 
-  const rating = g.total_rating ? Math.round(g.total_rating) / 10 : undefined;
+  // total_rating is 0-100 (community blend); aggregated_rating is 0-100 (critics only)
+  const igdbScore = g.total_rating ? Math.round(g.total_rating) : undefined;
+  const criticsScore = g.aggregated_rating ? Math.round(g.aggregated_rating) : undefined;
+  const ext: Record<string, number> = {};
+  if (igdbScore) ext.igdb = igdbScore;
+  if (criticsScore) ext.igdb_critics = criticsScore;
 
   return {
     title: g.name,
     type: "game",
     genre: [...new Set(genres)],
-    vibes: deriveVibes(genres, rating ? rating * 10 : undefined),
+    vibes: deriveVibes(genres, igdbScore),
     year,
     cover: `https://images.igdb.com/igdb/image/upload/t_720p/${g.cover.image_id}.jpg`,
     description: g.summary || "",
     people: people.slice(0, 3),
     awards: [],
     platforms: [...new Set(platforms)],
-    ext: rating ? { ign: rating } : {},
+    ext,
     totalEp: 0,
   };
 }
@@ -239,12 +245,14 @@ async function seedIgdb(): Promise<SeedItem[]> {
   console.log("\n🎮 Fetching IGDB games...");
   const all: SeedItem[] = [];
 
+  const IGDB_FIELDS = `fields name,cover.image_id,summary,genres.name,first_release_date,total_rating,aggregated_rating,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,platforms;`;
+
   // Top rated games (150)
   console.log("  Top rated games...");
   for (let offset = 0; offset < 150; offset += 50) {
     try {
       const games = await igdbQuery("games",
-        `fields name,cover.image_id,summary,genres.name,first_release_date,total_rating,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,platforms;
+        `${IGDB_FIELDS}
         where total_rating_count > 50 & cover != null;
         sort total_rating desc;
         limit 50; offset ${offset};`
@@ -264,7 +272,7 @@ async function seedIgdb(): Promise<SeedItem[]> {
   const twoYearsAgo = Math.floor(Date.now() / 1000) - 2 * 365 * 24 * 3600;
   try {
     const games = await igdbQuery("games",
-      `fields name,cover.image_id,summary,genres.name,first_release_date,total_rating,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,platforms;
+      `${IGDB_FIELDS}
       where first_release_date > ${twoYearsAgo} & total_rating_count > 10 & cover != null;
       sort total_rating desc;
       limit 50;`
@@ -281,7 +289,7 @@ async function seedIgdb(): Promise<SeedItem[]> {
   console.log("  Top indie games...");
   try {
     const games = await igdbQuery("games",
-      `fields name,cover.image_id,summary,genres.name,first_release_date,total_rating,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,platforms;
+      `${IGDB_FIELDS}
       where genres = (31) & total_rating_count > 20 & cover != null;
       sort total_rating desc;
       limit 30;`
@@ -334,8 +342,11 @@ async function searchBooks(query: string, maxResults: number): Promise<SeedItem[
           people: people.slice(0, 3),
           awards: [],
           platforms: ["kindle", "audible"],
-          ext: info.averageRating ? { goodreads: info.averageRating } : {},
+          // google_books key: 0-5 scale (Google Books averageRating, NOT Goodreads)
+          ext: info.averageRating ? { google_books: info.averageRating } : {},
           totalEp: info.pageCount || 0,
+          // Store Google Books ratingsCount so books pass the quality floor
+          voteCount: info.ratingsCount || 0,
         });
       }
       await sleep(200);
@@ -539,9 +550,34 @@ function spotifyAlbumToItem(a: any): SeedItem | null {
     people: (a.artists || []).map((ar: any) => ({ role: "Artist", name: ar.name })).slice(0, 3),
     awards: [],
     platforms: ["spotify", "apple_music"],
-    ext: {},
+    // popularity populated by enrichSpotifyPopularity() after initial fetch
+    ext: a.popularity !== undefined ? { spotify_popularity: a.popularity } : {},
     totalEp: a.total_tracks || 0,
+    voteCount: a.popularity || 0,
   };
+}
+
+/** Batch-fetch album popularity from Spotify (search results don't include it) */
+async function enrichSpotifyPopularity(albums: any[]): Promise<void> {
+  const token = await getSpotifyToken();
+  const ids = albums.filter((a) => a.id && a.ext && !Object.keys(a.ext).length).map((a) => a._spotifyId).filter(Boolean);
+  for (let i = 0; i < ids.length; i += 20) {
+    const batch = ids.slice(i, i + 20).join(",");
+    try {
+      const data = await fetchJson(`https://api.spotify.com/v1/albums?ids=${batch}&market=US`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      for (const album of (data?.albums || [])) {
+        if (!album?.id || album.popularity === undefined) continue;
+        const match = albums.find((a) => a._spotifyId === album.id);
+        if (match) {
+          match.ext = { spotify_popularity: album.popularity };
+          match.voteCount = album.popularity;
+        }
+      }
+      await sleep(100);
+    } catch {}
+  }
 }
 
 function spotifyShowToItem(s: any): SeedItem | null {
@@ -568,8 +604,9 @@ function spotifyShowToItem(s: any): SeedItem | null {
     people: [{ role: "Host", name: s.publisher || "Unknown" }],
     awards: [],
     platforms: ["spotify", "apple_pod"],
-    ext: {},
+    ext: s.popularity !== undefined ? { spotify_popularity: s.popularity } : {},
     totalEp: s.total_episodes || 0,
+    voteCount: s.popularity || s.total_episodes || 0,
   };
 }
 
@@ -588,17 +625,39 @@ async function seedSpotify(): Promise<SeedItem[]> {
     ["best classical albums", ["Classical"], 10],
   ];
 
+  const rawAlbums: any[] = [];
   for (const [query, genreTags, limit] of albumQueries) {
     console.log(`  Albums: "${query}" (${limit})...`);
     const albums = await spotifySearch(query, "album", limit);
     for (const a of albums) {
-      const item = spotifyAlbumToItem(a);
+      const item = spotifyAlbumToItem(a) as any;
       if (item) {
         item.genre = genreTags;
         item.vibes = deriveVibes(genreTags);
+        item._spotifyId = a.id; // Store for popularity batch fetch
+        rawAlbums.push(item);
         all.push(item);
       }
     }
+  }
+
+  // Batch-fetch album popularity from Spotify (20 at a time)
+  console.log(`  Fetching album popularity for ${rawAlbums.length} albums...`);
+  const token = await getSpotifyToken();
+  const noPopularity = rawAlbums.filter((a) => !Object.keys(a.ext).length && a._spotifyId);
+  for (let i = 0; i < noPopularity.length; i += 20) {
+    const ids = noPopularity.slice(i, i + 20).map((a: any) => a._spotifyId).join(",");
+    try {
+      const data = await fetchJson(`https://api.spotify.com/v1/albums?ids=${ids}&market=US`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      for (const album of (data?.albums || [])) {
+        if (!album?.id || album.popularity === undefined) continue;
+        const match = noPopularity.find((a: any) => a._spotifyId === album.id);
+        if (match) { match.ext = { spotify_popularity: album.popularity }; match.voteCount = album.popularity; }
+      }
+    } catch {}
+    await sleep(150);
   }
 
   // Podcasts
@@ -723,6 +782,7 @@ async function main() {
           ext: item.ext as any,
           totalEp: item.totalEp,
           isUpcoming: false,
+          ...(item.voteCount !== undefined ? { voteCount: item.voteCount } : {}),
         })),
         skipDuplicates: true,
       });
