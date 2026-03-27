@@ -162,8 +162,16 @@ A working React prototype exists (literacy.jsx) that demonstrates all V1 feature
 
 ## Data Sync Scripts (run these to populate/maintain the database)
 
+### Bulk catalog population (run to expand catalog to 24,500+ items):
+- `npx tsx scripts/populate-catalog.ts` — Pull large batches from all APIs (TMDB, IGDB, Google Books, OpenLibrary, Jikan, Comic Vine, Spotify). Takes 30–90 minutes. Safe to re-run (idempotent — deduplicates by external ID).
+- `npx tsx scripts/populate-catalog.ts --type=movies` — Run just one media type (movies, tv, games, books, anime, manga, comics, music, podcasts)
+- `npx tsx scripts/populate-catalog.ts --limit=100` — Limit items per source (useful for testing)
+- `npx tsx scripts/populate-catalog.ts --spotify-delay=1000` — Slow down Spotify requests if rate limited (default 500ms)
+- Spotify may require multiple runs due to aggressive rate limiting — re-run with `--type=music` and `--type=podcasts` if stopped early
+- After populate-catalog, run `npx tsx scripts/sync-omdb-scores.ts` to add real IMDb/RT/Metacritic scores to the new movies and TV shows
+
 ### One-time setup (run in order):
-1. `npx tsx scripts/seed-catalog.ts` — Initial population from all APIs
+1. `npx tsx scripts/seed-catalog.ts` — Legacy initial population (superseded by populate-catalog.ts above)
 2. `npx tsx scripts/migrate-score-keys.ts` — Rename legacy score keys (imdb→tmdb, ign→igdb, goodreads→google_books)
 3. `npx tsx scripts/backfill-book-votes.ts` — Populate voteCount for books so they appear in catalog
 4. `npx tsx scripts/fetch-external-scores.ts` — Populate ExternalScore table from ext JSON + APIs
@@ -179,6 +187,12 @@ A working React prototype exists (literacy.jsx) that demonstrates all V1 feature
 - `npx tsx scripts/cross-reference-anime.ts` — Add TMDB scores to Jikan-sourced anime (uses --limit=50 first to test)
 - `npx tsx scripts/deduplicate-anime.ts --dry-run` — Report TMDB/Jikan duplicate pairs (review before changing)
 - `npx tsx scripts/deduplicate-anime.ts` — Link anime seasons into franchises + merge duplicate scores
+
+### Import system backfills (run once after deploy):
+- `npx prisma migrate dev --name add_steam_app_id` — Add steam_app_id column to items table (required for Steam import matching)
+- `npx tsx scripts/backfill-steam-ids.ts` — Populate steam_app_id for existing game items via IGDB external_games API
+- `npx tsx scripts/backfill-recommend-tags.ts` — Backfill recommendTag on all imported ratings that were created before automatic inference was added
+- `npx tsx scripts/backfill-recommend-tags.ts --all` — Also backfill native (non-imported) ratings with null recommendTag
 
 ### Score key conventions (enforced after migrate-score-keys.ts):
 - `tmdb` — TMDB community vote_average (0-10); used for movies + TV

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ITEMS, TYPES, TYPE_ORDER, type MediaType, type Item } from "@/lib/data";
 import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";
 import Card from "@/components/card";
@@ -21,6 +22,7 @@ for (const item of ITEMS) {
 
 export default function LibraryPage() {
   const { entries, items: dbItems } = useLibrary();
+  const router = useRouter();
   const [globalFilter, setGlobalFilter] = useState<MediaType | "all">("all");
 
   // Merge static items with DB items — DB items take priority
@@ -78,21 +80,38 @@ export default function LibraryPage() {
             margin: "0 auto 20px",
             lineHeight: 1.6,
           }}>
-            Rate or track media to add it to your library.
+            Rate or track media to add it to your library, or import from another platform.
           </div>
-          <Link href="/explore" style={{
-            display: "inline-block",
-            padding: "8px 20px",
-            borderRadius: 10,
-            background: "rgba(232,72,85,0.1)",
-            border: "1px solid rgba(232,72,85,0.3)",
-            color: "#E84855",
-            fontSize: 13,
-            fontWeight: 600,
-            textDecoration: "none",
-          }}>
-            Browse titles →
-          </Link>
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link href="/explore" style={{
+              display: "inline-block",
+              padding: "8px 20px",
+              borderRadius: 10,
+              background: "rgba(232,72,85,0.1)",
+              border: "1px solid rgba(232,72,85,0.3)",
+              color: "#E84855",
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}>
+              Browse titles →
+            </Link>
+            <button
+              onClick={() => router.push("/settings?tab=import")}
+              style={{
+                padding: "8px 20px",
+                borderRadius: 10,
+                background: "rgba(49,133,252,0.1)",
+                border: "1px solid rgba(49,133,252,0.3)",
+                color: "#3185FC",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              📥 Import from Letterboxd, MAL…
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -100,8 +119,9 @@ export default function LibraryPage() {
 
   return (
     <div className="content-width">
-      {/* Status summary pills */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+      {/* Header row: status pills + Import shortcut */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         {STATUSES.map((s) => {
           const count = grouped[s.key].length;
           return (
@@ -124,6 +144,29 @@ export default function LibraryPage() {
             </div>
           );
         })}
+      </div>
+
+      {/* Import shortcut button */}
+      <button
+        onClick={() => router.push("/settings?tab=import")}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 5,
+          padding: "7px 13px",
+          borderRadius: 8,
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          color: "rgba(255,255,255,0.55)",
+          fontSize: 12,
+          fontWeight: 600,
+          cursor: "pointer",
+          whiteSpace: "nowrap",
+          flexShrink: 0,
+        }}
+      >
+        📥 Import
+      </button>
       </div>
 
       {/* Global media type filter — applies to ALL sections */}

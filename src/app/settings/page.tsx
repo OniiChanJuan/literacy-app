@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -69,6 +69,15 @@ export default function SettingsPage() {
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
+
+  // Read ?tab= query param on mount to deep-link to a specific section
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab") as Section | null;
+    if (tab && SECTIONS.some(s => s.id === tab)) {
+      setSection(tab);
+    }
+  }, []);
 
   useEffect(() => {
     if (!session?.user) return;
@@ -657,6 +666,13 @@ function ImportSection() {
   const [history, setHistory] = useState<ImportRecord[]>([]);
   const [conflictMode, setConflictMode] = useState<"skip" | "overwrite" | "keep_higher">("skip");
 
+  // Re-import warning state: set when a previous import from the same source exists
+  const [pendingImport, setPendingImport] = useState<{
+    source: ImportSource;
+    items: any[];
+    previousImport: ImportRecord;
+  } | null>(null);
+
   // MAL/Steam inputs
   const [malUsername, setMalUsername] = useState("");
   const [steamId, setSteamId] = useState("");
@@ -672,6 +688,97 @@ function ImportSection() {
   const inputStyle: React.CSSProperties = {
     width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid var(--border)",
     background: "var(--surface-1)", color: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box",
+  };
+
+  // ── Chunked import helper ───────────────────────────────
+  // Sends items to /api/import/batch in chunks of 50 and updates the progress
+  // bar after each chunk, giving real-time feedback.
+
+  const doChunkedImport = async (source: ImportSource, allItems: any[]): Promise<ImportResult> => {
+    const CHUNK_SIZE = 50;
+    let importId: number | undefined;
+    let totalImported = 0, totalSkipped = 0, totalFailed = 0, totalDuplicates = 0;
+    const allErrors: string[] = [];
+
+    for (let i = 0; i < allItems.length; i += CHUNK_SIZE) {
+      const chunk = allItems.slice(i, i + CHUNK_SIZE);
+      const isLast = i + CHUNK_SIZE >= allItems.length;
+      const processed = Math.min(i + CHUNK_SIZE, allItems.length);
+
+      setProgress({
+        current: processed,
+        total: allItems.length,
+        label: `Importing ${processed} of ${allItems.length}…`,
+      });
+
+      const res = await fetch("/api/import/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source, items: chunk, conflictMode, importId, isLast }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Import failed");
+      }
+
+      const data = await res.json();
+      if (!importId) importId = data.importId;
+
+      totalImported += data.imported;
+      totalSkipped += data.skipped;
+      totalFailed += data.failed;
+      totalDuplicates += data.duplicates;
+      allErrors.push(...(data.errors || []));
+
+      // Small delay between chunks so the UI can re-render
+      if (!isLast) await new Promise(r => setTimeout(r, 80));
+    }
+
+    return {
+      importId: importId!,
+      imported: totalImported,
+      skipped: totalSkipped,
+      failed: totalFailed,
+      duplicates: totalDuplicates,
+      total: allItems.length,
+      errors: allErrors.slice(0, 10),
+    };
+  };
+
+  // ── Check for previous import (re-import warning) ──────
+
+  const checkAndStartImport = async (source: ImportSource, items: any[]) => {
+    if (items.length === 0) {
+      setError("No items found in the file. Make sure you uploaded the correct export file.");
+      setStep("error");
+      return;
+    }
+
+    // Look for a previous completed import from this source
+    const prev = history.find(h => h.source === source && h.status === "completed");
+    if (prev) {
+      // Show re-import warning — store state and let user confirm
+      setPendingImport({ source, items, previousImport: prev });
+      return;
+    }
+
+    await runImport(source, items);
+  };
+
+  const runImport = async (source: ImportSource, items: any[]) => {
+    setPendingImport(null);
+    setStep("matching");
+    setProgress({ current: 0, total: items.length, label: `Matching ${items.length} items…` });
+
+    try {
+      const data = await doChunkedImport(source, items);
+      setResult(data);
+      setStep("done");
+    } catch (err: any) {
+      setError(err.message || "Import failed");
+      setStep("error");
+    }
   };
 
   // ── File import (Letterboxd / Goodreads) ───────────────
@@ -692,30 +799,7 @@ function ImportSection() {
         parsedItems = await parseGoodreadsFile(file);
       }
 
-      if (parsedItems.length === 0) {
-        setError("No items found in the file. Make sure you uploaded the correct export file.");
-        setStep("error");
-        return;
-      }
-
-      setStep("matching");
-      setProgress({ current: 0, total: parsedItems.length, label: `Matching ${parsedItems.length} items...` });
-
-      // Send to batch import API
-      const res = await fetch("/api/import/batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source, items: parsedItems, conflictMode }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Import failed");
-      }
-
-      const data: ImportResult = await res.json();
-      setResult(data);
-      setStep("done");
+      await checkAndStartImport(source, parsedItems);
     } catch (err: any) {
       setError(err.message || "Import failed");
       setStep("error");
@@ -790,18 +874,18 @@ function ImportSection() {
   const handleMALImport = async () => {
     if (!malUsername.trim()) return;
     setActiveImport("myanimelist");
-    setStep("matching");
+    setStep("uploading");
     setError("");
     setResult(null);
 
     try {
       const allItems: any[] = [];
 
-      // Fetch anime list (paginated)
+      // Fetch both anime and manga lists (paginated)
       for (const type of ["anime", "manga"] as const) {
         let page = 1;
         let hasMore = true;
-        setProgress({ current: 0, total: 0, label: `Fetching ${type} list...` });
+        setProgress({ current: 0, total: 0, label: `Fetching ${type} list…` });
 
         while (hasMore) {
           const res = await fetch(`/api/import/mal?username=${encodeURIComponent(malUsername.trim())}&type=${type}&page=${page}`);
@@ -815,34 +899,16 @@ function ImportSection() {
           const parsed = parseMALItems(data.items, type);
           allItems.push(...parsed);
 
-          setProgress({ current: allItems.length, total: data.totalItems || allItems.length, label: `Found ${allItems.length} ${type} entries...` });
+          setProgress({ current: allItems.length, total: data.totalItems || allItems.length, label: `Found ${allItems.length} entries…` });
 
           hasMore = data.hasMore;
           page++;
 
-          // Rate limit: Jikan allows 3 req/sec
-          if (hasMore) await new Promise(r => setTimeout(r, 400));
+          if (hasMore) await new Promise(r => setTimeout(r, 400)); // Jikan rate limit
         }
       }
 
-      if (allItems.length === 0) {
-        setError("No items found. Make sure the MAL profile is public.");
-        setStep("error");
-        return;
-      }
-
-      setProgress({ current: 0, total: allItems.length, label: `Importing ${allItems.length} items...` });
-
-      const res = await fetch("/api/import/batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source: "myanimelist", items: allItems, conflictMode }),
-      });
-
-      if (!res.ok) throw new Error("Import failed");
-      const data: ImportResult = await res.json();
-      setResult(data);
-      setStep("done");
+      await checkAndStartImport("myanimelist", allItems);
     } catch (err: any) {
       setError(err.message || "MAL import failed");
       setStep("error");
@@ -854,10 +920,10 @@ function ImportSection() {
   const handleSteamImport = async () => {
     if (!steamId.trim()) return;
     setActiveImport("steam");
-    setStep("matching");
+    setStep("uploading");
     setError("");
     setResult(null);
-    setProgress({ current: 0, total: 0, label: "Fetching Steam library..." });
+    setProgress({ current: 0, total: 0, label: "Fetching Steam library…" });
 
     try {
       const res = await fetch(`/api/import/steam?steamid=${encodeURIComponent(steamId.trim())}`);
@@ -870,24 +936,7 @@ function ImportSection() {
       const { parseSteamGames } = await import("@/lib/import-parsers");
       const items = parseSteamGames(data.games);
 
-      if (items.length === 0) {
-        setError("No games found. Make sure your Steam profile is public.");
-        setStep("error");
-        return;
-      }
-
-      setProgress({ current: 0, total: items.length, label: `Importing ${items.length} games...` });
-
-      const importRes = await fetch("/api/import/batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source: "steam", items, conflictMode }),
-      });
-
-      if (!importRes.ok) throw new Error("Import failed");
-      const result: ImportResult = await importRes.json();
-      setResult(result);
-      setStep("done");
+      await checkAndStartImport("steam", items);
     } catch (err: any) {
       setError(err.message || "Steam import failed");
       setStep("error");
@@ -898,19 +947,20 @@ function ImportSection() {
 
   const handleSpotifyImport = async () => {
     setActiveImport("spotify");
-    setStep("matching");
+    setStep("uploading");
     setError("");
     setResult(null);
-    setProgress({ current: 0, total: 0, label: "Fetching Spotify saved albums..." });
+    setProgress({ current: 0, total: 0, label: "Fetching Spotify saved albums…" });
 
     try {
-      // First get a Spotify access token via our API
       const tokenRes = await fetch("/api/import/spotify");
       if (!tokenRes.ok) {
         const data = await tokenRes.json();
-        if (data.authUrl) {
-          // Need to authenticate — redirect to Spotify
-          window.location.href = data.authUrl;
+        // API returns needsAuth=true when Spotify isn't connected.
+        // Show a helpful message — never try to redirect to an undefined authUrl.
+        if (data.needsAuth) {
+          setError(data.message || "Connect your Spotify account in Settings → Account first, then come back to import your saved albums.");
+          setStep("error");
           return;
         }
         throw new Error(data.error || "Spotify connection failed");
@@ -920,24 +970,7 @@ function ImportSection() {
       const { parseSpotifyAlbums } = await import("@/lib/import-parsers");
       const items = parseSpotifyAlbums(tokenData.albums);
 
-      if (items.length === 0) {
-        setError("No saved albums found on your Spotify account.");
-        setStep("error");
-        return;
-      }
-
-      setProgress({ current: 0, total: items.length, label: `Importing ${items.length} albums...` });
-
-      const importRes = await fetch("/api/import/batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source: "spotify", items, conflictMode }),
-      });
-
-      if (!importRes.ok) throw new Error("Import failed");
-      const result: ImportResult = await importRes.json();
-      setResult(result);
-      setStep("done");
+      await checkAndStartImport("spotify", items);
     } catch (err: any) {
       setError(err.message || "Spotify import failed");
       setStep("error");
@@ -950,6 +983,7 @@ function ImportSection() {
     setProgress({ current: 0, total: 0, label: "" });
     setResult(null);
     setError("");
+    setPendingImport(null);
   };
 
   return (
@@ -1085,6 +1119,50 @@ function ImportSection() {
           }}>
             Try again
           </button>
+        </div>
+      )}
+
+      {/* Re-import warning */}
+      {pendingImport && step === "idle" && (
+        <div style={{
+          marginBottom: 20, padding: 16, background: "#F9A62010",
+          borderRadius: 10, border: "1px solid #F9A62040",
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#F9A620", marginBottom: 6 }}>
+            You've imported from {PLATFORM_CONFIG.find(p => p.id === pendingImport.source)?.name} before
+          </div>
+          <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 12, lineHeight: 1.6 }}>
+            You imported {pendingImport.previousImport.importedItems} items on{" "}
+            {new Date(pendingImport.previousImport.startedAt).toLocaleDateString("en-US", {
+              month: "long", day: "numeric", year: "numeric",
+            })}.
+            Importing again will{" "}
+            {conflictMode === "skip"
+              ? "skip any items you've already rated (keeping your existing ratings)."
+              : conflictMode === "overwrite"
+              ? "overwrite your existing ratings with the imported values."
+              : "keep whichever rating is higher for each item."}
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => runImport(pendingImport.source, pendingImport.items)}
+              style={{
+                padding: "7px 16px", borderRadius: 8, border: "none",
+                background: "#F9A620", color: "#000", fontSize: 12, fontWeight: 700, cursor: "pointer",
+              }}
+            >
+              Continue import ({pendingImport.items.length} items)
+            </button>
+            <button
+              onClick={resetImport}
+              style={{
+                padding: "7px 16px", borderRadius: 8, border: "1px solid var(--border)",
+                background: "transparent", color: "var(--text-faint)", fontSize: 12, fontWeight: 600, cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 

@@ -10,9 +10,13 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "books.google.com" },
       { protocol: "http", hostname: "**.google.com" },
     ],
-    formats: ["image/avif", "image/webp"],
-    deviceSizes: [320, 640, 750, 1080, 1920],
-    imageSizes: [162, 256, 384],
+    // TODO: TEMPORARY — remove unoptimized:true after April 1 when image optimization limit resets
+    unoptimized: true,
+    formats: ["image/webp"],
+    deviceSizes: [640, 768, 1024, 1280, 1536],
+    imageSizes: [64, 96, 128, 160, 256, 384],
+    minimumCacheTTL: 2678400,
+    qualities: [75],
   },
 };
 

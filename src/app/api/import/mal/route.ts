@@ -57,6 +57,8 @@ export async function GET(req: NextRequest) {
         score: entry.score || 0,
         num_episodes_watched: entry.episodes_watched,
         num_chapters_read: entry.chapters_read,
+        finish_date: entry.finish_date || null,
+        updated_at: entry.updated_at || null,
       },
     }));
 

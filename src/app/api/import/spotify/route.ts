@@ -66,11 +66,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // No Spotify connected — can't import user-specific data without OAuth
-  // Return error suggesting they use client credentials search instead
+  // No Spotify connected — can't access user libraries without OAuth
+  // Tell the UI to show instructions rather than try to redirect
   return NextResponse.json({
-    error: "Spotify account not connected. Connect Spotify in Account settings first, or use the search-based import below.",
+    error: "Spotify account not connected.",
     needsAuth: true,
+    message: "Connect your Spotify account first: go to Settings → Account and link Spotify, then come back here to import your saved albums.",
   }, { status: 400 });
 }
 

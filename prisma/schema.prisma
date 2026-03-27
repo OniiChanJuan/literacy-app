@@ -131,6 +131,7 @@ model Item {
   spotifyId       String?  @map("spotify_id")
   googleBooksId   String?  @map("google_books_id")
   comicVineId     Int?     @map("comic_vine_id")
+  steamAppId      Int?     @map("steam_app_id")
   popularityScore Float    @default(0) @map("popularity_score")
   voteCount       Int      @default(0) @map("vote_count")
   lastSyncedAt    DateTime? @map("last_synced_at")
@@ -164,6 +165,7 @@ model Item {
   @@index([type, year])
   @@index([type, isUpcoming])
   @@index([parentItemId])
+  @@index([steamAppId])
   @@map("items")
 }
 

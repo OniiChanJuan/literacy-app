@@ -3,13 +3,43 @@
 export interface ParsedImportItem {
   title: string;
   year?: number;
-  rating?: number; // 1-5 scale (normalized)
+  rating?: number;        // 1-5 scale (normalized)
   status?: "completed" | "in_progress" | "want_to" | "dropped";
   review?: string;
-  externalId?: string; // platform-specific ID
+  externalId?: string;    // platform-specific ID
+  originalDate?: string;  // ISO date string — used as created_at on rating and completedAt on library entry
   mediaType: "movie" | "tv" | "book" | "manga" | "anime" | "game" | "music" | "podcast";
-  source: string; // letterboxd, goodreads, myanimelist, steam, spotify
+  source: string;         // letterboxd, goodreads, myanimelist, steam, spotify
   rawData?: Record<string, string>; // original CSV row for debugging
+}
+
+// ─── Date parsing helper ──────────────────────────────────────────────
+
+/** Parse a date string into a valid ISO string, or return undefined if invalid. */
+function parseDate(raw: string | undefined | null): string | undefined {
+  if (!raw) return undefined;
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed === "0" || trimmed === "N/A") return undefined;
+
+  // Common formats: YYYY-MM-DD, YYYY/MM/DD, MM/DD/YYYY
+  let d: Date | null = null;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    d = new Date(trimmed + "T00:00:00Z");
+  } else if (/^\d{4}\/\d{2}\/\d{2}$/.test(trimmed)) {
+    d = new Date(trimmed.replace(/\//g, "-") + "T00:00:00Z");
+  } else if (/^\d{4}-\d{2}-\d{2}T/.test(trimmed)) {
+    d = new Date(trimmed);
+  } else {
+    d = new Date(trimmed);
+  }
+
+  if (!d || isNaN(d.getTime())) return undefined;
+  // Sanity check: reject dates before 1888 (first film) or in the far future
+  const year = d.getUTCFullYear();
+  if (year < 1888 || year > new Date().getUTCFullYear() + 2) return undefined;
+
+  return d.toISOString();
 }
 
 // ─── Letterboxd (CSV from ZIP or direct CSV) ─────────────────────────
@@ -35,6 +65,7 @@ export function parseLetterboxdCSV(csvText: string): ParsedImportItem[] {
 
     const yearStr = yearIdx >= 0 ? row[yearIdx]?.trim() : "";
     const ratingStr = ratingIdx >= 0 ? row[ratingIdx]?.trim() : "";
+    const dateStr = dateIdx >= 0 ? row[dateIdx]?.trim() : "";
 
     // Letterboxd uses 0.5-5.0 scale (half stars), we use 1-5
     let rating: number | undefined;
@@ -55,6 +86,7 @@ export function parseLetterboxdCSV(csvText: string): ParsedImportItem[] {
       year: yearStr ? parseInt(yearStr) : undefined,
       rating,
       status: "completed", // Letterboxd ratings.csv = watched films
+      originalDate: parseDate(dateStr),
       mediaType: "movie",
       source: "letterboxd",
       externalId: letterboxdUriIdx >= 0 ? row[letterboxdUriIdx]?.trim() : undefined,
@@ -104,6 +136,7 @@ export function parseLetterboxdReviews(csvText: string): ParsedImportItem[] {
   const yearIdx = headers.indexOf("year");
   const ratingIdx = headers.indexOf("rating");
   const reviewIdx = headers.indexOf("review");
+  const dateIdx = headers.indexOf("date");
 
   if (nameIdx === -1) return [];
 
@@ -115,6 +148,7 @@ export function parseLetterboxdReviews(csvText: string): ParsedImportItem[] {
     if (!title || !reviewText) continue;
 
     const ratingStr = ratingIdx >= 0 ? row[ratingIdx]?.trim() : "";
+    const dateStr = dateIdx >= 0 ? row[dateIdx]?.trim() : "";
     let rating: number | undefined;
     if (ratingStr) {
       const raw = parseFloat(ratingStr);
@@ -131,6 +165,7 @@ export function parseLetterboxdReviews(csvText: string): ParsedImportItem[] {
       rating,
       review: reviewText,
       status: "completed",
+      originalDate: parseDate(dateStr),
       mediaType: "movie",
       source: "letterboxd",
     });
@@ -154,6 +189,8 @@ export function parseGoodreadsCSV(csvText: string): ParsedImportItem[] {
   const yearIdx = headers.indexOf("year published");
   const origYearIdx = headers.indexOf("original publication year");
   const reviewIdx = headers.indexOf("my review");
+  const dateReadIdx = headers.indexOf("date read");
+  const dateAddedIdx = headers.indexOf("date added");
 
   if (titleIdx === -1) return [];
 
@@ -169,12 +206,19 @@ export function parseGoodreadsCSV(csvText: string): ParsedImportItem[] {
     const review = reviewIdx >= 0 ? row[reviewIdx]?.trim() : "";
     const isbn13 = isbn13Idx >= 0 ? row[isbn13Idx]?.trim().replace(/[="]/g, "") : "";
     const yearStr = origYearIdx >= 0 ? row[origYearIdx]?.trim() : (yearIdx >= 0 ? row[yearIdx]?.trim() : "");
+    const dateReadStr = dateReadIdx >= 0 ? row[dateReadIdx]?.trim() : "";
+    const dateAddedStr = dateAddedIdx >= 0 ? row[dateAddedIdx]?.trim() : "";
 
     let status: ParsedImportItem["status"];
     if (shelf === "read") status = "completed";
     else if (shelf === "currently-reading") status = "in_progress";
     else if (shelf === "to-read") status = "want_to";
     else status = "completed"; // default for rated items
+
+    // Use date read for completed items, date added for others
+    const originalDate = status === "completed"
+      ? parseDate(dateReadStr) || parseDate(dateAddedStr)
+      : parseDate(dateAddedStr);
 
     const rawData: Record<string, string> = {};
     headers.forEach((h, idx) => { rawData[h] = row[idx] || ""; });
@@ -186,6 +230,7 @@ export function parseGoodreadsCSV(csvText: string): ParsedImportItem[] {
       status,
       review: review || undefined,
       externalId: isbn13 || undefined,
+      originalDate,
       mediaType: "book",
       source: "goodreads",
       rawData,
@@ -207,9 +252,11 @@ export interface MALListItem {
   };
   list_status: {
     status: string; // watching, completed, on_hold, dropped, plan_to_watch
-    score: number; // 0-10
+    score: number;  // 0-10
     num_episodes_watched?: number;
     num_chapters_read?: number;
+    finish_date?: string | null;
+    updated_at?: string | null;
   };
 }
 
@@ -234,11 +281,17 @@ export function parseMALItems(items: MALListItem[], mediaType: "anime" | "manga"
 
     const year = item.node.start_date ? parseInt(item.node.start_date.substring(0, 4)) : undefined;
 
+    // Use finish_date for completed items, updated_at as fallback
+    const originalDate = status === "completed"
+      ? parseDate(item.list_status.finish_date) || parseDate(item.list_status.updated_at)
+      : parseDate(item.list_status.updated_at);
+
     return {
       title: item.node.title,
       year,
       rating,
       status,
+      originalDate,
       externalId: String(item.node.id),
       mediaType: mediaType === "anime" ? "anime" as const : "manga" as const,
       source: "myanimelist",
@@ -275,6 +328,7 @@ export function parseSteamGames(games: SteamGame[]): ParsedImportItem[] {
         externalId: String(game.appid),
         mediaType: "game" as const,
         source: "steam",
+        // No dates available from Steam API
       };
     });
 }
@@ -309,6 +363,7 @@ export function parseSpotifyAlbums(albums: SpotifySavedAlbum[]): ParsedImportIte
       externalId: item.album.id,
       mediaType: "music" as const,
       source: "spotify",
+      // No per-listen dates available from Spotify saved albums API
     };
   });
 }

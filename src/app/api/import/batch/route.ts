@@ -15,8 +15,17 @@ import {
 import { searchTmdb, getTmdbDetails, tmdbItemId } from "@/lib/tmdb";
 import { searchGoogleBooks } from "@/lib/google-books";
 import { cleanDescription } from "@/lib/clean-description";
+import { recalculateTasteProfile } from "@/lib/recalculate-taste-profile";
 
-// Match a parsed import item to our DB (or create it)
+// ─── Recommend tag inference from rating score ────────────────────────
+function inferRecommendTag(score: number | undefined): string | null {
+  if (!score) return null;
+  if (score >= 4) return "recommend";
+  if (score === 3) return "mixed";
+  return "skip"; // 1-2
+}
+
+// ─── Match a parsed import item to our DB (or create it) ──────────────
 async function resolveItem(item: ParsedImportItem): Promise<number | null> {
   // 1. Try to find by external ID in our DB
   if (item.externalId) {
@@ -25,17 +34,17 @@ async function resolveItem(item: ParsedImportItem): Promise<number | null> {
     if (item.source === "myanimelist") {
       existing = await prisma.item.findFirst({ where: { malId: parseInt(item.externalId) } });
     } else if (item.source === "steam") {
-      // Steam games don't have igdbId mapping, search by title
+      // Try Steam appid match first (most reliable)
+      const appId = parseInt(item.externalId);
+      if (!isNaN(appId)) {
+        existing = await prisma.item.findFirst({ where: { steamAppId: appId } });
+      }
     } else if (item.source === "spotify") {
       existing = await prisma.item.findFirst({ where: { spotifyId: item.externalId } });
-    } else if (item.source === "goodreads" && item.externalId.length >= 10) {
-      // ISBN13 — search Google Books
-      existing = await prisma.item.findFirst({
-        where: {
-          title: { equals: item.title, mode: "insensitive" },
-          type: "book",
-        },
-      });
+    } else if (item.source === "goodreads") {
+      // ISBN from Goodreads — call Google Books API directly to get the volume ID,
+      // then look it up in our DB. Title fallback happens below.
+      return await resolveViaGoogleBooks(item);
     }
 
     if (existing) return existing.id;
@@ -130,6 +139,7 @@ async function resolveViaTmdb(item: ParsedImportItem): Promise<number | null> {
 }
 
 async function resolveViaGoogleBooks(item: ParsedImportItem): Promise<number | null> {
+  // For Goodreads imports, externalId is ISBN13. Search Google Books by ISBN first.
   const query = item.externalId && item.externalId.length >= 10
     ? `isbn:${item.externalId}`
     : item.title;
@@ -141,7 +151,25 @@ async function resolveViaGoogleBooks(item: ParsedImportItem): Promise<number | n
   const existing = await prisma.item.findFirst({ where: { googleBooksId: best.volumeId } });
   if (existing) return existing.id;
 
-  // GoogleBookSearchResult extends Item — has all fields we need
+  // Also check by title fallback in case the book exists without a googleBooksId
+  const titleFallback = await prisma.item.findFirst({
+    where: {
+      title: { equals: best.title, mode: "insensitive" },
+      type: "book",
+    },
+  });
+  if (titleFallback) {
+    // Backfill the googleBooksId while we're here
+    if (best.volumeId) {
+      await prisma.item.update({
+        where: { id: titleFallback.id },
+        data: { googleBooksId: best.volumeId },
+      }).catch(() => {});
+    }
+    return titleFallback.id;
+  }
+
+  // Create new book item
   const created = await prisma.item.create({
     data: {
       title: best.title,
@@ -296,7 +324,12 @@ async function resolveViaSpotify(item: ParsedImportItem): Promise<number | null>
   return created.id;
 }
 
-// ─── Main batch import endpoint ──────────────────────────────────────
+// ─── Main batch import endpoint ───────────────────────────────────────
+//
+// Supports chunked imports: first call creates the Import record and returns
+// importId. Subsequent calls pass importId to continue updating the same record.
+// Set isLast=true on the final chunk to mark the import completed and trigger
+// taste profile recalculation.
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -304,7 +337,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`import-batch:${session.user.id}`, 5, 60_000)) {
+  if (!rateLimit(`import-batch:${session.user.id}`, 30, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
@@ -317,30 +350,46 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { source, items, conflictMode = "skip" } = body as {
+  const {
+    source,
+    items,
+    conflictMode = "skip",
+    importId: existingImportId,
+    isLast = true,
+  } = body as {
     source: string;
     items: ParsedImportItem[];
     conflictMode: "skip" | "overwrite" | "keep_higher";
+    importId?: number;
+    isLast?: boolean;
   };
 
   if (!source || !Array.isArray(items) || items.length === 0) {
     return NextResponse.json({ error: "source and items[] required" }, { status: 400 });
   }
 
-  // Cap at 5000 items per import
   if (items.length > 5000) {
-    return NextResponse.json({ error: "Maximum 5000 items per import" }, { status: 400 });
+    return NextResponse.json({ error: "Maximum 5000 items per chunk" }, { status: 400 });
   }
 
-  // Create import record
-  const importRecord = await prisma.import.create({
-    data: {
-      userId,
-      source,
-      status: "processing",
-      totalItems: items.length,
-    },
-  });
+  // Create or retrieve import record
+  let importRecordId: number;
+  const isFirstChunk = !existingImportId;
+
+  if (isFirstChunk) {
+    const record = await prisma.import.create({
+      data: { userId, source, status: "processing", totalItems: 0 },
+    });
+    importRecordId = record.id;
+  } else {
+    const record = await prisma.import.findFirst({
+      where: { id: existingImportId, userId },
+    });
+    if (!record) {
+      return NextResponse.json({ error: "Import record not found" }, { status: 404 });
+    }
+    importRecordId = record.id;
+  }
 
   let imported = 0;
   let skipped = 0;
@@ -353,18 +402,18 @@ export async function POST(req: NextRequest) {
   for (let i = 0; i < items.length; i += BATCH_SIZE) {
     const batch = items.slice(i, i + BATCH_SIZE);
 
-    const results = await Promise.allSettled(
+    await Promise.allSettled(
       batch.map(async (item) => {
         try {
-          // Resolve item to our DB
           const itemId = await resolveItem(item);
           if (!itemId) {
             failed++;
             return;
           }
 
-          // Handle rating
+          // ── Rating ───────────────────────────────────────────────
           if (item.rating) {
+            const recommendTag = inferRecommendTag(item.rating);
             const existingRating = await prisma.rating.findUnique({
               where: { userId_itemId: { userId, itemId } },
             });
@@ -383,16 +432,28 @@ export async function POST(req: NextRequest) {
               // overwrite or keep_higher (new is higher)
               await prisma.rating.update({
                 where: { userId_itemId: { userId, itemId } },
-                data: { score: item.rating, importSource: source },
+                data: {
+                  score: item.rating,
+                  recommendTag,
+                  importSource: source,
+                  ...(item.originalDate ? { createdAt: new Date(item.originalDate) } : {}),
+                },
               });
             } else {
               await prisma.rating.create({
-                data: { userId, itemId, score: item.rating, importSource: source },
+                data: {
+                  userId,
+                  itemId,
+                  score: item.rating,
+                  recommendTag,
+                  importSource: source,
+                  ...(item.originalDate ? { createdAt: new Date(item.originalDate) } : {}),
+                },
               });
             }
           }
 
-          // Handle library status
+          // ── Library status ───────────────────────────────────────
           if (item.status) {
             const existingEntry = await prisma.libraryEntry.findUnique({
               where: { userId_itemId: { userId, itemId } },
@@ -400,17 +461,29 @@ export async function POST(req: NextRequest) {
 
             if (!existingEntry) {
               await prisma.libraryEntry.create({
-                data: { userId, itemId, status: item.status },
+                data: {
+                  userId,
+                  itemId,
+                  status: item.status,
+                  ...(item.originalDate && item.status === "completed"
+                    ? { completedAt: new Date(item.originalDate) }
+                    : {}),
+                },
               });
             } else if (conflictMode === "overwrite") {
               await prisma.libraryEntry.update({
                 where: { userId_itemId: { userId, itemId } },
-                data: { status: item.status },
+                data: {
+                  status: item.status,
+                  ...(item.originalDate && item.status === "completed"
+                    ? { completedAt: new Date(item.originalDate) }
+                    : {}),
+                },
               });
             }
           }
 
-          // Handle review
+          // ── Review ───────────────────────────────────────────────
           if (item.review) {
             const existingReview = await prisma.review.findUnique({
               where: { userId_itemId: { userId, itemId } },
@@ -431,28 +504,55 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // Small delay between batches to avoid hammering APIs
     if (i + BATCH_SIZE < items.length) {
       await new Promise(r => setTimeout(r, 200));
     }
   }
 
   // Update import record
-  await prisma.import.update({
-    where: { id: importRecord.id },
-    data: {
-      status: "completed",
-      importedItems: imported,
-      skippedItems: skipped,
-      failedItems: failed,
-      duplicateItems: duplicates,
-      details: { errors: errors.slice(0, 50) },
-      completedAt: new Date(),
-    },
-  });
+  if (isFirstChunk) {
+    await prisma.import.update({
+      where: { id: importRecordId },
+      data: {
+        status: isLast ? "completed" : "processing",
+        totalItems: items.length,
+        importedItems: imported,
+        skippedItems: skipped,
+        failedItems: failed,
+        duplicateItems: duplicates,
+        details: { errors: errors.slice(0, 50) },
+        ...(isLast ? { completedAt: new Date() } : {}),
+      },
+    });
+  } else {
+    // Accumulate existing errors from previous chunks
+    const existingRecord = await prisma.import.findUnique({
+      where: { id: importRecordId },
+      select: { details: true },
+    });
+    const existingErrors: string[] = (existingRecord?.details as any)?.errors || [];
+
+    await prisma.import.update({
+      where: { id: importRecordId },
+      data: {
+        ...(isLast ? { status: "completed", completedAt: new Date() } : {}),
+        totalItems: { increment: items.length },
+        importedItems: { increment: imported },
+        skippedItems: { increment: skipped },
+        failedItems: { increment: failed },
+        duplicateItems: { increment: duplicates },
+        details: { errors: [...existingErrors, ...errors].slice(0, 50) },
+      },
+    });
+  }
+
+  // Recalculate taste profile on the last chunk — runs async, doesn't block response
+  if (isLast) {
+    recalculateTasteProfile(userId).catch(() => {});
+  }
 
   return NextResponse.json({
-    importId: importRecord.id,
+    importId: importRecordId,
     imported,
     skipped,
     failed,
