@@ -40,6 +40,15 @@ function scoreColor(score: number, maxScore: number): string {
   return "var(--score-poor)";
 }
 
+function steamLabelColor(score: number): string {
+  if (score >= 95) return "#66d9c2";
+  if (score >= 80) return "#2EC4B6";
+  if (score >= 70) return "#8bc34a";
+  if (score >= 40) return "#F9A620";
+  if (score >= 20) return "#e07b39";
+  return "#E84855";
+}
+
 // Sources to hide — not recognizable to normal users
 const HIDDEN_SOURCES = new Set(["igdb_user", "spotify_popularity"]);
 
@@ -85,8 +94,6 @@ export function ExternalScoresPanel({ itemId, fallbackExt }: { itemId: number; f
   }
 
   if (!loaded || scores.length === 0) return null;
-  return <ScoreCards scores={scores} />;
-
   return <ScoreCards scores={scores} />;
 }
 
@@ -157,7 +164,14 @@ function ScoreCards({ scores }: { scores: ScoreData[] }) {
                   {s.scoreType === "community" && " · Users"}
                 </div>
                 {s.label && (
-                  <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", marginTop: 1 }}>{s.label}</div>
+                  <div style={{
+                    fontSize: 8,
+                    color: s.source === "steam" ? steamLabelColor(s.score) : "rgba(255,255,255,0.45)",
+                    marginTop: 2,
+                    fontWeight: s.source === "steam" ? 600 : 400,
+                  }}>
+                    {s.label}
+                  </div>
                 )}
               </div>
             </div>

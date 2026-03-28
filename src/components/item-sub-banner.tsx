@@ -150,6 +150,16 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
             : s.maxScore <= 10 ? s.score.toFixed(1)
             : Math.round(s.score).toString();
 
+          const steamLabel = s.source === "steam" && s.label ? s.label : null;
+          const steamLabelColor = steamLabel
+            ? s.score >= 95 ? "#66d9c2"
+              : s.score >= 80 ? "#2EC4B6"
+              : s.score >= 70 ? "#8bc34a"
+              : s.score >= 40 ? "#F9A620"
+              : s.score >= 20 ? "#e07b39"
+              : "#E84855"
+            : null;
+
           return (
             <div key={s.source} style={{
               background: `rgba(${rgb}, 0.06)`,
@@ -167,6 +177,11 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
               <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1 }}>
                 {meta.displayName}
               </div>
+              {steamLabel && (
+                <div style={{ fontSize: 7, color: steamLabelColor!, fontWeight: 600, marginTop: 2, lineHeight: 1.1 }}>
+                  {steamLabel}
+                </div>
+              )}
             </div>
           );
         })}
