@@ -108,22 +108,21 @@ export function meetsQualityFloor(item: {
     case "manga":
       return norm >= 0.6 && votes >= 100;
     case "book":
-      // Don't require votes — Google Books ratingsCount is often missing for older books.
-      // Accept any book with a reasonable score. Backfill script will populate voteCount.
-      return norm >= 0.5;
+      // Require 5+ votes to filter out textbooks and obscure single-rating entries
+      return norm >= 0.5 && votes >= 5;
     case "music":
-      // Accept if scored, has any spotify popularity, or has popularityScore
-      if (norm >= 0.5) return true;
-      if ((item.ext as any).spotify_popularity !== undefined && (item.ext as any).spotify_popularity >= 15) return true;
-      return (item.popularityScore || 0) > 0;
+      // Require votes or meaningful Spotify signal — no-signal albums shouldn't surface
+      if (norm >= 0.5 && votes >= 5) return true;
+      if ((item.ext as any).spotify_popularity !== undefined && (item.ext as any).spotify_popularity >= 20) return true;
+      return false;
     case "comic":
-      // Comics: accept if has ext score >= 0.6 OR popularityScore > 0
-      if (norm >= 0.6) return true;
-      return (item.popularityScore || 0) > 0;
+      // Comics have fewer ratings — keep bar lower at 3
+      return norm >= 0.6 && votes >= 3;
     case "podcast":
-      // Podcasts: accept if has ext score >= 0.5 OR popularityScore > 0
-      if (norm >= 0.5) return true;
-      return (item.popularityScore || 0) > 0;
+      // Accept if has signal: votes or enough episodes as popularity proxy
+      if (norm >= 0.5 && votes >= 3) return true;
+      if ((item.ext as any).spotify_popularity !== undefined && (item.ext as any).spotify_popularity >= 15) return true;
+      return false;
     default:
       return norm >= 0.5;
   }
@@ -202,6 +201,36 @@ export class RowDeduplicator {
   markUsed(ids: number[]) {
     ids.forEach((id) => this.usedIds.add(id));
   }
+}
+
+// ── Type interleaving ───────────────────────────────────────────────────
+/**
+ * Reorders items so media types are spread out rather than clustered.
+ * Uses round-robin from largest type bucket first, so the most common
+ * type is maximally distributed. Never shows more than ~2 of the same
+ * type consecutively unless one type dominates heavily.
+ */
+export function interleaveByType<T extends { type: string }>(items: T[]): T[] {
+  if (items.length <= 1) return items;
+
+  // Group into per-type buckets preserving order within each type
+  const buckets = new Map<string, T[]>();
+  for (const item of items) {
+    const b = buckets.get(item.type) || [];
+    b.push(item);
+    buckets.set(item.type, b);
+  }
+
+  // Sort buckets by initial size desc so the largest type is spread most evenly
+  const sorted = [...buckets.values()].sort((a, b) => b.length - a.length);
+
+  const result: T[] = [];
+  while (sorted.some((b) => b.length > 0)) {
+    for (const bucket of sorted) {
+      if (bucket.length > 0) result.push(bucket.shift()!);
+    }
+  }
+  return result;
 }
 
 // ── Vibe keyword analysis ───────────────────────────────────────────────

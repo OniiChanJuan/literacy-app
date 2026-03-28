@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
-import { qualityRank, meetsQualityFloor, normalizeScore, applyDiversity } from "@/lib/ranking";
+import { qualityRank, meetsQualityFloor, normalizeScore, applyDiversity, interleaveByType } from "@/lib/ranking";
 
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
         return true;
       });
 
-      return jsonResponse(diverse.slice(offset, offset + limit).map(mapItem));
+      return jsonResponse(interleaveByType(diverse).slice(offset, offset + limit).map(mapItem));
     }
 
     // ── Popular right now ─────────────────────────────────────────────
@@ -118,13 +118,25 @@ export async function GET(req: NextRequest) {
       });
 
       const filtered = items.filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }));
-      return jsonResponse(filtered.slice(offset, offset + limit).map(mapItem));
+
+      // Enforce max 30% per type for diversity (same cap as top_rated)
+      const popTypeCounts = new Map<string, number>();
+      const popMaxPerType = Math.ceil(limit * 0.3);
+      const popDiverse = filtered.filter((i) => {
+        const c = popTypeCounts.get(i.type) || 0;
+        if (c >= popMaxPerType) return false;
+        popTypeCounts.set(i.type, c + 1);
+        return true;
+      });
+
+      return jsonResponse(interleaveByType(popDiverse).slice(offset, offset + limit).map(mapItem));
     }
 
     // ── Hidden gems ───────────────────────────────────────────────────
     if (curated === "hidden_gems") {
+      // Min 20 votes: "hidden" means not mainstream, not literally unknown
       const items = await prisma.item.findMany({
-        where: { ...where, voteCount: { gte: 10, lt: 5000 } },
+        where: { ...where, voteCount: { gte: 20, lt: 5000 } },
         orderBy: { year: "desc" },
         take: poolSize,
         select: ITEM_SELECT,
@@ -134,12 +146,22 @@ export async function GET(req: NextRequest) {
         .filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= 0.75)
         .map((i) => {
           const norm = normalizeScore(i.ext as any, i.type);
-          const gemScore = norm / Math.log10(Math.max(i.voteCount, 10));
+          const gemScore = norm / Math.log10(Math.max(i.voteCount, 20));
           return { ...i, gemScore };
         })
         .sort((a, b) => b.gemScore - a.gemScore);
 
-      return jsonResponse(gems.slice(offset, offset + limit).map(mapItem));
+      // Enforce max 30% per type for diversity
+      const gemTypeCounts = new Map<string, number>();
+      const gemMaxPerType = Math.ceil(limit * 0.3);
+      const gemDiverse = gems.filter((i) => {
+        const c = gemTypeCounts.get(i.type) || 0;
+        if (c >= gemMaxPerType) return false;
+        gemTypeCounts.set(i.type, c + 1);
+        return true;
+      });
+
+      return jsonResponse(interleaveByType(gemDiverse).slice(offset, offset + limit).map(mapItem));
     }
 
     // ── Standard query ────────────────────────────────────────────────
@@ -193,5 +215,6 @@ function mapItem(item: any) {
     desc: item.description || "", people: item.people || [],
     awards: item.awards || [], platforms: item.platforms || [],
     ext: item.ext || {}, totalEp: item.totalEp || 0,
+    voteCount: item.voteCount || 0,
   };
 }

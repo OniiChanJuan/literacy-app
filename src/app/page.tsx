@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, memo, useCallback } from "react";
+import { useState, useEffect, useRef, memo, useCallback, useMemo } from "react";
 import { TYPES, type Item, type UpcomingItem, type MediaType } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
@@ -123,8 +123,12 @@ function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
 
 // ── Paginated Row (with infinite scroll) ────────────────────────────────
 
-function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter }: {
+function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number; mediaFilter?: MediaType | null;
+  /** Client-side set of item IDs to exclude from display (cross-row dedup) */
+  clientExclude?: Set<number>;
+  /** Called with raw fetched items so parent can track used IDs */
+  onLoad?: (items: Item[]) => void;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -132,6 +136,8 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   const [hasMore, setHasMore] = useState(true);
   const offsetRef = useRef(0);
   const loadingRef = useRef(false);
+  const onLoadRef = useRef(onLoad);
+  onLoadRef.current = onLoad;
   const { base, limit } = getBaseUrl(fetchUrl);
 
   const doFetch = useCallback(() => {
@@ -143,6 +149,7 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
       fetchItems(base).then((data) => {
         if (data && data.length > 0) {
           setItems(data);
+          onLoadRef.current?.(data);
           offsetRef.current = data.length;
           setHasMore(data.length >= limit);
         } else if (data) {
@@ -195,8 +202,15 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   }
   if (!items || items.length === 0) return null;
 
-  const displayed = mediaFilter ? items.filter((i) => i.type === mediaFilter) : items;
+  let displayed = mediaFilter ? items.filter((i) => i.type === mediaFilter) : items;
   if (mediaFilter && displayed.length === 0) return null;
+  // Client-side cross-row deduplication
+  if (clientExclude && clientExclude.size > 0) {
+    displayed = displayed.filter((i) => !clientExclude.has(i.id));
+  }
+  // Final cover-art safety filter
+  displayed = displayed.filter((i) => i.cover && i.cover.startsWith("http"));
+  if (displayed.length === 0) return null;
 
   return (
     <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
@@ -367,6 +381,42 @@ export default function ForYouPage() {
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;
 
+  // ── Cross-row deduplication ─────────────────────────────────────────
+  // Track raw items returned by each catalog row so subsequent rows can exclude them
+  const [row3Items, setRow3Items] = useState<Item[]>([]);  // top_rated
+  const [row4Items, setRow4Items] = useState<Item[]>([]);  // popular
+  const [row5Items, setRow5Items] = useState<Item[]>([]);  // hidden_gems
+
+  // Rows 1-2 IDs (from for-you API)
+  const forYouIdSet = useMemo(() => {
+    const ids = new Set<number>();
+    (forYouData?.personalPicks || []).forEach((i) => ids.add(i.id));
+    (forYouData?.discoverAcrossMedia || []).forEach((i) => ids.add(i.id));
+    return ids;
+  }, [forYouData]);
+
+  // Each catalog row excludes all higher-priority rows
+  const row3ExcludeIds = forYouIdSet;
+
+  const row4ExcludeIds = useMemo(() => {
+    const ids = new Set(forYouIdSet);
+    row3Items.forEach((i) => ids.add(i.id));
+    return ids;
+  }, [forYouIdSet, row3Items]);
+
+  const row5ExcludeIds = useMemo(() => {
+    const ids = new Set(row4ExcludeIds);
+    row4Items.forEach((i) => ids.add(i.id));
+    return ids;
+  }, [row4ExcludeIds, row4Items]);
+
+  // Deep exclude for per-type lazy rows — all rows 1-5 combined
+  const deepExcludeParam = useMemo(() => {
+    const ids = new Set(row5ExcludeIds);
+    row5Items.forEach((i) => ids.add(i.id));
+    return ids.size > 0 ? `&exclude=${[...ids].join(",")}` : "";
+  }, [row5ExcludeIds, row5Items]);
+
   useEffect(() => {
     fetch("/api/upcoming")
       .then((r) => r.json())
@@ -511,7 +561,7 @@ export default function ForYouPage() {
         </ErrorBoundary>
       )}
 
-      {/* 4. Universal curated rows */}
+      {/* 4. Universal curated rows — with cross-row deduplication */}
       <ErrorBoundary>
         <PaginatedRow
           fetchUrl="/api/catalog?curated=top_rated&limit=20"
@@ -519,6 +569,8 @@ export default function ForYouPage() {
           sub="Highest rated across all media"
           icon="⭐" iconBg="#D4AF3722" seeAllHref="/explore" delay={0}
           mediaFilter={activeFilter}
+          clientExclude={row3ExcludeIds}
+          onLoad={setRow3Items}
         />
       </ErrorBoundary>
 
@@ -529,6 +581,8 @@ export default function ForYouPage() {
           sub="Recent releases making waves"
           icon="🔥" iconBg="#E8485522" seeAllHref="/explore" delay={200}
           mediaFilter={activeFilter}
+          clientExclude={row4ExcludeIds}
+          onLoad={setRow4Items}
         />
       </ErrorBoundary>
 
@@ -539,18 +593,20 @@ export default function ForYouPage() {
           sub="High scores, low radar"
           icon="💎" iconBg="#3185FC22" seeAllHref="/explore" delay={400}
           mediaFilter={activeFilter}
+          clientExclude={row5ExcludeIds}
+          onLoad={setRow5Items}
         />
       </ErrorBoundary>
 
-      {/* Per-editorial-label rows — these are the curated "best of" per type */}
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=movie&limit=20" label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=game&limit=20" label="Most discussed games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=manga&limit=20" label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=book&limit=20" label="The community is reading" icon="📖" iconBg="#3185FC22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=tv&limit=20" label="Top shows" icon="📺" iconBg="#C45BAA22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=music&limit=20" label="Albums worth hearing" icon="🎵" iconBg="#9B5DE522" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=comic&limit=20" label="Comics to pick up" icon="💥" iconBg="#F9A62022" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl="/api/catalog?type=podcast&limit=20" label="Podcasts worth your time" icon="🎙️" iconBg="#00BBF922" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      {/* Per-type rows — use deepExcludeParam to server-side exclude all rows 1-5 */}
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=movie&limit=20${deepExcludeParam}`} label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=game&limit=20${deepExcludeParam}`} label="Most discussed games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=manga&limit=20${deepExcludeParam}`} label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=book&limit=20${deepExcludeParam}`} label="The community is reading" icon="📖" iconBg="#3185FC22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=tv&limit=20${deepExcludeParam}`} label="Top shows" icon="📺" iconBg="#C45BAA22" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=music&limit=20${deepExcludeParam}`} label="Albums worth hearing" icon="🎵" iconBg="#9B5DE522" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=comic&limit=20${deepExcludeParam}`} label="Comics to pick up" icon="💥" iconBg="#F9A62022" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=podcast&limit=20${deepExcludeParam}`} label="Podcasts worth your time" icon="🎙️" iconBg="#00BBF922" seeAllHref="/explore" mediaFilter={activeFilter} /></ErrorBoundary>
 
       {/* Coming Soon — only truly unreleased titles */}
       {(() => {

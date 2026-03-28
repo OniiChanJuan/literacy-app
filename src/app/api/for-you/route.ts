@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/validation";
-import { normalizeScore, meetsQualityFloor } from "@/lib/ranking";
+import { normalizeScore, meetsQualityFloor, interleaveByType } from "@/lib/ranking";
 import { tasteSimilarity, neutralDimensions, type TasteDimensions } from "@/lib/taste-dimensions";
 
 const ITEM_SELECT = {
@@ -105,16 +105,18 @@ export async function GET(req: NextRequest) {
 
     // Score all candidates by taste similarity
     const scored = pool.map((c) => {
+      const hasDimensions = !!(c.itemDimensions && Object.keys(c.itemDimensions as any).length > 0);
       let dimScore = 0;
-      if (c.itemDimensions) {
+      if (hasDimensions) {
         dimScore = tasteSimilarity(tasteProfile, c.itemDimensions as unknown as TasteDimensions);
       }
 
       const norm = normalizeScore(c.ext as any, c.type);
       const quality = norm > 0 ? norm : 0.5;
 
-      // Taste similarity is primary, quality is secondary
-      const score = dimScore * 0.6 + quality * 0.4;
+      // Items with no taste dimensions get a heavy penalty so genuine matches
+      // surface first. Without dimensions, fall back to quality * 0.2 only.
+      const score = hasDimensions ? (dimScore * 0.6 + quality * 0.4) : (quality * 0.2);
       return { item: c, score, dimScore };
     });
 
@@ -122,10 +124,10 @@ export async function GET(req: NextRequest) {
 
     // ─── Section-based paginated response ───
     if (section === "personalPicks") {
-      // Best taste matches across all types, relaxed diversity for deep scroll
+      // Best taste matches across all types, tightened to 25% per type (max 5 for 20-item row)
       const personalPicks: any[] = [];
       const typeCountsPP: Record<string, number> = {};
-      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.2), 8);
+      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.25), 5);
 
       for (const s of scored) {
         const tc = typeCountsPP[s.item.type] || 0;
@@ -135,7 +137,7 @@ export async function GET(req: NextRequest) {
         if (personalPicks.length >= offset + limit) break;
       }
 
-      const page = personalPicks.slice(offset, offset + limit).map(mapItem);
+      const page = interleaveByType(personalPicks.slice(offset, offset + limit)).map(mapItem);
       const res = NextResponse.json(page);
       res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
       return res;
@@ -253,5 +255,6 @@ function mapItem(item: any) {
     desc: item.description || "", people: item.people || [],
     awards: item.awards || [], platforms: item.platforms || [],
     ext: item.ext || {}, totalEp: item.totalEp || 0,
+    voteCount: item.voteCount || 0,
   };
 }
