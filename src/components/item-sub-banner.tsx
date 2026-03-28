@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import type { Item, RecTag as RecTagType } from "@/lib/data";
+import { scorePassesThreshold } from "@/lib/score-thresholds";
 import { useRatings } from "@/lib/ratings-context";
 import { useLibrary, isOngoing, type LibraryStatus } from "@/lib/library-context";
 import Stars from "./stars";
@@ -24,23 +25,18 @@ interface AggregateData {
 }
 
 const SOURCE_META: Record<string, { displayName: string; suffix: string; max: number }> = {
-  // Correct source keys (used by new seeds)
   tmdb:              { displayName: "TMDB",         suffix: "/10",  max: 10  },
   igdb:              { displayName: "IGDB",         suffix: "/100", max: 100 },
   igdb_critics:      { displayName: "IGDB Critics", suffix: "/100", max: 100 },
   google_books:      { displayName: "Google Books", suffix: "/5",   max: 5   },
   spotify_popularity:{ displayName: "Spotify",      suffix: "/100", max: 100 },
-  // Legacy / real external sources
-  imdb:              { displayName: "IMDb",          suffix: "/10",  max: 10  },
+  imdb:              { displayName: "IMDb",         suffix: "/10",  max: 10  },
   rt_critics:        { displayName: "RT Critics",   suffix: "%",    max: 100 },
   rt_audience:       { displayName: "RT Audience",  suffix: "%",    max: 100 },
-  rt:                { displayName: "Rotten Tomatoes", suffix: "%", max: 100 },
-  meta:              { displayName: "Metacritic",   suffix: "/100", max: 100 },
   metacritic:        { displayName: "Metacritic",   suffix: "/100", max: 100 },
   mal:               { displayName: "MAL",          suffix: "/10",  max: 10  },
   anilist:           { displayName: "AniList",      suffix: "/100", max: 100 },
   ign:               { displayName: "IGN",          suffix: "/10",  max: 10  },
-  goodreads:         { displayName: "Goodreads",    suffix: "/5",   max: 5   },
   pitchfork:         { displayName: "Pitchfork",    suffix: "/10",  max: 10  },
   steam:             { displayName: "Steam",        suffix: "%",    max: 100 },
   letterboxd:        { displayName: "Letterboxd",   suffix: "/5",   max: 5   },
@@ -114,21 +110,34 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
     });
   }, [item.id]);
 
+  const voteCount = item.voteCount ?? 0;
+  const ext = (item.ext || {}) as Record<string, any>;
+
+  // Apply threshold filtering: hide scores with insufficient vote counts
+  const filterByThreshold = (s: ScoreData) =>
+    scorePassesThreshold(s.source, ext, voteCount);
+
   // Fallback to ext JSON if no DB scores
-  const displayScores: ScoreData[] = scores.length > 0 ? scores : (() => {
-    if (!loaded) return [];
-    const entries = Object.entries(item.ext || {}) as [string, number][];
-    return entries
-      .filter(([source]) => !HIDDEN_SOURCES.has(source))
-      .map(([source, value]) => {
-        const meta = SOURCE_META[source];
-        const maxScore = meta?.max ?? 10;
-        const scoreType = source.includes("critic") ? "critics"
-          : source === "spotify_popularity" ? "popularity"
-          : "community";
-        return { source, score: value, maxScore, scoreType, label: "" };
-      });
-  })();
+  const displayScores: ScoreData[] = scores.length > 0
+    ? scores.filter(filterByThreshold)
+    : (() => {
+        if (!loaded) return [];
+        const entries = Object.entries(ext) as [string, any][];
+        return entries
+          .filter(([source, value]) =>
+            !HIDDEN_SOURCES.has(source) &&
+            typeof value === "number" &&
+            SOURCE_META[source] !== undefined &&
+            scorePassesThreshold(source, ext, voteCount)
+          )
+          .map(([source, value]) => {
+            const meta = SOURCE_META[source]!;
+            const scoreType = source.includes("critic") ? "critics"
+              : source === "spotify_popularity" ? "popularity"
+              : "community";
+            return { source, score: value, maxScore: meta.max, scoreType, label: "" };
+          });
+      })();
 
   const statusButtons = showAllStatuses ? ALL_STATUSES : STATUSES;
 
@@ -142,6 +151,16 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
     }}>
       {/* Left — scores (external + community) */}
       <div style={{ flex: 1, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", minWidth: 0 }}>
+        {loaded && displayScores.length === 0 && !agg && (
+          <div style={{
+            fontSize: 10,
+            color: "rgba(255,255,255,0.25)",
+            fontStyle: "italic",
+            padding: "4px 0",
+          }}>
+            No external scores yet
+          </div>
+        )}
         {(showAllScores ? displayScores : displayScores.slice(0, 3)).map((s) => {
           const meta = SOURCE_META[s.source] || { displayName: s.source, suffix: "", max: s.maxScore };
           const color = sColor(s.score, s.maxScore);

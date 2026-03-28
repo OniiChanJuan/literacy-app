@@ -7,24 +7,22 @@
 export function normalizeScore(ext: Record<string, number>, type: string): number {
   // Priority order per type — prefer new correct source keys, fall back to legacy
   const priorities: Record<string, string[]> = {
-    movie: ["tmdb", "imdb", "rt_critics", "rt", "meta", "metacritic"],
-    tv:    ["tmdb", "imdb", "rt_critics", "rt", "meta", "mal"],
-    game:  ["igdb_critics", "igdb", "meta", "metacritic", "opencritic", "ign", "steam"],
-    book:  ["google_books", "goodreads"],
+    movie: ["imdb", "tmdb", "rt_critics", "metacritic"],
+    tv:    ["imdb", "tmdb", "rt_critics", "mal"],
+    game:  ["igdb_critics", "igdb", "metacritic", "opencritic", "ign", "steam"],
+    book:  ["google_books"],
     manga: ["mal", "anilist"],
-    comic: ["google_books", "goodreads", "comicvine"],
+    comic: ["google_books", "comicvine"],
     music: ["pitchfork", "spotify_popularity", "aoty", "rym"],
     podcast: ["spotify_popularity"],
   };
 
   const maxScales: Record<string, number> = {
-    // New correct keys
     tmdb: 10, igdb: 100, igdb_critics: 100, google_books: 5,
     spotify_popularity: 100,
-    // Legacy / real external sources
-    imdb: 10, rt: 100, rt_critics: 100, rt_audience: 100,
-    meta: 100, metacritic: 100, mal: 10, anilist: 100,
-    goodreads: 5, ign: 10, steam: 100, pitchfork: 10,
+    imdb: 10, rt_critics: 100, rt_audience: 100,
+    metacritic: 100, mal: 10, anilist: 100,
+    ign: 10, steam: 100, pitchfork: 10,
     comicvine: 5, aoty: 100, opencritic: 100, rym: 5,
     letterboxd: 5, storygraph: 5,
   };
@@ -32,11 +30,11 @@ export function normalizeScore(ext: Record<string, number>, type: string): numbe
   const order = priorities[type] || Object.keys(ext);
 
   // If rt_critics and rt_audience have big gap, average them
-  if (ext.rt !== undefined && ext.rt_audience !== undefined) {
-    const gap = Math.abs(ext.rt - ext.rt_audience);
+  if (ext.rt_critics !== undefined && ext.rt_audience !== undefined) {
+    const gap = Math.abs(ext.rt_critics - ext.rt_audience);
     if (gap > 30) {
-      const avg = (ext.rt + ext.rt_audience) / 2;
-      ext = { ...ext, rt: avg };
+      const avg = (ext.rt_critics + ext.rt_audience) / 2;
+      ext = { ...ext, rt_critics: avg };
     }
   }
 
@@ -106,7 +104,7 @@ export function meetsQualityFloor(item: {
     case "tv":
       return norm >= 0.6 && votes >= 50;
     case "game":
-      return norm >= 0.6 && (votes >= 10 || item.ext.meta !== undefined);
+      return norm >= 0.6 && (votes >= 10 || item.ext.metacritic !== undefined || item.ext.ign !== undefined);
     case "manga":
       return norm >= 0.6 && votes >= 100;
     case "book":

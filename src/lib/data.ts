@@ -29,6 +29,7 @@ export interface Item {
   platforms: string[];
   ext: Partial<Record<ExternalSource, number>>;
   totalEp: number;
+  voteCount?: number;
 }
 
 export const TYPES: Record<MediaType, { label: string; icon: string; color: string }> = {

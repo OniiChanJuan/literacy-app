@@ -279,7 +279,9 @@ function tmdbResToItem(r: any, type: "movie" | "tv"): CatalogItem | null {
   const year = parseInt((r.release_date || r.first_air_date || "0").slice(0, 4)) || 0;
   if (!title || year === 0) return null;
   const genres = (r.genre_ids || []).map((id: number) => TMDB_GENRES[id]).filter(Boolean);
-  const tmdbScore = r.vote_average ? Math.round(r.vote_average * 10) / 10 : 0;
+  const tmdbVoteCount = r.vote_count || 0;
+  // Only store TMDB score if there are enough votes to be meaningful
+  const tmdbScore = (r.vote_average && tmdbVoteCount >= 20) ? Math.round(r.vote_average * 10) / 10 : 0;
   const scores: ExtScore[] = tmdbScore > 0 ? [{ source: "tmdb", score: tmdbScore, maxScore: 10 }] : [];
 
   return {
@@ -293,7 +295,7 @@ function tmdbResToItem(r: any, type: "movie" | "tv"): CatalogItem | null {
     people: [],
     platforms: type === "movie" ? [] : [],
     totalEp: type === "movie" ? 1 : 0,
-    voteCount: r.vote_count || 0,
+    voteCount: tmdbVoteCount,
     ext: tmdbScore > 0 ? { tmdb: tmdbScore } : {},
     scores,
     tmdbId: r.id,
@@ -466,11 +468,21 @@ function igdbToItem(g: any): CatalogItem | null {
   }
 
   const igdbScore = g.total_rating ? Math.round(g.total_rating) : 0;
+  const igdbCount = g.total_rating_count || 0;
   const criticsScore = g.aggregated_rating ? Math.round(g.aggregated_rating) : 0;
+  const igdbCriticsCount = g.aggregated_rating_count || 0;
   const ext: Record<string, number> = {};
   const scores: ExtScore[] = [];
-  if (igdbScore) { ext.igdb = igdbScore; scores.push({ source: "igdb", score: igdbScore, maxScore: 100 }); }
-  if (criticsScore) { ext.igdb_critics = criticsScore; scores.push({ source: "igdb_critics", score: criticsScore, maxScore: 100, scoreType: "critics" }); }
+  if (igdbScore) {
+    ext.igdb = igdbScore;
+    ext.igdb_count = igdbCount; // Store vote count for threshold checking
+    scores.push({ source: "igdb", score: igdbScore, maxScore: 100 });
+  }
+  if (criticsScore) {
+    ext.igdb_critics = criticsScore;
+    ext.igdb_critics_count = igdbCriticsCount; // Store critic count for threshold checking
+    scores.push({ source: "igdb_critics", score: criticsScore, maxScore: 100, scoreType: "critics" });
+  }
 
   const companies = g.involved_companies || [];
   const people: Person[] = companies

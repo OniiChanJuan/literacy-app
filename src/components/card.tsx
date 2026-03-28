@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Item, TYPES } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
+import { scorePassesThreshold } from "@/lib/score-thresholds";
 import Stars from "./stars";
 import HoverPreview from "./hover-preview";
 
@@ -13,51 +14,47 @@ function isImageUrl(cover: string | undefined | null): boolean {
 }
 
 const EXT_SCORE_META: Record<string, { label: string; max: number }> = {
-  tmdb:              { label: "TMDB",    max: 10  },
-  imdb:              { label: "IMDb",    max: 10  },
-  mal:               { label: "MAL",     max: 10  },
-  igdb_critics:      { label: "Critics", max: 100 },
-  igdb:              { label: "IGDB",    max: 100 },
-  google_books:      { label: "Books",   max: 5   },
-  goodreads:         { label: "GR",      max: 5   },
-  rt_critics:        { label: "RT",      max: 100 },
-  rt:                { label: "RT",      max: 100 },
-  meta:              { label: "Meta",    max: 100 },
-  metacritic:        { label: "Meta",    max: 100 },
-  pitchfork:         { label: "Pitchfork", max: 10 },
-  ign:               { label: "IGN",     max: 10  },
-  steam:             { label: "Steam",   max: 100 },
-  spotify_popularity:{ label: "Spotify", max: 100 },
-  aoty:              { label: "AOTY",    max: 100 },
+  tmdb:              { label: "TMDB",       max: 10  },
+  imdb:              { label: "IMDb",       max: 10  },
+  mal:               { label: "MAL",        max: 10  },
+  igdb_critics:      { label: "Critics",    max: 100 },
+  igdb:              { label: "IGDB",       max: 100 },
+  google_books:      { label: "Books",      max: 5   },
+  rt_critics:        { label: "RT",         max: 100 },
+  metacritic:        { label: "Meta",       max: 100 },
+  pitchfork:         { label: "Pitchfork",  max: 10  },
+  ign:               { label: "IGN",        max: 10  },
+  steam:             { label: "Steam",      max: 100 },
+  spotify_popularity:{ label: "Spotify",    max: 100 },
+  aoty:              { label: "AOTY",       max: 100 },
   opencritic:        { label: "OpenCritic", max: 100 },
-  anilist:           { label: "AniList", max: 100 },
+  anilist:           { label: "AniList",    max: 100 },
 };
 
+// Non-score ext keys to always skip
+const EXT_SKIP_KEYS = new Set(["steam_label", "igdb_count", "igdb_critics_count", "google_books_count"]);
+
 const EXT_SCORE_PRIORITY = [
-  "tmdb", "imdb", "mal", "igdb_critics", "igdb",
-  "google_books", "goodreads", "rt_critics", "rt",
-  "meta", "metacritic", "pitchfork", "ign", "steam",
+  "imdb", "tmdb", "mal", "igdb_critics", "igdb",
+  "google_books", "rt_critics",
+  "metacritic", "pitchfork", "ign", "steam",
   "spotify_popularity", "aoty", "opencritic", "anilist",
 ];
 
-/** Get the best external score for display */
-function getBestExtScore(ext: any): { label: string; value: number; display: string } | null {
+/** Get the best external score for display, respecting vote-count thresholds */
+function getBestExtScore(ext: any, voteCount: number): { label: string; value: number; display: string } | null {
   if (!ext || typeof ext !== "object") return null;
-  const entries = Object.entries(ext) as [string, number][];
-  if (entries.length === 0) return null;
 
   for (const key of EXT_SCORE_PRIORITY) {
     const val = ext[key];
-    if (val !== undefined && val !== null) {
-      const m = EXT_SCORE_META[key] || { label: key.toUpperCase(), max: 10 };
-      const normalized = (val / m.max) * 10; // Normalize to 0-10 for Literacy score calc
-      const scoreStr = m.max <= 10 ? val.toFixed(1) : String(Math.round(val));
-      return { label: m.label, value: normalized, display: `${scoreStr} ${m.label}` };
-    }
+    if (val === undefined || val === null) continue;
+    if (!scorePassesThreshold(key, ext, voteCount)) continue;
+    const m = EXT_SCORE_META[key] || { label: key.toUpperCase(), max: 10 };
+    const normalized = (val / m.max) * 10;
+    const scoreStr = m.max <= 10 ? val.toFixed(1) : String(Math.round(val));
+    return { label: m.label, value: normalized, display: `${scoreStr} ${m.label}` };
   }
-  const [k, v] = entries[0];
-  const m = EXT_SCORE_META[k] || { label: k.toUpperCase(), max: 10 };
-  return { label: m.label, value: (v / m.max) * 10, display: `${v} ${m.label}` };
+  return null;
 }
 
 function scoreColor(val: number): string {
@@ -79,7 +76,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
     rate(item.id, s);
   }, [rate, item.id]);
 
-  const extScore = getBestExtScore(item.ext);
+  const extScore = getBestExtScore(item.ext, item.voteCount ?? 0);
 
   // Literacy score derived from external score until real community ratings are available
   const literacyScore = extScore ? Math.min(5, extScore.value * 0.55).toFixed(1) : null;

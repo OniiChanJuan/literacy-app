@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ExternalSource } from "@/lib/data";
+import { scorePassesThreshold } from "@/lib/score-thresholds";
 
 interface ScoreData {
   source: string;
@@ -12,25 +13,25 @@ interface ScoreData {
 }
 
 const SOURCE_META: Record<string, { displayName: string; icon: string; color: string; suffix: string }> = {
-  imdb:               { displayName: "IMDb",             icon: "⭐", color: "#f5c518", suffix: "/10" },
-  rt_critics:         { displayName: "RT Critics",       icon: "🍅", color: "#fa320a", suffix: "%" },
-  rt_audience:        { displayName: "RT Audience",      icon: "🍿", color: "#fa320a", suffix: "%" },
-  rt:                 { displayName: "Rotten Tomatoes",   icon: "🍅", color: "#fa320a", suffix: "%" },
-  meta:               { displayName: "Metacritic",       icon: "M",  color: "#ffcc34", suffix: "" },
-  metacritic:         { displayName: "Metacritic",       icon: "M",  color: "#ffcc34", suffix: "" },
-  mal:                { displayName: "MAL",              icon: "M",  color: "#2e51a2", suffix: "/10" },
-  anilist:            { displayName: "AniList",          icon: "A",  color: "#02a9ff", suffix: "/100" },
-  ign:                { displayName: "IGN",              icon: "I",  color: "#bf1313", suffix: "/10" },
-  goodreads:          { displayName: "Goodreads",        icon: "📖", color: "#553b08", suffix: "/5" },
-  pitchfork:          { displayName: "Pitchfork",        icon: "🎵", color: "#df2020", suffix: "/10" },
-  steam:              { displayName: "Steam",            icon: "S",  color: "#1b2838", suffix: "%" },
-  igdb_user:          { displayName: "IGDB",             icon: "G",  color: "#9147ff", suffix: "/100" },
-  spotify_popularity: { displayName: "Spotify",          icon: "S",  color: "#1db954", suffix: "/100" },
-  letterboxd:         { displayName: "Letterboxd",       icon: "L",  color: "#00e054", suffix: "/5" },
-  storygraph:         { displayName: "StoryGraph",       icon: "S",  color: "#5c3d2e", suffix: "/5" },
-  rym:                { displayName: "RYM",              icon: "R",  color: "#1a3a5c", suffix: "/5" },
-  aoty:               { displayName: "AOTY",             icon: "A",  color: "#2d2d2d", suffix: "/100" },
-  opencritic:         { displayName: "OpenCritic",       icon: "O",  color: "#1c7c36", suffix: "/100" },
+  imdb:               { displayName: "IMDb",        icon: "⭐", color: "#f5c518", suffix: "/10"  },
+  tmdb:               { displayName: "TMDB",        icon: "T",  color: "#01b4e4", suffix: "/10"  },
+  rt_critics:         { displayName: "RT Critics",  icon: "🍅", color: "#fa320a", suffix: "%"    },
+  rt_audience:        { displayName: "RT Audience", icon: "🍿", color: "#fa320a", suffix: "%"    },
+  metacritic:         { displayName: "Metacritic",  icon: "M",  color: "#ffcc34", suffix: ""     },
+  mal:                { displayName: "MAL",         icon: "M",  color: "#2e51a2", suffix: "/10"  },
+  anilist:            { displayName: "AniList",     icon: "A",  color: "#02a9ff", suffix: "/100" },
+  igdb:               { displayName: "IGDB",        icon: "G",  color: "#9147ff", suffix: "/100" },
+  igdb_critics:       { displayName: "IGDB Critics",icon: "G",  color: "#9147ff", suffix: "/100" },
+  ign:                { displayName: "IGN",         icon: "I",  color: "#bf1313", suffix: "/10"  },
+  google_books:       { displayName: "Google Books",icon: "📖", color: "#4285f4", suffix: "/5"   },
+  pitchfork:          { displayName: "Pitchfork",   icon: "🎵", color: "#df2020", suffix: "/10"  },
+  steam:              { displayName: "Steam",       icon: "S",  color: "#1b2838", suffix: "%"    },
+  spotify_popularity: { displayName: "Spotify",     icon: "S",  color: "#1db954", suffix: "/100" },
+  letterboxd:         { displayName: "Letterboxd",  icon: "L",  color: "#00e054", suffix: "/5"   },
+  storygraph:         { displayName: "StoryGraph",  icon: "S",  color: "#5c3d2e", suffix: "/5"   },
+  rym:                { displayName: "RYM",         icon: "R",  color: "#1a3a5c", suffix: "/5"   },
+  aoty:               { displayName: "AOTY",        icon: "A",  color: "#2d2d2d", suffix: "/100" },
+  opencritic:         { displayName: "OpenCritic",  icon: "O",  color: "#1c7c36", suffix: "/100" },
 };
 
 function scoreColor(score: number, maxScore: number): string {
@@ -49,11 +50,19 @@ function steamLabelColor(score: number): string {
   return "#E84855";
 }
 
-// Sources to hide — not recognizable to normal users
-const HIDDEN_SOURCES = new Set(["igdb_user", "spotify_popularity"]);
+// Sources to hide — internal/popularity metrics not meaningful as editorial scores
+const HIDDEN_SOURCES = new Set(["igdb_user", "igdb_count", "igdb_critics_count", "google_books_count", "steam_label"]);
 
 /** Shows all external scores from the DB for an item, with fallback to ext JSON */
-export function ExternalScoresPanel({ itemId, fallbackExt }: { itemId: number; fallbackExt?: any }) {
+export function ExternalScoresPanel({
+  itemId,
+  fallbackExt,
+  voteCount = 0,
+}: {
+  itemId: number;
+  fallbackExt?: any;
+  voteCount?: number;
+}) {
   const [scores, setScores] = useState<ScoreData[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -61,40 +70,86 @@ export function ExternalScoresPanel({ itemId, fallbackExt }: { itemId: number; f
     fetch(`/api/scores?itemId=${itemId}`)
       .then((r) => r.json())
       .then((data) => {
-        const dbScores = Array.isArray(data) ? data.filter((s: ScoreData) => !HIDDEN_SOURCES.has(s.source)) : [];
+        const dbScores = Array.isArray(data)
+          ? data.filter((s: ScoreData) =>
+              !HIDDEN_SOURCES.has(s.source) &&
+              scorePassesThreshold(s.source, fallbackExt || {}, voteCount)
+            )
+          : [];
         setScores(dbScores);
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
-  }, [itemId]);
+  }, [itemId, voteCount]);
 
   // If no DB scores, fall back to ext JSON
   if (loaded && scores.length === 0 && fallbackExt) {
-    const entries = Object.entries(fallbackExt) as [string, number][];
+    const entries = Object.entries(fallbackExt) as [string, any][];
     const fallbackScores = entries
-      .filter(([source]) => !HIDDEN_SOURCES.has(source))
+      .filter(([source, value]) =>
+        !HIDDEN_SOURCES.has(source) &&
+        typeof value === "number" &&
+        SOURCE_META[source] !== undefined &&
+        scorePassesThreshold(source, fallbackExt, voteCount)
+      )
       .map(([source, value]) => {
-        const config: Record<string, { maxScore: number; scoreType: string }> = {
-          imdb: { maxScore: 10, scoreType: "community" },
-          rt: { maxScore: 100, scoreType: "critics" },
-          meta: { maxScore: 100, scoreType: "critics" },
-          metacritic: { maxScore: 100, scoreType: "critics" },
-          mal: { maxScore: 10, scoreType: "community" },
-          goodreads: { maxScore: 5, scoreType: "community" },
-          pitchfork: { maxScore: 10, scoreType: "critics" },
-          ign: { maxScore: 10, scoreType: "critics" },
-          steam: { maxScore: 100, scoreType: "community" },
+        const maxScoreMap: Record<string, number> = {
+          imdb: 10, tmdb: 10, metacritic: 100, mal: 10,
+          google_books: 5, pitchfork: 10, ign: 10,
+          steam: 100, igdb: 100, igdb_critics: 100,
+          rt_critics: 100, spotify_popularity: 100,
         };
-        const c = config[source] || { maxScore: 10, scoreType: "community" };
-        return { source, score: value, maxScore: c.maxScore, scoreType: c.scoreType, label: "" };
+        const scoreTypeMap: Record<string, string> = {
+          imdb: "community", tmdb: "community", mal: "community",
+          metacritic: "critics", igdb_critics: "critics",
+          rt_critics: "critics", pitchfork: "critics", ign: "critics",
+        };
+        return {
+          source,
+          score: value,
+          maxScore: maxScoreMap[source] ?? 10,
+          scoreType: scoreTypeMap[source] ?? "community",
+          label: "",
+        };
       });
     if (fallbackScores.length > 0) {
       return <ScoreCards scores={fallbackScores} />;
     }
+    return <NoScoresMessage />;
   }
 
-  if (!loaded || scores.length === 0) return null;
+  if (!loaded) return null;
+  if (scores.length === 0) return <NoScoresMessage />;
   return <ScoreCards scores={scores} />;
+}
+
+function NoScoresMessage() {
+  return (
+    <section style={{ marginBottom: 24 }}>
+      <h2 style={{
+        fontFamily: "var(--font-serif)",
+        fontSize: 14,
+        fontWeight: 700,
+        color: "var(--text-muted)",
+        textTransform: "uppercase",
+        letterSpacing: "1px",
+        marginBottom: 10,
+      }}>
+        External Scores
+      </h2>
+      <div style={{
+        padding: "12px 16px",
+        background: "var(--surface-1)",
+        border: "1px solid var(--border)",
+        borderRadius: 10,
+        color: "rgba(255,255,255,0.35)",
+        fontSize: 12,
+        fontStyle: "italic",
+      }}>
+        No external scores available. Be the first to rate!
+      </div>
+    </section>
+  );
 }
 
 function ScoreCards({ scores }: { scores: ScoreData[] }) {
