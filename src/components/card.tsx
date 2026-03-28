@@ -139,17 +139,27 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           />
         )}
 
-        {/* Fallback */}
+        {/* Placeholder — intentional styled fallback, not a broken image */}
         {(imgError || (!hasImage && !item.cover?.startsWith("linear"))) && (
           <div style={{
             width: "100%", height: "100%",
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
-            padding: 6,
+            padding: "0 10px",
+            gap: 6,
           }}>
-            <span style={{ fontSize: 28, marginBottom: 4 }}>{t.icon}</span>
-            <span style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", textAlign: "center", lineHeight: 1.3 }}>
-              {item.title?.slice(0, 30)}
+            <span style={{ fontSize: 32, opacity: 0.7 }}>{t.icon}</span>
+            <span style={{
+              fontSize: 11, fontWeight: 500,
+              color: "rgba(255,255,255,0.55)",
+              textAlign: "center",
+              lineHeight: 1.35,
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical" as const,
+              overflow: "hidden",
+            }}>
+              {item.title}
             </span>
           </div>
         )}

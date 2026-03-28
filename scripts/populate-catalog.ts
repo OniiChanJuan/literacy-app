@@ -78,6 +78,8 @@ const existing = {
   googleBooksIds: new Set<string>(),
   comicVineIds: new Set<number>(),
   titleType: new Set<string>(),
+  // Maps base anime title (season-stripped, normalized) → item id for season parent linking
+  animeBaseIds: new Map<string, number>(),
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -140,6 +142,28 @@ function normalizeTitle(t: string): string {
     .replace(/\b(a novel|book one|book two|book \w+|volume \d+|vol\.\s*\d+|\(\d+\))\b/gi, "")
     .replace(/[^a-z0-9 ]/g, "")
     .trim();
+}
+
+/** Strip diacritics + season suffixes for anime base-title matching */
+function animeBaseKey(title: string): string {
+  return title
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")  // strip diacritics
+    .toLowerCase()
+    .replace(/[:\s]+(season\s*\d+(\s*part\s*\d+)?(\s*cour\s*\d+)?)$/i, "")
+    .replace(/[:\s]+part\s*\d+$/i, "")
+    .replace(/[:\s]+cour\s*\d+$/i, "")
+    .replace(/[:\s]+(final\s+season|final\s+chapters?|the\s+final\s+chapters?).*$/i, "")
+    .replace(/[:\s]+\d+(st|nd|rd|th)\s+season.*$/i, "")
+    .replace(/[:\s]+(oad|ova|special|movie)s?$/i, "")
+    .replace(/\s*\(\d{4}\)\s*$/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Detect a season/sequel/spin-off suffix that marks this as a non-primary entry */
+function hasAnimeSuffix(title: string): boolean {
+  return /(\s+|:)(season\s*\d+|part\s*\d+|cour\s*\d+|\d+(st|nd|rd|th)\s+season|final\s+season|the\s+final|oad|ova\b|movie\b|specials?\b)/i.test(title)
+    || /\s+(arc|ova|specials?|movies?)\s*$/i.test(title);
 }
 
 // ── DB insertion ─────────────────────────────────────────────────────────────
@@ -209,6 +233,23 @@ async function insertItem(prisma: PrismaClient, item: CatalogItem, sectionName: 
     if (item.googleBooksId) existing.googleBooksIds.add(item.googleBooksId);
     if (item.comicVineId) existing.comicVineIds.add(item.comicVineId);
     existing.titleType.add(key);
+
+    // Auto-link anime seasons: if this is a season/OVA/movie entry and the base
+    // show already exists, set parent_item_id so it's hidden from browse rows.
+    if ((item.type === "tv" || item.type === "manga") && hasAnimeSuffix(item.title)) {
+      const base = animeBaseKey(item.title);
+      const parentId = existing.animeBaseIds.get(base);
+      if (parentId && parentId !== created.id) {
+        await (prisma as any).item.update({
+          where: { id: created.id },
+          data: { parentItemId: parentId },
+        });
+      }
+    } else if ((item.type === "tv" || item.type === "manga") && !hasAnimeSuffix(item.title)) {
+      // Register this as a potential parent for future seasons in this run
+      const base = animeBaseKey(item.title);
+      if (!existing.animeBaseIds.has(base)) existing.animeBaseIds.set(base, created.id);
+    }
 
     summary[sectionName].inserted++;
   } catch (e: any) {
@@ -1129,7 +1170,7 @@ async function main() {
   // Preload existing IDs for fast dedup
   console.log("\n📊 Loading existing catalog...");
   const existingItems = await (prisma as any).item.findMany({
-    select: { title: true, type: true, tmdbId: true, igdbId: true, malId: true, spotifyId: true, googleBooksId: true, comicVineId: true },
+    select: { id: true, title: true, type: true, tmdbId: true, igdbId: true, malId: true, spotifyId: true, googleBooksId: true, comicVineId: true, parentItemId: true },
   });
   for (const e of existingItems) {
     if (e.tmdbId) existing.tmdbIds.add(e.tmdbId);
@@ -1139,6 +1180,11 @@ async function main() {
     if (e.googleBooksId) existing.googleBooksIds.add(e.googleBooksId);
     if (e.comicVineId) existing.comicVineIds.add(e.comicVineId);
     existing.titleType.add(`${normalizeTitle(e.title)}|||${e.type}`);
+    // Populate anime base map for season-linking: only non-child, non-suffix entries
+    if ((e.type === "tv" || e.type === "manga") && !e.parentItemId && !hasAnimeSuffix(e.title)) {
+      const base = animeBaseKey(e.title);
+      if (!existing.animeBaseIds.has(base)) existing.animeBaseIds.set(base, e.id);
+    }
   }
   console.log(`  Loaded ${existingItems.length} existing items (${existing.tmdbIds.size} TMDB, ${existing.igdbIds.size} IGDB, ${existing.malIds.size} MAL, ${existing.spotifyIds.size} Spotify)`);
 
