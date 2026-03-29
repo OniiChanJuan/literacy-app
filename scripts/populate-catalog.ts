@@ -440,10 +440,28 @@ const IGDB_GENRES_MAP: Record<number, string> = {
   32: "MOBA", 33: "Arcade", 34: "Visual Novel", 35: "Open World",
 };
 
+// IGDB category values: 0=main_game, 1=dlc_addon, 2=expansion, 3=bundle,
+// 4=standalone_expansion, 5=mod, 6=episode, 7=season, 8=remake, 9=remaster,
+// 10=expanded_game, 11=port, 12=fork, 13=pack, 14=update
+const IGDB_SKIP_CATEGORIES = new Set([3, 5, 6, 7, 10, 11, 12, 13, 14]); // bundle, mod, episode, season, expanded, port, fork, pack, update
+const IGDB_DLC_CATEGORIES = new Set([1, 2]); // dlc_addon, expansion — keep only if 100+ ratings
+const IGDB_EDITION_RE = /(\s*[-:–]\s*(game of the year|goty|complete|definitive|enhanced|legendary|ultimate|gold|special|anniversary|director'?s cut|remastered|premier|platinum|deluxe)\s*edition|\s*\bgoty\b|\s*[-:–]\s*remastered|\s*\(remastered\)|\s*[-:–]\s*director'?s cut)$/i;
+
 function igdbToItem(g: any): CatalogItem | null {
   if (!g.name || !g.cover?.image_id) return null;
   const year = g.first_release_date ? new Date(g.first_release_date * 1000).getFullYear() : 0;
   if (year === 0) return null;
+
+  // Skip bundles, mods, ports, packs, and other non-game categories
+  const category = g.category ?? 0;
+  if (IGDB_SKIP_CATEGORIES.has(category)) return null;
+
+  // Skip DLC/expansions with fewer than 100 IGDB ratings (minor content)
+  const totalRatings = g.total_rating_count || 0;
+  if (IGDB_DLC_CATEGORIES.has(category) && totalRatings < 100) return null;
+
+  // Skip edition/repackage titles — base game is always separately listed
+  if (IGDB_EDITION_RE.test(g.name)) return null;
 
   const genres = (g.genres || [])
     .map((gn: any) => (typeof gn === "object" ? gn.name : IGDB_GENRES_MAP[gn]) || "")
@@ -514,7 +532,7 @@ async function populateIgdb(prisma: PrismaClient): Promise<void> {
   initSection(section);
   console.log("\n🎮 IGDB Games...");
 
-  const FIELDS = `fields name,cover.image_id,summary,genres.name,first_release_date,total_rating,total_rating_count,aggregated_rating,aggregated_rating_count,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,platforms,external_games.category,external_games.uid;`;
+  const FIELDS = `fields name,cover.image_id,summary,genres.name,first_release_date,total_rating,total_rating_count,aggregated_rating,aggregated_rating_count,involved_companies.company.name,involved_companies.developer,involved_companies.publisher,platforms,external_games.category,external_games.uid,category;`;
 
   let totalFetched = 0;
   let n = 0;
