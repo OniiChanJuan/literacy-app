@@ -66,10 +66,12 @@ const TYPE_GENRES: Record<string, string[]> = {
   podcast: ["True Crime", "Comedy", "Interview", "Education", "Tech", "History", "Science", "Culture"],
 };
 
-type SortOption = "rating" | "popular" | "newest" | "oldest" | "az";
+type SortOption = "rating" | "popular" | "top_rated" | "hidden_gems" | "newest" | "oldest" | "az";
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "rating", label: "Highest rated" },
   { value: "popular", label: "Most popular" },
+  { value: "top_rated", label: "Critically acclaimed" },
+  { value: "hidden_gems", label: "Hidden gems" },
   { value: "newest", label: "Newest" },
   { value: "oldest", label: "Oldest" },
   { value: "az", label: "A-Z" },
@@ -151,6 +153,7 @@ function ExploreContent() {
     if (selectedGenres.length) url += `&genre=${encodeURIComponent(selectedGenres.join(","))}`;
     if (selectedVibe) url += `&vibe=${encodeURIComponent(selectedVibe)}`;
     if (selectedTag) url += `&tag=${encodeURIComponent(selectedTag)}`;
+    if (sort === "top_rated" || sort === "hidden_gems") url += `&curated=${sort}`;
     fetch(url).then((r) => r.json()).then((d) => {
       let items = Array.isArray(d) ? d : [];
       // Client-side sort
@@ -591,12 +594,14 @@ function ExploreContent() {
             if (selectedVibe && VIBES[selectedVibe]) parts.push(VIBES[selectedVibe].label);
             if (selectedTag) parts.push(getTagDisplayName(selectedTag));
             const filterPrefix = parts.length > 0 ? parts.join(" + ") + " " : "";
+            const curatedParam = (sort === "top_rated" || sort === "hidden_gems") ? sort : undefined;
             return (
               <MediaTypeRow
-                key={`${k}-${selectedGenres.join(",")}-${selectedVibe}-${selectedTag}`}
+                key={`${k}-${selectedGenres.join(",")}-${selectedVibe}-${selectedTag}-${sort}`}
                 type={k}
                 genre={selectedGenres.length > 0 ? selectedGenres.join(",") : undefined}
                 vibe={selectedVibe || undefined}
+                curated={curatedParam}
                 tag={selectedTag || undefined}
                 label={`${t.icon} ${filterPrefix}${t.label}`}
                 sub={hasGenreOrVibe ? undefined : `${count} titles`}
@@ -693,17 +698,18 @@ function MediaTypeIcon({ type, color }: { type: string; color: string }) {
   }
 }
 
-function MediaTypeRow({ type, label, sub, genre, vibe, tag }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string }) {
+function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string; curated?: string }) {
   const [items, setItems] = useState<Item[] | null>(null);
   useEffect(() => {
     let url = `/api/catalog?type=${type}&limit=20`;
     if (genre) url += `&genre=${encodeURIComponent(genre)}`;
     if (vibe) url += `&vibe=${encodeURIComponent(vibe)}`;
     if (tag) url += `&tag=${encodeURIComponent(tag)}`;
+    if (curated) url += `&curated=${curated}`;
     fetch(url)
       .then((r) => r.json()).then((d) => setItems(Array.isArray(d) ? d : []))
       .catch(() => setItems([]));
-  }, [type, genre, vibe, tag]);
+  }, [type, genre, vibe, tag, curated]);
   // Hide row if no items match the filter
   if (items !== null && items.length === 0) return null;
   if (items !== null && items.length < 4 && !genre && !vibe && !tag) return null;
