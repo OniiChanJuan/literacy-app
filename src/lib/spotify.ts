@@ -67,11 +67,12 @@ function mapGenres(spotifyGenres: string[]): string[] {
   };
 
   const mapped: string[] = [];
-  for (const g of spotifyGenres) {
+  for (const g of (spotifyGenres || [])) {
+    if (!g) continue;
     const lower = g.toLowerCase();
     const match = Object.entries(genreMap).find(([key]) => lower.includes(key));
-    const genre = match ? match[1] : g.split(" ").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
-    if (!mapped.includes(genre)) mapped.push(genre);
+    const genre = match ? match[1] : g.split(" ").filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+    if (genre && !mapped.includes(genre)) mapped.push(genre);
   }
   return mapped.slice(0, 4);
 }
@@ -95,7 +96,7 @@ function deriveVibesMusic(genres: string[]): string[] {
 }
 
 function deriveVibesPodcast(description: string): string[] {
-  const d = description.toLowerCase();
+  const d = (description || "").toLowerCase();
   const vibes: string[] = [];
 
   if (d.includes("tech") || d.includes("science") || d.includes("ai")) vibes.push("cerebral");
@@ -188,7 +189,7 @@ export async function getSpotifyAlbumDetails(albumId: string): Promise<Item | nu
   let artistGenres: string[] = [];
   if (album.artists[0]?.id) {
     const artist = await spotifyFetch(`/artists/${album.artists[0].id}`) as SpotifyArtist | null;
-    if (artist) artistGenres = artist.genres;
+    if (artist) artistGenres = artist.genres || [];
   }
 
   return mapAlbumToItem(album, artistGenres);
@@ -204,7 +205,7 @@ export async function getSpotifyShowDetails(showId: string): Promise<Item | null
 // ── Mappers ─────────────────────────────────────────────────────────────
 
 function mapAlbumToItem(album: SpotifyAlbum, artistGenres: string[]): Item {
-  const year = parseInt(album.release_date.split("-")[0]) || 0;
+  const year = parseInt((album.release_date || "0").split("-")[0]) || 0;
   const cover = album.images[0]?.url || "";
   const genres = mapGenres(artistGenres);
   const vibes = deriveVibesMusic(genres);
