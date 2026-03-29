@@ -80,14 +80,14 @@ function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null; secon
     type: dbItem.type,
     genre: dbItem.genre || [],
     vibes: dbItem.vibes || [],
-    year: dbItem.year,
-    cover: dbItem.cover || "",
-    desc: dbItem.description || "",
-    people: dbItem.people || [],
-    awards: dbItem.awards || [],
-    platforms: dbItem.platforms || [],
-    ext: dbItem.ext || {},
-    totalEp: dbItem.totalEp || 0,
+    year: dbItem.year ?? 0,
+    cover: dbItem.cover ?? "",
+    desc: dbItem.description ?? "",
+    people: (dbItem.people as any[] | null) ?? [],
+    awards: (dbItem.awards as any[] | null) ?? [],
+    platforms: (dbItem.platforms as any[] | null) ?? [],
+    ext: (dbItem.ext as Record<string, number> | null) ?? {},
+    totalEp: dbItem.totalEp ?? 0,
     primaryColor: dbItem.primaryColor || null,
     secondaryColor: dbItem.secondaryColor || null,
     itemTags: dbItem.itemTags || null,
@@ -223,7 +223,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       item = await getTmdbDetails(tmdbParsed.type, tmdbParsed.tmdbId);
       if (item) {
         const saved = await prisma.item.create({
-          data: { title: item.title, type: item.type, genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: item.totalEp || 0, tmdbId: tmdbParsed.tmdbId, lastSyncedAt: new Date() },
+          data: { title: item.title, type: item.type, genre: item.genre || [], vibes: item.vibes || [], year: item.year, cover: item.cover ?? "", description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: item.totalEp || 0, tmdbId: tmdbParsed.tmdbId, lastSyncedAt: new Date() },
         }).catch(() => null);
         if (saved) item = { ...item, id: saved.id };
         isExternal = true;
@@ -236,7 +236,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       item = await getIgdbDetails(igdbParsed);
       if (item) {
         const saved = await prisma.item.create({
-          data: { title: item.title, type: "game", genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, igdbId: igdbParsed, lastSyncedAt: new Date() },
+          data: { title: item.title, type: "game", genre: item.genre || [], vibes: item.vibes || [], year: item.year, cover: item.cover ?? "", description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, igdbId: igdbParsed, lastSyncedAt: new Date() },
         }).catch(() => null);
         if (saved) item = { ...item, id: saved.id };
         isExternal = true;
@@ -249,7 +249,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       item = await getGoogleBookDetails(gbookParsed);
       if (item) {
         const saved = await prisma.item.create({
-          data: { title: item.title, type: "book", genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, googleBooksId: gbookParsed, lastSyncedAt: new Date() },
+          data: { title: item.title, type: "book", genre: item.genre || [], vibes: item.vibes || [], year: item.year, cover: item.cover ?? "", description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, googleBooksId: gbookParsed, lastSyncedAt: new Date() },
         }).catch(() => null);
         if (saved) item = { ...item, id: saved.id };
         isExternal = true;
@@ -264,7 +264,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         : await getSpotifyShowDetails(spotifyParsed.spotifyId);
       if (item) {
         const saved = await prisma.item.create({
-          data: { title: item.title, type: item.type, genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, spotifyId: spotifyParsed.spotifyId, lastSyncedAt: new Date() },
+          data: { title: item.title, type: item.type, genre: item.genre || [], vibes: item.vibes || [], year: item.year, cover: item.cover ?? "", description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, spotifyId: spotifyParsed.spotifyId, lastSyncedAt: new Date() },
         }).catch(() => null);
         if (saved) item = { ...item, id: saved.id };
         isExternal = true;
@@ -279,7 +279,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         : await getJikanAnimeDetails(jikanParsed.malId);
       if (item) {
         const saved = await prisma.item.create({
-          data: { title: item.title, type: item.type, genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: item.totalEp || 0, malId: jikanParsed.malId, lastSyncedAt: new Date() },
+          data: { title: item.title, type: item.type, genre: item.genre || [], vibes: item.vibes || [], year: item.year, cover: item.cover ?? "", description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: item.totalEp || 0, malId: jikanParsed.malId, lastSyncedAt: new Date() },
         }).catch(() => null);
         if (saved) item = { ...item, id: saved.id };
         isExternal = true;
@@ -292,7 +292,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
       item = await getComicVineDetails(cvParsed);
       if (item) {
         const saved = await prisma.item.create({
-          data: { title: item.title, type: "comic", genre: item.genre, vibes: item.vibes || [], year: item.year, cover: item.cover, description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, comicVineId: cvParsed, lastSyncedAt: new Date() },
+          data: { title: item.title, type: "comic", genre: item.genre || [], vibes: item.vibes || [], year: item.year, cover: item.cover ?? "", description: item.desc || "", people: (item.people || []) as any, awards: (item.awards || []) as any, platforms: (item.platforms || []) as any, ext: (item.ext || {}) as any, totalEp: 0, comicVineId: cvParsed, lastSyncedAt: new Date() },
         }).catch(() => null);
         if (saved) item = { ...item, id: saved.id };
         isExternal = true;
@@ -476,7 +476,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                   height: "100%",
                   borderRadius: 8,
                   border: "0.5px solid rgba(255,255,255,0.1)",
-                  background: item.cover || `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+                  background: (item.cover && item.cover.startsWith("http")) ? item.cover : `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -562,10 +562,10 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                   );
                 }
                 // Fallback to vibes
-                if (item.vibes.length > 0) {
+                if ((item.vibes ?? []).length > 0) {
                   return (
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
-                      {item.vibes.slice(0, 5).map((v) => {
+                      {(item.vibes ?? []).slice(0, 5).map((v) => {
                         const vibe = VIBES[v];
                         if (!vibe) return null;
                         return (
@@ -596,7 +596,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               )}
 
               {/* Description — compact with line clamp */}
-              <ExpandableText text={item.desc} compact toggleColor={t.color} />
+              <ExpandableText text={item.desc ?? ''} compact toggleColor={t.color} />
             </div>
 
             {/* Right — Quick reference (25% width) */}
@@ -667,24 +667,24 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                 ))}
 
                 {/* Genre row — show all genres */}
-                {item.genre.length > 0 && (
+                {(item.genre ?? []).length > 0 && (
                   <div style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: item.genre.length > 3 ? "flex-start" : "center",
+                    alignItems: (item.genre ?? []).length > 3 ? "flex-start" : "center",
                   }}>
                     <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>Genre</span>
-                    {item.genre.length <= 3 ? (
+                    {(item.genre ?? []).length <= 3 ? (
                       <span style={{
                         fontSize: 13,
                         color: "rgba(255,255,255,0.7)",
                         textAlign: "right",
                       }}>
-                        {item.genre.join(", ")}
+                        {(item.genre ?? []).join(", ")}
                       </span>
                     ) : (
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "flex-end" }}>
-                        {item.genre.map((g) => (
+                        {(item.genre ?? []).map((g) => (
                           <span key={g} style={{
                             fontSize: 10,
                             padding: "2px 7px",
@@ -807,7 +807,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         )}
 
         {/* C. Awards */}
-        <AwardBadges awards={item.awards} />
+        <AwardBadges awards={item.awards ?? []} />
 
         {/* C2. Platform links (full section) */}
         {!upcoming && (item.platforms || []).length > 0 && (
