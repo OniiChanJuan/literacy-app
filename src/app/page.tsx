@@ -396,6 +396,9 @@ export default function ForYouPage() {
     return ids;
   }, [pickedForYouItems, forYouData]);
 
+  // IDs to exclude from Discover Across Media (items already in Picked for you)
+  const discoverExcludeIds = useMemo(() => new Set(pickedForYouItems.map((i) => i.id)), [pickedForYouItems]);
+
   // Each catalog row excludes all higher-priority rows
   const row3ExcludeIds = forYouIdSet;
 
@@ -559,7 +562,7 @@ export default function ForYouPage() {
             sub="Your taste says you'd love these — in media you haven't tried yet"
             icon="🌐" iconBg="rgba(49,133,252,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
-            clientExclude={useMemo(() => new Set(pickedForYouItems.map((i) => i.id)), [pickedForYouItems])}
+            clientExclude={discoverExcludeIds}
           />
         </ErrorBoundary>
       )}
