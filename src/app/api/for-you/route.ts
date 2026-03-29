@@ -105,18 +105,28 @@ export async function GET(req: NextRequest) {
 
     // Score all candidates by taste similarity
     const scored = pool.map((c) => {
-      const hasDimensions = !!(c.itemDimensions && Object.keys(c.itemDimensions as any).length > 0);
+      // Meaningful dimensions: at least one value deviates > 0.05 from neutral 0.5
+      const dims = c.itemDimensions as Record<string, number> | null;
+      const hasMeaningfulDimensions = !!(dims && Object.values(dims).some((v) => Math.abs(v - 0.5) > 0.05));
       let dimScore = 0;
-      if (hasDimensions) {
+      if (hasMeaningfulDimensions) {
         dimScore = tasteSimilarity(tasteProfile, c.itemDimensions as unknown as TasteDimensions);
       }
 
-      const norm = normalizeScore(c.ext as any, c.type);
+      const norm = normalizeScore(c.ext as any, c.type, c.voteCount ?? 0);
       const quality = norm > 0 ? norm : 0.5;
+      const votes = c.voteCount ?? 0;
 
-      // Items with no taste dimensions get a heavy penalty so genuine matches
-      // surface first. Without dimensions, fall back to quality * 0.2 only.
-      const score = hasDimensions ? (dimScore * 0.6 + quality * 0.4) : (quality * 0.2);
+      // False-positive penalty: perfect or near-perfect score from a tiny sample
+      const isPerfectLowSample = norm >= 0.99 && votes < 500;
+      const isSuspiciousHigh = norm > 0.9 && votes < 100;
+      const adjustedQuality = (isPerfectLowSample || isSuspiciousHigh) ? quality * 0.5 : quality;
+
+      // Items without meaningful taste dimensions get a heavy penalty so genuine
+      // taste matches surface first. Default-0.5 dimensions carry no signal.
+      const score = hasMeaningfulDimensions
+        ? (dimScore * 0.6 + adjustedQuality * 0.4)
+        : (adjustedQuality * 0.2);
       return { item: c, score, dimScore };
     });
 
@@ -124,10 +134,10 @@ export async function GET(req: NextRequest) {
 
     // ─── Section-based paginated response ───
     if (section === "personalPicks") {
-      // Best taste matches across all types, tightened to 25% per type (max 5 for 20-item row)
+      // Best taste matches across all types — max 4 per type to guarantee 5+ different media types in the row
       const personalPicks: any[] = [];
       const typeCountsPP: Record<string, number> = {};
-      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.25), 5);
+      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.20), 4);
 
       for (const s of scored) {
         const tc = typeCountsPP[s.item.type] || 0;
@@ -176,7 +186,7 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      const page = allDiscover.slice(offset, offset + limit).map(mapItem);
+      const page = interleaveByType(allDiscover).slice(offset, offset + limit).map(mapItem);
       const res = NextResponse.json(page);
       res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
       return res;

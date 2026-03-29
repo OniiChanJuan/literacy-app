@@ -154,26 +154,32 @@ export function calculateItemDimensions(
 }
 
 /**
- * Cosine similarity between two taste dimension vectors, normalized to 0–1.
+ * Taste similarity between two dimension vectors, 0.0–1.0.
+ *
+ * Uses weighted Euclidean distance instead of cosine similarity.
+ * Dimensions where the user has strong preferences (far from neutral 0.5)
+ * are weighted more heavily, so a clear taste preference meaningfully
+ * separates matching items from non-matching ones.
+ * A neutral user profile (all ~0.5) produces near-1.0 for everything —
+ * correct behavior when we don't yet know the user's preferences.
  */
 export function tasteSimilarity(a: TasteDimensions, b: TasteDimensions): number {
-  let dotProduct = 0;
-  let magA = 0;
-  let magB = 0;
+  let weightedSqDiff = 0;
+  let totalWeight = 0;
 
   for (const key of DIMENSION_KEYS) {
-    const va = a[key];
-    const vb = b[key];
-    dotProduct += va * vb;
-    magA += va * va;
-    magB += vb * vb;
+    // How strongly does the user prefer this dimension? (0 = neutral, 1 = extreme)
+    const userStrength = Math.abs(a[key] - 0.5) * 2;
+    // Weight = user's preference strength; neutral user weights all dims equally at 0.1
+    const weight = Math.max(userStrength, 0.1);
+    weightedSqDiff += weight * (a[key] - b[key]) ** 2;
+    totalWeight += weight;
   }
 
-  const mag = Math.sqrt(magA) * Math.sqrt(magB);
-  if (mag === 0) return 0;
-
-  // Cosine similarity is -1 to 1, normalize to 0-1
-  return (dotProduct / mag + 1) / 2;
+  // Normalize: max possible weighted distance when all weights = 1 and all diffs = 1
+  const normalizedDist = Math.sqrt(weightedSqDiff / totalWeight);
+  // Map distance 0→1 to similarity 1→0
+  return Math.max(0, 1 - normalizedDist);
 }
 
 /**

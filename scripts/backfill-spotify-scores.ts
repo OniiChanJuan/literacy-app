@@ -71,7 +71,7 @@ async function searchSpotify(
       const match = shows.find(
         (s: any) => s.name.toLowerCase() === title.toLowerCase()
       ) || shows[0];
-      return { popularity: match.total_episodes || 0, spotifyId: match.id };
+      return { popularity: match.popularity ?? 0, spotifyId: match.id };
     }
 
     const albums = data.albums?.items || [];

@@ -4,12 +4,16 @@
  */
 
 // ── Normalized score ────────────────────────────────────────────────────
-export function normalizeScore(ext: Record<string, number>, type: string): number {
-  // Priority order per type — prefer new correct source keys, fall back to legacy
+/**
+ * Normalize an item's best available score to 0.0–1.0.
+ * @param voteCount - item's community vote count; used to filter community sources below their minimum threshold
+ */
+export function normalizeScore(ext: Record<string, number>, type: string, voteCount = 0): number {
+  // Priority order per type — prefer real editorial sources, then community
   const priorities: Record<string, string[]> = {
     movie: ["imdb", "tmdb", "rt_critics", "metacritic"],
     tv:    ["imdb", "tmdb", "rt_critics", "mal"],
-    game:  ["igdb_critics", "igdb", "metacritic", "opencritic", "ign", "steam"],
+    game:  ["igdb_critics", "igdb", "metacritic", "opencritic", "steam"],
     book:  ["google_books"],
     manga: ["mal", "anilist"],
     comic: ["google_books", "comicvine"],
@@ -22,9 +26,17 @@ export function normalizeScore(ext: Record<string, number>, type: string): numbe
     spotify_popularity: 100,
     imdb: 10, rt_critics: 100, rt_audience: 100,
     metacritic: 100, mal: 10, anilist: 100,
-    ign: 10, steam: 100, pitchfork: 10,
+    steam: 100, pitchfork: 10,
     comicvine: 5, aoty: 100, opencritic: 100, rym: 5,
     letterboxd: 5, storygraph: 5,
+  };
+
+  // Minimum vote counts for community-aggregated sources.
+  // Editorial sources (imdb, rt_*, metacritic, pitchfork, spotify_popularity) have no minimum.
+  const rankThresholds: Record<string, number> = {
+    tmdb: 20, mal: 50, igdb: 20, igdb_critics: 5,
+    google_books: 10, steam: 50, anilist: 20,
+    opencritic: 5, aoty: 5, rym: 5, letterboxd: 10,
   };
 
   const order = priorities[type] || Object.keys(ext);
@@ -39,16 +51,20 @@ export function normalizeScore(ext: Record<string, number>, type: string): numbe
   }
 
   for (const key of order) {
-    if (ext[key] !== undefined) {
-      const scale = maxScales[key] || 10;
-      return ext[key] / scale;
-    }
+    if (ext[key] === undefined) continue;
+    // Skip community sources that don't meet the minimum vote threshold
+    const threshold = rankThresholds[key];
+    if (threshold !== undefined && voteCount < threshold) continue;
+    const scale = maxScales[key] || 10;
+    return ext[key] / scale;
   }
 
-  // Fallback: try any available score
-  for (const [key, val] of Object.entries(ext)) {
-    const scale = maxScales[key] || 10;
-    return val / scale;
+  // Fallback: use any editorial score regardless of vote count
+  const editorialKeys = ["imdb", "rt_critics", "metacritic", "pitchfork"];
+  for (const key of editorialKeys) {
+    if (ext[key] !== undefined) {
+      return ext[key] / (maxScales[key] || 10);
+    }
   }
 
   return 0;
@@ -62,8 +78,8 @@ export function qualityRank(item: {
   voteCount?: number;
   popularityScore?: number;
 }, currentYear = 2026): number {
-  const norm = normalizeScore(item.ext, item.type);
   const votes = item.voteCount || item.popularityScore || 0;
+  const norm = normalizeScore(item.ext, item.type, votes);
   const logVotes = Math.log10(votes + 1);
   const yearDiff = currentYear - item.year;
   const recencyBonus = yearDiff <= 0 ? 1.2 : yearDiff === 1 ? 1.1 : yearDiff === 2 ? 1.05 : 1.0;
@@ -91,8 +107,8 @@ export function meetsQualityFloor(item: {
   cover?: string;
   description?: string;
 }): boolean {
-  const norm = normalizeScore(item.ext, item.type);
   const votes = item.voteCount || item.popularityScore || 0;
+  const norm = normalizeScore(item.ext, item.type, votes);
 
   // Universal: must have title, cover, and real description
   if (!item.title) return false;
@@ -104,7 +120,7 @@ export function meetsQualityFloor(item: {
     case "tv":
       return norm >= 0.6 && votes >= 50;
     case "game":
-      return norm >= 0.6 && (votes >= 10 || item.ext.metacritic !== undefined || item.ext.ign !== undefined);
+      return norm >= 0.6 && (votes >= 10 || item.ext.metacritic !== undefined || item.ext.igdb !== undefined);
     case "manga":
       return norm >= 0.6 && votes >= 100;
     case "book":

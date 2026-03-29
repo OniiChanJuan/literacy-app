@@ -383,17 +383,18 @@ export default function ForYouPage() {
 
   // ── Cross-row deduplication ─────────────────────────────────────────
   // Track raw items returned by each catalog row so subsequent rows can exclude them
+  const [pickedForYouItems, setPickedForYouItems] = useState<Item[]>([]);
   const [row3Items, setRow3Items] = useState<Item[]>([]);  // top_rated
   const [row4Items, setRow4Items] = useState<Item[]>([]);  // popular
   const [row5Items, setRow5Items] = useState<Item[]>([]);  // hidden_gems
 
-  // Rows 1-2 IDs (from for-you API)
+  // Rows 1-2 IDs — built from the paginated row callbacks (not the legacy fetch)
   const forYouIdSet = useMemo(() => {
     const ids = new Set<number>();
-    (forYouData?.personalPicks || []).forEach((i) => ids.add(i.id));
+    pickedForYouItems.forEach((i) => ids.add(i.id));
     (forYouData?.discoverAcrossMedia || []).forEach((i) => ids.add(i.id));
     return ids;
-  }, [forYouData]);
+  }, [pickedForYouItems, forYouData]);
 
   // Each catalog row excludes all higher-priority rows
   const row3ExcludeIds = forYouIdSet;
@@ -544,6 +545,7 @@ export default function ForYouPage() {
             sub="Matched to your taste profile across all media"
             icon="✨" iconBg="rgba(232,72,85,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
+            onLoad={setPickedForYouItems}
           />
         </ErrorBoundary>
       )}
@@ -557,6 +559,7 @@ export default function ForYouPage() {
             sub="Your taste says you'd love these — in media you haven't tried yet"
             icon="🌐" iconBg="rgba(49,133,252,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
+            clientExclude={useMemo(() => new Set(pickedForYouItems.map((i) => i.id)), [pickedForYouItems])}
           />
         </ErrorBoundary>
       )}
