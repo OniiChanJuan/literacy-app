@@ -145,7 +145,7 @@ function mapVolumeToItem(v: GoogleBookVolume): Item {
   // External scores
   const ext: Partial<Record<ExternalSource, number>> = {};
   if (info.averageRating) {
-    ext.goodreads = info.averageRating; // Google Books uses same 0-5 scale
+    ext.google_books = info.averageRating; // 0–5 scale; key must match ranking.ts priorities
   }
 
   // Page count as totalEp

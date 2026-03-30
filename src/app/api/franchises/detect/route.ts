@@ -23,13 +23,63 @@ export async function POST(req: NextRequest) {
 
     const item = await prisma.item.findUnique({
       where: { id: itemId },
-      select: { id: true, title: true, type: true, year: true },
+      select: { id: true, title: true, type: true, year: true, people: true },
     });
     if (!item) return NextResponse.json({ error: "Item not found" }, { status: 404 });
 
     // Check if already in a franchise
     const existing = await prisma.franchiseItem.findFirst({ where: { itemId } });
     if (existing) return NextResponse.json({ franchiseId: existing.franchiseId, alreadyLinked: true });
+
+    // 0. Warhammer-specific detection (runs before generic title matching)
+    //    Catches titles that don't start with "Warhammer" but are part of the IP.
+    const wh40kFranchiseId = 578; // Warhammer 40,000
+    const whFantasyFranchiseId = 594; // Warhammer Fantasy / The Old World
+    const titleLower = item.title.toLowerCase();
+    const publisher = Array.isArray(item.people)
+      ? (item.people as any[]).find((p: any) => p.role === "Publisher")?.name?.toLowerCase() || ""
+      : "";
+    const isBlackLibrary = publisher.includes("black library") || publisher.includes("games workshop");
+
+    const wh40kPatterns = [
+      "warhammer 40", "dawn of war", "darktide", "space marine",
+      "mechanicus", "boltgun", "necromunda", "battlefleet gothic",
+      "warhammer: inquisitor", "rogue trader", "chaos gate",
+      "gladius - relics", "battlesector", "deathwatch", "space hulk",
+      "eternal crusade", "fire warrior", "kill team", "rites of war",
+      "space wolf", "space hulk", "horus heresy", "eisenhorn",
+      "gaunt's ghosts", "ciaphas cain", "siege of terra", "primarchs",
+    ];
+    const whFantasyPatterns = [
+      "total war: warhammer", "vermintide", "blood bowl",
+      "mordheim", "warhammer: mark of chaos", "shadow of the horned rat",
+      "warhammer: dark omen", "age of sigmar", "warhammer underworlds",
+      "gotrek", "warcry", "warhammer fantasy",
+    ];
+
+    const is40K = wh40kPatterns.some((p) => titleLower.includes(p)) ||
+      (isBlackLibrary && ["space marine", "chaos space", "imperium", "astartes",
+        "adeptus", "necron", "eldar", "tyranid", "ork", "horus", "primarch",
+        "warp", "inquisitor", "40,000", "40k"].some((kw) => titleLower.includes(kw)));
+    const isFantasy = !is40K && (
+      whFantasyPatterns.some((p) => titleLower.includes(p)) ||
+      (isBlackLibrary && ["gotrek", "skaven", "sigmar", "old world",
+        "lizardmen", "bretonnian", "chaos warrior", "trollslayer", "daemonslayer"].some(
+        (kw) => titleLower.includes(kw)
+      ))
+    );
+
+    if (is40K || isFantasy) {
+      const targetFranchiseId = is40K ? wh40kFranchiseId : whFantasyFranchiseId;
+      // Verify the franchise exists before linking
+      const franchise = await prisma.franchise.findUnique({ where: { id: targetFranchiseId }, select: { id: true, name: true } });
+      if (franchise) {
+        await prisma.franchiseItem.create({
+          data: { franchiseId: franchise.id, itemId, addedBy: "realtime_warhammer" },
+        });
+        return NextResponse.json({ franchiseId: franchise.id, matched: "warhammer_pattern", franchiseName: franchise.name });
+      }
+    }
 
     // 1. Title pattern matching against existing franchises
     const baseName = item.title.toLowerCase()

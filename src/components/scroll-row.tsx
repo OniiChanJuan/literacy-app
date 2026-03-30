@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useCallback, useEffect, useState, memo } from "react";
+import Link from "next/link";
 
 interface ScrollRowProps {
   label: string;
@@ -88,9 +89,9 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
 
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           {seeAllHref && (
-            <a href={seeAllHref} style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textDecoration: "none" }}>
+            <Link href={seeAllHref} style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textDecoration: "none" }}>
               See all →
-            </a>
+            </Link>
           )}
           {(["left", "right"] as const).map((dir) => {
             const show = dir === "left" ? showLeft : showRight;

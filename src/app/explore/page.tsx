@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import NextImage from "next/image";
@@ -102,6 +102,8 @@ function ExploreContent() {
   const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
   const [gridItems, setGridItems] = useState<Item[]>([]);
   const [gridLoading, setGridLoading] = useState(false);
+  const [gridHasMore, setGridHasMore] = useState(false);
+  const gridPageRef = useRef(0);
   const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
 
   const hasGenreOrVibe = selectedGenres.length > 0 || selectedVibe !== null || selectedTag !== null;
@@ -144,26 +146,49 @@ function ExploreContent() {
     return () => clearTimeout(t);
   }, [search]);
 
-  // Fetch grid items when genre/vibe filter active
-  useEffect(() => {
-    if ((!selectedType && !selectedTag) || !hasGenreOrVibe) { setGridItems([]); return; }
-    setGridLoading(true);
-    let url = `/api/catalog?limit=60`;
+  // Fetch grid items — used whenever selectedType is active (with or without genre/vibe)
+  const fetchGridItems = useCallback((page: number) => {
+    if (!selectedType && !hasGenreOrVibe) {
+      setGridItems([]);
+      setGridHasMore(false);
+      return;
+    }
+    if (page === 0) setGridLoading(true);
+    const limit = 60;
+    const fetchOffset = page * limit;
+    let url = `/api/catalog?limit=${limit}`;
+    if (fetchOffset > 0) url += `&offset=${fetchOffset}`;
     if (selectedType) url += `&type=${selectedType}`;
     if (selectedGenres.length) url += `&genre=${encodeURIComponent(selectedGenres.join(","))}`;
     if (selectedVibe) url += `&vibe=${encodeURIComponent(selectedVibe)}`;
     if (selectedTag) url += `&tag=${encodeURIComponent(selectedTag)}`;
-    if (sort === "top_rated" || sort === "hidden_gems") url += `&curated=${sort}`;
-    fetch(url).then((r) => r.json()).then((d) => {
-      let items = Array.isArray(d) ? d : [];
-      // Client-side sort
-      if (sort === "newest") items.sort((a: Item, b: Item) => b.year - a.year);
-      else if (sort === "oldest") items.sort((a: Item, b: Item) => a.year - b.year);
-      else if (sort === "az") items.sort((a: Item, b: Item) => a.title.localeCompare(b.title));
-      setGridItems(items);
-      setGridLoading(false);
-    }).catch(() => { setGridItems([]); setGridLoading(false); });
+    if (["top_rated", "hidden_gems", "popular"].includes(sort)) url += `&curated=${sort}`;
+    fetch(url)
+      .then(async (r) => {
+        const hasMore = r.headers.get("X-Has-More") === "1";
+        const d = await r.json();
+        let items: Item[] = Array.isArray(d) ? d : [];
+        if (sort === "newest") items.sort((a: Item, b: Item) => b.year - a.year);
+        else if (sort === "oldest") items.sort((a: Item, b: Item) => a.year - b.year);
+        else if (sort === "az") items.sort((a: Item, b: Item) => a.title.localeCompare(b.title));
+        if (page === 0) setGridItems(items);
+        else setGridItems((prev) => [...prev, ...items]);
+        setGridHasMore(hasMore);
+        setGridLoading(false);
+      })
+      .catch(() => { setGridHasMore(false); setGridLoading(false); });
   }, [selectedType, selectedGenres, selectedVibe, selectedTag, sort, hasGenreOrVibe]);
+
+  // Re-fetch (reset to page 0) whenever filters change
+  useEffect(() => {
+    gridPageRef.current = 0;
+    fetchGridItems(0);
+  }, [fetchGridItems]);
+
+  const handleGridLoadMore = useCallback(() => {
+    gridPageRef.current += 1;
+    fetchGridItems(gridPageRef.current);
+  }, [fetchGridItems]);
 
   const toggleGenre = (g: string) => {
     setSelectedGenres((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]);
@@ -188,6 +213,13 @@ function ExploreContent() {
 
   const typeGenres = selectedType ? (TYPE_GENRES[selectedType] || ALL_GENRES.slice(0, 12)) : [];
   const typeColor = selectedType ? TYPES[selectedType].color : "#fff";
+
+  // Banner label for active sort/type filter
+  const sortBannerLabels: Record<SortOption, string> = {
+    rating: "All", popular: "Most Popular", top_rated: "Critically Acclaimed",
+    hidden_gems: "Hidden Gems", newest: "Newest", oldest: "Oldest", az: "A–Z",
+  };
+  const bannerLabel = `${sortBannerLabels[sort] || "All"}${selectedType ? ` ${TYPES[selectedType].label}` : " across all media"}`;
 
   // Show search results — organized by type
   if (searchResults !== null || searching) {
@@ -368,6 +400,30 @@ function ExploreContent() {
         })}
       </div>
 
+      {/* Active filter banner — shown when a sort or type filter is applied */}
+      {(sort !== "rating" || selectedType) && (
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "8px 16px", marginBottom: 12,
+          background: "rgba(255,255,255,0.03)",
+          borderRadius: 8, border: "0.5px solid rgba(255,255,255,0.06)",
+        }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: "#fff", flex: 1 }}>
+            Showing: {bannerLabel}
+          </span>
+          <button
+            onClick={clearAll}
+            style={{
+              background: "none", border: "none",
+              color: "rgba(255,255,255,0.35)", cursor: "pointer",
+              fontSize: 12, display: "flex", alignItems: "center", gap: 4,
+            }}
+          >
+            Clear all ✕
+          </button>
+        </div>
+      )}
+
       {/* ── FILTERED VIEW: media type selected ─────────────────────────── */}
       {selectedType && (
         <div style={{ transition: "opacity 0.15s", opacity: 1 }}>
@@ -430,47 +486,55 @@ function ExploreContent() {
             </select>
           </div>
 
-          {/* Genre/vibe active → grid view */}
+          {/* Active genre/vibe filter description */}
           {hasGenreOrVibe && (
-            <div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-                  Showing: {selectedGenres.length > 0 ? selectedGenres.join(", ") + " " : ""}
-                  {selectedType ? TYPES[selectedType].label.toLowerCase() : "all media"}
-                  {selectedVibe && VIBES[selectedVibe] ? ` · ${VIBES[selectedVibe].label}` : ""}
-                  {selectedTag ? ` · ${getTagDisplayName(selectedTag)}` : ""}
-                  {" · sorted by "}{SORT_OPTIONS.find((o) => o.value === sort)?.label}
-                </div>
-                <button
-                  onClick={() => { setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); }}
-                  style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", cursor: "pointer", fontSize: 11 }}
-                >
-                  ✕ Clear filters
-                </button>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
+                {selectedGenres.length > 0 ? selectedGenres.join(", ") + " " : ""}
+                {TYPES[selectedType].label.toLowerCase()}
+                {selectedVibe && VIBES[selectedVibe] ? ` · ${VIBES[selectedVibe].label}` : ""}
+                {selectedTag ? ` · ${getTagDisplayName(selectedTag)}` : ""}
+                {" · sorted by "}{SORT_OPTIONS.find((o) => o.value === sort)?.label}
               </div>
-              {gridLoading ? (
-                <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-faint)", fontSize: 13 }}>Loading...</div>
-              ) : gridItems.length > 0 ? (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-                  {gridItems.map((item) => <Card key={item.id} item={item} />)}
-                </div>
-              ) : (
-                <div style={{ textAlign: "center", padding: "40px 20px", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>No items match these filters.</div>
-              )}
+              <button
+                onClick={() => { setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); }}
+                style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", cursor: "pointer", fontSize: 11 }}
+              >
+                ✕ Clear filters
+              </button>
             </div>
           )}
 
-          {/* No genre selected → genre rows */}
-          {!hasGenreOrVibe && (
-            <div>
-              {/* Top overall row */}
-              <GenreRow type={selectedType} genre={null} label={`Top ${TYPES[selectedType].label.toLowerCase()} overall`} />
-              {/* Per-genre rows */}
-              {typeGenres.map((g) => (
-                <GenreRow key={g} type={selectedType} genre={g} label={`${g} ${TYPES[selectedType].label.toLowerCase()}`} />
-              ))}
-            </div>
-          )}
+          {/* Unified grid — shows all items for this type (with optional genre/vibe filters) */}
+          {gridLoading && gridItems.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-faint)", fontSize: 13 }}>Loading...</div>
+          ) : gridItems.length > 0 ? (
+            <>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
+                {gridItems.map((item) => <Card key={item.id} item={item} />)}
+              </div>
+              {gridHasMore && (
+                <div style={{ textAlign: "center", marginTop: 24, marginBottom: 8 }}>
+                  <button
+                    onClick={handleGridLoadMore}
+                    disabled={gridLoading}
+                    style={{
+                      padding: "10px 28px", borderRadius: 8,
+                      background: "rgba(255,255,255,0.04)", border: "0.5px solid rgba(255,255,255,0.1)",
+                      color: gridLoading ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.6)",
+                      cursor: gridLoading ? "default" : "pointer", fontSize: 13, transition: "background 0.15s",
+                    }}
+                    onMouseEnter={(e) => { if (!gridLoading) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}
+                  >
+                    {gridLoading ? "Loading..." : "Load More"}
+                  </button>
+                </div>
+              )}
+            </>
+          ) : !gridLoading ? (
+            <div style={{ textAlign: "center", padding: "40px 20px", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>No items match these filters.</div>
+          ) : null}
         </div>
       )}
 
@@ -594,7 +658,7 @@ function ExploreContent() {
             if (selectedVibe && VIBES[selectedVibe]) parts.push(VIBES[selectedVibe].label);
             if (selectedTag) parts.push(getTagDisplayName(selectedTag));
             const filterPrefix = parts.length > 0 ? parts.join(" + ") + " " : "";
-            const curatedParam = (sort === "top_rated" || sort === "hidden_gems") ? sort : undefined;
+            const curatedParam = ["top_rated", "hidden_gems", "popular"].includes(sort) ? sort : undefined;
             return (
               <MediaTypeRow
                 key={`${k}-${selectedGenres.join(",")}-${selectedVibe}-${selectedTag}-${sort}`}
@@ -701,7 +765,7 @@ function MediaTypeIcon({ type, color }: { type: string; color: string }) {
 function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string; curated?: string }) {
   const [items, setItems] = useState<Item[] | null>(null);
   useEffect(() => {
-    let url = `/api/catalog?type=${type}&limit=20`;
+    let url = `/api/catalog?type=${type}&limit=30`;
     if (genre) url += `&genre=${encodeURIComponent(genre)}`;
     if (vibe) url += `&vibe=${encodeURIComponent(vibe)}`;
     if (tag) url += `&tag=${encodeURIComponent(tag)}`;
@@ -713,7 +777,7 @@ function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated }: { type: s
   // Hide row if no items match the filter
   if (items !== null && items.length === 0) return null;
   if (items !== null && items.length < 4 && !genre && !vibe && !tag) return null;
-  const seeAllHref = `/explore?type=${type}`;
+  const seeAllHref = curated ? `/explore?type=${type}&sort=${curated}` : `/explore?type=${type}`;
   return (
     <div style={{ marginBottom: 16 }}>
       <ScrollRow label={label} sub={sub || `${items?.length || "..."} titles`} seeAllHref={seeAllHref}>
@@ -752,17 +816,19 @@ function NoFilterResults({ filterLabel, types, genre, vibe, tag, onClear }: { fi
   );
 }
 
-function GenreRow({ type, genre, label }: { type: string; genre: string | null; label: string }) {
+function GenreRow({ type, genre, label, curated, seeAllHref }: { type: string; genre: string | null; label: string; curated?: string; seeAllHref?: string }) {
   const [items, setItems] = useState<Item[] | null>(null);
   useEffect(() => {
-    let url = `/api/catalog?type=${type}&limit=15`;
+    let url = `/api/catalog?type=${type}&limit=30`;
     if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+    if (curated) url += `&curated=${curated}`;
     fetch(url).then((r) => r.json()).then((d) => setItems(Array.isArray(d) ? d : [])).catch(() => setItems([]));
-  }, [type, genre]);
+  }, [type, genre, curated]);
   if (items !== null && items.length < 4) return null;
+  const href = seeAllHref || `/explore?type=${type}`;
   return (
     <div style={{ marginBottom: 16 }}>
-      <ScrollRow label={label} sub={`${items?.length || "..."} titles`}>
+      <ScrollRow label={label} sub={`${items?.length || "..."} titles`} seeAllHref={href}>
         {items === null ? (
           <div style={{ display: "flex", gap: 10 }}>
             {Array.from({ length: 6 }, (_, i) => (

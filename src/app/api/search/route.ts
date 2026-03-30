@@ -196,6 +196,14 @@ export async function GET(req: NextRequest) {
   const localByType: Record<string, number> = {};
   dbResults.forEach((r: any) => { localByType[r.type] = (localByType[r.type] || 0) + 1; });
 
+  // Count local books that actually match the query well (title score >= 0.5).
+  // Using raw localByType["book"] is misleading — 3 books that each share one
+  // word with the query (e.g. "Empire of Pain" for "empire of silence") would
+  // suppress the Google Books fallback even though none are relevant.
+  const relevantLocalBooks = dbResults.filter(
+    (r: any) => r.type === "book" && titleMatchScore(r.title || "", q) >= 0.5
+  ).length;
+
   const apiPromises: Promise<any[]>[] = [];
 
   // Only search APIs for types with fewer than 3 local results
@@ -213,7 +221,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  if ((localByType["book"] || 0) < 3) {
+  if (relevantLocalBooks < 3) {
     apiPromises.push(
       searchGoogleBooks(q).then((items) => items.filter((i) => i.cover).map((item) => ({
         ...item, source: "gbook", routeId: gbookItemId(item.volumeId), sourceLabel: "Google Books",

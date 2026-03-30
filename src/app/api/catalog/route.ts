@@ -92,7 +92,29 @@ export async function GET(req: NextRequest) {
       if (vibe) baseWhere.vibes = { has: vibe };
       if (excludeIds.length > 0) baseWhere.id = { notIn: excludeIds };
 
-      // Per-type quotas guarantee cross-media diversity.
+      // Single-type view: skip per-type quotas, quality-rank the full type directly
+      // so the frontend can show 30-60+ results and paginate with load-more.
+      if (type) {
+        const minVotesMap: Record<string, number> = { movie: 50, tv: 50, game: 10, manga: 50, book: 5, music: 0, comic: 0, podcast: 0 };
+        const minVotes = minVotesMap[type] ?? 0;
+        const typeWhere: any = { ...baseWhere, type };
+        if (minVotes > 0) typeWhere.voteCount = { gte: minVotes };
+        const pool = await prisma.item.findMany({
+          where: typeWhere,
+          orderBy: { voteCount: "desc" },
+          take: Math.min((offset + limit) * 5 + 100, 600),
+          select: ITEM_SELECT,
+        });
+        const ranked = pool
+          .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }))
+          .map(i => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount || 0 }) }))
+          .sort((a, b) => b.rank - a.rank);
+        const page = ranked.slice(offset, offset + limit);
+        const hasMore = ranked.length > offset + limit;
+        return jsonResponse(page.map(mapItem), hasMore);
+      }
+
+      // Cross-media view: per-type quotas guarantee diversity.
       // minVotes=0 for types without scoring sources (comic/podcast/music).
       const typeQuotas: Array<{ t: string; quota: number; minVotes: number }> = [
         { t: "movie",   quota: 10, minVotes: 50 },
@@ -105,11 +127,8 @@ export async function GET(req: NextRequest) {
         { t: "podcast", quota: 2,  minVotes: 0  },
       ];
 
-      // If a specific type is requested, only query that one type
-      const activeQuotas = type ? typeQuotas.filter(q => q.t === type) : typeQuotas;
-
       const perTypeItems = await Promise.all(
-        activeQuotas.map(async ({ t, quota, minVotes }) => {
+        typeQuotas.map(async ({ t, quota, minVotes }) => {
           const typeWhere: any = { ...baseWhere, type: t };
           if (minVotes > 0) typeWhere.voteCount = { gte: minVotes };
 
@@ -175,10 +194,32 @@ export async function GET(req: NextRequest) {
       if (vibe) baseWhere.vibes = { has: vibe };
       if (excludeIds.length > 0) baseWhere.id = { notIn: excludeIds };
 
-      // Per-type quotas with lowered thresholds:
-      // Score threshold 0.65 (was 0.75) — niche items can be great without blockbuster scores
-      // Min voteCount 10 (was 20) — a gem with 10-15 genuine ratings is still valid
+      // Score threshold 0.65 — niche items can be great without blockbuster scores
       const SCORE_THRESHOLD = 0.65;
+
+      // Single-type view: skip per-type quotas, gem-rank the full type for pagination
+      if (type) {
+        const pool = await prisma.item.findMany({
+          where: { ...baseWhere, type, voteCount: { gte: 10, lt: 5000 } },
+          orderBy: { year: "desc" },
+          take: Math.min((offset + limit) * 5 + 100, 600),
+          select: ITEM_SELECT,
+        });
+        const ranked = pool
+          .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= SCORE_THRESHOLD)
+          .map(i => {
+            const norm = normalizeScore(i.ext as any, i.type);
+            const gemScore = norm / Math.log10(Math.max(i.voteCount || 1, 10));
+            return { ...i, gemScore };
+          })
+          .sort((a, b) => b.gemScore - a.gemScore);
+        const page = ranked.slice(offset, offset + limit);
+        const hasMore = ranked.length > offset + limit;
+        return jsonResponse(page.map(mapItem), hasMore);
+      }
+
+      // Cross-media view: per-type quotas with lowered thresholds
+      // Min voteCount 10 — a gem with 10-15 genuine ratings is still valid
       const gemTypes: Array<{ t: string; quota: number }> = [
         { t: "movie",  quota: 6 },
         { t: "tv",     quota: 6 },
@@ -187,10 +228,8 @@ export async function GET(req: NextRequest) {
         { t: "book",   quota: 5 },
       ];
 
-      const activeGemTypes = type ? gemTypes.filter(q => q.t === type) : gemTypes;
-
       const perTypeGems = await Promise.all(
-        activeGemTypes.map(async ({ t, quota }) => {
+        gemTypes.map(async ({ t, quota }) => {
           const pool = await prisma.item.findMany({
             where: { ...baseWhere, type: t, voteCount: { gte: 10, lt: 5000 } },
             orderBy: { year: "desc" },
