@@ -163,6 +163,7 @@ function ExploreContent() {
     if (selectedVibe) url += `&vibe=${encodeURIComponent(selectedVibe)}`;
     if (selectedTag) url += `&tag=${encodeURIComponent(selectedTag)}`;
     if (["top_rated", "hidden_gems", "popular"].includes(sort)) url += `&curated=${sort}`;
+    if (sort === "newest" || sort === "oldest" || sort === "az") url += `&sort=${sort}`;
     fetch(url)
       .then(async (r) => {
         const hasMore = r.headers.get("X-Has-More") === "1";
@@ -477,12 +478,16 @@ function ExploreContent() {
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
               style={{
-                fontSize: 10, background: "rgba(255,255,255,0.04)", padding: "4px 10px",
-                borderRadius: 8, border: "0.5px solid rgba(255,255,255,0.06)",
-                color: "rgba(255,255,255,0.25)", outline: "none", cursor: "pointer", flexShrink: 0,
+                fontSize: 11, background: "#1c1c26", padding: "5px 10px",
+                borderRadius: 8, border: "0.5px solid rgba(255,255,255,0.15)",
+                color: "rgba(255,255,255,0.75)", outline: "none", cursor: "pointer", flexShrink: 0,
               }}
             >
-              {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+              {SORT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value} style={{ background: "#141419", color: "#fff" }}>
+                  {o.label}
+                </option>
+              ))}
             </select>
           </div>
 
