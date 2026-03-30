@@ -20,7 +20,7 @@ import StatusTracker from "@/components/status-tracker";
 import UpcomingDetailSidebar from "@/components/upcoming-detail-sidebar";
 import ExternalScores, { ExternalScoresPanel } from "@/components/external-scores";
 import PlatformButtons from "@/components/platform-buttons";
-import WatchProviders from "@/components/watch-providers";
+import WhereTo from "@/components/where-to";
 import FranchiseBadge from "@/components/franchise-badge";
 import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
@@ -809,15 +809,10 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         {/* C. Awards */}
         <AwardBadges awards={item.awards ?? []} />
 
-        {/* C2. Platform links (full section) */}
-        {!upcoming && (item.platforms || []).length > 0 && (
+        {/* C2. Where to watch / read / play / listen */}
+        {!upcoming && (
           <div style={{ marginTop: 16 }}>
-            <PlatformButtons
-              platforms={item.platforms}
-              mediaType={item.type as any}
-              itemId={item.id}
-              showAffiliate={false}
-            />
+            <WhereTo item={item} />
           </div>
         )}
 

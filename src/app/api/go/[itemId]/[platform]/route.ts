@@ -39,6 +39,7 @@ export async function GET(
       googleBooksId: true,
       malId: true,
       comicVineId: true,
+      steamAppId: true,
       platformLinks: true,
     },
   });
@@ -61,6 +62,7 @@ export async function GET(
       googleBooksId: item.googleBooksId,
       malId: item.malId,
       comicVineId: item.comicVineId,
+      steamAppId: item.steamAppId,
       year: item.year,
     });
   }

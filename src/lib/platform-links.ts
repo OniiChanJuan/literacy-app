@@ -27,6 +27,7 @@ interface LinkMeta {
   googleBooksId?: string | null;
   malId?: number | null;
   comicVineId?: number | null;
+  steamAppId?: number | null;
   year?: number;
 }
 
@@ -90,9 +91,9 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
     buildUrl: (m) => `https://www.audible.com/search?keywords=${searchQuery(m.title)}`,
   },
   library: {
-    label: "Library",
+    label: "Libby (free)",
     category: "free",
-    buildUrl: (m) => `https://www.worldcat.org/search?q=${searchQuery(m.title)}`,
+    buildUrl: (m) => `https://www.overdrive.com/search?q=${searchQuery(m.title)}`,
   },
   google_books: {
     label: "Google Books",
@@ -102,11 +103,30 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
       : `https://books.google.com/books?q=${searchQuery(m.title)}`,
   },
 
+  bookshop: {
+    label: "Bookshop.org",
+    category: "buy",
+    buildUrl: (m) => `https://bookshop.org/search?keywords=${searchQuery(m.title)}`,
+  },
+  apple_books: {
+    label: "Apple Books",
+    category: "buy",
+    buildUrl: (m) => `https://books.apple.com/us/search?term=${searchQuery(m.title)}`,
+  },
+  amazon_books: {
+    label: "Amazon",
+    category: "buy",
+    buildUrl: (m) => `https://www.amazon.com/s?k=${searchQuery(m.title)}&i=stripbooks`,
+    affiliateParam: "tag",
+  },
+
   // ── Gaming ──
   steam: {
     label: "Steam",
     category: "play",
-    buildUrl: (m) => `https://store.steampowered.com/search/?term=${searchQuery(m.title)}`,
+    buildUrl: (m) => m.steamAppId
+      ? `https://store.steampowered.com/app/${m.steamAppId}`
+      : `https://store.steampowered.com/search/?term=${searchQuery(m.title)}`,
   },
   pc: {
     label: "PC",
@@ -144,6 +164,22 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
     buildUrl: (m) => `https://www.nintendo.com/us/search/#q=${searchQuery(m.title)}&cat=games`,
   },
 
+  gog: {
+    label: "GOG",
+    category: "play",
+    buildUrl: (m) => `https://www.gog.com/games?search=${searchQuery(m.title)}`,
+  },
+  epic: {
+    label: "Epic Games",
+    category: "play",
+    buildUrl: (m) => `https://store.epicgames.com/browse?q=${searchQuery(m.title)}`,
+  },
+  gamepass: {
+    label: "Game Pass",
+    category: "stream",
+    buildUrl: (m) => `https://www.xbox.com/games/store/search/${searchQuery(m.title)}`,
+  },
+
   // ── Music ──
   spotify: {
     label: "Spotify",
@@ -158,11 +194,48 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
     buildUrl: (m) => `https://music.apple.com/search?term=${searchQuery(m.title)}`,
   },
 
+  youtube_music: {
+    label: "YouTube Music",
+    category: "stream",
+    buildUrl: (m) => `https://music.youtube.com/search?q=${searchQuery(m.title)}`,
+  },
+  tidal: {
+    label: "Tidal",
+    category: "stream",
+    buildUrl: (m) => `https://tidal.com/search?q=${searchQuery(m.title)}`,
+  },
+  amazon_music: {
+    label: "Amazon Music",
+    category: "stream",
+    buildUrl: (m) => `https://music.amazon.com/search/${searchQuery(m.title)}`,
+  },
+  bandcamp: {
+    label: "Bandcamp",
+    category: "stream",
+    buildUrl: (m) => `https://bandcamp.com/search?q=${searchQuery(m.title)}`,
+  },
+
   // ── Podcasts ──
   apple_pod: {
     label: "Apple Podcasts",
     category: "stream",
     buildUrl: (m) => `https://podcasts.apple.com/search?term=${searchQuery(m.title)}`,
+  },
+
+  youtube_pod: {
+    label: "YouTube",
+    category: "stream",
+    buildUrl: (m) => `https://www.youtube.com/results?search_query=${searchQuery(m.title)}+podcast`,
+  },
+  pocket_casts: {
+    label: "Pocket Casts",
+    category: "stream",
+    buildUrl: (m) => `https://pocketcasts.com/search/${searchQuery(m.title)}`,
+  },
+  overcast: {
+    label: "Overcast",
+    category: "stream",
+    buildUrl: (m) => `https://overcast.fm/search?q=${searchQuery(m.title)}`,
   },
 
   // ── Manga/Comics ──
@@ -181,6 +254,33 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
     category: "buy",
     buildUrl: (m) => `https://www.amazon.com/s?k=${searchQuery(m.title)}&i=comics-702702`,
     affiliateParam: "tag",
+  },
+
+  marvel_unlimited: {
+    label: "Marvel Unlimited",
+    category: "stream",
+    buildUrl: (m) => `https://www.marvel.com/comics/search?query=${searchQuery(m.title)}`,
+  },
+  dc_unlimited: {
+    label: "DC Universe",
+    category: "stream",
+    buildUrl: (m) => `https://www.dcuniverseinfinite.com/search?q=${searchQuery(m.title)}`,
+  },
+  amazon_manga: {
+    label: "Amazon",
+    category: "buy",
+    buildUrl: (m) => `https://www.amazon.com/s?k=${searchQuery(m.title)}&i=comics-manga`,
+    affiliateParam: "tag",
+  },
+  crunchyroll: {
+    label: "Crunchyroll",
+    category: "stream",
+    buildUrl: (m) => `https://www.crunchyroll.com/search?q=${searchQuery(m.title)}`,
+  },
+  hidive: {
+    label: "HiDive",
+    category: "stream",
+    buildUrl: (m) => `https://www.hidive.com/search?q=${searchQuery(m.title)}`,
   },
 
   // ── Retro / niche (no URLs) ──
