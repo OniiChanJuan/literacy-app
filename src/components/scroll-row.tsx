@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useEffect, memo } from "react";
+import { useRef, useCallback, useEffect, useState, memo } from "react";
 
 interface ScrollRowProps {
   label: string;
@@ -15,27 +15,44 @@ interface ScrollRowProps {
 
 const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref, onLoadMore, loadingMore, children }: ScrollRowProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true); // optimistic until measured
 
   const scroll = useCallback((dir: "left" | "right") => {
     ref.current?.scrollBy({ left: dir === "left" ? -486 : 486, behavior: "smooth" });
   }, []);
 
-  // Detect scroll near end to trigger load more
+  // Check scroll position and trigger load-more near end
+  const checkScrollState = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanScrollLeft(scrollLeft > 2);
+    setCanScrollRight(scrollWidth - scrollLeft - clientWidth > 10);
+    if (onLoadMore && scrollWidth - scrollLeft - clientWidth < 300) {
+      onLoadMore();
+    }
+  }, [onLoadMore]);
+
   useEffect(() => {
-    if (!onLoadMore) return;
     const el = ref.current;
     if (!el) return;
 
-    const handleScroll = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = el;
-      if (scrollWidth - scrollLeft - clientWidth < 300) {
-        onLoadMore();
-      }
-    };
+    // Measure immediately, then re-measure shortly after (images/fonts may expand)
+    checkScrollState();
+    const timer = setTimeout(checkScrollState, 250);
 
-    el.addEventListener("scroll", handleScroll, { passive: true });
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, [onLoadMore]);
+    el.addEventListener("scroll", checkScrollState, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", checkScrollState);
+      clearTimeout(timer);
+    };
+  }, [checkScrollState]);
+
+  // Left arrow: only show once user has scrolled past the start
+  const showLeft = canScrollLeft;
+  // Right arrow: show when more scroll room exists OR more items may load
+  const showRight = canScrollRight || !!onLoadMore;
 
   return (
     <div style={{ marginBottom: 18 }}>
@@ -75,31 +92,36 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
               See all →
             </a>
           )}
-          {(["left", "right"] as const).map((dir) => (
-            <button
-              key={dir}
-              aria-label={dir === "left" ? "Scroll left" : "Scroll right"}
-              onClick={() => scroll(dir)}
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: "50%",
-                border: "0.5px solid rgba(255,255,255,0.08)",
-                background: "rgba(255,255,255,0.04)",
-                color: "rgba(255,255,255,0.4)",
-                cursor: "pointer",
-                fontSize: 11,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "background 0.15s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
-            >
-              {dir === "left" ? "←" : "→"}
-            </button>
-          ))}
+          {(["left", "right"] as const).map((dir) => {
+            const show = dir === "left" ? showLeft : showRight;
+            return (
+              <button
+                key={dir}
+                aria-label={dir === "left" ? "Scroll left" : "Scroll right"}
+                onClick={() => scroll(dir)}
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  border: "0.5px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255,255,255,0.04)",
+                  color: "rgba(255,255,255,0.4)",
+                  cursor: show ? "pointer" : "default",
+                  fontSize: 11,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "background 0.15s, opacity 0.15s",
+                  visibility: show ? "visible" : "hidden",
+                  pointerEvents: show ? "auto" : "none",
+                }}
+                onMouseEnter={(e) => { if (show) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)"; }}
+                onMouseLeave={(e) => { if (show) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}
+              >
+                {dir === "left" ? "←" : "→"}
+              </button>
+            );
+          })}
         </div>
       </div>
 

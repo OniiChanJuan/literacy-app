@@ -82,29 +82,58 @@ export async function GET(req: NextRequest) {
 
     // ── Critically acclaimed ──────────────────────────────────────────
     if (curated === "top_rated") {
-      const items = await prisma.item.findMany({
-        where: { ...where, voteCount: { gte: 50 } },
-        orderBy: { voteCount: "desc" },
-        take: poolSize,
-        select: ITEM_SELECT,
-      });
+      // Build base where without type — we handle types via per-type quotas below
+      const baseWhere: any = { isUpcoming: false, parentItemId: null };
+      if (genre) {
+        const genres = genre.split(",").filter(Boolean);
+        if (genres.length === 1) baseWhere.genre = { has: genres[0] };
+        else if (genres.length > 1) baseWhere.genre = { hasSome: genres };
+      }
+      if (vibe) baseWhere.vibes = { has: vibe };
+      if (excludeIds.length > 0) baseWhere.id = { notIn: excludeIds };
 
-      const ranked = items
-        .filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= 0.75)
-        .map((i) => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount }) }))
-        .sort((a, b) => b.rank - a.rank);
+      // Per-type quotas guarantee cross-media diversity.
+      // minVotes=0 for types without scoring sources (comic/podcast/music).
+      const typeQuotas: Array<{ t: string; quota: number; minVotes: number }> = [
+        { t: "movie",   quota: 10, minVotes: 50 },
+        { t: "tv",      quota: 10, minVotes: 50 },
+        { t: "game",    quota: 5,  minVotes: 10 },
+        { t: "manga",   quota: 5,  minVotes: 50 },
+        { t: "book",    quota: 3,  minVotes: 5  },
+        { t: "music",   quota: 2,  minVotes: 0  },
+        { t: "comic",   quota: 2,  minVotes: 0  },
+        { t: "podcast", quota: 2,  minVotes: 0  },
+      ];
 
-      // Enforce max 30% per type for diversity
-      const typeCounts = new Map<string, number>();
-      const maxPerType = Math.ceil(limit * 0.3);
-      const diverse = ranked.filter((i) => {
-        const c = typeCounts.get(i.type) || 0;
-        if (c >= maxPerType) return false;
-        typeCounts.set(i.type, c + 1);
-        return true;
-      });
+      // If a specific type is requested, only query that one type
+      const activeQuotas = type ? typeQuotas.filter(q => q.t === type) : typeQuotas;
 
-      return jsonResponse(interleaveByType(diverse).slice(offset, offset + limit).map(mapItem));
+      const perTypeItems = await Promise.all(
+        activeQuotas.map(async ({ t, quota, minVotes }) => {
+          const typeWhere: any = { ...baseWhere, type: t };
+          if (minVotes > 0) typeWhere.voteCount = { gte: minVotes };
+
+          const pool = await prisma.item.findMany({
+            where: typeWhere,
+            orderBy: { voteCount: "desc" },
+            take: quota * 6,
+            select: ITEM_SELECT,
+          });
+
+          return pool
+            .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }))
+            .map(i => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount || 0 }) }))
+            .sort((a, b) => b.rank - a.rank)
+            .slice(0, quota);
+        })
+      );
+
+      const merged = perTypeItems.flat().sort((a, b) => (b as any).rank - (a as any).rank);
+      const interleaved = interleaveByType(merged);
+      const page = interleaved.slice(offset, offset + limit);
+      const hasMore = interleaved.length > offset + limit;
+
+      return jsonResponse(page.map(mapItem), hasMore);
     }
 
     // ── Popular right now ─────────────────────────────────────────────
@@ -129,39 +158,64 @@ export async function GET(req: NextRequest) {
         return true;
       });
 
-      return jsonResponse(interleaveByType(popDiverse).slice(offset, offset + limit).map(mapItem));
+      const page = interleaveByType(popDiverse).slice(offset, offset + limit);
+      const hasMore = popDiverse.length > offset + limit;
+      return jsonResponse(page.map(mapItem), hasMore);
     }
 
     // ── Hidden gems ───────────────────────────────────────────────────
     if (curated === "hidden_gems") {
-      // Min 20 votes: "hidden" means not mainstream, not literally unknown
-      const items = await prisma.item.findMany({
-        where: { ...where, voteCount: { gte: 20, lt: 5000 } },
-        orderBy: { year: "desc" },
-        take: poolSize,
-        select: ITEM_SELECT,
-      });
+      // Build base where without type — per-type quotas handle diversity
+      const baseWhere: any = { isUpcoming: false, parentItemId: null };
+      if (genre) {
+        const genres = genre.split(",").filter(Boolean);
+        if (genres.length === 1) baseWhere.genre = { has: genres[0] };
+        else if (genres.length > 1) baseWhere.genre = { hasSome: genres };
+      }
+      if (vibe) baseWhere.vibes = { has: vibe };
+      if (excludeIds.length > 0) baseWhere.id = { notIn: excludeIds };
 
-      const gems = items
-        .filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= 0.75)
-        .map((i) => {
-          const norm = normalizeScore(i.ext as any, i.type);
-          const gemScore = norm / Math.log10(Math.max(i.voteCount, 20));
-          return { ...i, gemScore };
+      // Per-type quotas with lowered thresholds:
+      // Score threshold 0.65 (was 0.75) — niche items can be great without blockbuster scores
+      // Min voteCount 10 (was 20) — a gem with 10-15 genuine ratings is still valid
+      const SCORE_THRESHOLD = 0.65;
+      const gemTypes: Array<{ t: string; quota: number }> = [
+        { t: "movie",  quota: 6 },
+        { t: "tv",     quota: 6 },
+        { t: "game",   quota: 5 },
+        { t: "manga",  quota: 5 },
+        { t: "book",   quota: 5 },
+      ];
+
+      const activeGemTypes = type ? gemTypes.filter(q => q.t === type) : gemTypes;
+
+      const perTypeGems = await Promise.all(
+        activeGemTypes.map(async ({ t, quota }) => {
+          const pool = await prisma.item.findMany({
+            where: { ...baseWhere, type: t, voteCount: { gte: 10, lt: 5000 } },
+            orderBy: { year: "desc" },
+            take: quota * 8,
+            select: ITEM_SELECT,
+          });
+
+          return pool
+            .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= SCORE_THRESHOLD)
+            .map(i => {
+              const norm = normalizeScore(i.ext as any, i.type);
+              const gemScore = norm / Math.log10(Math.max(i.voteCount || 1, 10));
+              return { ...i, gemScore };
+            })
+            .sort((a, b) => b.gemScore - a.gemScore)
+            .slice(0, quota);
         })
-        .sort((a, b) => b.gemScore - a.gemScore);
+      );
 
-      // Enforce max 30% per type for diversity
-      const gemTypeCounts = new Map<string, number>();
-      const gemMaxPerType = Math.ceil(limit * 0.3);
-      const gemDiverse = gems.filter((i) => {
-        const c = gemTypeCounts.get(i.type) || 0;
-        if (c >= gemMaxPerType) return false;
-        gemTypeCounts.set(i.type, c + 1);
-        return true;
-      });
+      const merged = perTypeGems.flat().sort((a, b) => (b as any).gemScore - (a as any).gemScore);
+      const interleaved = interleaveByType(merged);
+      const page = interleaved.slice(offset, offset + limit);
+      const hasMore = interleaved.length > offset + limit;
 
-      return jsonResponse(interleaveByType(gemDiverse).slice(offset, offset + limit).map(mapItem));
+      return jsonResponse(page.map(mapItem), hasMore);
     }
 
     // ── Standard query ────────────────────────────────────────────────
@@ -194,16 +248,20 @@ export async function GET(req: NextRequest) {
       ranked.sort((a, b) => b.rank - a.rank);
     }
 
-    return jsonResponse(ranked.slice(offset, offset + limit).map(mapItem));
+    const page = ranked.slice(offset, offset + limit);
+    const hasMore = ranked.length > offset + limit;
+    return jsonResponse(page.map(mapItem), hasMore);
+
   } catch (error: any) {
     console.error("Catalog API error:", error);
     return NextResponse.json({ error: "Failed to fetch catalog" }, { status: 500 });
   }
 }
 
-function jsonResponse(data: any) {
+function jsonResponse(data: any, hasMore = false) {
   const res = NextResponse.json(data);
   res.headers.set("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+  res.headers.set("X-Has-More", hasMore ? "1" : "0");
   return res;
 }
 

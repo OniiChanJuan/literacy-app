@@ -97,7 +97,12 @@ interface ReturningSoonItem {
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 
-async function fetchItems(url: string, retries = 2): Promise<Item[] | null> {
+interface FetchResult {
+  data: Item[];
+  hasMore: boolean;
+}
+
+async function fetchItems(url: string, retries = 2): Promise<FetchResult | null> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(url);
@@ -106,7 +111,11 @@ async function fetchItems(url: string, retries = 2): Promise<Item[] | null> {
         return null;
       }
       const data = await res.json();
-      return Array.isArray(data) ? data : null;
+      if (!Array.isArray(data)) return null;
+      // Read server-supplied hasMore flag; fall back to length comparison
+      const serverHasMore = res.headers.get("X-Has-More");
+      const hasMore = serverHasMore !== null ? serverHasMore === "1" : false;
+      return { data, hasMore };
     } catch {
       if (attempt < retries) { await new Promise(r => setTimeout(r, 500 * (attempt + 1))); continue; }
       return null;
@@ -123,12 +132,17 @@ function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
 
 // ── Paginated Row (with infinite scroll) ────────────────────────────────
 
-function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad }: {
+// Minimum items to show a row — fewer looks broken
+const MIN_ROW_ITEMS = 4;
+
+function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad, alwaysShow }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number; mediaFilter?: MediaType | null;
   /** Client-side set of item IDs to exclude from display (cross-row dedup) */
   clientExclude?: Set<number>;
   /** Called with raw fetched items so parent can track used IDs */
   onLoad?: (items: Item[]) => void;
+  /** If true, show the row even if it has fewer than MIN_ROW_ITEMS items */
+  alwaysShow?: boolean;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -138,7 +152,7 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   const loadingRef = useRef(false);
   const onLoadRef = useRef(onLoad);
   onLoadRef.current = onLoad;
-  const { base, limit } = getBaseUrl(fetchUrl);
+  const { base } = getBaseUrl(fetchUrl);
 
   const doFetch = useCallback(() => {
     setFailed(false);
@@ -146,21 +160,22 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
     offsetRef.current = 0;
     setHasMore(true);
     const timer = setTimeout(() => {
-      fetchItems(base).then((data) => {
-        if (data && data.length > 0) {
-          setItems(data);
-          onLoadRef.current?.(data);
-          offsetRef.current = data.length;
-          setHasMore(data.length >= limit);
-        } else if (data) {
+      fetchItems(base).then((result) => {
+        if (result && result.data.length > 0) {
+          setItems(result.data);
+          onLoadRef.current?.(result.data);
+          offsetRef.current = result.data.length;
+          setHasMore(result.hasMore);
+        } else if (result) {
           setItems([]);
+          setHasMore(false);
         } else {
           setFailed(true);
         }
       });
     }, delay);
     return () => clearTimeout(timer);
-  }, [base, limit, delay]);
+  }, [base, delay]);
 
   useEffect(() => { return doFetch(); }, [doFetch]);
 
@@ -169,19 +184,19 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
     loadingRef.current = true;
     setLoadingMore(true);
     const sep = base.includes("?") ? "&" : "?";
-    fetchItems(`${base}${sep}offset=${offsetRef.current}`).then((data) => {
-      if (data && data.length > 0) {
+    fetchItems(`${base}${sep}offset=${offsetRef.current}`).then((result) => {
+      if (result && result.data.length > 0) {
         setItems((prev) => {
           const existing = new Set((prev || []).map((i) => i.id));
-          return [...(prev || []), ...data.filter((i) => !existing.has(i.id))];
+          return [...(prev || []), ...result.data.filter((i) => !existing.has(i.id))];
         });
-        offsetRef.current += data.length;
-        setHasMore(data.length >= limit);
+        offsetRef.current += result.data.length;
+        setHasMore(result.hasMore);
       } else { setHasMore(false); }
       setLoadingMore(false);
       loadingRef.current = false;
     });
-  }, [base, limit, hasMore]);
+  }, [base, hasMore]);
 
   if (items === null && !failed) {
     return <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}><SkeletonRow count={8} /></ScrollRow>;
@@ -211,6 +226,8 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   // Final cover-art safety filter
   displayed = displayed.filter((i) => i.cover && i.cover.startsWith("http"));
   if (displayed.length === 0) return null;
+  // Hide rows with too few items — looks broken; alwaysShow rows are exempt
+  if (!alwaysShow && displayed.length < MIN_ROW_ITEMS) return null;
 
   return (
     <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
@@ -232,7 +249,7 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
   const offsetRef = useRef(0);
   const loadingRef = useRef(false);
   const visRef = useRef<HTMLDivElement>(null);
-  const { base, limit } = getBaseUrl(fetchUrl);
+  const { base } = getBaseUrl(fetchUrl);
 
   useEffect(() => {
     const el = visRef.current;
@@ -247,38 +264,44 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
 
   useEffect(() => {
     if (!visible) return;
-    fetchItems(base).then((data) => {
-      if (data && data.length > 0) {
-        setItems(data);
-        offsetRef.current = data.length;
-        setHasMore(data.length >= limit);
-      } else { setItems([]); }
+    fetchItems(base).then((result) => {
+      if (result && result.data.length > 0) {
+        setItems(result.data);
+        offsetRef.current = result.data.length;
+        setHasMore(result.hasMore);
+      } else {
+        setItems([]);
+        setHasMore(false);
+      }
     });
-  }, [visible, base, limit]);
+  }, [visible, base]);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || loadingRef.current) return;
     loadingRef.current = true;
     setLoadingMore(true);
     const sep = base.includes("?") ? "&" : "?";
-    fetchItems(`${base}${sep}offset=${offsetRef.current}`).then((data) => {
-      if (data && data.length > 0) {
+    fetchItems(`${base}${sep}offset=${offsetRef.current}`).then((result) => {
+      if (result && result.data.length > 0) {
         setItems((prev) => {
           const existing = new Set((prev || []).map((i) => i.id));
-          return [...(prev || []), ...data.filter((i) => !existing.has(i.id))];
+          return [...(prev || []), ...result.data.filter((i) => !existing.has(i.id))];
         });
-        offsetRef.current += data.length;
-        setHasMore(data.length >= limit);
+        offsetRef.current += result.data.length;
+        setHasMore(result.hasMore);
       } else { setHasMore(false); }
       setLoadingMore(false);
       loadingRef.current = false;
     });
-  }, [base, limit, hasMore]);
+  }, [base, hasMore]);
 
   if (items !== null && items.length === 0) return null;
 
   const displayed = mediaFilter && items ? items.filter((i) => i.type === mediaFilter) : items;
   if (mediaFilter && displayed && displayed.length === 0) return null;
+
+  // Hide rows with too few items once loaded — looks broken otherwise
+  if (displayed !== null && displayed.length > 0 && displayed.length < MIN_ROW_ITEMS) return null;
 
   return (
     <div ref={visRef}>
@@ -549,6 +572,7 @@ export default function ForYouPage() {
             icon="✨" iconBg="rgba(232,72,85,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
             onLoad={setPickedForYouItems}
+            alwaysShow
           />
         </ErrorBoundary>
       )}
@@ -563,6 +587,7 @@ export default function ForYouPage() {
             icon="🌐" iconBg="rgba(49,133,252,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
             clientExclude={discoverExcludeIds}
+            alwaysShow
           />
         </ErrorBoundary>
       )}

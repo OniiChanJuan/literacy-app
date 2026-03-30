@@ -110,9 +110,28 @@ export function meetsQualityFloor(item: {
   const votes = item.voteCount || item.popularityScore || 0;
   const norm = normalizeScore(item.ext, item.type, votes);
 
-  // Universal: must have title, cover, and real description
+  // Universal: must have title and valid cover URL
   if (!item.title) return false;
   if (!item.cover || !item.cover.startsWith("http")) return false;
+
+  // ── Types without reliable external scoring sources ────────────────
+  // Comics, podcasts, and music have no active scoring APIs yet (Comic Vine
+  // not populating ext, Spotify popularity was cleaned up, Pitchfork scarce).
+  // Bypass the score-based floor entirely — cover + title is sufficient.
+  // Community ratings will become the quality signal over time.
+  if (item.type === "comic" || item.type === "podcast" || item.type === "music") {
+    return (item.title?.length ?? 0) >= 3;
+  }
+
+  // ── Books: description optional ───────────────────────────────────
+  // Many imported books have null/stub descriptions, but still have real
+  // Google Books scores and community votes. Don't discard them.
+  if (item.type === "book") {
+    const hasExtScore = Object.keys(item.ext || {}).length > 0 && norm > 0;
+    return votes >= 5 || hasExtScore;
+  }
+
+  // ── All other types: require a meaningful description ──────────────
   if (!item.description || item.description.length < 20) return false;
 
   switch (item.type) {
@@ -123,22 +142,6 @@ export function meetsQualityFloor(item: {
       return norm >= 0.6 && (votes >= 10 || item.ext.metacritic !== undefined || item.ext.igdb !== undefined);
     case "manga":
       return norm >= 0.6 && votes >= 100;
-    case "book":
-      // Require 5+ votes to filter out textbooks and obscure single-rating entries
-      return norm >= 0.5 && votes >= 5;
-    case "music":
-      // Require votes or meaningful Spotify signal — no-signal albums shouldn't surface
-      if (norm >= 0.5 && votes >= 5) return true;
-      if ((item.ext as any).spotify_popularity !== undefined && (item.ext as any).spotify_popularity >= 20) return true;
-      return false;
-    case "comic":
-      // Comics have fewer ratings — keep bar lower at 3
-      return norm >= 0.6 && votes >= 3;
-    case "podcast":
-      // Accept if has signal: votes or enough episodes as popularity proxy
-      if (norm >= 0.5 && votes >= 3) return true;
-      if ((item.ext as any).spotify_popularity !== undefined && (item.ext as any).spotify_popularity >= 15) return true;
-      return false;
     default:
       return norm >= 0.5;
   }
