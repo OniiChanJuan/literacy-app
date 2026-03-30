@@ -184,42 +184,132 @@ export async function GET(req: NextRequest) {
 
     // ── Hidden gems ───────────────────────────────────────────────────
     if (curated === "hidden_gems") {
-      // Build base where without type — per-type quotas handle diversity
-      const baseWhere: any = { isUpcoming: false, parentItemId: null };
+      const gemBaseWhere: any = { isUpcoming: false, parentItemId: null };
       if (genre) {
         const genres = genre.split(",").filter(Boolean);
-        if (genres.length === 1) baseWhere.genre = { has: genres[0] };
-        else if (genres.length > 1) baseWhere.genre = { hasSome: genres };
+        if (genres.length === 1) gemBaseWhere.genre = { has: genres[0] };
+        else if (genres.length > 1) gemBaseWhere.genre = { hasSome: genres };
       }
-      if (vibe) baseWhere.vibes = { has: vibe };
-      if (excludeIds.length > 0) baseWhere.id = { notIn: excludeIds };
+      if (vibe) gemBaseWhere.vibes = { has: vibe };
+      if (excludeIds.length > 0) gemBaseWhere.id = { notIn: excludeIds };
 
-      // Score threshold 0.65 — niche items can be great without blockbuster scores
-      const SCORE_THRESHOLD = 0.65;
+      // FIX 4: Sequel/numbered-entry penalty
+      const SEQUEL_RE = /\b(ii|iii|iv|vi|vii|viii)\b|\s(2|3|4|5|remastered|remake)\b/i;
+      const CURRENT_YEAR = new Date().getFullYear();
+      const excludeClause = excludeIds.length > 0 ? `AND id NOT IN (${excludeIds.join(",")})` : "";
 
-      // Single-type view: skip per-type quotas, gem-rank the full type for pagination
-      if (type) {
-        const pool = await prisma.item.findMany({
-          where: { ...baseWhere, type, voteCount: { gte: 10, lt: 5000 } },
-          orderBy: { year: "desc" },
-          take: Math.min((offset + limit) * 5 + 100, 600),
-          select: ITEM_SELECT,
-        });
-        const ranked = pool
-          .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= SCORE_THRESHOLD)
+      // FIX 1: Score-ordered raw SQL for manga/books so high-scoring items are never missed.
+      // FIX 3: Year-based voteCount ceiling for movie/TV/game to exclude hyped upcoming releases.
+      // Pools are always fetched at the relaxed 0.60 floor so FIX 5 can re-rank without re-querying.
+      async function fetchGemPool(t: string, quota: number): Promise<any[]> {
+        if (t === "manga") {
+          // Raw SQL ordered by gem-score formula — prevents recent low-scored imports crowding out older gems
+          const mangaIds = await prisma.$queryRawUnsafe<{ id: unknown }[]>(`
+            SELECT id FROM items
+            WHERE type = 'manga'
+            AND is_upcoming = false AND parent_item_id IS NULL
+            AND vote_count >= 100 AND vote_count < 5000
+            AND (ext->>'mal') IS NOT NULL
+            AND (ext->>'mal')::float >= 6.0
+            ${excludeClause}
+            ORDER BY (ext->>'mal')::float / log(greatest(vote_count::float, 10)) DESC
+            LIMIT ${quota * 20}
+          `);
+          if (mangaIds.length === 0) return [];
+          const mangaNumIds = mangaIds.map(r => Number(r.id));
+          const mangaItems = await prisma.item.findMany({
+            where: {
+              id: { in: mangaNumIds },
+              ...(genre ? { genre: { hasSome: genre.split(",").filter(Boolean) } } : {}),
+              ...(vibe ? { vibes: { has: vibe } } : {}),
+            },
+            select: ITEM_SELECT,
+          });
+          const mangaOrder = new Map(mangaNumIds.map((id, i) => [id, i]));
+          return mangaItems.sort((a, b) => (mangaOrder.get(a.id) ?? 999) - (mangaOrder.get(b.id) ?? 999));
+        }
+
+        if (t === "book") {
+          // Require vc >= 50 and score < 5.0 to exclude inflated academic/self-published ratings
+          const bookIds = await prisma.$queryRawUnsafe<{ id: unknown }[]>(`
+            SELECT id FROM items
+            WHERE type = 'book'
+            AND is_upcoming = false AND parent_item_id IS NULL
+            AND vote_count >= 50 AND vote_count < 5000
+            AND (ext->>'google_books') IS NOT NULL
+            AND (ext->>'google_books')::float >= 3.0
+            AND (ext->>'google_books')::float < 5.0
+            ${excludeClause}
+            ORDER BY (ext->>'google_books')::float / log(greatest(vote_count::float, 10)) DESC
+            LIMIT ${quota * 20}
+          `);
+          if (bookIds.length === 0) return [];
+          const bookNumIds = bookIds.map(r => Number(r.id));
+          const bookItems = await prisma.item.findMany({
+            where: {
+              id: { in: bookNumIds },
+              ...(genre ? { genre: { hasSome: genre.split(",").filter(Boolean) } } : {}),
+              ...(vibe ? { vibes: { has: vibe } } : {}),
+            },
+            select: ITEM_SELECT,
+          });
+          const bookOrder = new Map(bookNumIds.map((id, i) => [id, i]));
+          return bookItems.sort((a, b) => (bookOrder.get(a.id) ?? 999) - (bookOrder.get(b.id) ?? 999));
+        }
+
+        // Movie / TV / Game: dual-pool by year — recent items get a tighter voteCount ceiling
+        // so highly-anticipated releases (vc 200+) are excluded while true 2025 indie gems pass
+        const [recentItems, olderItems] = await Promise.all([
+          prisma.item.findMany({
+            where: { ...gemBaseWhere, type: t, year: { gte: CURRENT_YEAR - 1 }, voteCount: { gte: 10, lt: 200 } },
+            orderBy: { voteCount: "desc" },
+            take: quota * 5,
+            select: ITEM_SELECT,
+          }),
+          prisma.item.findMany({
+            where: { ...gemBaseWhere, type: t, year: { lt: CURRENT_YEAR - 1 }, voteCount: { gte: 10, lt: 5000 } },
+            orderBy: { voteCount: "desc" },
+            take: quota * 15,
+            select: ITEM_SELECT,
+          }),
+        ]);
+        const seen = new Set<number>();
+        const combined: typeof recentItems = [];
+        for (const item of [...recentItems, ...olderItems]) {
+          if (!seen.has(item.id)) { seen.add(item.id); combined.push(item); }
+        }
+        return combined;
+      }
+
+      function adjustGemScore(title: string, score: number): number {
+        return SEQUEL_RE.test(title) ? score * 0.7 : score;
+      }
+
+      function rankGems(pool: any[], scoreThreshold: number, quota: number): any[] {
+        return pool
+          .filter(i =>
+            meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) &&
+            normalizeScore(i.ext as any, i.type, i.voteCount || 0) >= scoreThreshold
+          )
           .map(i => {
-            const norm = normalizeScore(i.ext as any, i.type);
-            const gemScore = norm / Math.log10(Math.max(i.voteCount || 1, 10));
-            return { ...i, gemScore };
+            const norm = normalizeScore(i.ext as any, i.type, i.voteCount || 0);
+            const raw = norm / Math.log10(Math.max(i.voteCount || 1, 10));
+            return { ...i, gemScore: adjustGemScore(i.title, raw) };
           })
-          .sort((a, b) => b.gemScore - a.gemScore);
-        const page = ranked.slice(offset, offset + limit);
-        const hasMore = ranked.length > offset + limit;
-        return jsonResponse(page.map(mapItem), hasMore);
+          .sort((a, b) => b.gemScore - a.gemScore)
+          .slice(0, quota);
       }
 
-      // Cross-media view: per-type quotas with lowered thresholds
-      // Min voteCount 10 — a gem with 10-15 genuine ratings is still valid
+      // Single-type view (paginated)
+      if (type) {
+        const pool = await fetchGemPool(type, 50);
+        let ranked = rankGems(pool, 0.65, offset + limit + 50);
+        if (ranked.length < 8) ranked = rankGems(pool, 0.60, offset + limit + 50);
+        const page = ranked.slice(offset, offset + limit);
+        return jsonResponse(page.map(mapItem), ranked.length > offset + limit);
+      }
+
+      // Cross-media view
       const gemTypes: Array<{ t: string; quota: number }> = [
         { t: "movie",  quota: 6 },
         { t: "tv",     quota: 6 },
@@ -228,33 +318,22 @@ export async function GET(req: NextRequest) {
         { t: "book",   quota: 5 },
       ];
 
-      const perTypeGems = await Promise.all(
-        gemTypes.map(async ({ t, quota }) => {
-          const pool = await prisma.item.findMany({
-            where: { ...baseWhere, type: t, voteCount: { gte: 10, lt: 5000 } },
-            orderBy: { year: "desc" },
-            take: quota * 8,
-            select: ITEM_SELECT,
-          });
+      // Fetch all pools once at the relaxed threshold floor
+      const pools = await Promise.all(gemTypes.map(({ t, quota }) => fetchGemPool(t, quota)));
 
-          return pool
-            .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }) && normalizeScore(i.ext as any, i.type) >= SCORE_THRESHOLD)
-            .map(i => {
-              const norm = normalizeScore(i.ext as any, i.type);
-              const gemScore = norm / Math.log10(Math.max(i.voteCount || 1, 10));
-              return { ...i, gemScore };
-            })
-            .sort((a, b) => b.gemScore - a.gemScore)
-            .slice(0, quota);
-        })
-      );
+      // FIX 5: try strict threshold first, fall back to relaxed, hide row if still < 8
+      let perTypeGems = gemTypes.map(({ quota }, i) => rankGems(pools[i], 0.65, quota));
+      if (perTypeGems.flat().length < 8) {
+        perTypeGems = gemTypes.map(({ quota }, i) => rankGems(pools[i], 0.60, quota));
+        if (perTypeGems.flat().length < 8) {
+          return jsonResponse([], false);
+        }
+      }
 
       const merged = perTypeGems.flat().sort((a, b) => (b as any).gemScore - (a as any).gemScore);
       const interleaved = interleaveByType(merged);
       const page = interleaved.slice(offset, offset + limit);
-      const hasMore = interleaved.length > offset + limit;
-
-      return jsonResponse(page.map(mapItem), hasMore);
+      return jsonResponse(page.map(mapItem), interleaved.length > offset + limit);
     }
 
     // ── Standard query ────────────────────────────────────────────────

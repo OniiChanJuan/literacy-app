@@ -131,6 +131,13 @@ export function meetsQualityFloor(item: {
     return votes >= 5 || hasExtScore;
   }
 
+  // ── Manga: MAL score is the quality signal; description optional ───
+  // Bulk-imported manga often lack descriptions but carry authoritative
+  // MAL scores (0-10). If the score clears the floor, that's sufficient.
+  if (item.type === "manga") {
+    return votes >= 100 && norm >= 0.6;
+  }
+
   // ── All other types: require a meaningful description ──────────────
   if (!item.description || item.description.length < 20) return false;
 
@@ -140,8 +147,6 @@ export function meetsQualityFloor(item: {
       return norm >= 0.6 && votes >= 50;
     case "game":
       return norm >= 0.6 && (votes >= 10 || item.ext.metacritic !== undefined || item.ext.igdb !== undefined);
-    case "manga":
-      return norm >= 0.6 && votes >= 100;
     default:
       return norm >= 0.5;
   }
