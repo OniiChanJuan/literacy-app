@@ -56,6 +56,16 @@ function sColor(score: number, maxScore: number): string {
   return "#E84855";
 }
 
+function steamLabelStyle(label: string): { bg: string; border: string; color: string } {
+  if (label === "Overwhelmingly Positive") return { bg: "rgba(46,196,182,0.1)", border: "rgba(46,196,182,0.2)", color: "#2EC4B6" };
+  if (label === "Very Positive")           return { bg: "rgba(46,196,182,0.08)", border: "rgba(46,196,182,0.15)", color: "#2EC4B6" };
+  if (label === "Mostly Positive" || label === "Positive") return { bg: "rgba(46,196,182,0.06)", border: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.8)" };
+  if (label === "Mixed")                   return { bg: "rgba(249,166,32,0.08)", border: "rgba(249,166,32,0.15)", color: "#F9A620" };
+  if (label === "Mostly Negative" || label === "Negative") return { bg: "rgba(232,72,85,0.08)", border: "rgba(232,72,85,0.15)", color: "#E84855" };
+  if (label === "Very Negative" || label === "Overwhelmingly Negative") return { bg: "rgba(232,72,85,0.1)", border: "rgba(232,72,85,0.2)", color: "#E84855" };
+  return { bg: "rgba(255,255,255,0.04)", border: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" };
+}
+
 const REC_OPTIONS: { key: RecTagType; label: string; icon: string; color: string }[] = [
   { key: "recommend", label: "Recommend", icon: "👍", color: "#2EC4B6" },
   { key: "mixed", label: "Mixed", icon: "🤷", color: "#F9A620" },
@@ -162,22 +172,38 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
           </div>
         )}
         {(showAllScores ? displayScores : displayScores.slice(0, 3)).map((s) => {
+          // Steam: text label badge — "Steam · Overwhelmingly Positive"
+          if (s.source === "steam") {
+            const label = s.label || (ext as any).steam_label || "";
+            if (!label) return null;
+            const sls = steamLabelStyle(label);
+            return (
+              <div key="steam" style={{
+                background: sls.bg,
+                border: `0.5px solid ${sls.border}`,
+                borderRadius: 6,
+                padding: "5px 10px",
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                flexShrink: 0,
+              }}>
+                <span style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                  Steam
+                </span>
+                <span style={{ fontSize: 9, color: sls.color, fontWeight: 600 }}>
+                  {label}
+                </span>
+              </div>
+            );
+          }
+
+          // All other sources: numeric badge
           const meta = SOURCE_META[s.source] || { displayName: s.source, suffix: "", max: s.maxScore };
           const color = sColor(s.score, s.maxScore);
-          // Format: 1 decimal for ≤10 scale, integer for 100-scale, 1 decimal for 5-scale
           const scoreStr = s.maxScore <= 5 ? s.score.toFixed(1)
             : s.maxScore <= 10 ? s.score.toFixed(1)
             : Math.round(s.score).toString();
-
-          const steamLabel = s.source === "steam" && s.label ? s.label : null;
-          const steamLabelColor = steamLabel
-            ? s.score >= 95 ? "#66d9c2"
-              : s.score >= 80 ? "#2EC4B6"
-              : s.score >= 70 ? "#8bc34a"
-              : s.score >= 40 ? "#F9A620"
-              : s.score >= 20 ? "#e07b39"
-              : "#E84855"
-            : null;
 
           return (
             <div key={s.source} style={{
@@ -196,11 +222,6 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
               <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1 }}>
                 {meta.displayName}
               </div>
-              {steamLabel && (
-                <div style={{ fontSize: 7, color: steamLabelColor!, fontWeight: 600, marginTop: 2, lineHeight: 1.1 }}>
-                  {steamLabel}
-                </div>
-              )}
             </div>
           );
         })}

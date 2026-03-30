@@ -54,7 +54,7 @@ async function fetchSteamReviews(appId: number, retries = 3): Promise<SteamRevie
       const pos = qs.total_positive ?? 0;
       const neg = qs.total_negative ?? 0;
       const total = pos + neg;
-      if (total < 10) return null; // Too few reviews to be meaningful
+      if (total < 50) return null; // Fewer than 50 reviews — Steam's label is unreliable
 
       const score = Math.round((pos / total) * 100);
       const label: string = qs.review_score_desc ?? "";

@@ -37,7 +37,8 @@ const EXT_SKIP_KEYS = new Set(["steam_label", "igdb_count", "igdb_critics_count"
 const EXT_SCORE_PRIORITY = [
   "imdb", "tmdb", "mal", "igdb_critics", "igdb",
   "google_books", "rt_critics",
-  "metacritic", "pitchfork", "ign", "steam",
+  "metacritic", "pitchfork", "ign",
+  // steam intentionally excluded — shown as text label on detail page only, not as a number on cards
   "spotify_popularity", "aoty", "opencritic", "anilist",
 ];
 

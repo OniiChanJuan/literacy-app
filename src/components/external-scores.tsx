@@ -41,13 +41,14 @@ function scoreColor(score: number, maxScore: number): string {
   return "var(--score-poor)";
 }
 
-function steamLabelColor(score: number): string {
-  if (score >= 95) return "#66d9c2";
-  if (score >= 80) return "#2EC4B6";
-  if (score >= 70) return "#8bc34a";
-  if (score >= 40) return "#F9A620";
-  if (score >= 20) return "#e07b39";
-  return "#E84855";
+function steamLabelStyle(label: string): { bg: string; border: string; color: string } {
+  if (label === "Overwhelmingly Positive") return { bg: "rgba(46,196,182,0.1)", border: "rgba(46,196,182,0.2)", color: "#2EC4B6" };
+  if (label === "Very Positive")           return { bg: "rgba(46,196,182,0.08)", border: "rgba(46,196,182,0.15)", color: "#2EC4B6" };
+  if (label === "Mostly Positive" || label === "Positive") return { bg: "rgba(46,196,182,0.06)", border: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.8)" };
+  if (label === "Mixed")                   return { bg: "rgba(249,166,32,0.08)", border: "rgba(249,166,32,0.15)", color: "#F9A620" };
+  if (label === "Mostly Negative" || label === "Negative") return { bg: "rgba(232,72,85,0.08)", border: "rgba(232,72,85,0.15)", color: "#E84855" };
+  if (label === "Very Negative" || label === "Overwhelmingly Negative") return { bg: "rgba(232,72,85,0.1)", border: "rgba(232,72,85,0.2)", color: "#E84855" };
+  return { bg: "rgba(255,255,255,0.04)", border: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" };
 }
 
 // Sources to hide — internal/popularity metrics not meaningful as editorial scores
@@ -109,7 +110,7 @@ export function ExternalScoresPanel({
           score: value,
           maxScore: maxScoreMap[source] ?? 10,
           scoreType: scoreTypeMap[source] ?? "community",
-          label: "",
+          label: source === "steam" ? (fallbackExt.steam_label ?? "") : "",
         };
       });
     if (fallbackScores.length > 0) {
@@ -170,6 +171,40 @@ function ScoreCards({ scores }: { scores: ScoreData[] }) {
       </h2>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         {scores.map((s) => {
+          // Steam: wide text badge — "Overwhelmingly Positive" as primary content
+          if (s.source === "steam") {
+            const label = s.label;
+            if (!label) return null;
+            const sls = steamLabelStyle(label);
+            return (
+              <div key="steam" style={{
+                display: "flex", alignItems: "center", gap: 10,
+                padding: "8px 14px",
+                background: sls.bg,
+                border: `0.5px solid ${sls.border}`,
+                borderRadius: 10,
+              }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: 6,
+                  background: "rgba(27,40,56,0.5)", border: "1px solid rgba(27,40,56,0.8)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 11, fontWeight: 900, color: "#c7d5e0", flexShrink: 0,
+                }}>
+                  S
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: sls.color, lineHeight: 1.2 }}>
+                    {label}
+                  </div>
+                  <div style={{ fontSize: 8, color: "var(--text-faint)", marginTop: 2, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                    Steam · Users
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          // All other sources: standard numeric badge
           const meta = SOURCE_META[s.source] || {
             displayName: s.source,
             icon: "?",
@@ -219,12 +254,7 @@ function ScoreCards({ scores }: { scores: ScoreData[] }) {
                   {s.scoreType === "community" && " · Users"}
                 </div>
                 {s.label && (
-                  <div style={{
-                    fontSize: 8,
-                    color: s.source === "steam" ? steamLabelColor(s.score) : "rgba(255,255,255,0.45)",
-                    marginTop: 2,
-                    fontWeight: s.source === "steam" ? 600 : 400,
-                  }}>
+                  <div style={{ fontSize: 8, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>
                     {s.label}
                   </div>
                 )}

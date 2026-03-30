@@ -22,7 +22,7 @@ export const SCORE_THRESHOLDS: Record<string, number> = {
   rt_critics:         0,  // Editorial
   rt_audience:        0,
   metacritic:         0,  // Editorial
-  steam:             50,
+  steam:              0,  // Sync script already enforces ≥50 reviews before storing; always show if present
   pitchfork:          0,  // Editorial
   spotify_popularity: 0,
   anilist:           20,
