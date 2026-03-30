@@ -146,8 +146,10 @@ async function main() {
 
   // ── Set reasonable defaults for items without API data ─────────────────
   // Use ext scores as a proxy — if an item has high ext scores, it's probably notable
+  // Exclude podcast/comic: their voteCount was cleaned up to reflect real Literacy ratings
+  // and we don't want to re-inflate them with estimated values.
   const noData = await prisma.item.findMany({
-    where: { voteCount: 0, isUpcoming: false },
+    where: { voteCount: 0, isUpcoming: false, type: { notIn: ["podcast", "comic"] } },
     select: { id: true, type: true, ext: true },
   });
 

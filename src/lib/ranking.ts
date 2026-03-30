@@ -114,15 +114,6 @@ export function meetsQualityFloor(item: {
   if (!item.title) return false;
   if (!item.cover || !item.cover.startsWith("http")) return false;
 
-  // ── Types without reliable external scoring sources ────────────────
-  // Comics, podcasts, and music have no active scoring APIs yet (Comic Vine
-  // not populating ext, Spotify popularity was cleaned up, Pitchfork scarce).
-  // Bypass the score-based floor entirely — cover + title is sufficient.
-  // Community ratings will become the quality signal over time.
-  if (item.type === "comic" || item.type === "podcast" || item.type === "music") {
-    return (item.title?.length ?? 0) >= 3;
-  }
-
   // ── Books: description optional ───────────────────────────────────
   // Many imported books have null/stub descriptions, but still have real
   // Google Books scores and community votes. Don't discard them.

@@ -95,8 +95,8 @@ export async function GET(req: NextRequest) {
       // Single-type view: skip per-type quotas, quality-rank the full type directly
       // so the frontend can show 30-60+ results and paginate with load-more.
       if (type) {
-        const minVotesMap: Record<string, number> = { movie: 50, tv: 50, game: 10, manga: 50, book: 5, music: 0, comic: 0, podcast: 0 };
-        const minVotes = minVotesMap[type] ?? 0;
+        const minVotesMap: Record<string, number> = { movie: 500, tv: 500, game: 100, manga: 500, book: 100, music: 50, comic: 500, podcast: 500 };
+        const minVotes = minVotesMap[type] ?? 100;
         const typeWhere: any = { ...baseWhere, type };
         if (minVotes > 0) typeWhere.voteCount = { gte: minVotes };
         const pool = await prisma.item.findMany({
@@ -107,6 +107,7 @@ export async function GET(req: NextRequest) {
         });
         const ranked = pool
           .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }))
+          .filter(i => normalizeScore(i.ext as any, i.type, i.voteCount || 0) >= 0.80)
           .map(i => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount || 0 }) }))
           .sort((a, b) => b.rank - a.rank);
         const page = ranked.slice(offset, offset + limit);
@@ -115,17 +116,20 @@ export async function GET(req: NextRequest) {
       }
 
       // Cross-media view: per-type quotas guarantee diversity.
-      // minVotes=0 for types without scoring sources (comic/podcast/music).
+      // minVotes raised — critically acclaimed items are by definition widely reviewed.
+      // Podcast/comic minVotes=500 effectively excludes them (real rating counts are ~0 after cleanup).
       const typeQuotas: Array<{ t: string; quota: number; minVotes: number }> = [
-        { t: "movie",   quota: 10, minVotes: 50 },
-        { t: "tv",      quota: 10, minVotes: 50 },
-        { t: "game",    quota: 5,  minVotes: 10 },
-        { t: "manga",   quota: 5,  minVotes: 50 },
-        { t: "book",    quota: 3,  minVotes: 5  },
-        { t: "music",   quota: 2,  minVotes: 0  },
-        { t: "comic",   quota: 2,  minVotes: 0  },
-        { t: "podcast", quota: 2,  minVotes: 0  },
+        { t: "movie",   quota: 10, minVotes: 500 },
+        { t: "tv",      quota: 10, minVotes: 500 },
+        { t: "game",    quota: 5,  minVotes: 100 },
+        { t: "manga",   quota: 5,  minVotes: 500 },
+        { t: "book",    quota: 3,  minVotes: 100 },
+        { t: "music",   quota: 2,  minVotes: 50  },
+        { t: "comic",   quota: 2,  minVotes: 500 },
+        { t: "podcast", quota: 2,  minVotes: 500 },
       ];
+
+      const ACCLAIMED_THRESHOLD = 0.80; // normalizeScore — critically acclaimed means exceptional
 
       const perTypeItems = await Promise.all(
         typeQuotas.map(async ({ t, quota, minVotes }) => {
@@ -141,6 +145,7 @@ export async function GET(req: NextRequest) {
 
           return pool
             .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }))
+            .filter(i => normalizeScore(i.ext as any, i.type, i.voteCount || 0) >= ACCLAIMED_THRESHOLD)
             .map(i => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount || 0 }) }))
             .sort((a, b) => b.rank - a.rank)
             .slice(0, quota);
@@ -158,19 +163,42 @@ export async function GET(req: NextRequest) {
     // ── Popular right now ─────────────────────────────────────────────
     if (curated === "popular") {
       const currentYear = new Date().getFullYear();
+      // FIX 5: year >= currentYear - 1 (was -2), higher vote thresholds
+      const popVoteMin = type && ["movie", "tv"].includes(type) ? 50
+                       : type && ["podcast", "comic"].includes(type) ? 1
+                       : 10;
       const items = await prisma.item.findMany({
-        where: { ...where, year: { gte: currentYear - 2 }, voteCount: { gte: 10 } },
+        where: { ...where, year: { gte: currentYear - 1 }, voteCount: { gte: popVoteMin } },
         orderBy: { popularityScore: "desc" },
         take: poolSize,
         select: ITEM_SELECT,
       });
 
       const filtered = items.filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }));
+      if (filtered.length === 0) return jsonResponse([], false);
 
-      // Enforce max 30% per type for diversity (same cap as top_rated)
+      // FIX 4: blend TMDB trending score (70%) + recent Literacy rating activity (30%)
+      const itemIds = filtered.map((i) => i.id);
+      const recentCounts = await prisma.$queryRawUnsafe<{ item_id: number; cnt: number }[]>(`
+        SELECT item_id, COUNT(*)::int AS cnt
+        FROM ratings
+        WHERE item_id = ANY(ARRAY[${itemIds.join(",")}]::int[])
+          AND created_at >= NOW() - INTERVAL '30 days'
+        GROUP BY item_id
+      `);
+      const recentMap = new Map(recentCounts.map((r) => [Number(r.item_id), r.cnt]));
+
+      const scored = filtered
+        .map((i) => ({
+          ...i,
+          blendScore: (i.popularityScore || 0) * 0.7 + (recentMap.get(i.id) || 0) * 50 * 0.3,
+        }))
+        .sort((a, b) => b.blendScore - a.blendScore);
+
+      // Enforce max 30% per type for diversity
       const popTypeCounts = new Map<string, number>();
       const popMaxPerType = Math.ceil(limit * 0.3);
-      const popDiverse = filtered.filter((i) => {
+      const popDiverse = scored.filter((i) => {
         const c = popTypeCounts.get(i.type) || 0;
         if (c >= popMaxPerType) return false;
         popTypeCounts.set(i.type, c + 1);
