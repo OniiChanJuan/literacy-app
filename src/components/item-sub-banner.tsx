@@ -72,11 +72,6 @@ const REC_OPTIONS: { key: RecTagType; label: string; icon: string; color: string
   { key: "skip", label: "Skip", icon: "👎", color: "#E84855" },
 ];
 
-const STATUSES: { key: LibraryStatus; label: string; icon: string; color: string }[] = [
-  { key: "completed", label: "Completed", icon: "✓", color: "#2EC4B6" },
-  { key: "want_to", label: "Want to", icon: "＋", color: "#9B5DE5" },
-];
-
 const ALL_STATUSES: { key: LibraryStatus; label: string; icon: string; color: string }[] = [
   { key: "completed", label: "Completed", icon: "✓", color: "#2EC4B6" },
   { key: "in_progress", label: "In Progress", icon: "▶", color: "#3185FC" },
@@ -97,7 +92,6 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
   const [scores, setScores] = useState<ScoreData[]>([]);
   const [agg, setAgg] = useState<AggregateData | null>(null);
   const [loaded, setLoaded] = useState(false);
-  const [showAllStatuses, setShowAllStatuses] = useState(false);
   const [showAllScores, setShowAllScores] = useState(false);
 
   const currentRating = ratings[item.id] || 0;
@@ -149,7 +143,7 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
           });
       })();
 
-  const statusButtons = showAllStatuses ? ALL_STATUSES : STATUSES;
+  const statusButtons = ALL_STATUSES;
 
   return (
     <div className="item-sub-banner-layout" style={{
@@ -335,8 +329,15 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
               </div>
             )}
 
-            {/* Track buttons */}
-            <div style={{ display: "flex", gap: 4, position: "relative" }}>
+            {/* Track buttons — all 4 always visible, scrollable on narrow screens */}
+            <div style={{
+              display: "flex",
+              gap: 4,
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch" as any,
+              scrollbarWidth: "none" as any,
+              msOverflowStyle: "none" as any,
+            }}>
               {statusButtons.map((s) => {
                 const active = currentStatus === s.key;
                 const label = s.key === "completed" && ongoing ? "Caught Up" : s.label;
@@ -348,7 +349,7 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
                       display: "flex",
                       alignItems: "center",
                       gap: 3,
-                      padding: "6px 14px",
+                      padding: "6px 10px",
                       borderRadius: 6,
                       border: active ? `0.5px solid rgba(${hexToRgb(s.color)}, 0.25)` : "0.5px solid rgba(255,255,255,0.08)",
                       background: active ? `rgba(${hexToRgb(s.color)}, 0.15)` : "rgba(255,255,255,0.04)",
@@ -356,6 +357,9 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
                       fontSize: 11,
                       fontWeight: 600,
                       cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                      minHeight: 32,
                     }}
                   >
                     <span style={{ fontSize: 8 }}>{s.icon}</span>
@@ -363,22 +367,6 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
                   </button>
                 );
               })}
-              {!showAllStatuses && (
-                <button
-                  onClick={() => setShowAllStatuses(true)}
-                  style={{
-                    padding: "6px 8px",
-                    borderRadius: 6,
-                    border: "0.5px solid rgba(255,255,255,0.08)",
-                    background: "rgba(255,255,255,0.04)",
-                    color: "rgba(255,255,255,0.2)",
-                    fontSize: 11,
-                    cursor: "pointer",
-                  }}
-                >
-                  ···
-                </button>
-              )}
             </div>
           </>
         ) : (
