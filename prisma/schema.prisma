@@ -203,8 +203,22 @@ model Franchise {
   parentFranchise  Franchise?  @relation("FranchiseHierarchy", fields: [parentFranchiseId], references: [id])
   childFranchises  Franchise[] @relation("FranchiseHierarchy")
   items            FranchiseItem[]
+  follows          FranchiseFollow[]
 
   @@map("franchises")
+}
+
+model FranchiseFollow {
+  userId      String   @map("user_id")
+  franchiseId Int      @map("franchise_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  franchise Franchise @relation(fields: [franchiseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, franchiseId])
+  @@index([userId])
+  @@index([franchiseId])
+  @@map("franchise_follows")
 }
 
 model FranchiseItem {

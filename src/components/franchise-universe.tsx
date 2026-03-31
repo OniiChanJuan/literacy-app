@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { TYPES } from "@/lib/data";
 
@@ -42,8 +43,11 @@ function scoreColor(val: number): string {
 export default function FranchiseUniverse({ itemId }: { itemId: number }) {
   const [franchise, setFranchise] = useState<FranchiseData | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [following, setFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { data: session } = useSession();
 
   useEffect(() => {
     fetch(`/api/franchises?itemId=${itemId}`)
@@ -51,6 +55,33 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
       .then((data) => { setFranchise(data); setLoaded(true); })
       .catch(() => setLoaded(true));
   }, [itemId]);
+
+  useEffect(() => {
+    if (!franchise?.id) return;
+    fetch(`/api/franchises/${franchise.id}/follow`)
+      .then((r) => r.json())
+      .then((d) => { if (d.following !== undefined) setFollowing(d.following); })
+      .catch(() => {});
+  }, [franchise?.id]);
+
+  async function toggleFollow(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!session) { router.push("/auth/signin"); return; }
+    if (!franchise) return;
+    setFollowLoading(true);
+    const wasFollowing = following;
+    setFollowing(!wasFollowing);
+    try {
+      const res = await fetch(`/api/franchises/${franchise.id}/follow`, { method: "POST" });
+      const json = await res.json();
+      if (res.ok) setFollowing(json.following);
+      else setFollowing(wasFollowing);
+    } catch {
+      setFollowing(wasFollowing);
+    } finally {
+      setFollowLoading(false);
+    }
+  }
 
   if (!loaded || !franchise || franchise.otherItems.length === 0) return null;
 
@@ -94,12 +125,29 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
             {franchise.totalItems} entries across {franchise.mediaTypes} media
           </span>
         </div>
-        <a
-          href={`/franchise/${franchise.id}`}
-          style={{ fontSize: 10, color: `${c}99`, textDecoration: "none", fontWeight: 500 }}
-        >
-          Explore this universe →
-        </a>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            onClick={toggleFollow}
+            disabled={followLoading}
+            title={following ? "Unfollow universe" : "Follow universe"}
+            style={{
+              background: "none", border: "none", cursor: "pointer", padding: "0 2px",
+              fontSize: 13, lineHeight: 1, opacity: followLoading ? 0.5 : 1,
+              color: following ? "#E84855" : "rgba(255,255,255,0.25)",
+              transition: "color 0.15s, transform 0.1s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = following ? "#ff6b7a" : "rgba(255,255,255,0.6)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = following ? "#E84855" : "rgba(255,255,255,0.25)"; }}
+          >
+            {following ? "♥" : "♡"}
+          </button>
+          <a
+            href={`/franchise/${franchise.id}`}
+            style={{ fontSize: 10, color: `${c}99`, textDecoration: "none", fontWeight: 500 }}
+          >
+            Explore this universe →
+          </a>
+        </div>
       </div>
 
       {/* Card row */}

@@ -1,11 +1,148 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ITEMS, TYPES, TYPE_ORDER, type MediaType, type Item } from "@/lib/data";
 import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";
 import Card from "@/components/card";
+import type { FollowedFranchise } from "@/app/api/user/following/route";
+
+function FollowingSection() {
+  const [franchises, setFranchises] = useState<FollowedFranchise[] | null>(null);
+
+  useEffect(() => {
+    fetch("/api/user/following")
+      .then((r) => r.json())
+      .then((d) => setFranchises(Array.isArray(d) ? d : []))
+      .catch(() => setFranchises([]));
+  }, []);
+
+  if (franchises === null) return null; // loading — render nothing
+  if (franchises.length === 0) return null; // no franchises followed yet
+
+  return (
+    <div style={{ marginBottom: 40 }}>
+      {/* Section header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <span style={{ fontSize: 14, color: "#E84855", fontWeight: 700 }}>♥</span>
+        <span style={{ fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 800, color: "#fff" }}>
+          Following
+        </span>
+        <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{franchises.length}</span>
+      </div>
+
+      {/* Franchise cards */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+        {franchises.map((f) => (
+          <FranchiseCard key={f.id} franchise={f} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FranchiseCard({ franchise: f }: { franchise: FollowedFranchise }) {
+  const progressPct = f.totalItems > 0 ? Math.round((f.ratedItems / f.totalItems) * 100) : 0;
+
+  return (
+    <Link
+      href={`/franchise/${f.id}`}
+      style={{
+        width: 200, borderRadius: 12, overflow: "hidden", textDecoration: "none",
+        background: "#141419", border: "0.5px solid rgba(255,255,255,0.07)",
+        display: "flex", flexDirection: "column",
+        transition: "transform 0.15s, box-shadow 0.15s",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)";
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 20px rgba(0,0,0,0.4)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.transform = "";
+        (e.currentTarget as HTMLElement).style.boxShadow = "";
+      }}
+    >
+      {/* Cover strip: 4 thumbnails or gradient */}
+      <div style={{ height: 56, display: "flex", overflow: "hidden" }}>
+        {f.coverThumbs.length > 0 ? (
+          f.coverThumbs.slice(0, 4).map((src, i) => (
+            <div key={i} style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+              <Image
+                src={src}
+                alt=""
+                width={50}
+                height={56}
+                sizes="50px"
+                style={{ width: "100%", height: 56, objectFit: "cover", display: "block" }}
+              />
+            </div>
+          ))
+        ) : (
+          <div style={{
+            flex: 1, display: "flex", alignItems: "center", justifyContent: "center",
+            background: "linear-gradient(135deg, rgba(232,72,85,0.12), rgba(232,72,85,0.05))",
+            fontSize: 24,
+          }}>
+            {f.icon}
+          </div>
+        )}
+      </div>
+
+      {/* Info */}
+      <div style={{ padding: "10px 12px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{
+          fontSize: 12, fontWeight: 700, color: "#fff",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>
+          {f.icon} {f.name}
+        </div>
+
+        {/* Media type badges */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+          {f.mediaTypes.slice(0, 4).map(({ type, count }) => {
+            const t = TYPES[type as MediaType];
+            if (!t) return null;
+            return (
+              <span key={type} style={{
+                fontSize: 9, padding: "2px 6px", borderRadius: 4,
+                background: `${t.color}18`, color: t.color, fontWeight: 600,
+              }}>
+                {t.icon} {count}
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Progress bar: rated / total */}
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+            <span style={{ fontSize: 9, color: "var(--text-faint)" }}>Rated</span>
+            <span style={{ fontSize: 9, color: "var(--text-faint)" }}>
+              {f.ratedItems}/{f.totalItems}
+            </span>
+          </div>
+          <div style={{
+            height: 3, borderRadius: 2, background: "rgba(255,255,255,0.07)", overflow: "hidden",
+          }}>
+            <div style={{
+              height: "100%", borderRadius: 2,
+              background: progressPct === 100 ? "#2EC4B6" : "#E84855",
+              width: `${progressPct}%`,
+            }} />
+          </div>
+        </div>
+
+        {f.followerCount > 1 && (
+          <div style={{ fontSize: 9, color: "var(--text-faint)" }}>
+            {f.followerCount} followers
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
 
 const STATUSES: { key: LibraryStatus; label: string; icon: string; color: string }[] = [
   { key: "completed",   label: "Completed",   icon: "✓", color: "#2EC4B6" },
@@ -222,6 +359,9 @@ export default function LibraryPage() {
           </div>
         );
       })()}
+
+      {/* Following section */}
+      <FollowingSection />
 
       {/* Status sections */}
       {STATUSES.map((s) => {

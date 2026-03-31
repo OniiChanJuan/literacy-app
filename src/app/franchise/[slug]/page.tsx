@@ -3,6 +3,8 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { TYPES, type MediaType } from "@/lib/data";
 import BackButton from "@/components/back-button";
 
@@ -144,6 +146,11 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
   const [data, setData] = useState<FranchiseDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeType, setActiveType] = useState<string>("all");
+  const [following, setFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followLoading, setFollowLoading] = useState(false);
+  const { data: session } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     fetch(`/api/franchise/${slug}`)
@@ -151,6 +158,41 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
       .then((d) => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, [slug]);
+
+  // Load follow status once we have the franchise ID
+  useEffect(() => {
+    if (!data?.id) return;
+    fetch(`/api/franchises/${data.id}/follow`)
+      .then((r) => r.json())
+      .then((d) => { setFollowing(d.following); setFollowerCount(d.followerCount || 0); })
+      .catch(() => {});
+  }, [data?.id]);
+
+  async function toggleFollow() {
+    if (!session) { router.push("/auth/signin"); return; }
+    setFollowLoading(true);
+    // Optimistic
+    const wasFollowing = following;
+    setFollowing(!wasFollowing);
+    setFollowerCount((n) => wasFollowing ? n - 1 : n + 1);
+    try {
+      const res = await fetch(`/api/franchises/${data!.id}/follow`, { method: "POST" });
+      const json = await res.json();
+      if (res.ok) {
+        setFollowing(json.following);
+        setFollowerCount(json.followerCount);
+      } else {
+        // Revert
+        setFollowing(wasFollowing);
+        setFollowerCount((n) => wasFollowing ? n + 1 : n - 1);
+      }
+    } catch {
+      setFollowing(wasFollowing);
+      setFollowerCount((n) => wasFollowing ? n + 1 : n - 1);
+    } finally {
+      setFollowLoading(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -227,7 +269,7 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
           </p>
         )}
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
           <span style={{ fontSize: 12, color: "var(--text-faint)" }}>
             {data.totalItems} items across {data.mediaTypes.length} media types
           </span>
@@ -239,6 +281,26 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
               </span>
             ) : null;
           })}
+          {followerCount > 0 && (
+            <span style={{ fontSize: 11, color: "var(--text-faint)" }}>
+              {followerCount} follower{followerCount !== 1 ? "s" : ""}
+            </span>
+          )}
+          <button
+            onClick={toggleFollow}
+            disabled={followLoading}
+            style={{
+              display: "flex", alignItems: "center", gap: 5,
+              padding: "5px 12px", borderRadius: 8, cursor: "pointer",
+              fontSize: 12, fontWeight: 600, transition: "all 0.15s",
+              background: following ? "rgba(232,72,85,0.15)" : "rgba(255,255,255,0.06)",
+              border: following ? "1px solid rgba(232,72,85,0.4)" : "1px solid rgba(255,255,255,0.1)",
+              color: following ? "#E84855" : "rgba(255,255,255,0.5)",
+              opacity: followLoading ? 0.6 : 1,
+            }}
+          >
+            {following ? "♥ Following" : "♡ Follow"}
+          </button>
         </div>
       </div>
 
