@@ -275,7 +275,7 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
         {/* Type badge — top-left */}
         <div style={{
           position: "absolute", top: 3, left: 3,
-          background: "rgba(0,0,0,0.65)", color: t.color,
+          background: "rgba(0,0,0,0.85)", color: t.color,
           fontSize: 7, fontWeight: 500, padding: "1px 5px", borderRadius: 4,
           display: "flex", alignItems: "center", gap: 2,
           lineHeight: 1.4,

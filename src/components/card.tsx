@@ -9,6 +9,7 @@ import { useRatings } from "@/lib/ratings-context";
 import { scorePassesThreshold } from "@/lib/score-thresholds";
 import Stars from "./stars";
 import HoverPreview from "./hover-preview";
+import { isAnime } from "@/lib/anime";
 
 function isImageUrl(cover: string | undefined | null): boolean {
   return !!cover && (cover.startsWith("http") || cover.startsWith("/"));
@@ -163,21 +164,41 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           </div>
         )}
 
-        {/* Type badge — top left */}
+        {/* Type badge row — top left */}
         <div style={{
           position: "absolute",
           top: 4,
           left: 4,
-          background: "rgba(0,0,0,0.6)",
-          backdropFilter: "blur(4px)",
-          color: t.color,
-          fontSize: 10,
-          fontWeight: 700,
-          padding: "1px 5px",
-          borderRadius: 4,
-          textTransform: "uppercase",
+          display: "flex",
+          alignItems: "center",
+          gap: 3,
         }}>
-          {t.label.replace(/s$/, "")}
+          <div style={{
+            background: "rgba(0,0,0,0.85)",
+            backdropFilter: "blur(4px)",
+            color: t.color,
+            fontSize: 10,
+            fontWeight: 700,
+            padding: "1px 5px",
+            borderRadius: 4,
+            textTransform: "uppercase",
+          }}>
+            {t.label.replace(/s$/, "")}
+          </div>
+          {isAnime(item) && (
+            <div style={{
+              background: "rgba(255,107,107,0.85)",
+              backdropFilter: "blur(4px)",
+              color: "#fff",
+              fontSize: 8,
+              fontWeight: 500,
+              padding: "2px 6px",
+              borderRadius: 4,
+              textTransform: "uppercase",
+            }}>
+              ANIME
+            </div>
+          )}
         </div>
 
         {/* User rating badge — top right */}

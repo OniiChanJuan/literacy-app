@@ -146,7 +146,7 @@ export default function DlcSection({ dlcs, baseGameTitle, typeColor }: DlcSectio
                 {/* Subtype badge */}
                 <div style={{
                   position: "absolute", top: 4, left: 4,
-                  background: "rgba(0,0,0,0.65)",
+                  background: "rgba(0,0,0,0.85)",
                   color: subtypeColor,
                   fontSize: 7, fontWeight: 500,
                   padding: "1px 5px", borderRadius: 4,

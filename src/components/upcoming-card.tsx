@@ -102,7 +102,7 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
           position: "absolute",
           top: 6,
           left: 6,
-          background: "rgba(0,0,0,0.55)",
+          background: "rgba(0,0,0,0.85)",
           backdropFilter: "blur(8px)",
           color: t.color,
           fontSize: 8,

@@ -3,6 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
 import { qualityRank, meetsQualityFloor, normalizeScore, applyDiversity, interleaveByType } from "@/lib/ranking";
 
+function filterAnime(items: any[]): any[] {
+  return items.filter((i) => {
+    const ext = i.ext as Record<string, any> | null;
+    return (ext && ext.mal != null) || (i.genre || []).includes("Anime");
+  });
+}
+
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
   year: true, cover: true, description: true, people: true,
@@ -62,7 +69,12 @@ export async function GET(req: NextRequest) {
     }
 
     const where: any = { isUpcoming: false, parentItemId: null };
-    if (type) where.type = type;
+    const isAnimeFilter = type === "anime";
+    if (isAnimeFilter) {
+      where.type = { in: ["tv", "movie"] };
+    } else if (type) {
+      where.type = type;
+    }
     if (genre) {
       const genres = genre.split(",").filter(Boolean);
       if (genres.length === 1) where.genre = { has: genres[0] };
@@ -96,8 +108,10 @@ export async function GET(req: NextRequest) {
       // so the frontend can show 30-60+ results and paginate with load-more.
       if (type) {
         const minVotesMap: Record<string, number> = { movie: 500, tv: 500, game: 100, manga: 500, book: 100, music: 50, comic: 500, podcast: 500 };
-        const minVotes = minVotesMap[type] ?? 100;
-        const typeWhere: any = { ...baseWhere, type };
+        const minVotes = isAnimeFilter ? 100 : (minVotesMap[type] ?? 100);
+        const typeWhere: any = isAnimeFilter
+          ? { ...baseWhere, type: { in: ["tv", "movie"] } }
+          : { ...baseWhere, type };
         if (minVotes > 0) typeWhere.voteCount = { gte: minVotes };
         const pool = await prisma.item.findMany({
           where: typeWhere,
@@ -105,11 +119,15 @@ export async function GET(req: NextRequest) {
           take: Math.min((offset + limit) * 5 + 100, 600),
           select: ITEM_SELECT,
         });
-        const ranked = pool
+        let ranked = pool
           .filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }))
           .filter(i => normalizeScore(i.ext as any, i.type, i.voteCount || 0) >= 0.80)
           .map(i => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount || 0 }) }))
           .sort((a, b) => b.rank - a.rank);
+        if (isAnimeFilter) ranked = ranked.filter((i: any) => {
+          const ext = i.ext as Record<string, any> | null;
+          return (ext && ext.mal != null) || ((i.genre || []).includes("Anime"));
+        });
         const page = ranked.slice(offset, offset + limit);
         const hasMore = ranked.length > offset + limit;
         return jsonResponse(page.map(mapItem), hasMore);
@@ -382,7 +400,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Apply quality ranking and floor for browse/filter views
-    const ranked = items
+    let ranked = items
       .filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }))
       .map((i) => ({
         ...i,
@@ -393,6 +411,11 @@ export async function GET(req: NextRequest) {
     if (sort === "quality") {
       ranked.sort((a, b) => b.rank - a.rank);
     }
+
+    if (isAnimeFilter) ranked = ranked.filter((i: any) => {
+      const ext = i.ext as Record<string, any> | null;
+      return (ext && ext.mal != null) || ((i.genre || []).includes("Anime"));
+    });
 
     const page = ranked.slice(offset, offset + limit);
     const hasMore = ranked.length > offset + limit;

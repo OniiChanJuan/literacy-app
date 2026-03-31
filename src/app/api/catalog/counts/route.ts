@@ -22,6 +22,16 @@ export async function GET(req: NextRequest) {
     const byType: Record<string, number> = {};
     for (const t of typeCounts) byType[t.type] = t._count;
 
+    // Add anime count: TV/movie items with ext.mal (from Jikan)
+    const animeCounts = await prisma.$queryRawUnsafe<{cnt: number}[]>(`
+      SELECT COUNT(*)::int as cnt
+      FROM items
+      WHERE is_upcoming = false AND parent_item_id IS NULL
+        AND type IN ('tv', 'movie')
+        AND (ext->>'mal' IS NOT NULL OR 'Anime' = ANY(genre))
+    `);
+    byType.anime = animeCounts[0]?.cnt || 0;
+
     // Total count
     const total = await prisma.item.count({ where: { isUpcoming: false, parentItemId: null } });
 

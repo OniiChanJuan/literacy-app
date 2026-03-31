@@ -11,9 +11,11 @@ import { SkeletonRow } from "@/components/skeleton-card";
 import ErrorBoundary from "@/components/error-boundary";
 import Link from "next/link";
 import Image from "next/image";
+import { isAnime } from "@/lib/anime";
 
 // ── Media Type Filter SVG Icons ──────────────────────────────────────────
-const MEDIA_FILTER_ICONS: Record<MediaType, (color: string) => React.ReactNode> = {
+type FilterType = MediaType | "anime";
+const MEDIA_FILTER_ICONS: Record<FilterType, (color: string) => React.ReactNode> = {
   movie: (c) => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
       <rect x="2" y="2" width="20" height="20" rx="2" />
@@ -69,6 +71,15 @@ const MEDIA_FILTER_ICONS: Record<MediaType, (color: string) => React.ReactNode> 
       <line x1="8" y1="22" x2="16" y2="22" />
     </svg>
   ),
+  anime: (c) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round">
+      <ellipse cx="12" cy="12" rx="10" ry="6" />
+      <circle cx="12" cy="12" r="3" fill={c} stroke="none" />
+      <line x1="12" y1="6" x2="12" y2="4" /><line x1="12" y1="18" x2="12" y2="20" />
+      <line x1="6.5" y1="8.5" x2="5" y2="7" /><line x1="17.5" y1="8.5" x2="19" y2="7" />
+      <line x1="6.5" y1="15.5" x2="5" y2="17" /><line x1="17.5" y1="15.5" x2="19" y2="17" />
+    </svg>
+  ),
 };
 
 function hexToRgb(hex: string): string {
@@ -78,9 +89,9 @@ function hexToRgb(hex: string): string {
   return `${r},${g},${b}`;
 }
 
-const MEDIA_FILTER_ORDER: MediaType[] = ["movie", "tv", "book", "manga", "game", "music", "comic", "podcast"];
-const MEDIA_FILTER_LABELS: Record<MediaType, string> = {
-  movie: "Movies", tv: "TV", book: "Books", manga: "Manga",
+const MEDIA_FILTER_ORDER: FilterType[] = ["movie", "tv", "anime", "book", "manga", "game", "music", "comic", "podcast"];
+const MEDIA_FILTER_LABELS: Record<FilterType, string> = {
+  movie: "Movies", tv: "TV", anime: "Anime", book: "Books", manga: "Manga",
   game: "Games", music: "Music", comic: "Comics", podcast: "Podcasts",
 };
 
@@ -136,7 +147,7 @@ function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
 const MIN_ROW_ITEMS = 4;
 
 function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad, alwaysShow }: {
-  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number; mediaFilter?: MediaType | null;
+  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number; mediaFilter?: FilterType | null;
   /** Client-side set of item IDs to exclude from display (cross-row dedup) */
   clientExclude?: Set<number>;
   /** Called with raw fetched items so parent can track used IDs */
@@ -217,7 +228,11 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   }
   if (!items || items.length === 0) return null;
 
-  let displayed = mediaFilter ? items.filter((i) => i.type === mediaFilter) : items;
+  let displayed = mediaFilter
+    ? mediaFilter === "anime"
+      ? items.filter(isAnime)
+      : items.filter((i) => i.type === mediaFilter)
+    : items;
   if (mediaFilter && displayed.length === 0) return null;
   // Client-side cross-row deduplication
   if (clientExclude && clientExclude.size > 0) {
@@ -240,7 +255,7 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
 // ── Lazy Row (loads on scroll into view) ────────────────────────────────
 
 const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, mediaFilter }: {
-  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; mediaFilter?: MediaType | null;
+  fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; mediaFilter?: FilterType | null;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [visible, setVisible] = useState(false);
@@ -297,7 +312,11 @@ const LazyRow = memo(function LazyRow({ fetchUrl, label, sub, icon, iconBg, seeA
 
   if (items !== null && items.length === 0) return null;
 
-  const displayed = mediaFilter && items ? items.filter((i) => i.type === mediaFilter) : items;
+  const displayed = mediaFilter && items
+    ? mediaFilter === "anime"
+      ? items.filter(isAnime)
+      : items.filter((i) => i.type === mediaFilter)
+    : items;
   if (mediaFilter && displayed && displayed.length === 0) return null;
 
   // Hide rows with too few items once loaded — looks broken otherwise
@@ -400,7 +419,7 @@ export default function ForYouPage() {
     discoverAcrossMedia: Item[];
     tasteProfile: TasteProfile | null;
   } | null>(null);
-  const [activeFilter, setActiveFilter] = useState<MediaType | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;
 
@@ -496,11 +515,11 @@ export default function ForYouPage() {
         {/* Right: media type filter buttons (desktop grid) */}
         <div className="media-filter-grid" style={{
           display: "grid",
-          gridTemplateColumns: "repeat(8, 56px)",
+          gridTemplateColumns: "repeat(9, 56px)",
           gap: 6,
         }}>
           {MEDIA_FILTER_ORDER.map((type) => {
-            const color = TYPES[type].color;
+            const color = type === "anime" ? "#FF6B6B" : TYPES[type as MediaType].color;
             const isActive = activeFilter === type;
             return (
               <button
@@ -630,6 +649,7 @@ export default function ForYouPage() {
       </ErrorBoundary>
 
       {/* Per-type rows — use deepExcludeParam to server-side exclude all rows 1-5 */}
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=anime&limit=30${deepExcludeParam}`} label="Top anime" icon="🎌" iconBg="#FF6B6B22" seeAllHref="/explore?type=anime&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
       <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=movie&limit=30${deepExcludeParam}`} label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore?type=movie&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
       <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=game&limit=30${deepExcludeParam}`} label="Most discussed games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore?type=game&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
       <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=manga&limit=30${deepExcludeParam}`} label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore?type=manga&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>

@@ -11,6 +11,7 @@ import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
 import { getItemUrl } from "@/lib/slugs";
+import { isAnime } from "@/lib/anime";
 
 interface SearchResult extends Item { source: string; routeId: string; }
 
@@ -93,7 +94,7 @@ function ExploreContent() {
 
   // Initialize state from URL
   const [search, setSearch] = useState(searchParams.get("q") || "");
-  const [selectedType, setSelectedType] = useState<MediaType | null>((searchParams.get("type") as MediaType) || null);
+  const [selectedType, setSelectedType] = useState<string | null>(searchParams.get("type") || null);
   const [selectedGenres, setSelectedGenres] = useState<string[]>(searchParams.get("genre")?.split(",").filter(Boolean) || []);
   const [selectedVibe, setSelectedVibe] = useState<string | null>(searchParams.get("vibe") || null);
   const [selectedTag, setSelectedTag] = useState<string | null>(searchParams.get("tag") || null);
@@ -170,6 +171,7 @@ function ExploreContent() {
         const hasMore = r.headers.get("X-Has-More") === "1";
         const d = await r.json();
         let items: Item[] = Array.isArray(d) ? d : [];
+        if (selectedType === "anime") items = items.filter(isAnime);
         if (sort === "newest") items.sort((a: Item, b: Item) => b.year - a.year);
         else if (sort === "oldest") items.sort((a: Item, b: Item) => a.year - b.year);
         else if (sort === "az") items.sort((a: Item, b: Item) => a.title.localeCompare(b.title));
@@ -213,15 +215,15 @@ function ExploreContent() {
 
   const clearAll = () => { setSelectedType(null); setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); setSort("rating"); };
 
-  const typeGenres = selectedType ? (TYPE_GENRES[selectedType] || ALL_GENRES.slice(0, 12)) : [];
-  const typeColor = selectedType ? TYPES[selectedType].color : "#fff";
+  const typeGenres = selectedType ? (TYPE_GENRES[selectedType] || (selectedType === "anime" ? ["Action", "Romance", "Fantasy", "Sci-Fi", "Horror", "Comedy", "Drama", "Slice of Life", "Mecha", "Thriller"] : ALL_GENRES.slice(0, 12))) : [];
+  const typeColor = selectedType ? (selectedType === "anime" ? "#FF6B6B" : TYPES[selectedType as MediaType]?.color || "#fff") : "#fff";
 
   // Banner label for active sort/type filter
   const sortBannerLabels: Record<SortOption, string> = {
     rating: "All", popular: "Most Popular", top_rated: "Critically Acclaimed",
     hidden_gems: "Hidden Gems", newest: "Newest", oldest: "Oldest", az: "A–Z",
   };
-  const bannerLabel = `${sortBannerLabels[sort] || "All"}${selectedType ? ` ${TYPES[selectedType].label}` : " across all media"}`;
+  const bannerLabel = `${sortBannerLabels[sort] || "All"}${selectedType ? ` ${selectedType === "anime" ? "Anime" : TYPES[selectedType as MediaType]?.label || selectedType}` : " across all media"}`;
 
   // Show search results — organized by type
   if (searchResults !== null || searching) {
@@ -373,10 +375,11 @@ function ExploreContent() {
 
       {/* Compact media type row */}
       <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10, marginBottom: 20 }}>
-        {TYPE_ORDER.map((k) => {
-          const t = TYPES[k];
+        {([...TYPE_ORDER.slice(0, 2), "anime", ...TYPE_ORDER.slice(2)] as string[]).map((k) => {
+          const isAnimeType = k === "anime";
+          const t = isAnimeType ? { color: "#FF6B6B", label: "Anime", icon: "🎌" } : TYPES[k as MediaType];
           const active = selectedType === k;
-          const count = typeCounts[k] || 0;
+          const count = isAnimeType ? (typeCounts.anime || 0) : (typeCounts[k] || 0);
           return (
             <button
               key={k}
@@ -396,7 +399,7 @@ function ExploreContent() {
             >
               <MediaTypeIcon type={k} color={t.color} />
               <span style={{ fontSize: 12, fontWeight: 500, color: t.color }}>{t.label}</span>
-              <span style={{ fontSize: 10, color: `${t.color}66` }}>{count}</span>
+              {count > 0 && <span style={{ fontSize: 10, color: `${t.color}66` }}>{count}</span>}
             </button>
           );
         })}
@@ -497,7 +500,7 @@ function ExploreContent() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
                 {selectedGenres.length > 0 ? selectedGenres.join(", ") + " " : ""}
-                {TYPES[selectedType].label.toLowerCase()}
+                {selectedType === "anime" ? "anime" : TYPES[selectedType as MediaType]?.label?.toLowerCase() || selectedType}
                 {selectedVibe && VIBES[selectedVibe] ? ` · ${VIBES[selectedVibe].label}` : ""}
                 {selectedTag ? ` · ${getTagDisplayName(selectedTag)}` : ""}
                 {" · sorted by "}{SORT_OPTIONS.find((o) => o.value === sort)?.label}
@@ -763,6 +766,8 @@ function MediaTypeIcon({ type, color }: { type: string; color: string }) {
       return <svg {...props}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /><line x1="12" y1="12" x2="12" y2="2" /></svg>;
     case "podcast":
       return <svg {...props}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>;
+    case "anime":
+      return <svg {...props}><ellipse cx="12" cy="12" rx="10" ry="6" /><circle cx="12" cy="12" r="3" fill={color} stroke="none" /><line x1="12" y1="6" x2="12" y2="4" /><line x1="12" y1="18" x2="12" y2="20" /></svg>;
     default:
       return null;
   }
