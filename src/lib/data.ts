@@ -115,7 +115,7 @@ export const ITEMS: Item[] = [
     cover: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg",
     desc: "Set in the world of League of Legends, two sisters fight on opposing sides of a brewing war.",
     people: [{ role: "Creator", name: "Christian Linke" }, { role: "Voice", name: "Hailee Steinfeld" }, { role: "Voice", name: "Ella Purnell" }],
-    awards: ["emmy", "bafta"], platforms: ["netflix"],
+    awards: ["bafta"], platforms: ["netflix"],
     ext: { imdb: 9.0, rt: 100 }, totalEp: 18,
   },
   {
@@ -263,7 +263,7 @@ export const ITEMS: Item[] = [
     cover: "https://images.igdb.com/igdb/image/upload/t_720p/coaih8.jpg",
     desc: "In the megalopolis of Night City, a mercenary gets caught up in a heist that goes wrong and wakes up with a dead legend in their head.",
     people: [{ role: "Developer", name: "CD Projekt Red" }, { role: "Composer", name: "Marcin Przybyłowicz" }],
-    awards: ["tga"], platforms: ["steam", "ps", "xbox"],
+    awards: [], platforms: ["steam", "ps", "xbox"],
     ext: { ign: 7.0, meta: 86, steam: 86 }, totalEp: 60,
   },
   {
@@ -273,7 +273,7 @@ export const ITEMS: Item[] = [
     cover: "https://images.igdb.com/igdb/image/upload/t_720p/coaarl.jpg",
     desc: "Geralt of Rivia, a monster bounty hunter, embarks on an epic journey to find his missing adopted daughter in a war-torn open world.",
     people: [{ role: "Developer", name: "CD Projekt Red" }, { role: "Based on", name: "Andrzej Sapkowski" }],
-    awards: ["goty", "tga", "bafta"], platforms: ["steam", "ps", "xbox", "switch"],
+    awards: ["goty", "tga"], platforms: ["steam", "ps", "xbox", "switch"],
     ext: { ign: 9.3, meta: 92, steam: 97 }, totalEp: 100,
   },
   {
