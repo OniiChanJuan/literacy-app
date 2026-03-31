@@ -113,6 +113,25 @@ export async function searchGoogleBooks(query: string): Promise<GoogleBookSearch
   }));
 }
 
+/** Search Google Books by author name using inauthor: qualifier */
+export async function searchGoogleBooksByAuthor(authorName: string): Promise<GoogleBookSearchResult[]> {
+  const res = await fetch(
+    `${BASE}/volumes?q=${encodeURIComponent(`inauthor:${authorName}`)}&key=${apiKey()}&maxResults=15&printType=books&orderBy=relevance`
+  );
+  if (!res.ok) return [];
+  const data = await res.json();
+
+  const filtered = (data.items || []).filter((v: GoogleBookVolume) => {
+    const title = (v.volumeInfo.title || "").toLowerCase();
+    return !title.includes("movie tie-in") && !title.includes("study guide") && !title.includes("spark notes");
+  });
+
+  return filtered.map((v: GoogleBookVolume) => ({
+    ...mapVolumeToItem(v),
+    volumeId: v.id,
+  }));
+}
+
 /** Fetch a single Google Books volume by ID */
 export async function getGoogleBookDetails(volumeId: string): Promise<Item | null> {
   const res = await fetch(`${BASE}/volumes/${volumeId}?key=${apiKey()}`);

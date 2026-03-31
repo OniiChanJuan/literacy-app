@@ -66,6 +66,102 @@ export async function searchTmdb(query: string): Promise<Item[]> {
     .map((r: TmdbSearchResult) => mapSearchResult(r));
 }
 
+/**
+ * Search TMDB by person name, returning their movie + TV credits.
+ * Director/Creator/Writer credits are prioritised; cast-only credits
+ * are included as a fallback if no crew credits are found.
+ */
+export async function searchTmdbByPerson(query: string): Promise<Item[]> {
+  const personRes = await fetch(url("/search/person", { query, include_adult: "false" }));
+  if (!personRes.ok) return [];
+  const personData = await personRes.json();
+  const person = personData.results?.[0];
+  if (!person) return [];
+
+  const creditsRes = await fetch(url(`/person/${person.id}/combined_credits`));
+  if (!creditsRes.ok) return [];
+  const creditsData = await creditsRes.json();
+
+  const seen = new Set<string>();
+  const results: Item[] = [];
+
+  const CREATOR_JOBS = new Set(["Director", "Creator", "Writer", "Screenplay", "Executive Producer"]);
+
+  // Crew credits first (director/creator/writer)
+  for (const c of (creditsData.crew || [])) {
+    if (c.media_type !== "movie" && c.media_type !== "tv") continue;
+    if (!CREATOR_JOBS.has(c.job)) continue;
+    const key = `${c.media_type}-${c.id}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    const isMovie = c.media_type === "movie";
+    const title = isMovie ? c.title : c.name;
+    if (!title) continue;
+    const year = parseInt((isMovie ? c.release_date : c.first_air_date)?.split("-")[0] || "0");
+    const poster = c.poster_path ? `${IMG}/w500${c.poster_path}` : "";
+    const ext: Partial<Record<ExternalSource, number>> = {};
+    if (c.vote_average > 0) ext.imdb = Math.round(c.vote_average * 10) / 10;
+
+    results.push({
+      id: c.id,
+      title,
+      type: (isMovie ? "movie" : "tv") as MediaType,
+      genre: (c.genre_ids || []).map((id: number) => TMDB_GENRES[id]).filter(Boolean),
+      vibes: [],
+      year,
+      cover: poster,
+      desc: c.overview || "",
+      people: [{ name: person.name, role: c.job === "Director" ? "Director" : "Creator" } as Person],
+      awards: [],
+      platforms: [],
+      ext,
+      totalEp: isMovie ? 1 : 0,
+    } as Item);
+  }
+
+  // Fallback: cast credits if no crew credits found
+  if (results.length === 0) {
+    for (const c of (creditsData.cast || [])) {
+      if (c.media_type !== "movie" && c.media_type !== "tv") continue;
+      const key = `${c.media_type}-${c.id}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      const isMovie = c.media_type === "movie";
+      const title = isMovie ? c.title : c.name;
+      if (!title) continue;
+      const year = parseInt((isMovie ? c.release_date : c.first_air_date)?.split("-")[0] || "0");
+      const poster = c.poster_path ? `${IMG}/w500${c.poster_path}` : "";
+      const ext: Partial<Record<ExternalSource, number>> = {};
+      if (c.vote_average > 0) ext.imdb = Math.round(c.vote_average * 10) / 10;
+
+      results.push({
+        id: c.id,
+        title,
+        type: (isMovie ? "movie" : "tv") as MediaType,
+        genre: (c.genre_ids || []).map((id: number) => TMDB_GENRES[id]).filter(Boolean),
+        vibes: [],
+        year,
+        cover: poster,
+        desc: c.overview || "",
+        people: [{ name: person.name, role: "Star" } as Person],
+        awards: [],
+        platforms: [],
+        ext,
+        totalEp: isMovie ? 1 : 0,
+      } as Item);
+
+      if (results.length >= 20) break;
+    }
+  }
+
+  return results
+    .filter((i) => i.year > 0 && i.cover)
+    .sort((a, b) => ((b.ext as any)?.imdb || 0) - ((a.ext as any)?.imdb || 0))
+    .slice(0, 20);
+}
+
 /** Fetch full TMDB details for a movie or TV show */
 export async function getTmdbDetails(type: "movie" | "tv", tmdbId: number): Promise<Item | null> {
   const detailRes = await fetch(url(`/${type}/${tmdbId}`, { append_to_response: "credits,watch/providers" }));

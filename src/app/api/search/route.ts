@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
-import { searchTmdb, tmdbItemId } from "@/lib/tmdb";
+import { searchTmdb, searchTmdbByPerson, tmdbItemId } from "@/lib/tmdb";
 import { searchIgdb, igdbItemId } from "@/lib/igdb";
-import { searchGoogleBooks, gbookItemId } from "@/lib/google-books";
+import { searchGoogleBooks, searchGoogleBooksByAuthor, gbookItemId } from "@/lib/google-books";
 import { searchSpotify, spotifyItemId } from "@/lib/spotify";
 import { searchJikanManga, searchJikanAnime, jikanItemId } from "@/lib/jikan";
 import { searchComicVine, cvItemId } from "@/lib/comicvine";
@@ -28,8 +28,28 @@ function titleMatchScore(title: string, query: string): number {
   return 0.1; // Match was in description/people only
 }
 
+/** Score how well a creator/people field matches the query (0–1). */
+function creatorMatchScore(people: any, query: string): number {
+  if (!people || !Array.isArray(people)) return 0;
+  const q = query.toLowerCase();
+  const qWords = q.split(/\s+/).filter((w) => w.length > 2);
+  let best = 0;
+  for (const p of people) {
+    const name = (p.name || "").toLowerCase();
+    if (!name) continue;
+    if (name === q) { best = 1.0; break; }
+    if (name.includes(q) || q.includes(name)) { best = Math.max(best, 0.85); continue; }
+    // All query words appear in name
+    if (qWords.length > 0 && qWords.every((w) => name.includes(w))) { best = Math.max(best, 0.75); continue; }
+    // At least one meaningful word matches (length > 3 to skip "the", "of", etc.)
+    if (qWords.some((w) => w.length > 3 && name.includes(w))) { best = Math.max(best, 0.45); }
+  }
+  return best;
+}
+
 function computeSearchRank(item: any, query: string): number {
   const titleScore = titleMatchScore(item.title || "", query);
+  const creatorScore = creatorMatchScore(item.people, query);
   const pop = Math.log10((item.popularityScore || item.voteCount || 0) + 1);
   const maxPop = 6; // ~1M votes
   const popNorm = Math.min(pop / maxPop, 1.0);
@@ -44,7 +64,8 @@ function computeSearchRank(item: any, query: string): number {
     }
   }
 
-  return (titleScore * 50) + (popNorm * 30) + (qualityNorm * 20);
+  // Weights: title=50, creator=25, popularity=30, quality=20
+  return (titleScore * 50) + (creatorScore * 25) + (popNorm * 30) + (qualityNorm * 20);
 }
 
 // GET /api/search?q=query&grouped=true
@@ -66,6 +87,7 @@ export async function GET(req: NextRequest) {
 
   // ── Local DB search: exact + fuzzy ──────────────────────────────────
   let dbResults: any[] = [];
+  let peopleItems: any[] = []; // hoisted so isCreatorSearch can reference it below
   try {
     // First: exact/substring matches (fast)
     const exact = await prisma.item.findMany({
@@ -116,31 +138,37 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Also check people names (author/director search)
-    let peopleItems: any[] = [];
-    if (q.split(/\s+/).length >= 2) {
-      try {
-        const pResults: any[] = await prisma.$queryRawUnsafe(
-          `SELECT id FROM items
-           WHERE parent_item_id IS NULL
-           AND people::text ILIKE $1
-           LIMIT 20`,
-          `%${q}%`,
-        );
-        const pIds = pResults.map((r: any) => r.id).filter((id: number) => !exact.some((e) => e.id === id));
-        if (pIds.length > 0) {
-          peopleItems = await prisma.item.findMany({
-            where: { id: { in: pIds }, parentItemId: null },
-            select: {
-              id: true, title: true, type: true, genre: true, vibes: true,
-              year: true, cover: true, description: true, ext: true, totalEp: true,
-              people: true, awards: true, platforms: true, isUpcoming: true,
-              popularityScore: true, voteCount: true,
-            },
-          });
-        }
-      } catch { /* skip */ }
-    }
+    // Also check people names (author/director/artist/studio search)
+    // Uses jsonb to match only the 'name' field, not role strings.
+    // No word-count guard — single-word creator names like "MAPPA", "Radiohead", "Ghibli" must work.
+    const alreadyFound = new Set([...exact.map((e) => e.id), ...fuzzyItems.map((f) => f.id)]);
+    try {
+      const pResults: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM items
+         WHERE parent_item_id IS NULL
+           AND EXISTS (
+             SELECT 1 FROM jsonb_array_elements(people) pe
+             WHERE pe->>'name' ILIKE $1
+           )
+           AND id != ALL($2::int[])
+         ORDER BY popularity_score DESC
+         LIMIT 30`,
+        `%${q}%`,
+        [...alreadyFound],
+      );
+      const pIds = pResults.map((r: any) => r.id);
+      if (pIds.length > 0) {
+        peopleItems = await prisma.item.findMany({
+          where: { id: { in: pIds }, parentItemId: null },
+          select: {
+            id: true, title: true, type: true, genre: true, vibes: true,
+            year: true, cover: true, description: true, ext: true, totalEp: true,
+            people: true, awards: true, platforms: true, isUpcoming: true,
+            popularityScore: true, voteCount: true,
+          },
+        });
+      }
+    } catch { /* skip */ }
 
     const seenIds = new Set<number>();
     dbResults = [...exact, ...fuzzyItems, ...peopleItems]
@@ -192,26 +220,38 @@ export async function GET(req: NextRequest) {
   // ── Build dedup set ─────────────────────────────────────────────────
   const localTitles = new Set(dbResults.map((r: any) => `${(r.title || "").toLowerCase()}-${r.year}`));
 
+  // ── Detect creator search: did the people query return results? ──────
+  // Used to decide whether to fire creator-specific external API calls.
+  const isCreatorSearch = peopleItems.length > 0;
+  const peopleTypes = new Set(peopleItems.map((i: any) => i.type));
+
   // ── External API searches (parallel) ────────────────────────────────
   const localByType: Record<string, number> = {};
   dbResults.forEach((r: any) => { localByType[r.type] = (localByType[r.type] || 0) + 1; });
 
   // Count local books that actually match the query well (title score >= 0.5).
-  // Using raw localByType["book"] is misleading — 3 books that each share one
-  // word with the query (e.g. "Empire of Pain" for "empire of silence") would
-  // suppress the Google Books fallback even though none are relevant.
   const relevantLocalBooks = dbResults.filter(
     (r: any) => r.type === "book" && titleMatchScore(r.title || "", q) >= 0.5
   ).length;
 
   const apiPromises: Promise<any[]>[] = [];
 
-  // Only search APIs for types with fewer than 3 local results
+  // Standard title-based TMDB search (movies + TV)
   apiPromises.push(
     searchTmdb(q).then((items) => items.map((item) => ({
       ...item, source: "tmdb", routeId: tmdbItemId(item.type as "movie" | "tv", item.id), sourceLabel: "TMDB",
     }))).catch(() => [])
   );
+
+  // Creator-specific: TMDB person search (director/creator filmography)
+  // Fire when people search found movie/TV matches, or when DB has few movie/TV results
+  if (isCreatorSearch && (peopleTypes.has("movie") || peopleTypes.has("tv") || (localByType["movie"] || 0) < 3)) {
+    apiPromises.push(
+      searchTmdbByPerson(q).then((items) => items.map((item) => ({
+        ...item, source: "tmdb", routeId: tmdbItemId(item.type as "movie" | "tv", item.id), sourceLabel: "TMDB",
+      }))).catch(() => [])
+    );
+  }
 
   if ((localByType["game"] || 0) < 3) {
     apiPromises.push(
@@ -221,9 +261,20 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  // Title-based Google Books search
   if (relevantLocalBooks < 3) {
     apiPromises.push(
       searchGoogleBooks(q).then((items) => items.filter((i) => i.cover).map((item) => ({
+        ...item, source: "gbook", routeId: gbookItemId(item.volumeId), sourceLabel: "Google Books",
+      }))).catch(() => [])
+    );
+  }
+
+  // Creator-specific: inauthor: Google Books search
+  // Fire when people search found books, or title search returned few books
+  if (isCreatorSearch && (peopleTypes.has("book") || relevantLocalBooks < 3)) {
+    apiPromises.push(
+      searchGoogleBooksByAuthor(q).then((items) => items.filter((i) => i.cover).map((item) => ({
         ...item, source: "gbook", routeId: gbookItemId(item.volumeId), sourceLabel: "Google Books",
       }))).catch(() => [])
     );
@@ -298,10 +349,38 @@ export async function GET(req: NextRequest) {
       sortedGroups[type] = { label: typeLabels[type] || type, items };
     });
 
+  // ── Creator match detection ──────────────────────────────────────────
+  // If 3+ results share the same creator whose name matches the query,
+  // surface that as a header so the UI can label those results.
+  let creatorMatch: { name: string; role: string; itemCount: number } | null = null;
+  {
+    const qLower = q.toLowerCase();
+    const creatorCounts = new Map<string, { count: number; role: string }>();
+    for (const item of all) {
+      if (!item.people || !Array.isArray(item.people)) continue;
+      for (const p of item.people) {
+        const name = (p.name || "").toLowerCase();
+        if (!name || name.length < 2) continue;
+        if (name.includes(qLower) || qLower.includes(name)) {
+          const existing = creatorCounts.get(p.name) || { count: 0, role: p.role || "" };
+          creatorCounts.set(p.name, { count: existing.count + 1, role: existing.role });
+        }
+      }
+    }
+    if (creatorCounts.size > 0) {
+      const [topName, topData] = [...creatorCounts.entries()]
+        .sort(([, a], [, b]) => b.count - a.count)[0];
+      if (topData.count >= 3) {
+        creatorMatch = { name: topName, role: topData.role, itemCount: topData.count };
+      }
+    }
+  }
+
   const res = NextResponse.json({
     bestMatch,
     groups: sortedGroups,
     franchise: franchiseMatch,
+    creatorMatch,
     suggestions: suggestions.slice(0, 3),
     totalResults: all.length,
   });
