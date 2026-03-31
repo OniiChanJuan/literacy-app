@@ -649,15 +649,15 @@ export default function ForYouPage() {
       </ErrorBoundary>
 
       {/* Per-type rows — use deepExcludeParam to server-side exclude all rows 1-5 */}
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=anime&limit=30${deepExcludeParam}`} label="Top anime" icon="🎌" iconBg="#FF6B6B22" seeAllHref="/explore?type=anime&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=movie&limit=30${deepExcludeParam}`} label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore?type=movie&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=game&limit=30${deepExcludeParam}`} label="Most discussed games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore?type=game&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=manga&limit=30${deepExcludeParam}`} label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore?type=manga&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=book&limit=30${deepExcludeParam}`} label="The community is reading" icon="📖" iconBg="#3185FC22" seeAllHref="/explore?type=book&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=tv&limit=30${deepExcludeParam}`} label="Top shows" icon="📺" iconBg="#C45BAA22" seeAllHref="/explore?type=tv&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=music&limit=30${deepExcludeParam}`} label="Albums worth hearing" icon="🎵" iconBg="#9B5DE522" seeAllHref="/explore?type=music&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=comic&limit=30${deepExcludeParam}`} label="Comics to pick up" icon="💥" iconBg="#F9A62022" seeAllHref="/explore?type=comic&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
-      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=podcast&limit=30${deepExcludeParam}`} label="Podcasts worth your time" icon="🎙️" iconBg="#00BBF922" seeAllHref="/explore?type=podcast&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=anime&forYou=1&limit=30${deepExcludeParam}`} label="Top anime" icon="🎌" iconBg="#FF6B6B22" seeAllHref="/explore?type=anime&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=movie&forYou=1&limit=30${deepExcludeParam}`} label="Highest reviewed movies" icon="🎬" iconBg="#E8485522" seeAllHref="/explore?type=movie&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=game&forYou=1&limit=30${deepExcludeParam}`} label="Highest rated games" icon="🎮" iconBg="#2EC4B622" seeAllHref="/explore?type=game&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=manga&forYou=1&limit=30${deepExcludeParam}`} label="Top manga" icon="🗾" iconBg="#FF6B6B22" seeAllHref="/explore?type=manga&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=book&forYou=1&limit=30${deepExcludeParam}`} label="Top books" icon="📖" iconBg="#3185FC22" seeAllHref="/explore?type=book&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=tv&forYou=1&excludeAnime=1&limit=30${deepExcludeParam}`} label="Top shows" icon="📺" iconBg="#C45BAA22" seeAllHref="/explore?type=tv&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=music&forYou=1&limit=30${deepExcludeParam}`} label="Albums worth hearing" icon="🎵" iconBg="#9B5DE522" seeAllHref="/explore?type=music&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=comic&forYou=1&limit=30${deepExcludeParam}`} label="Comics to pick up" icon="💥" iconBg="#F9A62022" seeAllHref="/explore?type=comic&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
+      <ErrorBoundary><LazyRow fetchUrl={`/api/catalog?type=podcast&forYou=1&limit=30${deepExcludeParam}`} label="Podcasts worth your time" icon="🎙️" iconBg="#00BBF922" seeAllHref="/explore?type=podcast&sort=top_rated" mediaFilter={activeFilter} /></ErrorBoundary>
 
       {/* Coming Soon — only truly unreleased titles */}
       {(() => {

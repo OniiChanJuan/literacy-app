@@ -5,6 +5,16 @@ import { rateLimit } from "@/lib/validation";
 import { normalizeScore, meetsQualityFloor, interleaveByType } from "@/lib/ranking";
 import { tasteSimilarity, neutralDimensions, type TasteDimensions } from "@/lib/taste-dimensions";
 
+/** Fisher-Yates shuffle — returns a new shuffled array sliced to `count` */
+function shuffleAndPick<T>(arr: T[], count: number): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, count);
+}
+
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
   year: true, cover: true, description: true, people: true,
@@ -134,67 +144,94 @@ export async function GET(req: NextRequest) {
 
     // ─── Section-based paginated response ───
     if (section === "personalPicks") {
-      // Best taste matches across all types — max 4 per type to guarantee 5+ different media types in the row
-      const fetchTarget = offset + limit + 1;
-      const personalPicks: any[] = [];
-      const typeCountsPP: Record<string, number> = {};
-      const maxPerType = Math.max(Math.ceil(fetchTarget * 0.20), 4);
+      // Build quality pool of top 80 (max 25% per type), then shuffle for freshness
+      const POOL_SIZE = 80;
+      const pool: any[] = [];
+      const poolTypeCounts: Record<string, number> = {};
+      const maxPerTypePool = Math.ceil(POOL_SIZE * 0.25);
 
       for (const s of scored) {
-        const tc = typeCountsPP[s.item.type] || 0;
-        if (tc >= maxPerType) continue;
-        typeCountsPP[s.item.type] = tc + 1;
-        personalPicks.push(s.item);
-        if (personalPicks.length >= fetchTarget) break;
+        const tc = poolTypeCounts[s.item.type] || 0;
+        if (tc >= maxPerTypePool) continue;
+        poolTypeCounts[s.item.type] = tc + 1;
+        pool.push(s.item);
+        if (pool.length >= POOL_SIZE) break;
       }
 
-      const hasMore = personalPicks.length > offset + limit;
-      const page = interleaveByType(personalPicks.slice(offset, offset + limit)).map(mapItem);
+      // Shuffle pool then pick `limit` items respecting type diversity (max 20% per type)
+      const shuffled = shuffleAndPick(pool, POOL_SIZE);
+      const picked: any[] = [];
+      const pickedTypeCounts: Record<string, number> = {};
+      const maxPerTypePick = Math.max(Math.ceil(limit * 0.20), 3);
+
+      for (const item of shuffled) {
+        const tc = pickedTypeCounts[item.type] || 0;
+        if (tc >= maxPerTypePick) continue;
+        pickedTypeCounts[item.type] = tc + 1;
+        picked.push(item);
+        if (picked.length >= limit) break;
+      }
+
+      const page = interleaveByType(picked).map(mapItem);
       const res = NextResponse.json(page);
-      res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
-      res.headers.set("X-Has-More", hasMore ? "1" : "0");
+      res.headers.set("Cache-Control", "private, no-store");
+      res.headers.set("X-Has-More", "0");
       return res;
     }
 
     if (section === "discoverAcrossMedia") {
       const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
-      // Collect one extra item beyond the page to detect hasMore
-      const fetchTarget = offset + limit + 1;
-      const allDiscover: any[] = [];
-      const typeCountsDAM: Record<string, number> = {};
-      const maxPerType = Math.max(Math.ceil(fetchTarget * 0.25), 6);
+      // Build pool of 60: 70%+ from unexplored types (rated < 3 times), rest from any non-topType
+      const POOL_SIZE = 60;
+      const unexploredTarget = Math.ceil(POOL_SIZE * 0.70);
+      const pool: any[] = [];
+      const poolTypeCounts: Record<string, number> = {};
+      const maxPerTypePool = Math.ceil(POOL_SIZE * 0.25);
 
-      // First pass: truly unexplored types
+      // First pass: unexplored types only
       for (const s of scored) {
         const typeRateCount = typeCounts[s.item.type] || 0;
         if (typeRateCount >= 3 || s.item.type === topType) continue;
-        const tc = typeCountsDAM[s.item.type] || 0;
-        if (tc >= maxPerType) continue;
-        typeCountsDAM[s.item.type] = tc + 1;
-        allDiscover.push(s.item);
-        if (allDiscover.length >= fetchTarget) break;
+        const tc = poolTypeCounts[s.item.type] || 0;
+        if (tc >= maxPerTypePool) continue;
+        poolTypeCounts[s.item.type] = tc + 1;
+        pool.push(s.item);
+        if (pool.length >= unexploredTarget) break;
       }
 
-      // Fill with cross-type high matches if not enough
-      if (allDiscover.length < fetchTarget) {
-        const usedIds = new Set(allDiscover.map((i: any) => i.id));
+      // Fill remainder from any non-topType (not already in pool)
+      if (pool.length < POOL_SIZE) {
+        const usedIds = new Set(pool.map((i: any) => i.id));
         for (const s of scored) {
           if (usedIds.has(s.item.id)) continue;
           if (s.item.type === topType) continue;
-          const tc = typeCountsDAM[s.item.type] || 0;
-          if (tc >= maxPerType) continue;
-          typeCountsDAM[s.item.type] = tc + 1;
-          allDiscover.push(s.item);
+          const tc = poolTypeCounts[s.item.type] || 0;
+          if (tc >= maxPerTypePool) continue;
+          poolTypeCounts[s.item.type] = tc + 1;
+          pool.push(s.item);
           usedIds.add(s.item.id);
-          if (allDiscover.length >= fetchTarget) break;
+          if (pool.length >= POOL_SIZE) break;
         }
       }
 
-      const hasMore = allDiscover.length > offset + limit;
-      const page = interleaveByType(allDiscover).slice(offset, offset + limit).map(mapItem);
+      // Shuffle pool then pick `limit` items with type diversity (max 25% per type)
+      const shuffled = shuffleAndPick(pool, POOL_SIZE);
+      const picked: any[] = [];
+      const pickedTypeCounts: Record<string, number> = {};
+      const maxPerTypePick = Math.max(Math.ceil(limit * 0.25), 4);
+
+      for (const item of shuffled) {
+        const tc = pickedTypeCounts[item.type] || 0;
+        if (tc >= maxPerTypePick) continue;
+        pickedTypeCounts[item.type] = tc + 1;
+        picked.push(item);
+        if (picked.length >= limit) break;
+      }
+
+      const page = interleaveByType(picked).map(mapItem);
       const res = NextResponse.json(page);
-      res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
-      res.headers.set("X-Has-More", hasMore ? "1" : "0");
+      res.headers.set("Cache-Control", "private, no-store");
+      res.headers.set("X-Has-More", "0");
       return res;
     }
 

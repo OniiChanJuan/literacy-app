@@ -50,7 +50,10 @@ async function fetchMalScore(malId: number, type: "anime" | "manga"): Promise<nu
 async function main() {
   console.log("=== Backfill: ext.mal scores for items with malId but no MAL score ===\n");
 
-  // Find items with malId but no ext.mal
+  // Find items with malId but no ext.mal.
+  // IMPORTANT: Only process items that already have 'Anime' in their genres (for tv/movie)
+  // OR are type=manga. This prevents storing ext.mal on Western animation titles that MAL
+  // catalogs but that are not Japanese anime. Manga is always OK to backfill.
   const candidates = await prisma.$queryRaw<{ id: number; title: string; type: string; mal_id: number; ext: any }[]>`
     SELECT id, title, type, mal_id, ext
     FROM items
@@ -58,6 +61,10 @@ async function main() {
       AND type IN ('tv', 'movie', 'manga')
       AND (ext->>'mal' IS NULL OR ext->>'mal' = '')
       AND parent_item_id IS NULL
+      AND (
+        type = 'manga'
+        OR 'Anime' = ANY(genre)
+      )
     ORDER BY vote_count DESC NULLS LAST
     LIMIT ${LIMIT}
   `;

@@ -8,6 +8,24 @@ function filterAnime(items: any[]): any[] {
   return items.filter((i) => isAnime(i));
 }
 
+/** Fisher-Yates shuffle — returns a new shuffled array sliced to `count` */
+function shuffleAndPick<T>(arr: T[], count: number): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, count);
+}
+
+/** Response with no caching — used for randomized For You rows */
+function jsonResponseNoCache(data: any) {
+  const res = NextResponse.json(data);
+  res.headers.set("Cache-Control", "private, no-store");
+  res.headers.set("X-Has-More", "0");
+  return res;
+}
+
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
   year: true, cover: true, description: true, people: true,
@@ -34,6 +52,8 @@ export async function GET(req: NextRequest) {
   const tag = searchParams.get("tag");
   const curated = searchParams.get("curated");
   const excludeIds = searchParams.get("exclude")?.split(",").map(Number).filter(Boolean) || [];
+  const forYou = searchParams.get("forYou") === "1";
+  const excludeAnime = searchParams.get("excludeAnime") === "1";
 
   try {
     // If tag filter is active, get matching item IDs via raw SQL first
@@ -105,7 +125,7 @@ export async function GET(req: NextRequest) {
       // Single-type view: skip per-type quotas, quality-rank the full type directly
       // so the frontend can show 30-60+ results and paginate with load-more.
       if (type) {
-        const minVotesMap: Record<string, number> = { movie: 500, tv: 500, game: 100, manga: 500, book: 100, music: 50, comic: 500, podcast: 500 };
+        const minVotesMap: Record<string, number> = { movie: 1000, tv: 1000, game: 500, manga: 1000, book: 100, music: 10, comic: 1000, podcast: 1000 };
         const minVotes = isAnimeFilter ? 100 : (minVotesMap[type] ?? 100);
         const typeWhere: any = isAnimeFilter
           ? { ...baseWhere, type: { in: ["tv", "movie"] } }
@@ -131,15 +151,14 @@ export async function GET(req: NextRequest) {
       // Cross-media view: per-type quotas guarantee diversity.
       // minVotes raised — critically acclaimed items are by definition widely reviewed.
       // Podcast/comic minVotes=500 effectively excludes them (real rating counts are ~0 after cleanup).
+      // Comics and podcasts excluded — no meaningful vote/score data in DB
       const typeQuotas: Array<{ t: string; quota: number; minVotes: number }> = [
-        { t: "movie",   quota: 10, minVotes: 500 },
-        { t: "tv",      quota: 10, minVotes: 500 },
-        { t: "game",    quota: 5,  minVotes: 100 },
-        { t: "manga",   quota: 5,  minVotes: 500 },
-        { t: "book",    quota: 3,  minVotes: 100 },
-        { t: "music",   quota: 2,  minVotes: 50  },
-        { t: "comic",   quota: 2,  minVotes: 500 },
-        { t: "podcast", quota: 2,  minVotes: 500 },
+        { t: "movie",   quota: 10, minVotes: 1000 },
+        { t: "tv",      quota: 10, minVotes: 1000 },
+        { t: "game",    quota: 5,  minVotes: 500  },
+        { t: "manga",   quota: 5,  minVotes: 1000 },
+        { t: "book",    quota: 3,  minVotes: 100  },
+        { t: "music",   quota: 2,  minVotes: 10   },
       ];
 
       const ACCLAIMED_THRESHOLD = 0.80; // normalizeScore — critically acclaimed means exceptional
@@ -165,8 +184,10 @@ export async function GET(req: NextRequest) {
         })
       );
 
-      const merged = perTypeItems.flat().sort((a, b) => (b as any).rank - (a as any).rank);
-      const interleaved = interleaveByType(merged);
+      const merged = perTypeItems.flat();
+      // Shuffle the quality pool for freshness on each request
+      const shuffledMerged = offset === 0 ? shuffleAndPick(merged, merged.length) : merged.sort((a, b) => (b as any).rank - (a as any).rank);
+      const interleaved = interleaveByType(shuffledMerged);
       const page = interleaved.slice(offset, offset + limit);
       const hasMore = interleaved.length > offset + limit;
 
@@ -181,7 +202,7 @@ export async function GET(req: NextRequest) {
                        : type && ["podcast", "comic"].includes(type) ? 1
                        : 10;
       const items = await prisma.item.findMany({
-        where: { ...where, year: { gte: currentYear - 2 }, voteCount: { gte: popVoteMin } },
+        where: { ...where, year: { gte: currentYear - 1 }, voteCount: { gte: popVoteMin } },
         orderBy: { popularityScore: "desc" },
         take: poolSize,
         select: ITEM_SELECT,
@@ -218,7 +239,9 @@ export async function GET(req: NextRequest) {
         return true;
       });
 
-      const page = interleaveByType(popDiverse).slice(offset, offset + limit);
+      // Shuffle for freshness on each visit (only on first page)
+      const popFinal = offset === 0 ? shuffleAndPick(popDiverse, popDiverse.length) : popDiverse;
+      const page = interleaveByType(popFinal).slice(offset, offset + limit);
       const hasMore = popDiverse.length > offset + limit;
       return jsonResponse(page.map(mapItem), hasMore);
     }
@@ -371,10 +394,83 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      const merged = perTypeGems.flat().sort((a, b) => (b as any).gemScore - (a as any).gemScore);
+      // Shuffle quality pool so hidden gems feel fresh on every visit
+      const merged = shuffleAndPick(perTypeGems.flat(), perTypeGems.flat().length);
       const interleaved = interleaveByType(merged);
       const page = interleaved.slice(offset, offset + limit);
       return jsonResponse(page.map(mapItem), interleaved.length > offset + limit);
+    }
+
+    // ── For You lazy rows (type-specific, vote-floored, randomized) ───
+    if (forYou && type) {
+      // Comics have no votes/scores — hide entirely
+      if (type === "comic") return jsonResponseNoCache([]);
+
+      // Podcasts: voteCount is always 0; use spotify_popularity instead
+      if (type === "podcast") {
+        const excludeClausePod = excludeIds.length > 0 ? `AND id NOT IN (${excludeIds.join(",")})` : "";
+        const podIds = await prisma.$queryRawUnsafe<{ id: number }[]>(`
+          SELECT id FROM items
+          WHERE type = 'podcast'
+          AND is_upcoming = false AND parent_item_id IS NULL
+          AND (ext->>'spotify_popularity') IS NOT NULL
+          AND (ext->>'spotify_popularity')::float >= 50
+          ${excludeClausePod}
+          ORDER BY (ext->>'spotify_popularity')::float DESC
+          LIMIT 80
+        `);
+        if (podIds.length === 0) return jsonResponseNoCache([]);
+        const podItems = await prisma.item.findMany({
+          where: { id: { in: podIds.map(r => r.id) } },
+          select: ITEM_SELECT,
+        });
+        return jsonResponseNoCache(shuffleAndPick(podItems, Math.min(limit, podItems.length)).map(mapItem));
+      }
+
+      // Vote floors per type (data-driven from audit)
+      const VOT_FLOOR: Record<string, number> = {
+        movie: 1000, tv: 1000, game: 500, anime: 1000, manga: 1000, book: 100, music: 10,
+      };
+      const typeKey = isAnimeFilter ? "anime" : type;
+      const minVotes = VOT_FLOOR[typeKey] ?? 50;
+
+      async function fetchForYouPool(voteFloor: number) {
+        const fyWhere: any = { ...where };
+        if (voteFloor > 0) fyWhere.voteCount = { gte: voteFloor };
+        return prisma.item.findMany({ where: fyWhere, orderBy: { voteCount: "desc" }, take: 150, select: ITEM_SELECT });
+      }
+
+      let pool = await fetchForYouPool(minVotes);
+      let qualified = pool.filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }));
+      if (isAnimeFilter) qualified = qualified.filter(i => isAnime(i as any));
+      if (excludeAnime) qualified = qualified.filter(i => !isAnime(i as any));
+
+      // Relax threshold if not enough items
+      if (qualified.length < 15 && minVotes > 50) {
+        const relaxedFloor = Math.max(Math.floor(minVotes / 5), 10);
+        pool = await fetchForYouPool(relaxedFloor);
+        let relaxedQ = pool.filter(i => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }));
+        if (isAnimeFilter) relaxedQ = relaxedQ.filter(i => isAnime(i as any));
+        if (excludeAnime) relaxedQ = relaxedQ.filter(i => !isAnime(i as any));
+        if (relaxedQ.length > qualified.length) qualified = relaxedQ;
+      }
+
+      if (qualified.length < 5) return jsonResponseNoCache([]);
+
+      // Sort: anime/manga by MAL score, everything else by normalizeScore
+      if (isAnimeFilter || type === "manga") {
+        qualified.sort((a, b) => ((b.ext as any)?.mal ?? 0) - ((a.ext as any)?.mal ?? 0));
+      } else {
+        qualified.sort((a, b) =>
+          normalizeScore(b.ext as any, b.type, b.voteCount || 0) -
+          normalizeScore(a.ext as any, a.type, a.voteCount || 0)
+        );
+      }
+
+      // Take top 50 quality items then shuffle — fresh each visit
+      const topPool = qualified.slice(0, 50);
+      const picked = shuffleAndPick(topPool, Math.min(limit, topPool.length));
+      return jsonResponseNoCache(picked.map(mapItem));
     }
 
     // ── Standard query ────────────────────────────────────────────────
