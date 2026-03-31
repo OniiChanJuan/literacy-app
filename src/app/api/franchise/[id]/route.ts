@@ -34,7 +34,7 @@ export async function GET(
               select: {
                 id: true, title: true, type: true, year: true,
                 cover: true, ext: true, genre: true, vibes: true,
-                isUpcoming: true, releaseDate: true, description: true,
+                isUpcoming: true, releaseDate: true, description: true, slug: true,
               },
             },
           },

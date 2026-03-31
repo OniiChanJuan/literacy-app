@@ -31,6 +31,12 @@ export interface Item {
   totalEp: number;
   voteCount?: number;
   tmdbId?: number;
+  slug?: string | null;
+  itemTags?: any;
+  isUpcoming?: boolean;
+  releaseDate?: string;
+  hypeScore?: number;
+  wantCount?: number;
 }
 
 export const TYPES: Record<MediaType, { label: string; icon: string; color: string }> = {

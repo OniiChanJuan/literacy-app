@@ -9,6 +9,7 @@ interface DlcItem {
   type: string;
   year: number;
   cover: string;
+  slug?: string | null;
   itemSubtype: string | null;
   bestScore?: { source: string; score: number; maxScore: number } | null;
 }
@@ -106,7 +107,7 @@ export default function DlcSection({ dlcs, baseGameTitle, typeColor }: DlcSectio
           return (
             <Link
               key={dlc.id}
-              href={`/item/${dlc.id}`}
+              href={dlc.slug ? `/game/${dlc.slug}` : `/item/${dlc.id}`}
               style={{
                 flex: "0 0 150px", width: 150, borderRadius: 8,
                 overflow: "hidden", textDecoration: "none",

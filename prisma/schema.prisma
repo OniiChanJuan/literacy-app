@@ -133,6 +133,7 @@ model Item {
   isbn            String?  @map("isbn")
   comicVineId     Int?     @map("comic_vine_id")
   steamAppId      Int?     @map("steam_app_id")
+  slug            String?  @map("slug")
   popularityScore Float    @default(0) @map("popularity_score")
   voteCount       Int      @default(0) @map("vote_count")
   lastSyncedAt    DateTime? @map("last_synced_at")
@@ -168,6 +169,7 @@ model Item {
   @@index([type, isUpcoming])
   @@index([parentItemId])
   @@index([steamAppId])
+  @@index([type, slug])
   @@map("items")
 }
 

@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
           id: true, title: true, type: true, genre: true, vibes: true,
           year: true, cover: true, description: true, ext: true, totalEp: true,
           people: true, awards: true, platforms: true, isUpcoming: true,
-          popularityScore: true, voteCount: true,
+          popularityScore: true, voteCount: true, slug: true,
         },
       });
     }

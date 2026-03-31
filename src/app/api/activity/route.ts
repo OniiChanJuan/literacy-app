@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     where: { userId: { in: followedIds } },
     include: {
       user: { select: { id: true, name: true, image: true, avatar: true } },
-      item: { select: { id: true, title: true, type: true, cover: true, year: true } },
+      item: { select: { id: true, title: true, type: true, cover: true, year: true, slug: true } },
     },
     orderBy: { createdAt: "desc" },
     take: 20,
@@ -56,6 +56,7 @@ export async function GET(req: NextRequest) {
       itemId: r.item.id,
       itemTitle: r.item.title,
       itemType: r.item.type,
+      itemSlug: (r.item as any).slug || null,
       itemCover: r.item.cover,
       itemYear: r.item.year,
       score: rating?.score ?? 0,

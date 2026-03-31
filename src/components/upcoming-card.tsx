@@ -4,6 +4,7 @@ import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { TYPES, type UpcomingItem } from "@/lib/data";
+import { getItemUrl } from "@/lib/slugs";
 import { useLibrary } from "@/lib/library-context";
 
 function isImageUrl(cover: string): boolean {
@@ -25,7 +26,7 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
 
   return (
     <Link
-      href={`/item/${item.id}`}
+      href={getItemUrl(item)}
       style={{
         flex: "0 0 150px",
         width: 150,

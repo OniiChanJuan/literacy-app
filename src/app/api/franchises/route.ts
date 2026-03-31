@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
                 item: {
                   select: {
                     id: true, title: true, type: true, year: true,
-                    cover: true, ext: true, isUpcoming: true, releaseDate: true,
+                    cover: true, ext: true, isUpcoming: true, releaseDate: true, slug: true,
                   },
                 },
               },

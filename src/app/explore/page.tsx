@@ -10,6 +10,7 @@ import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
+import { getItemUrl } from "@/lib/slugs";
 
 interface SearchResult extends Item { source: string; routeId: string; }
 
@@ -290,7 +291,7 @@ function ExploreContent() {
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontSize: 10, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>Best match</div>
                 <Link
-                  href={`/item/${bestMatch.routeId || bestMatch.id}`}
+                  href={bestMatch.routeId ? `/item/${bestMatch.routeId}` : getItemUrl(bestMatch)}
                   style={{
                     display: "flex", gap: 14, padding: 14, borderRadius: 10,
                     background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.08)",

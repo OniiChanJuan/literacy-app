@@ -12,6 +12,7 @@ interface FranchiseItemData {
   type: string;
   year: number;
   cover: string;
+  slug?: string | null;
   isUpcoming: boolean;
   releaseDate: string | null;
   score: { label: string; display: string; value: number } | null;
@@ -165,7 +166,7 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
               key={item.id}
               item={item}
               franchiseName={franchise.name}
-              onClick={() => router.push(`/item/${item.id}`)}
+              onClick={() => router.push(item.slug ? `/${item.type}/${item.slug}` : `/item/${item.id}`)}
             />
           ))}
         </div>

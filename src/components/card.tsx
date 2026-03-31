@@ -4,6 +4,7 @@ import { memo, useCallback, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Item, TYPES } from "@/lib/data";
+import { getItemUrl } from "@/lib/slugs";
 import { useRatings } from "@/lib/ratings-context";
 import { scorePassesThreshold } from "@/lib/score-thresholds";
 import Stars from "./stars";
@@ -69,7 +70,7 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
   const { ratings, rate } = useRatings();
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const userRating = ratings[item.id] || 0;
-  const href = `/item/${routeId || item.id}`;
+  const href = routeId ? `/item/${routeId}` : getItemUrl(item);
   const hasImage = isImageUrl(item.cover);
   const [imgError, setImgError] = useState(false);
 

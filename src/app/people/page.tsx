@@ -24,6 +24,7 @@ interface ActivityItem {
   itemId: number;
   itemTitle: string;
   itemType: string;
+  itemSlug?: string | null;
   itemCover: string;
   itemYear: number;
   score: number;
@@ -446,7 +447,7 @@ function ActivityCard({ item }: { item: ActivityItem }) {
               {item.userName}
             </Link>
             <span style={{ color: "var(--text-faint)" }}> reviewed </span>
-            <Link href={`/item/${item.itemId}`} style={{ color: typeInfo?.color || "#fff", fontWeight: 600, textDecoration: "none" }}>
+            <Link href={item.itemSlug ? `/${item.itemType}/${item.itemSlug}` : `/item/${item.itemId}`} style={{ color: typeInfo?.color || "#fff", fontWeight: 600, textDecoration: "none" }}>
               {item.itemTitle}
             </Link>
           </div>
@@ -465,7 +466,7 @@ function ActivityCard({ item }: { item: ActivityItem }) {
       </div>
 
       {/* Item mini preview */}
-      <Link href={`/item/${item.itemId}`} style={{ textDecoration: "none" }}>
+      <Link href={item.itemSlug ? `/${item.itemType}/${item.itemSlug}` : `/item/${item.itemId}`} style={{ textDecoration: "none" }}>
         <div style={{
           display: "flex",
           gap: 12,

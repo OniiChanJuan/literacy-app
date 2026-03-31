@@ -12,6 +12,7 @@ interface SearchResult {
   year?: number;
   cover?: string;
   routeId?: string;
+  slug?: string | null;
   source?: string;
 }
 
@@ -272,7 +273,7 @@ export default function GlobalSearch() {
               {group.items.map((item) => (
                 <Link
                   key={`${item.source}-${item.routeId || item.id}`}
-                  href={`/item/${item.routeId || item.id}`}
+                  href={item.routeId ? `/item/${item.routeId}` : (item.slug ? `/${item.type}/${item.slug}` : `/item/${item.id}`)}
                   onClick={handleResultClick}
                   style={{
                     display: "flex",

@@ -14,6 +14,7 @@ interface FranchiseItem {
   type: string;
   year: number;
   cover: string;
+  slug?: string | null;
   genre: string[];
   vibes: string[];
   ext: Record<string, number>;
@@ -75,7 +76,7 @@ function ItemCard({ item }: { item: FranchiseItem }) {
 
   return (
     <Link
-      href={`/item/${item.id}`}
+      href={item.slug ? `/${item.type}/${item.slug}` : `/item/${item.id}`}
       style={{
         width: 140, borderRadius: 10, overflow: "hidden",
         border: "0.5px solid rgba(255,255,255,0.06)",
