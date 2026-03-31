@@ -14,24 +14,45 @@ interface WatchProvidersProps {
   year: number;
   mediaType: "movie" | "tv";
   tmdbId?: number;
-  genres?: string[];
+  itemId?: number;
 }
 
-export default function WatchProviders({ title, year, mediaType, tmdbId, genres }: WatchProvidersProps) {
+const REGIONS = [
+  { code: "US", label: "United States" },
+  { code: "GB", label: "United Kingdom" },
+  { code: "CA", label: "Canada" },
+  { code: "AU", label: "Australia" },
+  { code: "DE", label: "Germany" },
+  { code: "FR", label: "France" },
+  { code: "JP", label: "Japan" },
+  { code: "BR", label: "Brazil" },
+  { code: "IN", label: "India" },
+  { code: "MX", label: "Mexico" },
+];
+
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+export default function WatchProviders({ title, year, mediaType, tmdbId, itemId }: WatchProvidersProps) {
   const [providers, setProviders] = useState<ProviderData[]>([]);
   const [link, setLink] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const isAnime = (genres || []).some(g => g.toLowerCase() === "anime" || g.toLowerCase() === "animation");
+  const [region, setRegion] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("watchRegion") || "US";
+    }
+    return "US";
+  });
 
   useEffect(() => {
-    const params = new URLSearchParams({ type: mediaType });
+    setLoading(true);
+    const params = new URLSearchParams({ type: mediaType, region });
     if (tmdbId) {
       params.set("tmdbId", String(tmdbId));
     } else {
       params.set("title", title);
       params.set("year", String(year));
     }
+    if (itemId) params.set("itemId", String(itemId));
 
     fetch(`/api/watch-providers?${params}`)
       .then((r) => r.json())
@@ -41,8 +62,17 @@ export default function WatchProviders({ title, year, mediaType, tmdbId, genres 
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [title, year, mediaType, tmdbId]);
+  }, [title, year, mediaType, tmdbId, itemId, region]);
 
+  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRegion = e.target.value;
+    setRegion(newRegion);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("watchRegion", newRegion);
+    }
+  };
+
+  const regionLabel = REGIONS.find((r) => r.code === region)?.label || region;
   const justWatchSearch = `https://www.justwatch.com/us/search?q=${encodeURIComponent(title)}`;
   const sectionLink = link || justWatchSearch;
 
@@ -60,12 +90,8 @@ export default function WatchProviders({ title, year, mediaType, tmdbId, genres 
   const streaming = providers.filter((p) => p.type === "stream");
   const rentBuy = providers.filter((p) => p.type === "rent" || p.type === "buy");
 
-  // Anime fallback links: Crunchyroll + HiDive (if not already in streaming providers)
-  const streamingNames = new Set(streaming.map(p => p.name.toLowerCase()));
-  const showCrunchyroll = isAnime && !streamingNames.has("crunchyroll");
-  const showHidive = isAnime && !streamingNames.has("hidive");
-
-  if (providers.length === 0 && !showCrunchyroll && !showHidive) {
+  // No providers — trust TMDB data, no guessing
+  if (providers.length === 0) {
     return (
       <section style={{ marginBottom: 24 }}>
         <SectionHeading mediaType={mediaType} />
@@ -77,16 +103,31 @@ export default function WatchProviders({ title, year, mediaType, tmdbId, genres 
           borderRadius: 10,
           border: "0.5px solid rgba(255,255,255,0.06)",
         }}>
-          Streaming availability not found.{" "}
-          <a
-            href={justWatchSearch}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#3185FC", textDecoration: "none" }}
-          >
-            Check JustWatch →
-          </a>
+          {region !== "US" ? (
+            <>
+              No streaming data for {regionLabel}.{" "}
+              <button
+                onClick={() => setRegion("US")}
+                style={{ color: "#3185FC", background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12 }}
+              >
+                Try US →
+              </button>
+            </>
+          ) : (
+            <>
+              Streaming availability not found.{" "}
+              <a
+                href={justWatchSearch}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#3185FC", textDecoration: "none" }}
+              >
+                Check JustWatch →
+              </a>
+            </>
+          )}
         </div>
+        <RegionFooter region={region} regionLabel={regionLabel} sectionLink={sectionLink} onRegionChange={handleRegionChange} />
       </section>
     );
   }
@@ -111,52 +152,6 @@ export default function WatchProviders({ title, year, mediaType, tmdbId, genres 
             {streaming.map((p) => (
               <ProviderPill key={p.name} provider={p} href={sectionLink} />
             ))}
-            {showCrunchyroll && (
-              <FallbackPill
-                label="Crunchyroll"
-                href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(title)}`}
-                bg="#F47521"
-              />
-            )}
-            {showHidive && (
-              <FallbackPill
-                label="HiDive"
-                href={`https://www.hidive.com/search?q=${encodeURIComponent(title)}`}
-                bg="#00BAFF"
-              />
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Anime fallbacks when no stream providers at all */}
-      {streaming.length === 0 && (showCrunchyroll || showHidive) && (
-        <div style={{ marginBottom: rentBuy.length > 0 ? 14 : 0 }}>
-          <div style={{
-            fontSize: 9,
-            color: "rgba(255,255,255,0.3)",
-            textTransform: "uppercase",
-            letterSpacing: 1,
-            fontWeight: 600,
-            marginBottom: 8,
-          }}>
-            Stream
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {showCrunchyroll && (
-              <FallbackPill
-                label="Crunchyroll"
-                href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(title)}`}
-                bg="#F47521"
-              />
-            )}
-            {showHidive && (
-              <FallbackPill
-                label="HiDive"
-                href={`https://www.hidive.com/search?q=${encodeURIComponent(title)}`}
-                bg="#00BAFF"
-              />
-            )}
           </div>
         </div>
       )}
@@ -181,20 +176,55 @@ export default function WatchProviders({ title, year, mediaType, tmdbId, genres 
         </div>
       )}
 
-      <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.2)" }}>
-          Availability may vary by region ·{" "}
-          <a
-            href={sectionLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none" }}
-          >
-            All options on JustWatch →
-          </a>
-        </span>
-      </div>
+      <RegionFooter region={region} regionLabel={regionLabel} sectionLink={sectionLink} onRegionChange={handleRegionChange} />
     </section>
+  );
+}
+
+function RegionFooter({
+  region,
+  regionLabel,
+  sectionLink,
+  onRegionChange,
+}: {
+  region: string;
+  regionLabel: string;
+  sectionLink: string;
+  onRegionChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}) {
+  return (
+    <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>Region:</span>
+      <select
+        value={region}
+        onChange={onRegionChange}
+        style={{
+          fontSize: 10,
+          color: "rgba(255,255,255,0.6)",
+          background: "rgba(255,255,255,0.06)",
+          border: "0.5px solid rgba(255,255,255,0.14)",
+          borderRadius: 4,
+          padding: "2px 6px",
+          cursor: "pointer",
+          outline: "none",
+        }}
+      >
+        {REGIONS.map((r) => (
+          <option key={r.code} value={r.code} style={{ background: "#1a1a1a" }}>
+            {r.label}
+          </option>
+        ))}
+      </select>
+      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.15)" }}>·</span>
+      <a
+        href={sectionLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", textDecoration: "none" }}
+      >
+        All options on JustWatch →
+      </a>
+    </div>
   );
 }
 
@@ -243,37 +273,6 @@ function ProviderPill({ provider, href }: { provider: ProviderData; href: string
   );
 }
 
-function FallbackPill({ label, href, bg }: { label: string; href: string; bg: string }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "7px 14px",
-        background: bg,
-        borderRadius: 10,
-        transition: "transform 0.15s, box-shadow 0.15s",
-        cursor: "pointer",
-        textDecoration: "none",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-        (e.currentTarget as HTMLElement).style.boxShadow = `0 6px 20px ${bg}66`;
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.transform = "";
-        (e.currentTarget as HTMLElement).style.boxShadow = "";
-      }}
-    >
-      <span style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>{label}</span>
-      <span style={{ fontSize: 9, color: "rgba(255,255,255,0.5)" }}>↗</span>
-    </a>
-  );
-}
 
 function SectionHeading({ mediaType }: { mediaType: "movie" | "tv" }) {
   return (

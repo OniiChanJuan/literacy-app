@@ -25,6 +25,7 @@ interface LinkMeta {
   tmdbId?: number | null;
   igdbId?: number | null;
   googleBooksId?: string | null;
+  isbn?: string | null;
   malId?: number | null;
   comicVineId?: number | null;
   steamAppId?: number | null;
@@ -82,7 +83,9 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
   kindle: {
     label: "Kindle",
     category: "buy",
-    buildUrl: (m) => `https://www.amazon.com/s?k=${searchQuery(m.title)}&i=digital-text`,
+    buildUrl: (m) => m.isbn
+      ? `https://www.amazon.com/s?k=${m.isbn}&i=digital-text`
+      : `https://www.amazon.com/s?k=${searchQuery(m.title)}&i=digital-text`,
     affiliateParam: "tag",
   },
   audible: {
@@ -100,7 +103,9 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
     category: "buy",
     buildUrl: (m) => m.googleBooksId
       ? `https://books.google.com/books?id=${m.googleBooksId}`
-      : `https://books.google.com/books?q=${searchQuery(m.title)}`,
+      : m.isbn
+        ? `https://books.google.com/books?q=isbn:${m.isbn}`
+        : `https://books.google.com/books?q=${searchQuery(m.title)}`,
   },
 
   bookshop: {
@@ -116,7 +121,9 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
   amazon_books: {
     label: "Amazon",
     category: "buy",
-    buildUrl: (m) => `https://www.amazon.com/s?k=${searchQuery(m.title)}&i=stripbooks`,
+    buildUrl: (m) => m.isbn
+      ? `https://www.amazon.com/s?k=${m.isbn}&i=stripbooks`
+      : `https://www.amazon.com/s?k=${searchQuery(m.title)}&i=stripbooks`,
     affiliateParam: "tag",
   },
 
@@ -185,7 +192,9 @@ export const PLATFORM_DEFS: Record<string, PlatformLinkDef> = {
     label: "Spotify",
     category: "stream",
     buildUrl: (m) => m.spotifyId
-      ? `https://open.spotify.com/album/${m.spotifyId}`
+      ? m.type === "podcast"
+        ? `https://open.spotify.com/show/${m.spotifyId}`
+        : `https://open.spotify.com/album/${m.spotifyId}`
       : `https://open.spotify.com/search/${searchQuery(m.title)}`,
   },
   apple_music: {

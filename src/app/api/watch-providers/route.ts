@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "@/lib/validation";
+import { prisma } from "@/lib/prisma";
 
 const API_KEY = process.env.TMDB_API_KEY || "";
 const BASE = "https://api.themoviedb.org/3";
 const IMG = "https://image.tmdb.org/t/p/original";
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 interface Provider {
   provider_name: string;
@@ -11,8 +13,8 @@ interface Provider {
   provider_id: number;
 }
 
-// GET /api/watch-providers?title=...&year=...&type=movie|tv
-// Or: /api/watch-providers?tmdbId=...&type=movie|tv
+// GET /api/watch-providers?title=...&year=...&type=movie|tv&region=US&itemId=...
+// Or: /api/watch-providers?tmdbId=...&type=movie|tv&region=US&itemId=...
 export async function GET(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for") || "unknown";
   if (!rateLimit(`watch-providers:${ip}`, 120, 60_000)) {
@@ -24,9 +26,35 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "type must be movie or tv" }, { status: 400 });
   }
 
+  const region = (req.nextUrl.searchParams.get("region") || "US").toUpperCase();
+  const itemIdParam = req.nextUrl.searchParams.get("itemId");
+  const numericItemId = itemIdParam ? parseInt(itemIdParam) : null;
+
   let tmdbId = req.nextUrl.searchParams.get("tmdbId");
 
-  // If no tmdbId provided, search by title+year
+  // ── Check DB cache first ─────────────────────────────────────────
+  let existingCache: Record<string, any> = {};
+  if (numericItemId && !isNaN(numericItemId)) {
+    const dbItem = await prisma.item.findUnique({
+      where: { id: numericItemId },
+      select: { watchProviders: true },
+    }).catch(() => null);
+
+    existingCache = (dbItem?.watchProviders as Record<string, any>) || {};
+    const regionCache = existingCache[region];
+
+    if (regionCache?.fetchedAt) {
+      const age = Date.now() - new Date(regionCache.fetchedAt).getTime();
+      if (age < CACHE_TTL_MS) {
+        return NextResponse.json({
+          providers: regionCache.providers || [],
+          link: regionCache.link || null,
+        });
+      }
+    }
+  }
+
+  // ── Resolve tmdbId if not provided ──────────────────────────────
   if (!tmdbId) {
     const title = req.nextUrl.searchParams.get("title");
     const year = req.nextUrl.searchParams.get("year");
@@ -42,40 +70,66 @@ export async function GET(req: NextRequest) {
     tmdbId = String(searchData.results[0].id);
   }
 
-  // Fetch watch providers
+  // ── Fetch watch providers from TMDB ──────────────────────────────
   const wpUrl = `${BASE}/${type}/${tmdbId}/watch/providers?api_key=${API_KEY}`;
   const wpRes = await fetch(wpUrl);
   if (!wpRes.ok) return NextResponse.json({ providers: [] });
   const wpData = await wpRes.json();
 
-  const us = wpData.results?.US;
-  if (!us) return NextResponse.json({ providers: [] });
+  const regionData = wpData.results?.[region];
+  if (!regionData) {
+    // Cache the empty result too so we don't keep hammering TMDB
+    if (numericItemId && !isNaN(numericItemId)) {
+      prisma.item.update({
+        where: { id: numericItemId },
+        data: {
+          watchProviders: {
+            ...existingCache,
+            [region]: { providers: [], link: null, fetchedAt: new Date().toISOString() },
+          },
+        },
+      }).catch(() => {});
+    }
+    return NextResponse.json({ providers: [] });
+  }
 
-  // Combine flatrate (streaming), rent, and buy — deduplicate by provider_id
+  // ── Build providers list ─────────────────────────────────────────
   const seen = new Set<number>();
   const providers: { name: string; logo: string; type: "stream" | "rent" | "buy" }[] = [];
 
-  for (const p of (us.flatrate || []) as Provider[]) {
+  for (const p of (regionData.flatrate || []) as Provider[]) {
     if (!seen.has(p.provider_id)) {
       seen.add(p.provider_id);
       providers.push({ name: p.provider_name, logo: `${IMG}${p.logo_path}`, type: "stream" });
     }
   }
-  for (const p of (us.rent || []) as Provider[]) {
+  for (const p of (regionData.rent || []) as Provider[]) {
     if (!seen.has(p.provider_id)) {
       seen.add(p.provider_id);
       providers.push({ name: p.provider_name, logo: `${IMG}${p.logo_path}`, type: "rent" });
     }
   }
-  for (const p of (us.buy || []).slice(0, 4) as Provider[]) {
+  for (const p of (regionData.buy || []).slice(0, 4) as Provider[]) {
     if (!seen.has(p.provider_id)) {
       seen.add(p.provider_id);
       providers.push({ name: p.provider_name, logo: `${IMG}${p.logo_path}`, type: "buy" });
     }
   }
 
-  return NextResponse.json({
-    providers,
-    link: us.link || null, // TMDB JustWatch link
-  });
+  const link = regionData.link || null;
+
+  // ── Update DB cache (fire-and-forget) ───────────────────────────
+  if (numericItemId && !isNaN(numericItemId)) {
+    prisma.item.update({
+      where: { id: numericItemId },
+      data: {
+        watchProviders: {
+          ...existingCache,
+          [region]: { providers, link, fetchedAt: new Date().toISOString() },
+        },
+      },
+    }).catch(() => {});
+  }
+
+  return NextResponse.json({ providers, link });
 }

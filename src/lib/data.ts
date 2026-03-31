@@ -30,6 +30,7 @@ export interface Item {
   ext: Partial<Record<ExternalSource, number>>;
   totalEp: number;
   voteCount?: number;
+  tmdbId?: number;
 }
 
 export const TYPES: Record<MediaType, { label: string; icon: string; color: string }> = {

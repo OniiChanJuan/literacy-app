@@ -88,6 +88,7 @@ function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null; secon
     platforms: (dbItem.platforms as any[] | null) ?? [],
     ext: (dbItem.ext as Record<string, number> | null) ?? {},
     totalEp: dbItem.totalEp ?? 0,
+    tmdbId: dbItem.tmdbId ?? undefined,
     primaryColor: dbItem.primaryColor || null,
     secondaryColor: dbItem.secondaryColor || null,
     itemTags: dbItem.itemTags || null,

@@ -24,7 +24,8 @@ export default function WhereTo({ item }: WhereToProps) {
         title={title}
         year={year}
         mediaType={type}
-        genres={genre}
+        tmdbId={item.tmdbId}
+        itemId={item.id}
       />
     );
   }

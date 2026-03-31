@@ -130,6 +130,7 @@ model Item {
   malId           Int?     @map("mal_id")
   spotifyId       String?  @map("spotify_id")
   googleBooksId   String?  @map("google_books_id")
+  isbn            String?  @map("isbn")
   comicVineId     Int?     @map("comic_vine_id")
   steamAppId      Int?     @map("steam_app_id")
   popularityScore Float    @default(0) @map("popularity_score")
@@ -142,6 +143,7 @@ model Item {
   secondaryColor  String?  @map("secondary_color")
   itemDimensions  Json?    @map("item_dimensions")
   platformLinks   Json?    @map("platform_links")
+  watchProviders  Json?    @map("watch_providers")
   itemTags        Json?    @map("item_tags")
 
   createdAt       DateTime @default(now()) @map("created_at")
