@@ -9,7 +9,7 @@ const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
   year: true, cover: true, description: true, people: true,
   awards: true, platforms: true, ext: true, totalEp: true,
-  popularityScore: true, voteCount: true, itemDimensions: true,
+  popularityScore: true, voteCount: true, itemDimensions: true, malId: true,
 } as const;
 
 /**
@@ -272,5 +272,6 @@ function mapItem(item: any) {
     awards: item.awards || [], platforms: item.platforms || [],
     ext: item.ext || {}, totalEp: item.totalEp || 0,
     voteCount: item.voteCount || 0,
+    malId: item.malId ?? null,
   };
 }

@@ -39,6 +39,7 @@ export interface Item {
   totalEp: number;
   voteCount?: number;
   tmdbId?: number;
+  malId?: number | null;
   slug?: string | null;
   itemTags?: any;
   isUpcoming?: boolean;
