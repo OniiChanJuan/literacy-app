@@ -33,7 +33,21 @@ async function findItems(patterns: string[], type?: string): Promise<{ id: numbe
     });
     for (const item of items) {
       if (!results.find(r => r.id === item.id)) {
-        results.push(item);
+        // Word-boundary filter: the pattern must be a standalone word or prefix in the title,
+        // or occupy >40% of the title length. Prevents "IT" from matching "Polity", "Witcher",
+        // "Thor" from matching "Author"/"Authority", "Persona" from matching "Personal", etc.
+        const t = item.title.toLowerCase();
+        const s = pattern.toLowerCase();
+        const isWordMatch =
+          t === s ||
+          t.startsWith(s + " ") || t.startsWith(s + ":") || t.startsWith(s + "-") ||
+          t.includes(" " + s + " ") || t.includes(" " + s + ":") ||
+          t.includes(" " + s + ",") || t.includes(" " + s + "'") ||
+          t.endsWith(" " + s) ||
+          s.length / t.length > 0.4;
+        if (isWordMatch) {
+          results.push(item);
+        }
       }
     }
   }
@@ -396,11 +410,16 @@ async function main() {
     if (items.length > 0) { await linkItems(dtId, items.map(i => i.id)); await linkItems(skId, items.map(i => i.id)); }
   }
 
-  // Connected King works
+  // Connected King works — type:"book" prevents "IT" matching every title containing "it"
   for (const title of ["IT", "The Stand", "Salem's Lot", "Insomnia", "11/22/63", "The Mist", "Needful Things"]) {
-    const items = await findItems([title]);
+    const items = await findItems([title], "book");
     if (items.length > 0) await linkItems(skId, items.map(i => i.id));
   }
+  // Also link The Shining movie and IT movie/miniseries
+  const kingMovies = await findItems(["The Shining", "IT Chapter", "Salem's Lot"], "movie");
+  if (kingMovies.length > 0) await linkItems(skId, kingMovies.map(i => i.id));
+  const kingTv = await findItems(["IT miniseries", "Stephen King"], "tv");
+  if (kingTv.length > 0) await linkItems(skId, kingTv.map(i => i.id));
 
   // === NASUVERSE ===
   console.log("\n⚔ Nasuverse");
@@ -448,9 +467,9 @@ async function main() {
   const discId = await findOrCreateFranchise("Discworld", "🐢");
   parentUniversesCreated++;
 
-  // Link existing children
+  // Link existing children — use exact match to avoid "Death" matching "Death Note", etc.
   for (const name of ["City Watch", "Witches", "Death", "Rincewind", "Moist von Lipwig", "Tiffany Aching"]) {
-    const f = await prisma.franchise.findFirst({ where: { name: { contains: name, mode: "insensitive" } } });
+    const f = await prisma.franchise.findFirst({ where: { name: { equals: name, mode: "insensitive" } } });
     if (f && !f.parentFranchiseId) {
       await prisma.franchise.update({ where: { id: f.id }, data: { parentFranchiseId: discId } });
       subFranchisesLinked++;
@@ -668,7 +687,8 @@ async function main() {
       .replace(/^The /i, "")
       .replace(/: .*$/, ""); // Get base name
 
-    if (searchName.length < 4) continue;
+    // Require minimum 6 chars to avoid common-word false matches (Thor→Author, IT→Polity, etc.)
+    if (searchName.length < 6) continue;
 
     const matchingItems = await prisma.item.findMany({
       where: {
@@ -680,7 +700,19 @@ async function main() {
     });
 
     const existingIds = new Set(f.items.map(fi => fi.itemId));
-    const newItems = matchingItems.filter(i => !existingIds.has(i.id));
+    // Apply word-boundary filter before counting
+    const newItems = matchingItems.filter(i => {
+      if (existingIds.has(i.id)) return false;
+      const t = i.title.toLowerCase();
+      const s = searchName.toLowerCase();
+      return (
+        t === s ||
+        t.startsWith(s + " ") || t.startsWith(s + ":") || t.startsWith(s + "-") ||
+        t.includes(" " + s + " ") || t.includes(" " + s + ":") ||
+        t.includes(" " + s + ",") || t.endsWith(" " + s) ||
+        s.length / t.length > 0.4
+      );
+    });
 
     if (newItems.length > 0 && newItems.length <= 20) {
       // Only auto-link if reasonable number (avoid noise)
