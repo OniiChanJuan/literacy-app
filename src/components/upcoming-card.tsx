@@ -3,7 +3,7 @@
 import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { TYPES, type UpcomingItem } from "@/lib/data";
+import { TYPES, hexToRgba, type UpcomingItem } from "@/lib/data";
 import { getItemUrl } from "@/lib/slugs";
 import { useLibrary } from "@/lib/library-context";
 
@@ -102,11 +102,10 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
           position: "absolute",
           top: 6,
           left: 6,
-          background: "rgba(0,0,0,0.85)",
-          backdropFilter: "blur(8px)",
-          color: t.color,
+          background: hexToRgba(t.color, 0.85),
+          color: "#fff",
           fontSize: 8,
-          fontWeight: 700,
+          fontWeight: 500,
           padding: "2px 6px",
           borderRadius: 6,
           textTransform: "uppercase",

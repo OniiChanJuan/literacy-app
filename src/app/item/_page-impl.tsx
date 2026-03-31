@@ -5,7 +5,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { TYPES, VIBES, type Item, type MediaType, type Person } from "@/lib/data";
+import { TYPES, VIBES, hexToRgba, type Item, type MediaType, type Person } from "@/lib/data";
 import { ExpandableText } from "@/components/expandable-text";
 import BackButton from "@/components/back-button";
 import CommunityReviews from "@/components/community-reviews";
@@ -256,7 +256,7 @@ export function ItemPageRender({
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
                 display: "inline-flex", alignItems: "center",
-                background: t.color, color: "#fff", fontSize: 9, fontWeight: 500,
+                background: hexToRgba(t.color, 0.85), color: "#fff", fontSize: 9, fontWeight: 500,
                 padding: "2px 8px", borderRadius: 8, marginBottom: 6,
               }}>
                 {t.label.replace(/s$/, "")}

@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { TYPES } from "@/lib/data";
+import { TYPES, hexToRgba } from "@/lib/data";
 
 interface FranchiseItemData {
   id: number;
@@ -275,7 +275,7 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
         {/* Type badge — top-left */}
         <div style={{
           position: "absolute", top: 3, left: 3,
-          background: "rgba(0,0,0,0.85)", color: t.color,
+          background: hexToRgba(t.color, 0.85), color: "#fff",
           fontSize: 7, fontWeight: 500, padding: "1px 5px", borderRadius: 4,
           display: "flex", alignItems: "center", gap: 2,
           lineHeight: 1.4,

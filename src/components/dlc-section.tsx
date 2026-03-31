@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { hexToRgba } from "@/lib/data";
 
 interface DlcItem {
   id: number;
@@ -146,8 +147,8 @@ export default function DlcSection({ dlcs, baseGameTitle, typeColor }: DlcSectio
                 {/* Subtype badge */}
                 <div style={{
                   position: "absolute", top: 4, left: 4,
-                  background: "rgba(0,0,0,0.85)",
-                  color: subtypeColor,
+                  background: hexToRgba(subtypeColor, 0.85),
+                  color: "#fff",
                   fontSize: 7, fontWeight: 500,
                   padding: "1px 5px", borderRadius: 4,
                 }}>

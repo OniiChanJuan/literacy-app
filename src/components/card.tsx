@@ -3,7 +3,7 @@
 import { memo, useCallback, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Item, TYPES } from "@/lib/data";
+import { Item, TYPES, hexToRgba } from "@/lib/data";
 import { getItemUrl } from "@/lib/slugs";
 import { useRatings } from "@/lib/ratings-context";
 import { scorePassesThreshold } from "@/lib/score-thresholds";
@@ -174,12 +174,11 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           gap: 3,
         }}>
           <div style={{
-            background: "rgba(0,0,0,0.85)",
-            backdropFilter: "blur(4px)",
-            color: t.color,
-            fontSize: 10,
-            fontWeight: 700,
-            padding: "1px 5px",
+            background: hexToRgba(t.color, 0.85),
+            color: "#fff",
+            fontSize: 8,
+            fontWeight: 500,
+            padding: "2px 6px",
             borderRadius: 4,
             textTransform: "uppercase",
           }}>

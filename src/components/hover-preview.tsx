@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Item, TYPES, VIBES } from "@/lib/data";
+import { Item, TYPES, VIBES, hexToRgba } from "@/lib/data";
 
 interface HoverPreviewProps {
   item: Item;
@@ -61,10 +61,10 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
           {/* Type + Year */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <span style={{
-              background: t.color,
+              background: hexToRgba(t.color, 0.85),
               color: "#fff",
               fontSize: 9,
-              fontWeight: 700,
+              fontWeight: 500,
               padding: "2px 8px",
               borderRadius: 5,
               textTransform: "uppercase",
