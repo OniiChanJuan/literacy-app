@@ -393,8 +393,9 @@ async function fetchJikanPage(path: string): Promise<any[]> {
 
 function jikanMangaToItem(m: any): SeedItem | null {
   if (!m.title) return null;
-  const cover = m.images?.jpg?.large_image_url || m.images?.jpg?.image_url;
-  if (!cover) return null;
+  const rawCover = m.images?.jpg?.large_image_url || m.images?.jpg?.image_url;
+  if (!rawCover) return null;
+  const cover = rawCover.replace('https://myanimelist.net/', 'https://cdn.myanimelist.net/');
 
   const year = m.published?.from ? new Date(m.published.from).getFullYear() : 0;
   const genres = [
@@ -420,8 +421,9 @@ function jikanMangaToItem(m: any): SeedItem | null {
 
 function jikanAnimeToItem(a: any): SeedItem | null {
   if (!a.title) return null;
-  const cover = a.images?.jpg?.large_image_url || a.images?.jpg?.image_url;
-  if (!cover) return null;
+  const rawCover = a.images?.jpg?.large_image_url || a.images?.jpg?.image_url;
+  if (!rawCover) return null;
+  const cover = rawCover.replace('https://myanimelist.net/', 'https://cdn.myanimelist.net/');
 
   const year = a.aired?.from ? new Date(a.aired.from).getFullYear() : 0;
   const genres = [

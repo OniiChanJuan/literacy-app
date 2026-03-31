@@ -278,7 +278,8 @@ async function main() {
             if (alreadyExists(title, "tv")) continue;
             if (a.score < 6) continue;
 
-            const cover = a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || "";
+            const rawCoverA = a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || "";
+            const cover = rawCoverA.replace('https://myanimelist.net/', 'https://cdn.myanimelist.net/');
             const year = a.aired?.from ? new Date(a.aired.from).getFullYear() : a.year || 0;
             if (!year) continue;
 
@@ -335,7 +336,8 @@ async function main() {
             if (alreadyExists(title, "manga")) continue;
             if (m.score < 6) continue;
 
-            const cover = m.images?.jpg?.large_image_url || m.images?.jpg?.image_url || "";
+            const rawCoverM = m.images?.jpg?.large_image_url || m.images?.jpg?.image_url || "";
+            const cover = rawCoverM.replace('https://myanimelist.net/', 'https://cdn.myanimelist.net/');
             const year = m.published?.from ? new Date(m.published.from).getFullYear() : 0;
             if (!year) continue;
 

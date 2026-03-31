@@ -775,8 +775,10 @@ async function populateOpenLibrary(prisma: PrismaClient): Promise<void> {
 // ── Jikan ────────────────────────────────────────────────────────────────────
 function jikanToItem(r: any, type: "tv" | "manga"): CatalogItem | null {
   if (!r.title) return null;
-  const cover = r.images?.jpg?.large_image_url || r.images?.jpg?.image_url;
-  if (!cover) return null;
+  const rawCover = r.images?.jpg?.large_image_url || r.images?.jpg?.image_url;
+  if (!rawCover) return null;
+  // MAL main domain blocks browser hotlinking — always use cdn subdomain
+  const cover = rawCover.replace('https://myanimelist.net/', 'https://cdn.myanimelist.net/');
 
   const dateStr = type === "tv" ? r.aired?.from : r.published?.from;
   const year = dateStr ? new Date(dateStr).getFullYear() : 0;
