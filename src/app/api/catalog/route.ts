@@ -168,7 +168,7 @@ export async function GET(req: NextRequest) {
                        : type && ["podcast", "comic"].includes(type) ? 1
                        : 10;
       const items = await prisma.item.findMany({
-        where: { ...where, year: { gte: currentYear - 1 }, voteCount: { gte: popVoteMin } },
+        where: { ...where, year: { gte: currentYear - 2 }, voteCount: { gte: popVoteMin } },
         orderBy: { popularityScore: "desc" },
         take: poolSize,
         select: ITEM_SELECT,
@@ -197,7 +197,7 @@ export async function GET(req: NextRequest) {
 
       // Enforce max 30% per type for diversity
       const popTypeCounts = new Map<string, number>();
-      const popMaxPerType = Math.ceil(limit * 0.3);
+      const popMaxPerType = Math.ceil(limit * 0.45);
       const popDiverse = scored.filter((i) => {
         const c = popTypeCounts.get(i.type) || 0;
         if (c >= popMaxPerType) return false;
@@ -339,11 +339,11 @@ export async function GET(req: NextRequest) {
 
       // Cross-media view
       const gemTypes: Array<{ t: string; quota: number }> = [
-        { t: "movie",  quota: 6 },
-        { t: "tv",     quota: 6 },
-        { t: "game",   quota: 5 },
-        { t: "manga",  quota: 5 },
-        { t: "book",   quota: 5 },
+        { t: "movie",  quota: 9 },
+        { t: "tv",     quota: 9 },
+        { t: "game",   quota: 7 },
+        { t: "manga",  quota: 7 },
+        { t: "book",   quota: 7 },
       ];
 
       // Fetch all pools once at the relaxed threshold floor

@@ -135,30 +135,34 @@ export async function GET(req: NextRequest) {
     // ─── Section-based paginated response ───
     if (section === "personalPicks") {
       // Best taste matches across all types — max 4 per type to guarantee 5+ different media types in the row
+      const fetchTarget = offset + limit + 1;
       const personalPicks: any[] = [];
       const typeCountsPP: Record<string, number> = {};
-      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.20), 4);
+      const maxPerType = Math.max(Math.ceil(fetchTarget * 0.20), 4);
 
       for (const s of scored) {
         const tc = typeCountsPP[s.item.type] || 0;
         if (tc >= maxPerType) continue;
         typeCountsPP[s.item.type] = tc + 1;
         personalPicks.push(s.item);
-        if (personalPicks.length >= offset + limit) break;
+        if (personalPicks.length >= fetchTarget) break;
       }
 
+      const hasMore = personalPicks.length > offset + limit;
       const page = interleaveByType(personalPicks.slice(offset, offset + limit)).map(mapItem);
       const res = NextResponse.json(page);
       res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
+      res.headers.set("X-Has-More", hasMore ? "1" : "0");
       return res;
     }
 
     if (section === "discoverAcrossMedia") {
       const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
-      // Collect from underexplored types, then fill with cross-type matches
+      // Collect one extra item beyond the page to detect hasMore
+      const fetchTarget = offset + limit + 1;
       const allDiscover: any[] = [];
       const typeCountsDAM: Record<string, number> = {};
-      const maxPerType = Math.max(Math.ceil((offset + limit) * 0.25), 6);
+      const maxPerType = Math.max(Math.ceil(fetchTarget * 0.25), 6);
 
       // First pass: truly unexplored types
       for (const s of scored) {
@@ -168,11 +172,11 @@ export async function GET(req: NextRequest) {
         if (tc >= maxPerType) continue;
         typeCountsDAM[s.item.type] = tc + 1;
         allDiscover.push(s.item);
-        if (allDiscover.length >= offset + limit) break;
+        if (allDiscover.length >= fetchTarget) break;
       }
 
       // Fill with cross-type high matches if not enough
-      if (allDiscover.length < offset + limit) {
+      if (allDiscover.length < fetchTarget) {
         const usedIds = new Set(allDiscover.map((i: any) => i.id));
         for (const s of scored) {
           if (usedIds.has(s.item.id)) continue;
@@ -182,13 +186,15 @@ export async function GET(req: NextRequest) {
           typeCountsDAM[s.item.type] = tc + 1;
           allDiscover.push(s.item);
           usedIds.add(s.item.id);
-          if (allDiscover.length >= offset + limit) break;
+          if (allDiscover.length >= fetchTarget) break;
         }
       }
 
+      const hasMore = allDiscover.length > offset + limit;
       const page = interleaveByType(allDiscover).slice(offset, offset + limit).map(mapItem);
       const res = NextResponse.json(page);
       res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
+      res.headers.set("X-Has-More", hasMore ? "1" : "0");
       return res;
     }
 
