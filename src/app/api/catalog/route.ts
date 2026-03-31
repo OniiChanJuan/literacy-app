@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
 import { qualityRank, meetsQualityFloor, normalizeScore, applyDiversity, interleaveByType } from "@/lib/ranking";
+import { isAnime } from "@/lib/anime";
 
 function filterAnime(items: any[]): any[] {
-  return items.filter((i) => {
-    const ext = i.ext as Record<string, any> | null;
-    return (ext && ext.mal != null) || (i.genre || []).includes("Anime");
-  });
+  return items.filter((i) => isAnime(i));
 }
 
 const ITEM_SELECT = {
@@ -124,10 +122,7 @@ export async function GET(req: NextRequest) {
           .filter(i => normalizeScore(i.ext as any, i.type, i.voteCount || 0) >= 0.80)
           .map(i => ({ ...i, rank: qualityRank({ ext: i.ext as any, type: i.type, year: i.year, voteCount: i.voteCount || 0 }) }))
           .sort((a, b) => b.rank - a.rank);
-        if (isAnimeFilter) ranked = ranked.filter((i: any) => {
-          const ext = i.ext as Record<string, any> | null;
-          return (ext && ext.mal != null) || ((i.genre || []).includes("Anime"));
-        });
+        if (isAnimeFilter) ranked = ranked.filter((i: any) => isAnime(i));
         const page = ranked.slice(offset, offset + limit);
         const hasMore = ranked.length > offset + limit;
         return jsonResponse(page.map(mapItem), hasMore);
@@ -412,10 +407,7 @@ export async function GET(req: NextRequest) {
       ranked.sort((a, b) => b.rank - a.rank);
     }
 
-    if (isAnimeFilter) ranked = ranked.filter((i: any) => {
-      const ext = i.ext as Record<string, any> | null;
-      return (ext && ext.mal != null) || ((i.genre || []).includes("Anime"));
-    });
+    if (isAnimeFilter) ranked = ranked.filter((i: any) => isAnime(i));
 
     const page = ranked.slice(offset, offset + limit);
     const hasMore = ranked.length > offset + limit;
