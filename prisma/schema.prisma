@@ -271,21 +271,27 @@ model Review {
   id               Int      @id @default(autoincrement())
   userId           String   @map("user_id")
   itemId           Int      @map("item_id")
+  parentId         Int?     @map("parent_id")
+  depth            Int      @default(0)
   text             String
   containsSpoilers Boolean  @default(false) @map("contains_spoilers")
   helpfulCount     Int      @default(0) @map("helpful_count")
+  voteScore        Int      @default(0) @map("vote_score")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
 
   user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   item         Item               @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  parent       Review?            @relation("ReviewReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies      Review[]           @relation("ReviewReplies")
   helpfulVotes ReviewHelpfulVote[]
   reports      Report[]
 
-  @@unique([userId, itemId])
+  // No @@unique([userId, itemId]) — replies allow multiple rows per user+item
   @@index([itemId])
   @@index([userId])
-  @@index([itemId, helpfulCount, createdAt])
+  @@index([parentId])
+  @@index([itemId, voteScore, createdAt])
   @@index([itemId, createdAt])
   @@map("reviews")
 }
@@ -293,6 +299,7 @@ model Review {
 model ReviewHelpfulVote {
   userId    String   @map("user_id")
   reviewId  Int      @map("review_id")
+  voteType  String   @default("up") @map("vote_type")
   createdAt DateTime @default(now()) @map("created_at")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

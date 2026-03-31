@@ -485,8 +485,8 @@ export async function POST(req: NextRequest) {
 
           // ── Review ───────────────────────────────────────────────
           if (item.review) {
-            const existingReview = await prisma.review.findUnique({
-              where: { userId_itemId: { userId, itemId } },
+            const existingReview = await prisma.review.findFirst({
+              where: { userId, itemId, parentId: null },
             });
 
             if (!existingReview) {

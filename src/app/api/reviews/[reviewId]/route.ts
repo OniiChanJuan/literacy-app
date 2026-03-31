@@ -55,6 +55,7 @@ export async function PUT(
       data: {
         text: textResult.value,
         containsSpoilers: containsSpoilers !== undefined ? !!containsSpoilers : review.containsSpoilers,
+        updatedAt: new Date(),
       },
       include: {
         user: { select: { id: true, name: true, image: true, avatar: true } },
@@ -69,6 +70,8 @@ export async function PUT(
     return NextResponse.json({
       id: updated.id,
       userId: updated.userId,
+      parentId: updated.parentId,
+      depth: updated.depth,
       userName: updated.user.name || "Anonymous",
       userAvatar: updated.user.image || updated.user.avatar || "",
       score: rating?.score ?? 0,
@@ -76,10 +79,13 @@ export async function PUT(
       text: updated.text,
       containsSpoilers: updated.containsSpoilers,
       helpfulCount: updated.helpfulCount,
+      voteScore: updated.voteScore,
+      myVote: null,
       votedHelpful: false,
       isAuthor: true,
       createdAt: updated.createdAt.toISOString(),
       updatedAt: updated.updatedAt.toISOString(),
+      replies: [],
     });
   } catch (e) {
     console.error("PUT /api/reviews/[reviewId] error:", e);
