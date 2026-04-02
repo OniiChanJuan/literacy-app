@@ -8,6 +8,10 @@ import { useLibrary } from "@/lib/library-context";
 import UserMenu from "./user-menu";
 import GlobalSearch from "./global-search";
 
+function dispatchForYouRefresh() {
+  window.dispatchEvent(new CustomEvent("literacy:refresh-foryou"));
+}
+
 const tabs = [
   { id: "foryou",  label: "For You",  icon: "✦", href: "/" },
   { id: "explore", label: "Explore",  icon: "◎", href: "/explore" },
@@ -49,7 +53,11 @@ export default function Nav() {
       <div className="content-width" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 28, marginBottom: 26 }}>
 
         {/* Logo */}
-        <div>
+        <Link
+          href="/"
+          onClick={(e) => { if (pathname === "/") { e.preventDefault(); dispatchForYouRefresh(); } }}
+          style={{ textDecoration: "none", cursor: "pointer" }}
+        >
           <h1 className="nav-logo-text" style={{
             fontFamily: "'Playfair Display', serif",
             fontWeight: 900,
@@ -70,7 +78,7 @@ export default function Nav() {
           }}>
             Fluent in every medium
           </div>
-        </div>
+        </Link>
 
         {/* Right side: search + auth + hamburger */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -129,6 +137,7 @@ export default function Nav() {
               key={t.id}
               href={t.href}
               className="nav-tab-link"
+              onClick={(e) => { if (active && t.href === "/") { e.preventDefault(); dispatchForYouRefresh(); } }}
               style={{
                 background: "none",
                 border: "none",
@@ -210,7 +219,10 @@ export default function Nav() {
                 <Link
                   key={t.id}
                   href={t.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    setMobileMenuOpen(false);
+                    if (active && t.href === "/") { e.preventDefault(); dispatchForYouRefresh(); }
+                  }}
                   style={{
                     padding: "16px 24px",
                     fontSize: 15,
