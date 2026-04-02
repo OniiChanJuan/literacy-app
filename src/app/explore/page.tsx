@@ -12,6 +12,7 @@ import ScrollRow from "@/components/scroll-row";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
 import { getItemUrl } from "@/lib/slugs";
 import { isAnime } from "@/lib/anime";
+import { getRecentSearches, saveRecentSearch, removeRecentSearch, clearRecentSearches, type RecentSearch } from "@/lib/recent-searches";
 
 interface SearchResult extends Item { source: string; routeId: string; }
 
@@ -715,26 +716,80 @@ function ExploreContent() {
 // ── Sub-components ────────────────────────────────────────────────────────
 
 function SearchBar({ search, setSearch }: { search: string; setSearch: (s: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [focused, setFocused] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
+
+  // Load recents on focus
+  const handleFocus = useCallback(() => {
+    setRecentSearches(getRecentSearches());
+    setFocused(true);
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!focused) return;
+    function handler(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setFocused(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [focused]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && search.trim().length >= 2) {
+      saveRecentSearch(search.trim());
+      setFocused(false);
+    }
+    if (e.key === "Escape") {
+      setFocused(false);
+      inputRef.current?.blur();
+    }
+  }, [search]);
+
+  const handleRecentClick = useCallback((q: string) => {
+    setSearch(q);
+    saveRecentSearch(q);
+    setFocused(false);
+  }, [setSearch]);
+
+  const handleRemoveRecent = useCallback((q: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRecentSearches(removeRecentSearch(q));
+  }, []);
+
+  const handleClearAll = useCallback(() => {
+    clearRecentSearches();
+    setRecentSearches([]);
+  }, []);
+
+  const showRecent = focused && !search.trim() && recentSearches.length > 0;
+
   return (
-    <div style={{ position: "relative", marginBottom: 24 }}>
+    <div ref={containerRef} style={{ position: "relative", marginBottom: 24 }}>
       <input
+        ref={inputRef}
         type="text"
         placeholder="Search titles, genres, vibes, people..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        onFocus={handleFocus}
+        onKeyDown={handleKeyDown}
         style={{
           width: "100%", padding: "14px 18px 14px 42px",
           background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
           borderRadius: 14, color: "#fff", fontSize: 14, outline: "none",
           boxSizing: "border-box", transition: "border-color 0.2s",
+          borderColor: focused ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.08)",
         }}
-        onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)")}
-        onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
       />
-      <span style={{ position: "absolute", left: 15, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.3 }}>⌕</span>
+      <span style={{ position: "absolute", left: 15, top: "50%", transform: "translateY(-50%)", fontSize: 15, opacity: 0.3, pointerEvents: "none" }}>⌕</span>
       {search && (
         <button
-          onClick={() => setSearch("")}
+          onClick={() => { setSearch(""); inputRef.current?.focus(); }}
           style={{
             position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
             background: "none", border: "none", color: "rgba(255,255,255,0.3)", cursor: "pointer", fontSize: 14,
@@ -742,6 +797,68 @@ function SearchBar({ search, setSearch }: { search: string; setSearch: (s: strin
         >
           ✕
         </button>
+      )}
+
+      {/* Recent searches dropdown */}
+      {showRecent && (
+        <div style={{
+          position: "absolute",
+          top: "calc(100% + 4px)",
+          left: 0,
+          right: 0,
+          background: "#1a1a22",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 12,
+          boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
+          zIndex: 100,
+          overflow: "hidden",
+        }}>
+          {/* Header */}
+          <div style={{
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+            padding: "10px 14px 6px",
+          }}>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>
+              Recent searches
+            </span>
+            <button
+              onClick={handleClearAll}
+              style={{ background: "none", border: "none", fontSize: 11, color: "rgba(255,255,255,0.2)", cursor: "pointer", padding: "2px 4px" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
+            >
+              Clear all
+            </button>
+          </div>
+          {recentSearches.map((item) => (
+            <div
+              key={item.query}
+              onClick={() => handleRecentClick(item.query)}
+              style={{
+                display: "flex", alignItems: "center", gap: 10,
+                padding: "8px 14px", cursor: "pointer", transition: "background 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span style={{ flex: 1, fontSize: 13, color: "rgba(255,255,255,0.6)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {item.query}
+              </span>
+              <button
+                onClick={(e) => handleRemoveRecent(item.query, e)}
+                style={{ background: "none", border: "none", fontSize: 12, color: "rgba(255,255,255,0.15)", cursor: "pointer", padding: "2px 4px", flexShrink: 0, lineHeight: 1 }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.15)")}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

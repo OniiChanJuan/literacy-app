@@ -4,6 +4,13 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { TYPES, type MediaType } from "@/lib/data";
+import {
+  getRecentSearches,
+  saveRecentSearch,
+  removeRecentSearch,
+  clearRecentSearches,
+  type RecentSearch,
+} from "@/lib/recent-searches";
 
 interface SearchResult {
   id: number;
@@ -31,6 +38,7 @@ export default function GlobalSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GroupedResults | null>(null);
   const [loading, setLoading] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isExplore = pathname === "/explore";
@@ -63,9 +71,12 @@ export default function GlobalSearch() {
     return () => document.removeEventListener("keydown", handleKey);
   }, [open]);
 
-  // Focus input when opening
+  // Load recent searches when opening
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 50);
+    if (open) {
+      setRecentSearches(getRecentSearches());
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
   }, [open]);
 
   // Debounced search
@@ -84,15 +95,36 @@ export default function GlobalSearch() {
     return () => clearTimeout(t);
   }, [query]);
 
-  const handleSubmit = useCallback(() => {
-    if (!query.trim()) return;
+  const handleSubmit = useCallback((overrideQuery?: string) => {
+    const q = (overrideQuery ?? query).trim();
+    if (!q) return;
+    saveRecentSearch(q);
     setOpen(false);
-    router.push(`/explore?q=${encodeURIComponent(query.trim())}`);
+    if (!overrideQuery) setQuery("");
+    router.push(`/explore?q=${encodeURIComponent(q)}`);
   }, [query, router]);
 
-  const handleResultClick = useCallback(() => {
+  const handleResultClick = useCallback((clickedQuery?: string) => {
+    if (clickedQuery) saveRecentSearch(clickedQuery);
     setOpen(false);
     setQuery("");
+  }, []);
+
+  const handleRecentClick = useCallback((q: string) => {
+    setQuery(q);
+    saveRecentSearch(q);
+    setOpen(false);
+    router.push(`/explore?q=${encodeURIComponent(q)}`);
+  }, [router]);
+
+  const handleRemoveRecent = useCallback((q: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRecentSearches(removeRecentSearch(q));
+  }, []);
+
+  const handleClearAll = useCallback(() => {
+    clearRecentSearches();
+    setRecentSearches([]);
   }, []);
 
   // Max 3 results per type in dropdown
@@ -141,7 +173,7 @@ export default function GlobalSearch() {
             placeholder="Search everything..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") handleSubmit(); }}
+            onKeyDown={(e) => { if (e.key === "Enter") handleSubmit(); if (e.key === "Escape") setOpen(false); }}
             className="search-input-expanded"
             style={{
               width: 280,
@@ -186,6 +218,83 @@ export default function GlobalSearch() {
               ✕
             </button>
           )}
+        </div>
+      )}
+
+      {/* Recent searches dropdown — shown when focused, empty, has history */}
+      {open && !query.trim() && recentSearches.length > 0 && (
+        <div style={{
+          position: "absolute",
+          top: "calc(100% + 8px)",
+          right: 0,
+          width: 350,
+          background: "#1a1a22",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 12,
+          boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
+          zIndex: 100,
+          overflow: "hidden",
+        }}>
+          {/* Header */}
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "10px 14px 6px",
+          }}>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>
+              Recent searches
+            </span>
+            <button
+              onClick={handleClearAll}
+              style={{
+                background: "none", border: "none",
+                fontSize: 11, color: "rgba(255,255,255,0.2)",
+                cursor: "pointer", padding: "2px 4px",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
+            >
+              Clear all
+            </button>
+          </div>
+          {/* Items */}
+          {recentSearches.map((item) => (
+            <div
+              key={item.query}
+              onClick={() => handleRecentClick(item.query)}
+              style={{
+                display: "flex", alignItems: "center", gap: 10,
+                padding: "8px 14px", cursor: "pointer",
+                transition: "background 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
+              {/* Clock icon */}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              {/* Query text */}
+              <span style={{ flex: 1, fontSize: 13, color: "rgba(255,255,255,0.6)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {item.query}
+              </span>
+              {/* Remove button */}
+              <button
+                onClick={(e) => handleRemoveRecent(item.query, e)}
+                style={{
+                  background: "none", border: "none",
+                  fontSize: 12, color: "rgba(255,255,255,0.15)",
+                  cursor: "pointer", padding: "2px 4px", flexShrink: 0, lineHeight: 1,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.15)")}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
@@ -234,7 +343,7 @@ export default function GlobalSearch() {
           {results?.franchise && (
             <Link
               href={`/franchise/${results.franchise.id}`}
-              onClick={handleResultClick}
+              onClick={() => handleResultClick(query.trim())}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -274,7 +383,7 @@ export default function GlobalSearch() {
                 <Link
                   key={`${item.source}-${item.routeId || item.id}`}
                   href={item.routeId ? `/item/${item.routeId}` : (item.slug ? `/${item.type}/${item.slug}` : `/item/${item.id}`)}
-                  onClick={handleResultClick}
+                  onClick={() => handleResultClick(query.trim())}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -337,7 +446,7 @@ export default function GlobalSearch() {
           {/* See all results */}
           {results && results.totalResults > 0 && (
             <button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               style={{
                 display: "block",
                 width: "100%",
