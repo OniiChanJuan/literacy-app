@@ -399,12 +399,17 @@ const TASTE_TAG_EXPLORE_MAP: Record<string, string> = {
   "Popular Favorites":     "/explore?sort=popular",
 };
 
+// Popular fallback genres when user has no ratings
+const FALLBACK_GENRES = ["Drama", "Sci-Fi", "Fantasy", "Action", "Thriller", "Comedy", "Horror", "Mystery", "Romance", "Adventure"];
+
 function TasteFilterBar({
   tasteProfile,
+  topGenres,
   activeFilter,
   onFilterChange,
 }: {
   tasteProfile: TasteProfile | null;
+  topGenres: string[];
   activeFilter: FilterType | null;
   onFilterChange: (f: FilterType | null) => void;
 }) {
@@ -413,6 +418,13 @@ function TasteFilterBar({
   const ratingCount = Object.keys(ratings).length;
   const tags = tasteProfile ? getTasteTags(tasteProfile) : [];
   const profileHref = session?.user?.id ? `/user/${session.user.id}` : "/library";
+
+  // Genre pills: user's top genres, deduplicated against taste tags, fallback to popular
+  const tasteTagGenreNames = new Set(tags.map((t) => t.toLowerCase()));
+  const rawGenres = topGenres.length > 0 ? topGenres : FALLBACK_GENRES;
+  const genrePills = rawGenres
+    .filter((g) => !tasteTagGenreNames.has(g.toLowerCase()))
+    .slice(0, 10);
 
   return (
     <div style={{
@@ -428,7 +440,7 @@ function TasteFilterBar({
 
       {/* Main row */}
       <div className="taste-filter-main" style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
+        display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12,
       }}>
         {/* Left: Your taste info */}
         <div style={{ flexShrink: 0 }}>
@@ -447,35 +459,62 @@ function TasteFilterBar({
         </div>
 
         {/* Divider */}
-        <div className="taste-divider" style={{ width: "0.5px", height: 48, background: "rgba(255,255,255,0.06)", flexShrink: 0 }} />
+        <div className="taste-divider" style={{ width: "0.5px", alignSelf: "stretch", background: "rgba(255,255,255,0.06)", flexShrink: 0 }} />
 
-        {/* Middle: Taste tags */}
-        <div className="taste-tags-section" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, flexWrap: "wrap" }}>
-          {tags.length > 0 ? (
-            tags.map((tag) => (
-              <a
-                key={tag}
-                href={TASTE_TAG_EXPLORE_MAP[tag] || "/explore"}
-                className="taste-tag-pill"
-                style={{
-                  fontSize: 11, padding: "3px 8px", borderRadius: 10,
-                  background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.06)",
-                  color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap", cursor: "pointer",
-                  textDecoration: "none", transition: "background 150ms, color 150ms",
-                }}
-              >
-                {tag}
-              </a>
-            ))
-          ) : (
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>
-              Rate some titles to discover your taste profile
-            </span>
+        {/* Middle: Taste tags + Genre pills */}
+        <div className="taste-tags-section" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
+          {/* Row 1: Taste / vibe tags */}
+          <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+            {tags.length > 0 ? (
+              tags.map((tag) => (
+                <a
+                  key={tag}
+                  href={TASTE_TAG_EXPLORE_MAP[tag] || "/explore"}
+                  className="taste-tag-pill"
+                  style={{
+                    fontSize: 11, padding: "3px 8px", borderRadius: 10,
+                    background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.06)",
+                    color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap", cursor: "pointer",
+                    textDecoration: "none", transition: "background 150ms, color 150ms",
+                  }}
+                >
+                  {tag}
+                </a>
+              ))
+            ) : (
+              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>
+                Rate some titles to discover your taste profile
+              </span>
+            )}
+          </div>
+
+          {/* Row 2: Genre pills */}
+          {genrePills.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 11, color: "rgba(232,72,85,0.35)", fontWeight: 500, marginRight: 1, whiteSpace: "nowrap" }}>
+                Genres
+              </span>
+              {genrePills.map((genre) => (
+                <a
+                  key={genre}
+                  href={`/explore?genre=${encodeURIComponent(genre)}`}
+                  className="taste-genre-pill"
+                  style={{
+                    fontSize: 11, padding: "3px 8px", borderRadius: 10,
+                    background: "rgba(232,72,85,0.04)", border: "0.5px solid rgba(232,72,85,0.08)",
+                    color: "rgba(232,72,85,0.35)", whiteSpace: "nowrap", cursor: "pointer",
+                    textDecoration: "none", transition: "background 150ms, color 150ms",
+                  }}
+                >
+                  {genre}
+                </a>
+              ))}
+            </div>
           )}
         </div>
 
         {/* Divider */}
-        <div className="taste-divider" style={{ width: "0.5px", height: 48, background: "rgba(255,255,255,0.06)", flexShrink: 0, margin: "0 4px" }} />
+        <div className="taste-divider" style={{ width: "0.5px", alignSelf: "stretch", background: "rgba(255,255,255,0.06)", flexShrink: 0, margin: "0 4px" }} />
 
         {/* Right: Media type filter grid */}
         <div className="media-filter-grid-v2" style={{
@@ -521,6 +560,10 @@ function TasteFilterBar({
           background: rgba(255,255,255,0.06) !important;
           color: rgba(255,255,255,0.5) !important;
         }
+        .taste-genre-pill:hover {
+          background: rgba(232,72,85,0.08) !important;
+          color: rgba(232,72,85,0.5) !important;
+        }
         @media (max-width: 768px) {
           .taste-filter-main {
             flex-direction: column !important;
@@ -555,6 +598,7 @@ export default function ForYouPage() {
     personalPicks: Item[];
     discoverAcrossMedia: Item[];
     tasteProfile: TasteProfile | null;
+    topGenres: string[];
   } | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const { ratings } = useRatings();
@@ -640,7 +684,7 @@ export default function ForYouPage() {
     fetch("/api/for-you")
       .then((r) => r.json())
       .then((data) => setForYouData(data))
-      .catch(() => setForYouData({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null }));
+      .catch(() => setForYouData({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null, topGenres: [] }));
   }, [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -649,6 +693,7 @@ export default function ForYouPage() {
       <ErrorBoundary>
         <TasteFilterBar
           tasteProfile={forYouData?.tasteProfile || null}
+          topGenres={forYouData?.topGenres || []}
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
         />

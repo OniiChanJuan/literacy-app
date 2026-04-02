@@ -63,18 +63,30 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
     }
 
-    // Get user's rated items to exclude + learn preferred types
+    // Get user's rated items to exclude + learn preferred types + top genres
     const ratings = await prisma.rating.findMany({
       where: { userId: session.user.id },
-      select: { itemId: true, score: true, item: { select: { type: true } } },
+      select: { itemId: true, score: true, item: { select: { type: true, genre: true } } },
     });
 
     const ratedIds = new Set(ratings.map((r) => r.itemId));
     const ratingCount = ratings.length;
 
+    // Compute top genres (weight higher-rated items double)
+    const genreCounts: Record<string, number> = {};
+    for (const r of ratings) {
+      for (const g of (r.item.genre || [])) {
+        genreCounts[g] = (genreCounts[g] || 0) + (r.score >= 4 ? 2 : 1);
+      }
+    }
+    const topGenres = Object.entries(genreCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([g]) => g);
+
     if (ratingCount < 5) {
       if (section) return NextResponse.json([]);
-      return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile });
+      return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile, topGenres });
     }
 
     // Find user's most/least rated types
@@ -290,6 +302,7 @@ export async function GET(req: NextRequest) {
       personalPicks: personalPicks.map(mapItem),
       discoverAcrossMedia: discoverAcrossMedia.map(mapItem),
       tasteProfile,
+      topGenres,
     });
     res.headers.set("Cache-Control", "private, s-maxage=0, max-age=60");
     return res;
