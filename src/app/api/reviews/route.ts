@@ -116,11 +116,19 @@ export async function GET(req: NextRequest) {
     const totalCount = topLevel.length;
     const paginated = topLevel.slice(offset, offset + limit);
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       reviews: paginated,
       hasMore: offset + limit < totalCount,
       totalCount,
     });
+    // Authenticated users get personalized vote status — private browser cache only.
+    // Anonymous users get fully public data — cache 60s at CDN.
+    if (currentUserId) {
+      res.headers.set("Cache-Control", "private, max-age=30");
+    } else {
+      res.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    }
+    return res;
   } catch (e) {
     console.error("GET /api/reviews error:", e);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

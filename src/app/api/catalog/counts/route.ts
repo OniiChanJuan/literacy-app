@@ -35,7 +35,10 @@ export async function GET(req: NextRequest) {
     // Total count
     const total = await prisma.item.count({ where: { isUpcoming: false, parentItemId: null } });
 
-    return NextResponse.json({ byType, total });
+    const res = NextResponse.json({ byType, total });
+    // Count aggregates change only when catalog is refreshed — cache 5 min at CDN
+    res.headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+    return res;
   } catch (error: any) {
     console.error("Counts API error:", error);
     return NextResponse.json({ byType: {}, total: 0 }, { status: 500 });

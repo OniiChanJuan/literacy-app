@@ -26,5 +26,8 @@ export async function GET(
     return NextResponse.json({ error: "Not found on Spotify" }, { status: 404 });
   }
 
-  return NextResponse.json(item);
+  const res = NextResponse.json(item);
+  // Spotify metadata is stable per ID — cache aggressively at CDN
+  res.headers.set("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800");
+  return res;
 }

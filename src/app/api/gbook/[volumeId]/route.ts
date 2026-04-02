@@ -22,5 +22,8 @@ export async function GET(
     return NextResponse.json({ error: "Not found on Google Books" }, { status: 404 });
   }
 
-  return NextResponse.json(item);
+  const res = NextResponse.json(item);
+  // Google Books metadata is stable per volume ID — cache aggressively at CDN
+  res.headers.set("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800");
+  return res;
 }

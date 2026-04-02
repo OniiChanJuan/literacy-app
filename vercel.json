@@ -1,8 +1,15 @@
 {
+  "fluid": true,
   "crons": [
     {
       "path": "/api/cron/cleanup",
       "schedule": "0 3 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "src/app/api/**": {
+      "memory": 256,
+      "maxDuration": 15
+    }
+  }
 }

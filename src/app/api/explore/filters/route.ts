@@ -56,7 +56,8 @@ export async function GET() {
     const vibes = vibeRows.map((r) => r.vibe).filter(Boolean);
 
     const res = NextResponse.json({ genres, vibes, tags: tagSlugs });
-    res.headers.set("Cache-Control", "public, max-age=300, s-maxage=300");
+    // Genre/vibe lists only change when catalog is refreshed — cache 1h at CDN
+    res.headers.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
     return res;
   } catch (error) {
     console.error("[explore/filters] error:", error);

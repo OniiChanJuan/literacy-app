@@ -135,5 +135,8 @@ export async function GET(req: NextRequest) {
   const paginated = all.slice(offset, offset + limit);
   const hasMore = all.length > offset + limit;
 
-  return NextResponse.json({ items: paginated, hasMore, total: all.length });
+  const res = NextResponse.json({ items: paginated, hasMore, total: all.length });
+  // Personalized per-user — no CDN caching, but allow browser to cache 30s to reduce rapid re-fetches
+  res.headers.set("Cache-Control", "private, max-age=30");
+  return res;
 }

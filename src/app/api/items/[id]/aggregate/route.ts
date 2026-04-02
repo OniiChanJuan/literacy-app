@@ -23,12 +23,14 @@ export async function GET(
   });
 
   if (ratings.length === 0) {
-    return NextResponse.json({
+    const emptyRes = NextResponse.json({
       avg: "0.0",
       count: 0,
       dist: [0, 0, 0, 0, 0],
       recPct: 0,
     });
+    emptyRes.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    return emptyRes;
   }
 
   // Compute average
@@ -47,10 +49,13 @@ export async function GET(
   const recCount = ratings.filter((r) => r.recommendTag === "recommend").length;
   const recPct = Math.round((recCount / ratings.length) * 100);
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     avg,
     count: ratings.length,
     dist,
     recPct,
   });
+  // Public aggregate data — cache 60s at CDN, serve stale up to 2 min while revalidating
+  res.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+  return res;
 }

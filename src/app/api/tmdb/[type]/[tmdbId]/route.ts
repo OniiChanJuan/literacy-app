@@ -28,5 +28,8 @@ export async function GET(
     return NextResponse.json({ error: "Not found on TMDB" }, { status: 404 });
   }
 
-  return NextResponse.json(item);
+  const res = NextResponse.json(item);
+  // TMDB metadata is immutable per ID — cache aggressively at CDN
+  res.headers.set("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800");
+  return res;
 }

@@ -14,6 +14,11 @@ import { VALID_SLUG_TYPES } from "@/lib/slugs";
 import { ItemPageRender, dbItemToItem } from "@/app/item/_page-impl";
 import type { Metadata } from "next";
 
+// ISR: regenerate page in background every 5 minutes.
+// Item metadata (title, cover, description, scores) rarely changes —
+// this serves cached HTML from CDN instead of hitting the DB on every visit.
+export const revalidate = 300;
+
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({
