@@ -20,9 +20,9 @@
  * Add --type=tv to only process a specific media type.
  */
 
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { PrismaPg } from "@prisma/adapter-pg";
 const DRY_RUN = process.argv.includes("--dry-run");
 const TYPE_FILTER = process.argv.find(a => a.startsWith("--type="))?.split("=")[1] || null;
 
@@ -64,6 +64,10 @@ const RULES: Rule[] = [
 ];
 
 async function main() {
+  const connUrl = process.env.DIRECT_URL || process.env.DATABASE_URL!;
+  const adapter = new PrismaPg({ connectionString: connUrl });
+  const prisma = new PrismaClient({ adapter });
+
   console.log(`\nGenre Backfill ${DRY_RUN ? "(DRY RUN)" : ""}`);
   console.log("═".repeat(50));
 
@@ -155,5 +159,4 @@ async function main() {
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(1); })
-  .finally(() => prisma.$disconnect());
+  .catch((e) => { console.error(e); process.exit(1); });
