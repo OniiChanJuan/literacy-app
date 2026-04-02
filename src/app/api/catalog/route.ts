@@ -34,6 +34,38 @@ const ITEM_SELECT = {
 } as const;
 
 /**
+ * Genre synonym expansion.
+ * TMDB uses compound/alternate genre names that don't match the UI filter pills.
+ * Expanding the query means "TV + Thriller" also matches shows stored as Crime/Mystery.
+ */
+const GENRE_SYNONYMS: Record<string, string[]> = {
+  "Thriller":    ["Crime", "Mystery"],         // TMDB TV has no Thriller genre; Crime+Mystery = thrillers
+  "Sci-Fi":      ["Science Fiction", "Sci-Fi & Fantasy"],
+  "Fantasy":     ["Sci-Fi & Fantasy"],
+  "Action":      ["Action & Adventure"],
+  "Adventure":   ["Action & Adventure"],
+  "War":         ["War & Politics"],
+  "Animation":   ["Animated"],
+  "Crime":       ["Thriller"],                 // Crime filter also surfaces tagged thrillers
+  "Mystery":     ["Thriller"],
+};
+
+function expandGenres(genres: string[]): string[] {
+  const expanded = new Set(genres);
+  for (const g of genres) {
+    for (const synonym of (GENRE_SYNONYMS[g] || [])) {
+      expanded.add(synonym);
+    }
+  }
+  return [...expanded];
+}
+
+function buildGenreFilter(genre: string): object {
+  const expanded = expandGenres(genre.split(",").filter(Boolean));
+  return { hasSome: expanded };
+}
+
+/**
  * GET /api/catalog — Fetch items with quality ranking + diversity + dedup
  */
 export async function GET(req: NextRequest) {
@@ -93,11 +125,7 @@ export async function GET(req: NextRequest) {
     } else if (type) {
       where.type = type;
     }
-    if (genre) {
-      const genres = genre.split(",").filter(Boolean);
-      if (genres.length === 1) where.genre = { has: genres[0] };
-      else if (genres.length > 1) where.genre = { hasSome: genres };
-    }
+    if (genre) where.genre = buildGenreFilter(genre);
     if (vibe) where.vibes = { has: vibe };
     if (tagFilterIds) {
       where.id = { in: tagFilterIds };
@@ -114,11 +142,7 @@ export async function GET(req: NextRequest) {
     if (curated === "top_rated") {
       // Build base where without type — we handle types via per-type quotas below
       const baseWhere: any = { isUpcoming: false, parentItemId: null };
-      if (genre) {
-        const genres = genre.split(",").filter(Boolean);
-        if (genres.length === 1) baseWhere.genre = { has: genres[0] };
-        else if (genres.length > 1) baseWhere.genre = { hasSome: genres };
-      }
+      if (genre) baseWhere.genre = buildGenreFilter(genre);
       if (vibe) baseWhere.vibes = { has: vibe };
       if (excludeIds.length > 0) baseWhere.id = { notIn: excludeIds };
 
@@ -249,11 +273,7 @@ export async function GET(req: NextRequest) {
     // ── Hidden gems ───────────────────────────────────────────────────
     if (curated === "hidden_gems") {
       const gemBaseWhere: any = { isUpcoming: false, parentItemId: null };
-      if (genre) {
-        const genres = genre.split(",").filter(Boolean);
-        if (genres.length === 1) gemBaseWhere.genre = { has: genres[0] };
-        else if (genres.length > 1) gemBaseWhere.genre = { hasSome: genres };
-      }
+      if (genre) gemBaseWhere.genre = buildGenreFilter(genre);
       if (vibe) gemBaseWhere.vibes = { has: vibe };
       if (excludeIds.length > 0) gemBaseWhere.id = { notIn: excludeIds };
 
@@ -284,7 +304,7 @@ export async function GET(req: NextRequest) {
           const mangaItems = await prisma.item.findMany({
             where: {
               id: { in: mangaNumIds },
-              ...(genre ? { genre: { hasSome: genre.split(",").filter(Boolean) } } : {}),
+              ...(genre ? { genre: buildGenreFilter(genre) } : {}),
               ...(vibe ? { vibes: { has: vibe } } : {}),
             },
             select: ITEM_SELECT,
@@ -312,7 +332,7 @@ export async function GET(req: NextRequest) {
           const bookItems = await prisma.item.findMany({
             where: {
               id: { in: bookNumIds },
-              ...(genre ? { genre: { hasSome: genre.split(",").filter(Boolean) } } : {}),
+              ...(genre ? { genre: buildGenreFilter(genre) } : {}),
               ...(vibe ? { vibes: { has: vibe } } : {}),
             },
             select: ITEM_SELECT,

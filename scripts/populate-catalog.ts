@@ -374,11 +374,17 @@ async function populateTmdbTv(prisma: PrismaClient): Promise<void> {
     ["/tv/top_rated", 50],
     ["/trending/tv/week", 10],
   ];
-  // Genre-specific: animation(16), documentary(99), crime(80), reality(10764), talk(10767)
-  const genreIds = [16, 99, 80, 10764, 10767, 10766];
+  // Genre-specific — covers genres not well-represented in the popularity/top-rated lists.
+  // 10765=Sci-Fi & Fantasy, 9648=Mystery, 80=Crime, 27=Horror, 53=Thriller (some TV shows get this),
+  // 16=Animation, 99=Documentary, 10764=Reality, 10767=Talk, 10766=Soap
+  const genreIds = [10765, 9648, 80, 27, 53, 16, 99, 10764, 10767, 10766];
   for (const gid of genreIds) {
-    sources.push([`/discover/tv?sort_by=popularity.desc&with_genres=${gid}`, 10]);
+    sources.push([`/discover/tv?sort_by=popularity.desc&with_genres=${gid}`, 15]);
   }
+  // Crime+Drama combo — the TMDB signature for "thriller" TV shows
+  sources.push([`/discover/tv?sort_by=popularity.desc&with_genres=80,18`, 15]);
+  // Mystery+Drama combo
+  sources.push([`/discover/tv?sort_by=popularity.desc&with_genres=9648,18`, 10]);
 
   for (const [path, pages] of sources) {
     const items = await fetchTmdbPages(path, pages, "tv");
