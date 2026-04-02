@@ -150,6 +150,11 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
   const [following, setFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followLoading, setFollowLoading] = useState(false);
+  const [userRating, setUserRating] = useState<number | null>(null);
+  const [communityAvg, setCommunityAvg] = useState<number | null>(null);
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [hoverStar, setHoverStar] = useState<number | null>(null);
+  const [ratingLoading, setRatingLoading] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -160,12 +165,20 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
       .catch(() => setLoading(false));
   }, [slug]);
 
-  // Load follow status once we have the franchise ID
+  // Load follow status + rating once we have the franchise ID
   useEffect(() => {
     if (!data?.id) return;
     fetch(`/api/franchises/${data.id}/follow`)
       .then((r) => r.json())
       .then((d) => { setFollowing(d.following); setFollowerCount(d.followerCount || 0); })
+      .catch(() => {});
+    fetch(`/api/franchises/${data.id}/rate`)
+      .then((r) => r.json())
+      .then((d) => {
+        setUserRating(d.userRating ?? null);
+        setCommunityAvg(d.communityAverage ?? null);
+        setTotalVotes(d.totalVotes ?? 0);
+      })
       .catch(() => {});
   }, [data?.id]);
 
@@ -192,6 +205,42 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
       setFollowerCount((n) => wasFollowing ? n + 1 : n - 1);
     } finally {
       setFollowLoading(false);
+    }
+  }
+
+  async function handleRate(star: number) {
+    if (!session) { router.push("/auth/signin"); return; }
+    if (!data?.id) return;
+    setRatingLoading(true);
+    // If clicking same star again → delete rating
+    const isSame = userRating === star;
+    // Optimistic
+    const prevRating = userRating;
+    const prevAvg = communityAvg;
+    const prevVotes = totalVotes;
+    setUserRating(isSame ? null : star);
+    try {
+      const res = await fetch(`/api/franchises/${data.id}/rate`, {
+        method: isSame ? "DELETE" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: isSame ? undefined : JSON.stringify({ rating: star }),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setUserRating(json.userRating ?? null);
+        setCommunityAvg(json.communityAverage ?? null);
+        setTotalVotes(json.totalVotes ?? 0);
+      } else {
+        setUserRating(prevRating);
+        setCommunityAvg(prevAvg);
+        setTotalVotes(prevVotes);
+      }
+    } catch {
+      setUserRating(prevRating);
+      setCommunityAvg(prevAvg);
+      setTotalVotes(prevVotes);
+    } finally {
+      setRatingLoading(false);
     }
   }
 
@@ -301,6 +350,61 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
             {data.description}
           </p>
         )}
+
+        {/* Community rating row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
+          {/* Star picker */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <span style={{ fontSize: 11, color: "var(--text-faint)", marginRight: 4 }}>Rate this universe:</span>
+            {[1, 2, 3, 4, 5].map((star) => {
+              const filled = hoverStar !== null ? star <= hoverStar : userRating !== null && star <= userRating;
+              return (
+                <button
+                  key={star}
+                  onClick={() => handleRate(star)}
+                  onMouseEnter={() => setHoverStar(star)}
+                  onMouseLeave={() => setHoverStar(null)}
+                  disabled={ratingLoading}
+                  title={`Rate ${star} star${star !== 1 ? "s" : ""}`}
+                  style={{
+                    background: "none", border: "none", padding: "2px 1px",
+                    cursor: "pointer", lineHeight: 1, fontSize: 20,
+                    color: filled ? "#F9A620" : "rgba(255,255,255,0.18)",
+                    transition: "color 0.1s, transform 0.1s",
+                    transform: hoverStar === star ? "scale(1.2)" : "scale(1)",
+                    opacity: ratingLoading ? 0.5 : 1,
+                  }}
+                >
+                  ★
+                </button>
+              );
+            })}
+            {userRating && (
+              <span style={{ fontSize: 10, color: "var(--text-faint)", marginLeft: 4 }}>
+                (your rating: {userRating}/5)
+              </span>
+            )}
+          </div>
+          {/* Community average */}
+          {communityAvg !== null && totalVotes > 0 && (
+            <div style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "4px 10px", borderRadius: 8,
+              background: "rgba(249,166,32,0.08)", border: "1px solid rgba(249,166,32,0.2)",
+            }}>
+              <span style={{ color: "#F9A620", fontSize: 13 }}>★</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#F9A620" }}>{communityAvg.toFixed(1)}</span>
+              <span style={{ fontSize: 10, color: "var(--text-faint)" }}>
+                community · {totalVotes.toLocaleString()} rating{totalVotes !== 1 ? "s" : ""}
+              </span>
+            </div>
+          )}
+          {(!communityAvg || totalVotes === 0) && (
+            <span style={{ fontSize: 11, color: "var(--text-faint)", fontStyle: "italic" }}>
+              No ratings yet — be the first!
+            </span>
+          )}
+        </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
           <span style={{ fontSize: 12, color: "var(--text-faint)" }}>

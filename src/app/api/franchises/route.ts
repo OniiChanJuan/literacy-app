@@ -91,6 +91,17 @@ export async function GET(req: NextRequest) {
 
     const allTypes = new Set(franchise.items.map((fi) => fi.item.type));
 
+    // Community rating aggregate
+    const ratingAgg = await prisma.franchiseRating.aggregate({
+      where: { franchiseId: franchise.id },
+      _avg: { rating: true },
+      _count: { rating: true },
+    });
+    const communityAverage = ratingAgg._avg.rating
+      ? Math.round(ratingAgg._avg.rating * 10) / 10
+      : null;
+    const totalVotes = ratingAgg._count.rating;
+
     // Determine franchise color based on icon or dominant type
     const typeColors: Record<string, string> = {
       "🕷": "#E84855", "🦇": "#1a1a2e", "🦸": "#E84855", "🧬": "#3185FC",
@@ -109,6 +120,8 @@ export async function GET(req: NextRequest) {
       mediaTypes: allTypes.size,
       otherItems: deduped,
       parentFranchise: franchise.parentFranchise || null,
+      communityAverage,
+      totalVotes,
     });
     res.headers.set("Cache-Control", "s-maxage=600, stale-while-revalidate=1200");
     return res;

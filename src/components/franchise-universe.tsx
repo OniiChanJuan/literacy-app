@@ -33,6 +33,8 @@ interface FranchiseData {
   mediaTypes: number;
   otherItems: FranchiseItemData[];
   parentFranchise: ParentFranchise | null;
+  communityAverage: number | null;
+  totalVotes: number;
 }
 
 function scoreColor(val: number): string {
@@ -125,6 +127,19 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
           <span style={{ fontSize: 9, color: "rgba(255,255,255,0.25)" }}>
             {franchise.totalItems} entries across {franchise.mediaTypes} media
           </span>
+          {franchise.communityAverage != null && franchise.totalVotes > 0 && (
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: 3,
+              fontSize: 9, fontWeight: 600, color: "#F9A620",
+              background: "rgba(249,166,32,0.10)", border: "1px solid rgba(249,166,32,0.18)",
+              borderRadius: 5, padding: "1px 6px",
+            }}>
+              ★ {franchise.communityAverage.toFixed(1)}
+              <span style={{ fontSize: 8, fontWeight: 400, color: "rgba(255,255,255,0.3)", marginLeft: 1 }}>
+                ({franchise.totalVotes})
+              </span>
+            </span>
+          )}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button

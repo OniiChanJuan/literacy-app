@@ -206,8 +206,24 @@ model Franchise {
   childFranchises  Franchise[] @relation("FranchiseHierarchy")
   items            FranchiseItem[]
   follows          FranchiseFollow[]
+  ratings          FranchiseRating[]
 
   @@map("franchises")
+}
+
+model FranchiseRating {
+  userId      String   @map("user_id")
+  franchiseId Int      @map("franchise_id")
+  rating      Int      // 1-5
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  franchise Franchise @relation(fields: [franchiseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, franchiseId])
+  @@index([franchiseId])
+  @@index([userId])
+  @@map("franchise_ratings")
 }
 
 model FranchiseFollow {
