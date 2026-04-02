@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { MemberBadge, MemberBadgeBlock, getMemberTier } from "./member-badge";
 
 export default function UserMenu() {
   const { data: session } = useSession();
@@ -46,7 +47,8 @@ export default function UserMenu() {
     { icon: "⚙️", label: "Settings", href: "/settings" },
   ];
 
-  const isFounder = memberNumber !== null && memberNumber <= 100;
+  const tier = memberNumber !== null ? getMemberTier(memberNumber) : null;
+  const isFounder = tier === "founding"; // #1-10, gold border
 
   return (
     <div ref={ref} style={{ position: "relative" }}>
@@ -57,7 +59,7 @@ export default function UserMenu() {
           onClick={() => setOpen(!open)}
           style={{
             width: 32, height: 32, borderRadius: "50%",
-            border: isFounder ? "2px solid rgba(249,166,32,0.4)" : "2px solid rgba(255,255,255,0.1)",
+            border: tier === "founding" ? "2px solid rgba(249,166,32,0.4)" : tier === "early" ? "2px solid rgba(192,192,192,0.3)" : "2px solid rgba(255,255,255,0.1)",
             background: avatarUrl ? "transparent" : "linear-gradient(135deg, #E84855, #3185FC)",
             cursor: "pointer", overflow: "hidden",
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -71,14 +73,8 @@ export default function UserMenu() {
           )}
         </button>
         {memberNumber && (
-          <div style={{
-            fontSize: 10,
-            fontWeight: 600,
-            color: isFounder ? "#F9A620" : "rgba(255,255,255,0.25)",
-            whiteSpace: "nowrap",
-            lineHeight: 1,
-          }}>
-            {isFounder ? `★ #${memberNumber}` : `#${memberNumber}`}
+          <div style={{ whiteSpace: "nowrap", lineHeight: 1 }}>
+            <MemberBadge memberNumber={memberNumber} size="sm" />
           </div>
         )}
       </div>
@@ -125,11 +121,8 @@ export default function UserMenu() {
                 @{(user as any).username || user.email?.split("@")[0] || "user"}
               </div>
               {memberNumber && (
-                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", marginTop: 2, display: "flex", alignItems: "center", gap: 4 }}>
-                  Member #{memberNumber}
-                  {memberNumber <= 100 && (
-                    <span style={{ color: "#F9A620", fontSize: 9 }}>★ Founding member</span>
-                  )}
+                <div style={{ marginTop: 3 }}>
+                  <MemberBadgeBlock memberNumber={memberNumber} />
                 </div>
               )}
             </div>

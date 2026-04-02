@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
     const allReviews = await prisma.review.findMany({
       where: { itemId },
       include: {
-        user: { select: { id: true, name: true, image: true, avatar: true } },
+        user: { select: { id: true, name: true, image: true, avatar: true, memberNumber: true } },
         ...(currentUserId
           ? { helpfulVotes: { where: { userId: currentUserId }, select: { userId: true, voteType: true } } }
           : {}),
@@ -77,6 +77,7 @@ export async function GET(req: NextRequest) {
         depth: r.depth,
         userName: r.user.name || "Anonymous",
         userAvatar: r.user.image || r.user.avatar || "",
+        memberNumber: (r.user as any).memberNumber ?? null,
         score: rating?.score ?? 0,
         recommendTag: rating?.recommendTag ?? null,
         text: r.text,
@@ -219,7 +220,7 @@ export async function POST(req: NextRequest) {
         containsSpoilers: !!containsSpoilers,
       },
       include: {
-        user: { select: { id: true, name: true, image: true, avatar: true } },
+        user: { select: { id: true, name: true, image: true, avatar: true, memberNumber: true } },
       },
     });
 
@@ -264,6 +265,7 @@ export async function POST(req: NextRequest) {
       depth: review.depth,
       userName: review.user.name || "Anonymous",
       userAvatar: review.user.image || review.user.avatar || "",
+      memberNumber: (review.user as any).memberNumber ?? null,
       score: rating?.score ?? 0,
       recommendTag: rating?.recommendTag ?? null,
       text: review.text,

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRatings } from "@/lib/ratings-context";
 import Stars from "./stars";
 import RecTag from "./rec-tag";
+import { MemberBadge } from "./member-badge";
 
 interface ReviewData {
   id: number;
@@ -15,6 +16,7 @@ interface ReviewData {
   depth: number;
   userName: string;
   userAvatar: string;
+  memberNumber: number | null;
   score: number;
   recommendTag: string | null;
   text: string;
@@ -1169,10 +1171,13 @@ function ReplyRow({
         ) : review.userName[0]?.toUpperCase() || "?"}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
           <Link href={`/user/${review.userId}`} style={{ fontSize: 11, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
             {review.userName}
           </Link>
+          {review.memberNumber && (
+            <MemberBadge memberNumber={review.memberNumber} size="xs" />
+          )}
           <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)" }}>{timeAgo(review.createdAt)}</span>
         </div>
         <ReviewText
@@ -1533,12 +1538,17 @@ function ReviewCard({
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <Link
-            href={`/user/${review.userId}`}
-            style={{ fontSize: 13, fontWeight: 500, color: "#fff", textDecoration: "none" }}
-          >
-            {review.userName}
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+            <Link
+              href={`/user/${review.userId}`}
+              style={{ fontSize: 13, fontWeight: 500, color: "#fff", textDecoration: "none" }}
+            >
+              {review.userName}
+            </Link>
+            {review.memberNumber && (
+              <MemberBadge memberNumber={review.memberNumber} size="xs" />
+            )}
+          </div>
           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.15)", marginTop: 1 }}>
             {timeAgo(review.createdAt)}
             {review.updatedAt !== review.createdAt && (

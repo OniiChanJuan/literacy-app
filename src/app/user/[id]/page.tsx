@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { TYPES, type Item } from "@/lib/data";
 import Card from "@/components/card";
+import { MemberBadgeBlock } from "@/components/member-badge";
 
 interface ProfileData {
   user: {
@@ -17,6 +18,7 @@ interface ProfileData {
     ratingsCount: number;
     reviewsCount: number;
     trackedCount: number;
+    memberNumber: number | null;
   };
   topRatings: { itemId: number; score: number; recommendTag: string | null; item?: any }[];
   library: { itemId: number; status: string; progressCurrent: number; item?: any }[] | null;
@@ -187,8 +189,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               {user.bio}
             </p>
           )}
-          <div style={{ fontSize: 11, color: "var(--text-faint)" }}>
-            Joined {joinDate}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 2 }}>
+            <div style={{ fontSize: 11, color: "var(--text-faint)" }}>
+              Joined {joinDate}
+            </div>
+            {user.memberNumber && (
+              <MemberBadgeBlock memberNumber={user.memberNumber} />
+            )}
           </div>
         </div>
 

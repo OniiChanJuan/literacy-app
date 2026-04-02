@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { MemberBadge } from "@/components/member-badge";
 import { TYPES } from "@/lib/data";
 
 interface UserResult {
@@ -10,6 +11,7 @@ interface UserResult {
   name: string;
   avatar: string;
   bio: string;
+  memberNumber: number | null;
   ratingsCount: number;
   reviewsCount: number;
   sharedRatings?: number;
@@ -365,12 +367,17 @@ function UserCard({
 
       {/* Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <Link
-          href={`/user/${user.id}`}
-          style={{ fontSize: 13, fontWeight: 700, color: "#fff", textDecoration: "none" }}
-        >
-          {user.name}
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Link
+            href={`/user/${user.id}`}
+            style={{ fontSize: 13, fontWeight: 700, color: "#fff", textDecoration: "none" }}
+          >
+            {user.name}
+          </Link>
+          {user.memberNumber && (
+            <MemberBadge memberNumber={user.memberNumber} size="xs" />
+          )}
+        </div>
         <div style={{ fontSize: 11, color: "var(--text-faint)", marginTop: 2 }}>
           {showShared && user.sharedRatings
             ? `${user.sharedRatings} shared ratings`

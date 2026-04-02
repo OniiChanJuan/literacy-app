@@ -71,14 +71,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           (user as any).needsUsername = true;
         }
 
-        // Assign member number if missing (new Google user) + auto-verify email
-        if (existing && !existing.memberNumber) {
-          const maxResult = await prisma.user.aggregate({ _max: { memberNumber: true } });
-          const next = (maxResult._max.memberNumber || 0) + 1;
-          await prisma.user.update({
+        // Assign member number if missing — covers both new users (existing=null,
+        // adapter hasn't committed yet so we retry after a short delay) and
+        // existing users who somehow have a null memberNumber.
+        if (!existing?.memberNumber) {
+          // Small delay to let the Prisma adapter finish creating the user row
+          // before we try to update it (relevant for brand-new Google signups)
+          await new Promise((r) => setTimeout(r, 200));
+          const userRow = await prisma.user.findUnique({
             where: { email: user.email },
-            data: { memberNumber: next, emailVerified: new Date() },
+            select: { id: true, memberNumber: true },
           });
+          if (userRow && !userRow.memberNumber) {
+            const maxResult = await prisma.user.aggregate({ _max: { memberNumber: true } });
+            const next = (maxResult._max.memberNumber || 0) + 1;
+            await prisma.user.update({
+              where: { id: userRow.id },
+              data: { memberNumber: next, emailVerified: new Date() },
+            });
+          }
         }
 
         // Auto-verify Google users' emails (Google already verified it)

@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },
     select: {
-      id: true, name: true, image: true, avatar: true, bio: true,
+      id: true, name: true, image: true, avatar: true, bio: true, memberNumber: true,
       _count: { select: { ratings: true, reviews: true } },
     },
   });
@@ -88,6 +88,7 @@ export async function GET(req: NextRequest) {
       name: u.name || "Anonymous",
       avatar: u.image || u.avatar || "",
       bio: u.bio,
+      memberNumber: u.memberNumber,
       ratingsCount: u._count.ratings,
       reviewsCount: u._count.reviews,
       sharedRatings: r.shared,
