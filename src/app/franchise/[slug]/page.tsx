@@ -254,14 +254,46 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
 
       {/* Hero header */}
       <div style={{ marginBottom: 32 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <span style={{ fontSize: 36 }}>{data.icon}</span>
-          <h1 style={{
-            fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 900,
-            color: "#fff", margin: 0,
-          }}>
-            {data.name}
-          </h1>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 36 }}>{data.icon}</span>
+            <h1 style={{
+              fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 900,
+              color: "#fff", margin: 0,
+            }}>
+              {data.name}
+            </h1>
+          </div>
+          <button
+            onClick={toggleFollow}
+            disabled={followLoading}
+            style={{
+              display: "flex", alignItems: "center", gap: 8,
+              padding: "9px 22px", borderRadius: 10, cursor: "pointer",
+              fontSize: 14, fontWeight: 500, transition: "all 0.15s", flexShrink: 0,
+              background: following ? "rgba(232,72,85,0.15)" : "rgba(255,255,255,0.06)",
+              border: following ? "1px solid rgba(232,72,85,0.4)" : "1px solid rgba(255,255,255,0.12)",
+              color: following ? "#E84855" : "#E84855",
+              opacity: followLoading ? 0.6 : 1,
+            }}
+            onMouseEnter={(e) => {
+              if (!following) {
+                e.currentTarget.style.background = "rgba(232,72,85,0.1)";
+                e.currentTarget.style.border = "1px solid rgba(232,72,85,0.3)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!following) {
+                e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                e.currentTarget.style.border = "1px solid rgba(255,255,255,0.12)";
+              }
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={following ? "#E84855" : "none"} stroke="#E84855" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            {following ? "Following" : "Follow universe"}
+          </button>
         </div>
 
         {data.description && (
@@ -287,21 +319,6 @@ export default function FranchisePage({ params }: { params: Promise<{ slug: stri
               {followerCount} follower{followerCount !== 1 ? "s" : ""}
             </span>
           )}
-          <button
-            onClick={toggleFollow}
-            disabled={followLoading}
-            style={{
-              display: "flex", alignItems: "center", gap: 5,
-              padding: "5px 12px", borderRadius: 8, cursor: "pointer",
-              fontSize: 12, fontWeight: 600, transition: "all 0.15s",
-              background: following ? "rgba(232,72,85,0.15)" : "rgba(255,255,255,0.06)",
-              border: following ? "1px solid rgba(232,72,85,0.4)" : "1px solid rgba(255,255,255,0.1)",
-              color: following ? "#E84855" : "rgba(255,255,255,0.5)",
-              opacity: followLoading ? 0.6 : 1,
-            }}
-          >
-            {following ? "♥ Following" : "♡ Follow"}
-          </button>
         </div>
       </div>
 

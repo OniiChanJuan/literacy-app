@@ -130,18 +130,36 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
           <button
             onClick={toggleFollow}
             disabled={followLoading}
-            title={following ? "Unfollow universe" : "Follow universe"}
             style={{
-              background: "none", border: "none", cursor: "pointer", padding: "0 2px",
-              fontSize: 13, lineHeight: 1, opacity: followLoading ? 0.5 : 1,
-              color: following ? "#E84855" : "rgba(255,255,255,0.25)",
-              transition: "color 0.15s, transform 0.1s",
+              display: "flex", alignItems: "center", gap: 5,
+              padding: "5px 14px", borderRadius: 7, cursor: "pointer",
+              fontSize: 11, fontWeight: 500, transition: "all 0.15s",
+              background: following ? "rgba(232,72,85,0.15)" : "rgba(255,255,255,0.05)",
+              border: following ? "1px solid rgba(232,72,85,0.35)" : "1px solid rgba(255,255,255,0.08)",
+              color: following ? "#E84855" : "rgba(255,255,255,0.5)",
+              opacity: followLoading ? 0.6 : 1,
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = following ? "#ff6b7a" : "rgba(255,255,255,0.6)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = following ? "#E84855" : "rgba(255,255,255,0.25)"; }}
+            onMouseEnter={(e) => {
+              if (!following) {
+                e.currentTarget.style.background = "rgba(232,72,85,0.08)";
+                e.currentTarget.style.border = "1px solid rgba(232,72,85,0.25)";
+                e.currentTarget.style.color = "#E84855";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!following) {
+                e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                e.currentTarget.style.border = "1px solid rgba(255,255,255,0.08)";
+                e.currentTarget.style.color = "rgba(255,255,255,0.5)";
+              }
+            }}
           >
-            {following ? "♥" : "♡"}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill={following ? "#E84855" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            {following ? "Following" : "Follow"}
           </button>
+          <span style={{ width: 1, height: 14, background: "rgba(255,255,255,0.1)", display: "inline-block" }} />
           <a
             href={`/franchise/${franchise.id}`}
             style={{ fontSize: 10, color: `${c}99`, textDecoration: "none", fontWeight: 500 }}
