@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, memo, useCallback, useMemo } from "react";
 import { TYPES, type Item, type UpcomingItem, type MediaType } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
+import { useSession } from "next-auth/react";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
@@ -374,36 +375,171 @@ function getTasteTags(profile: TasteProfile): string[] {
   });
 }
 
-function TasteDnaBar({ tasteProfile }: { tasteProfile: TasteProfile | null }) {
-  const { ratings } = useRatings();
-  const ratingCount = Object.keys(ratings).length;
-  if (ratingCount < 3) return null;
+// ── Taste tag → Explore URL mapping ────────────────────────────────────
+const TASTE_TAG_EXPLORE_MAP: Record<string, string> = {
+  "Dark & Intense":        "/explore?vibe=dark",
+  "Light & Uplifting":     "/explore?vibe=uplifting",
+  "Serious Drama":         "/explore?genre=Drama",
+  "Fun & Lighthearted":    "/explore?vibe=funny",
+  "Slow Burn":             "/explore?vibe=slow-burn",
+  "Fast-Paced":            "/explore?vibe=fast-paced",
+  "Complex & Layered":     "/explore?vibe=cerebral",
+  "Straightforward":       "/explore",
+  "Fantastical Worlds":    "/explore?genre=Fantasy",
+  "Grounded & Realistic":  "/explore",
+  "Gritty & Intense":      "/explore?vibe=gritty",
+  "Mild & Gentle":         "/explore?vibe=wholesome",
+  "Emotionally Rich":      "/explore?vibe=emotional",
+  "Light Emotional Tone":  "/explore?vibe=heartfelt",
+  "Deep World-Building":   "/explore?vibe=immersive",
+  "Focused Narratives":    "/explore",
+  "Character-Driven":      "/explore",
+  "Plot-Driven":           "/explore",
+  "Hidden Gems":           "/explore?sort=hidden_gems",
+  "Popular Favorites":     "/explore?sort=popular",
+};
 
+function TasteFilterBar({
+  tasteProfile,
+  activeFilter,
+  onFilterChange,
+}: {
+  tasteProfile: TasteProfile | null;
+  activeFilter: FilterType | null;
+  onFilterChange: (f: FilterType | null) => void;
+}) {
+  const { ratings } = useRatings();
+  const { data: session } = useSession();
+  const ratingCount = Object.keys(ratings).length;
   const tags = tasteProfile ? getTasteTags(tasteProfile) : [];
+  const profileHref = session?.user?.id ? `/user/${session.user.id}` : "/library";
 
   return (
     <div style={{
-      background: "rgba(255,255,255,0.03)",
-      border: "0.5px solid rgba(255,255,255,0.06)",
+      background: "linear-gradient(135deg, rgba(232,72,85,0.04), rgba(155,93,229,0.02))",
       borderRadius: 10,
-      padding: "12px 14px",
-      marginBottom: 18,
+      padding: "14px 20px",
+      marginBottom: 20,
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <span style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>Your taste</span>
-        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)" }}>{ratingCount} rated</span>
+      {/* Tagline */}
+      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", letterSpacing: "0.5px", marginBottom: 10 }}>
+        RATE ANYTHING. DISCOVER EVERYTHING.
       </div>
-      {tags.length > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 8 }}>
-          {tags.map((tag) => (
-            <span key={tag} style={{
-              fontSize: 9, padding: "3px 8px", borderRadius: 8,
-              background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)",
-            }}>{tag}</span>
-          ))}
+
+      {/* Main row */}
+      <div className="taste-filter-main" style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
+      }}>
+        {/* Left: Your taste info */}
+        <div style={{ flexShrink: 0 }}>
+          <div style={{ fontFamily: "var(--font-serif)", fontSize: 15, fontWeight: 500, color: "#fff" }}>
+            Your taste
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+            <span style={{ fontSize: 11, color: "#2EC4B6" }}>{ratingCount} rated</span>
+            <a
+              href={profileHref}
+              style={{ fontSize: 11, color: "rgba(232,72,85,0.6)", cursor: "pointer", textDecoration: "none" }}
+            >
+              View profile →
+            </a>
+          </div>
         </div>
-      )}
-      <a href="/library" style={{ fontSize: 10, color: "#E84855", textDecoration: "none" }}>View profile →</a>
+
+        {/* Divider */}
+        <div className="taste-divider" style={{ width: "0.5px", height: 48, background: "rgba(255,255,255,0.06)", flexShrink: 0 }} />
+
+        {/* Middle: Taste tags */}
+        <div className="taste-tags-section" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, flexWrap: "wrap" }}>
+          {tags.length > 0 ? (
+            tags.map((tag) => (
+              <a
+                key={tag}
+                href={TASTE_TAG_EXPLORE_MAP[tag] || "/explore"}
+                className="taste-tag-pill"
+                style={{
+                  fontSize: 11, padding: "3px 8px", borderRadius: 10,
+                  background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.06)",
+                  color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap", cursor: "pointer",
+                  textDecoration: "none", transition: "background 150ms, color 150ms",
+                }}
+              >
+                {tag}
+              </a>
+            ))
+          ) : (
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>
+              Rate some titles to discover your taste profile
+            </span>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="taste-divider" style={{ width: "0.5px", height: 48, background: "rgba(255,255,255,0.06)", flexShrink: 0, margin: "0 4px" }} />
+
+        {/* Right: Media type filter grid */}
+        <div className="media-filter-grid-v2" style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(5, auto)",
+          gap: 4,
+          flexShrink: 0,
+        }}>
+          {MEDIA_FILTER_ORDER.map((type) => {
+            const color = type === "anime" ? "#FF6B6B" : TYPES[type as MediaType].color;
+            const isActive = activeFilter === type;
+            return (
+              <button
+                key={type}
+                onClick={() => onFilterChange(isActive ? null : type)}
+                style={{
+                  display: "flex", flexDirection: "column", alignItems: "center",
+                  gap: 2, padding: "5px 8px", borderRadius: 7, cursor: "pointer",
+                  background: isActive ? `rgba(${hexToRgb(color)}, 0.22)` : `rgba(${hexToRgb(color)}, 0.08)`,
+                  border: isActive ? `1px solid rgba(${hexToRgb(color)}, 0.5)` : `0.5px solid rgba(${hexToRgb(color)}, 0.18)`,
+                  transition: "background 150ms, border 150ms",
+                  minWidth: 46,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.14)`;
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.08)`;
+                }}
+              >
+                <span style={{ display: "block", lineHeight: 0, transform: "scale(0.8125)", transformOrigin: "center" }}>
+                  {MEDIA_FILTER_ICONS[type](color)}
+                </span>
+                <span style={{ fontSize: 8, color, lineHeight: 1 }}>{MEDIA_FILTER_LABELS[type]}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <style>{`
+        .taste-tag-pill:hover {
+          background: rgba(255,255,255,0.06) !important;
+          color: rgba(255,255,255,0.5) !important;
+        }
+        @media (max-width: 768px) {
+          .taste-filter-main {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+          }
+          .taste-tags-section {
+            flex: none !important;
+            width: 100% !important;
+          }
+          .media-filter-grid-v2 {
+            width: 100% !important;
+            grid-template-columns: repeat(5, 1fr) !important;
+          }
+          .taste-divider {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -509,95 +645,13 @@ export default function ForYouPage() {
 
   return (
     <div className="content-width">
-      {/* 1. Compact banner with media type filters */}
-      <div className="compact-banner" style={{
-        background: "linear-gradient(135deg, rgba(232,72,85,0.06), rgba(155,93,229,0.03))",
-        borderBottom: "0.5px solid rgba(255,255,255,0.04)",
-        padding: "14px 20px",
-        marginBottom: 20,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 20,
-        borderRadius: 12,
-      }}>
-        {/* Left: tagline */}
-        <div style={{ flexShrink: 0 }}>
-          <div style={{ fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 500, color: "#fff" }}>
-            Rate anything. Discover everything.
-          </div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginTop: 2 }}>
-            Your taste shapes recommendations across every medium
-          </div>
-        </div>
-
-        {/* Right: media type filter buttons (desktop grid) */}
-        <div className="media-filter-grid" style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(9, 56px)",
-          gap: 6,
-        }}>
-          {MEDIA_FILTER_ORDER.map((type) => {
-            const color = type === "anime" ? "#FF6B6B" : TYPES[type as MediaType].color;
-            const isActive = activeFilter === type;
-            return (
-              <button
-                key={type}
-                onClick={() => setActiveFilter(isActive ? null : type)}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 4,
-                  height: 48,
-                  borderRadius: 8,
-                  cursor: "pointer",
-                  background: isActive ? `rgba(${hexToRgb(color)}, 0.2)` : `rgba(${hexToRgb(color)}, 0.08)`,
-                  border: isActive ? `1px solid rgba(${hexToRgb(color)}, 0.5)` : `0.5px solid rgba(${hexToRgb(color)}, 0.2)`,
-                  transition: "background 150ms ease",
-                  padding: 0,
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.12)`;
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.08)`;
-                }}
-              >
-                {MEDIA_FILTER_ICONS[type](color)}
-                <span style={{ fontSize: 9, color, lineHeight: 1 }}>{MEDIA_FILTER_LABELS[type]}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Responsive styles for filter grid */}
-      <style>{`
-        @media (max-width: 768px) {
-          .compact-banner {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 12px !important;
-          }
-          .media-filter-grid {
-            grid-template-columns: repeat(4, 1fr) !important;
-            width: 100% !important;
-          }
-          .media-filter-grid button {
-            height: 42px !important;
-          }
-          .media-filter-grid svg {
-            width: 14px !important;
-            height: 14px !important;
-          }
-        }
-      `}</style>
-
-      {/* 2. Taste DNA bar (3+ ratings) */}
+      {/* 1. Combined taste + filter bar */}
       <ErrorBoundary>
-        <TasteDnaBar tasteProfile={forYouData?.tasteProfile || null} />
+        <TasteFilterBar
+          tasteProfile={forYouData?.tasteProfile || null}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
       </ErrorBoundary>
 
       {/* 3. Personalized rows (5+ ratings) — taste-matched, now with infinite scroll */}
