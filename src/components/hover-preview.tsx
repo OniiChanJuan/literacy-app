@@ -38,7 +38,7 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
       ref={containerRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ position: "relative", display: "inline-block" }}
+      style={{ position: "relative", display: "block", width: "fit-content" }}
     >
       {children}
 
