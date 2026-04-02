@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/validation";
-import { normalizeScore, meetsQualityFloor } from "@/lib/ranking";
+import { normalizeScore } from "@/lib/ranking";
 import { tasteSimilarity, type TasteDimensions } from "@/lib/taste-dimensions";
 import { tagSimilarity, type ItemTags } from "@/lib/tags";
 
 /**
  * GET /api/recommendations?itemId=123
  * Returns 4 recommendation sections for a detail page:
- *   moreSameType, acrossMedia, fansAlsoLoved, hiddenGems
+ *   moreSameType, acrossMedia, fansAlsoLoved, trySomethingDifferent
  *
  * Cached for 10 minutes (same for all users — not personalized yet).
  */
@@ -40,8 +40,6 @@ export async function GET(req: NextRequest) {
     const sourceDims = sourceItem.itemDimensions as TasteDimensions | null;
     const sourceTags = sourceItem.itemTags as ItemTags | null;
     const sourceFranchiseIds = sourceItem.franchiseItems.map((fi) => fi.franchiseId);
-    const sourcePeople = (sourceItem.people as any[] || []);
-    const sourceCreator = sourcePeople[0]?.name?.toLowerCase() || "";
 
     // Get user-specific exclusions (dropped items, low-rated, dismissed)
     const session = await auth();
@@ -102,14 +100,14 @@ export async function GET(req: NextRequest) {
     // ─── SECTION 3: Fans Also Loved ──────────────────────────────────
     const fansAlsoLoved = buildFansAlsoLoved(sourceItem, pool, sourceDims, sourceTags, sourceFranchiseIds, usedIds);
 
-    // ─── SECTION 4: Hidden Gems ──────────────────────────────────────
-    const hiddenGems = buildHiddenGems(sourceItem, pool, sourceDims, sourceTags, usedIds);
+    // ─── SECTION 4: Try Something Different ──────────────────────────
+    const trySomethingDifferent = buildTrySomethingDifferent(sourceItem, pool, sourceDims, usedIds);
 
     const res = NextResponse.json({
       moreSameType: moreSameType.map(toClientItem),
       acrossMedia: acrossMedia.map(toClientItem),
       fansAlsoLoved: fansAlsoLoved.map(toClientItem),
-      hiddenGems: hiddenGems.map(toClientItem),
+      trySomethingDifferent: trySomethingDifferent.map(toClientItem),
     });
     // Cache publicly if no user session, privately otherwise
     if (session?.user?.id) {
@@ -199,10 +197,7 @@ function buildMoreSameType(
       dimScore = tasteSimilarity(sourceDims, c.itemDimensions as TasteDimensions);
     }
 
-    // Tag similarity (most granular signal)
     const tSim = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
-
-    // Quality factor
     const norm = normalizeScore(c.ext || {}, c.type);
     const quality = norm > 0 ? norm : 0.5;
 
@@ -213,13 +208,14 @@ function buildMoreSameType(
 
   scored.sort((a, b) => b.score - a.score);
   const diverse = applyDiversityLimits(scored.map((s) => s.item));
-  return pickAndMark(diverse, usedIds, 12);
+  return pickAndMark(diverse, usedIds, 30);
 }
 
 function buildAcrossMedia(
   source: any, pool: PoolItem[], sourceDims: TasteDimensions | null,
   sourceTags: ItemTags | null, sourceFranchiseIds: number[], usedIds: Set<number>,
 ): PoolItem[] {
+  // Strictly exclude the same media type as the source
   const diffType = pool.filter((c) => c.type !== source.type);
 
   const scored = diffType.map((c) => {
@@ -234,10 +230,10 @@ function buildAcrossMedia(
     // Tag similarity — critical for cross-media (tags are the bridge)
     const tSim = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
 
-    // Cross-media: tags 0.35 (higher weight — tags bridge media types), taste 0.25, genre/vibe 0.20, freshness 0.20
+    // Cross-media: tags 0.35 (higher weight — tags bridge media types), taste 0.25, genre/vibe 0.20
     let score = tSim * 0.35 + dimScore * 0.25 + (gOverlap + vOverlap) * 0.05;
 
-    // Boosts
+    // Boosts for meaningful overlap
     if (gOverlap >= 2) score *= 1.2;
     if (vOverlap >= 2) score *= 1.2;
 
@@ -251,7 +247,7 @@ function buildAcrossMedia(
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Cap franchise items at 2
+  // Cap franchise items at 2 to keep variety
   let franchiseCount = 0;
   const filtered = scored.filter((s) => {
     if (s.isFranchise) {
@@ -261,9 +257,9 @@ function buildAcrossMedia(
     return true;
   });
 
-  // Ensure at least 3 different media types
-  const result = ensureMediaDiversity(filtered.map((s) => s.item), 12);
-  return pickAndMark(result, usedIds, 12);
+  // Ensure at least 3 different media types in the result
+  const result = ensureMediaDiversity(filtered.map((s) => s.item), 30, 4);
+  return pickAndMark(result, usedIds, 30);
 }
 
 function buildFansAlsoLoved(
@@ -297,114 +293,81 @@ function buildFansAlsoLoved(
 
   scored.sort((a, b) => b.score - a.score);
   const diverse = applyDiversityLimits(scored.map((s) => s.item));
-  return pickAndMark(diverse, usedIds, 12);
+  return pickAndMark(diverse, usedIds, 30);
 }
 
-function buildHiddenGems(
-  source: any, pool: PoolItem[], sourceDims: TasteDimensions | null, sourceTags: ItemTags | null, usedIds: Set<number>,
+// Vibes that are considered "opposite" to each input vibe
+const OPPOSITE_VIBES: Record<string, string[]> = {
+  "dark":           ["Wholesome", "Funny", "Uplifting", "Cozy", "Heartfelt", "Light"],
+  "intense":        ["Cozy", "Relaxing", "Slow Burn", "Wholesome", "Calm"],
+  "gritty":         ["Wholesome", "Uplifting", "Funny", "Cozy", "Heartfelt"],
+  "brutal":         ["Wholesome", "Heartfelt", "Funny", "Uplifting", "Cozy"],
+  "melancholic":    ["Uplifting", "Funny", "Wholesome", "Feel-Good", "Heartfelt"],
+  "heartbreaking":  ["Funny", "Uplifting", "Wholesome", "Lighthearted"],
+  "slow burn":      ["Fast-Paced", "Chaotic", "Action-Packed"],
+  "epic":           ["Intimate", "Cozy", "Small-Scale"],
+  "cerebral":       ["Funny", "Fast-Paced", "Lighthearted", "Action-Packed"],
+  "atmospheric":    ["Fast-Paced", "Chaotic", "Lighthearted"],
+  "surreal":        ["Grounded", "Realistic", "Cozy"],
+  "mind-bending":   ["Straightforward", "Cozy", "Lighthearted"],
+  "satirical":      ["Sincere", "Heartfelt", "Earnest"],
+  "chaotic":        ["Calm", "Cozy", "Slow Burn", "Atmospheric"],
+  "action-packed":  ["Slow Burn", "Cozy", "Cerebral", "Atmospheric"],
+};
+
+function buildTrySomethingDifferent(
+  source: any, pool: PoolItem[], sourceDims: TasteDimensions | null, usedIds: Set<number>,
 ): PoolItem[] {
-  // Must have high quality + low popularity + genre/vibe overlap
-  const gems = pool.filter((c) => {
+  // Build the set of "preferred" vibes (opposites of source vibes)
+  const sourceVibesLower = (source.vibes as string[]).map((v: string) => v.toLowerCase());
+  const preferredVibes = new Set<string>();
+  for (const vibe of sourceVibesLower) {
+    const opposites = OPPOSITE_VIBES[vibe] || [];
+    for (const opp of opposites) preferredVibes.add(opp.toLowerCase());
+  }
+
+  // Filter: high quality, low genre overlap with source, not already used
+  const candidates = pool.filter((c) => {
     const norm = normalizeScore(c.ext || {}, c.type);
-    if (norm < 0.6) return false; // Minimum quality
+    if (norm < 0.70) return false; // Only quality items
 
-    // Check high quality threshold by type
-    const ext = c.ext as Record<string, number> || {};
-    const isHighQuality = checkHighQuality(c.type, ext, norm);
-    if (!isHighQuality) return false;
-
-    // Check low popularity
-    const isLowPop = checkLowPopularity(c.type, c.voteCount, ext);
-    if (!isLowPop) return false;
-
-    // Must share at least 2 genres OR 2 vibes OR have tag similarity > 0.15
     const gOverlap = genreOverlap(source.genre, c.genre);
-    const vOverlap = vibeOverlap(source.vibes, c.vibes);
-    const tSim = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
-    if (gOverlap < 2 && vOverlap < 2 && tSim < 0.15) return false;
+    if (gOverlap >= 2) return false; // Must be genuinely different (0-1 genre overlap)
 
     return true;
   });
 
-  // Score by dimension similarity + quality
-  const scored = gems.map((c) => {
-    let dimScore = 0;
-    if (sourceDims && c.itemDimensions) {
-      dimScore = tasteSimilarity(sourceDims, c.itemDimensions as TasteDimensions);
-    }
+  const scored = candidates.map((c) => {
     const norm = normalizeScore(c.ext || {}, c.type);
-    const tSim2 = sourceTags ? tagSimilarity(sourceTags, c.itemTags as ItemTags) : 0;
-    // Reward low vote count (more hidden)
-    const hiddenBonus = c.voteCount < 500 ? 0.2 : c.voteCount < 2000 ? 0.1 : 0;
-    return { item: c, score: tSim2 * 0.25 + dimScore * 0.35 + norm * 0.25 + hiddenBonus };
+
+    // Count how many of this item's vibes are "preferred" (opposite of source vibes)
+    const cVibesLower = c.vibes.map((v) => v.toLowerCase());
+    const oppositeVibeCount = cVibesLower.filter((v) => preferredVibes.has(v)).length;
+
+    // Bonus for different media type
+    const typeDiff = c.type !== source.type ? 0.1 : 0;
+
+    // Score: quality + opposite vibes bonus + type difference bonus
+    const score = norm * 0.6 + (oppositeVibeCount / Math.max(1, c.vibes.length)) * 0.3 + typeDiff;
+
+    return { item: c, score };
   });
 
   scored.sort((a, b) => b.score - a.score);
 
-  // If fewer than 4, relax thresholds
-  if (scored.length < 4) {
-    const relaxed = pool.filter((c) => {
-      if (usedIds.has(c.id)) return false;
-      const norm = normalizeScore(c.ext || {}, c.type);
-      if (norm < 0.6) return false;
-      const gOverlap = genreOverlap(source.genre, c.genre);
-      const vOverlap = vibeOverlap(source.vibes, c.vibes);
-      return gOverlap >= 1 || vOverlap >= 1;
-    });
-
-    const relaxedScored = relaxed.map((c) => {
-      let dimScore = 0;
-      if (sourceDims && c.itemDimensions) {
-        dimScore = tasteSimilarity(sourceDims, c.itemDimensions as TasteDimensions);
-      }
-      return { item: c, score: dimScore };
-    });
-    relaxedScored.sort((a, b) => b.score - a.score);
-
-    // Merge: originals first, then relaxed fills
-    const existingIds = new Set(scored.map((s) => s.item.id));
-    for (const r of relaxedScored) {
-      if (!existingIds.has(r.item.id)) scored.push(r);
-    }
-  }
-
-  const diverse = applyDiversityLimits(scored.map((s) => s.item));
-  return pickAndMark(diverse, usedIds, 10);
+  // Ensure variety: max 3 per media type, at least 4 different types represented
+  const result = ensureMediaDiversity(scored.map((s) => s.item), 30, 3);
+  return pickAndMark(result, usedIds, 30);
 }
 
-function checkHighQuality(type: string, ext: Record<string, number>, norm: number): boolean {
-  switch (type) {
-    case "movie": case "tv": return (ext.imdb >= 7.5) || (ext.rt >= 85) || (ext.meta >= 75) || norm >= 0.75;
-    case "book": return (ext.goodreads >= 4.0) || norm >= 0.75;
-    case "manga": return (ext.mal >= 8.0) || norm >= 0.75;
-    case "game": return (ext.meta >= 80) || (ext.ign >= 8.0) || norm >= 0.75;
-    case "music": return (ext.pitchfork >= 7.5) || norm >= 0.75;
-    default: return norm >= 0.7;
-  }
-}
-
-function checkLowPopularity(type: string, voteCount: number, ext: Record<string, number>): boolean {
-  switch (type) {
-    case "movie": return voteCount < 50000;
-    case "tv": return voteCount < 20000;
-    case "game": return voteCount < 5000;
-    case "book": return voteCount < 50000;
-    case "manga": return voteCount < 30000;
-    case "music": return (ext.spotify_popularity ?? 100) < 50;
-    case "comic": return voteCount < 1000;
-    default: return voteCount < 10000;
-  }
-}
-
-function ensureMediaDiversity(items: PoolItem[], limit: number): PoolItem[] {
+function ensureMediaDiversity(items: PoolItem[], limit: number, maxPerType = 4): PoolItem[] {
   const typeCounts: Record<string, number> = {};
   const result: PoolItem[] = [];
   const deferred: PoolItem[] = [];
 
   for (const item of items) {
     const count = typeCounts[item.type] || 0;
-    // Allow up to 4 per type initially
-    if (count < 4) {
+    if (count < maxPerType) {
       typeCounts[item.type] = count + 1;
       result.push(item);
     } else {
@@ -413,15 +376,22 @@ function ensureMediaDiversity(items: PoolItem[], limit: number): PoolItem[] {
     if (result.length >= limit) break;
   }
 
-  // Ensure at least 3 types
+  // If we still have room and deferred items, fill up to limit
+  if (result.length < limit) {
+    for (const item of deferred) {
+      if (result.length >= limit) break;
+      result.push(item);
+    }
+  }
+
+  // Ensure at least 3 different types represented
   const types = new Set(result.map((r) => r.type));
-  if (types.size < 3 && result.length < limit) {
+  if (types.size < 3 && deferred.length > 0) {
     for (const item of deferred) {
       if (!types.has(item.type)) {
-        // Swap out the last item of the most represented type
         result.push(item);
         types.add(item.type);
-        if (types.size >= 3 || result.length >= limit) break;
+        if (types.size >= 3) break;
       }
     }
   }

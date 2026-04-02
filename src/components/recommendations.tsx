@@ -9,7 +9,7 @@ interface RecommendationData {
   moreSameType: Item[];
   acrossMedia: Item[];
   fansAlsoLoved: Item[];
-  hiddenGems: Item[];
+  trySomethingDifferent: Item[];
 }
 
 function DismissableCard({ item, onDismiss }: { item: Item; onDismiss: (id: number) => void }) {
@@ -138,8 +138,8 @@ export default function Recommendations({ item }: { item: Item }) {
   const moreSame = filterDismissed(data.moreSameType);
   const across = filterDismissed(data.acrossMedia);
   const fans = filterDismissed(data.fansAlsoLoved);
-  const gems = filterDismissed(data.hiddenGems);
-  const hasAny = moreSame.length > 0 || across.length > 0 || fans.length > 0 || gems.length > 0;
+  const different = filterDismissed(data.trySomethingDifferent);
+  const hasAny = moreSame.length > 0 || across.length > 0 || fans.length > 0 || different.length > 0;
 
   if (!hasAny) return null;
 
@@ -171,6 +171,7 @@ export default function Recommendations({ item }: { item: Item }) {
           label="Across Media"
           sub="Same vibes, different medium"
           icon="🌐"
+          iconBg="rgba(49,133,252,0.2)"
         >
           {across.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
         </ScrollRow>
@@ -181,18 +182,20 @@ export default function Recommendations({ item }: { item: Item }) {
           label="Fans Also Loved"
           sub="Popular picks with a similar feel"
           icon="❤️"
+          iconBg="rgba(232,72,85,0.2)"
         >
           {fans.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
         </ScrollRow>
       )}
 
-      {gems.length > 0 && (
+      {different.length > 0 && (
         <ScrollRow
-          label="Hidden Gems Like This"
-          sub="Underrated finds you might love"
-          icon="💎"
+          label="Try Something Different"
+          sub="Something outside your usual picks"
+          icon="✦"
+          iconBg="rgba(155,93,229,0.2)"
         >
-          {gems.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
+          {different.map((i) => <DismissableCard key={i.id} item={i} onDismiss={handleDismiss} />)}
         </ScrollRow>
       )}
     </section>
