@@ -33,6 +33,17 @@ export async function GET(
   const isOwn = session?.user?.id === id;
   const showLibrary = !user.isPrivate || isOwn;
 
+  // Follower/following counts + isFollowing
+  const [followerCount, followingCount, followRecord] = await Promise.all([
+    prisma.follow.count({ where: { followedId: id } }),
+    prisma.follow.count({ where: { followerId: id } }),
+    session?.user?.id && !isOwn
+      ? prisma.follow.findUnique({
+          where: { followerId_followedId: { followerId: session.user.id, followedId: id } },
+        })
+      : Promise.resolve(null),
+  ]);
+
   // Top rated items — include item data
   let topRatings: any[] = [];
   if (showLibrary) {
@@ -81,6 +92,9 @@ export async function GET(
       reviewsCount: showLibrary ? user._count.reviews : 0,
       trackedCount: showLibrary ? user._count.libraryEntries : 0,
       memberNumber: user.memberNumber,
+      followerCount,
+      followingCount,
+      isFollowing: !!followRecord,
     },
     topRatings,
     library: showLibrary ? library : null,

@@ -19,6 +19,9 @@ interface ProfileData {
     reviewsCount: number;
     trackedCount: number;
     memberNumber: number | null;
+    followerCount: number;
+    followingCount: number;
+    isFollowing: boolean;
   };
   topRatings: { itemId: number; score: number; recommendTag: string | null; item?: any }[];
   library: { itemId: number; status: string; progressCurrent: number; item?: any }[] | null;
@@ -42,6 +45,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const [editBio, setEditBio] = useState("");
   const [editPrivate, setEditPrivate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followHover, setFollowHover] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
 
   useEffect(() => {
     fetch(`/api/users/${id}`)
@@ -54,6 +62,9 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         setEditName(data.user.name || "");
         setEditBio(data.user.bio || "");
         setEditPrivate(data.user.isPrivate);
+        setIsFollowing(data.user.isFollowing ?? false);
+        setFollowerCount(data.user.followerCount ?? 0);
+        setFollowingCount(data.user.followingCount ?? 0);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -75,6 +86,34 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       setEditing(false);
     }
     setSaving(false);
+  };
+
+  const handleFollow = async () => {
+    if (followLoading || !session?.user) return;
+    const wasFollowing = isFollowing;
+    // Optimistic update
+    setIsFollowing(!wasFollowing);
+    setFollowerCount((c) => wasFollowing ? c - 1 : c + 1);
+    setFollowLoading(true);
+    try {
+      const res = await fetch(`/api/users/${id}/follow`, {
+        method: wasFollowing ? "DELETE" : "POST",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setIsFollowing(data.following);
+        setFollowerCount(data.followerCount);
+      } else {
+        // Revert on failure
+        setIsFollowing(wasFollowing);
+        setFollowerCount((c) => wasFollowing ? c + 1 : c - 1);
+      }
+    } catch {
+      setIsFollowing(wasFollowing);
+      setFollowerCount((c) => wasFollowing ? c + 1 : c - 1);
+    } finally {
+      setFollowLoading(false);
+    }
   };
 
   if (loading) {
@@ -199,8 +238,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
-        {/* Edit button (own profile only) */}
-        {isOwn && (
+        {/* Follow button (other profiles) or Edit button (own profile) */}
+        {isOwn ? (
           <button
             onClick={() => setEditing(!editing)}
             style={{
@@ -215,6 +254,51 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             }}
           >
             {editing ? "Cancel" : "Edit Profile"}
+          </button>
+        ) : session?.user && (
+          <button
+            onClick={handleFollow}
+            onMouseEnter={() => setFollowHover(true)}
+            onMouseLeave={() => setFollowHover(false)}
+            disabled={followLoading}
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "9px 24px", borderRadius: 8, cursor: followLoading ? "default" : "pointer",
+              transition: "all 0.15s",
+              background: isFollowing
+                ? (followHover ? "rgba(232,72,85,0.1)" : "rgba(46,196,182,0.2)")
+                : "rgba(46,196,182,0.1)",
+              border: isFollowing
+                ? (followHover ? "1px solid rgba(232,72,85,0.3)" : "1px solid rgba(46,196,182,0.5)")
+                : "1px solid rgba(46,196,182,0.3)",
+            }}
+          >
+            {/* Icon */}
+            {isFollowing && followHover ? (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E84855" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="8.5" cy="7" r="4"/>
+                <line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/>
+              </svg>
+            ) : isFollowing ? (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2EC4B6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="8.5" cy="7" r="4"/>
+                <polyline points="17 11 19 13 23 9"/>
+              </svg>
+            ) : (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2EC4B6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="8.5" cy="7" r="4"/>
+                <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+              </svg>
+            )}
+            <span style={{
+              fontSize: 14, fontWeight: 500,
+              color: isFollowing && followHover ? "#E84855" : "#2EC4B6",
+            }}>
+              {isFollowing ? (followHover ? "Unfollow" : "Following") : "Follow"}
+            </span>
           </button>
         )}
       </div>
@@ -342,22 +426,35 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       )}
 
       {/* Stats */}
-      <div style={{ display: "flex", gap: 16, marginBottom: 36 }}>
+      <div style={{ display: "flex", gap: 12, marginBottom: 36, flexWrap: "wrap" }}>
         {[
-          { label: "Rated", value: user.ratingsCount, color: "#f1c40f" },
-          { label: "Reviewed", value: user.reviewsCount, color: "#E84855" },
-          { label: "Tracked", value: user.trackedCount, color: "#3185FC" },
+          { label: "Rated", value: user.ratingsCount, color: "#2EC4B6", onClick: undefined },
+          { label: "Reviewed", value: user.reviewsCount, color: "#E84855", onClick: undefined },
+          { label: "Tracked", value: user.trackedCount, color: "#3185FC", onClick: undefined },
+          { label: "Followers", value: followerCount, color: "rgba(255,255,255,0.4)", onClick: undefined },
+          {
+            label: "Following", value: followingCount, color: "rgba(255,255,255,0.4)",
+            onClick: isOwn ? () => window.location.href = "/people/following" : undefined,
+          },
         ].map((s) => (
-          <div key={s.label} style={{
-            flex: 1,
-            padding: "16px 0",
-            background: "var(--surface-1)",
-            border: "1px solid var(--border)",
-            borderRadius: 14,
-            textAlign: "center",
-          }}>
-            <div style={{ fontSize: 28, fontWeight: 800, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: "var(--text-faint)", textTransform: "uppercase", letterSpacing: 1, marginTop: 4 }}>
+          <div
+            key={s.label}
+            onClick={s.onClick}
+            style={{
+              flex: 1, minWidth: 80,
+              padding: "14px 0",
+              background: "rgba(255,255,255,0.02)",
+              border: "0.5px solid rgba(249,166,32,0.15)",
+              borderRadius: 8,
+              textAlign: "center",
+              cursor: s.onClick ? "pointer" : "default",
+              transition: s.onClick ? "background 0.15s" : undefined,
+            }}
+            onMouseEnter={(e) => { if (s.onClick) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}
+            onMouseLeave={(e) => { if (s.onClick) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.02)"; }}
+          >
+            <div style={{ fontSize: 20, fontWeight: 500, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: 0.5, marginTop: 3 }}>
               {s.label}
             </div>
           </div>
