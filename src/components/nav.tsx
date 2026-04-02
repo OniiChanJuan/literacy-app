@@ -12,6 +12,10 @@ function dispatchForYouRefresh() {
   window.dispatchEvent(new CustomEvent("literacy:refresh-foryou"));
 }
 
+function dispatchExploreRefresh() {
+  window.dispatchEvent(new CustomEvent("literacy:refresh-explore"));
+}
+
 const tabs = [
   { id: "foryou",  label: "For You",  icon: "✦", href: "/" },
   { id: "explore", label: "Explore",  icon: "◎", href: "/explore" },
@@ -137,7 +141,10 @@ export default function Nav() {
               key={t.id}
               href={t.href}
               className="nav-tab-link"
-              onClick={(e) => { if (active && t.href === "/") { e.preventDefault(); dispatchForYouRefresh(); } }}
+              onClick={(e) => {
+                if (active && t.href === "/") { e.preventDefault(); dispatchForYouRefresh(); }
+                if (active && t.href === "/explore") { e.preventDefault(); dispatchExploreRefresh(); }
+              }}
               style={{
                 background: "none",
                 border: "none",
@@ -222,6 +229,7 @@ export default function Nav() {
                   onClick={(e) => {
                     setMobileMenuOpen(false);
                     if (active && t.href === "/") { e.preventDefault(); dispatchForYouRefresh(); }
+                    if (active && t.href === "/explore") { e.preventDefault(); dispatchExploreRefresh(); }
                   }}
                   style={{
                     padding: "16px 24px",

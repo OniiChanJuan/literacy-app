@@ -108,6 +108,25 @@ function ExploreContent() {
   const [gridHasMore, setGridHasMore] = useState(false);
   const gridPageRef = useRef(0);
   const [typeCounts, setTypeCounts] = useState<Record<string, number>>({});
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Listen for refresh events from the Explore nav tab
+  useEffect(() => {
+    function handleRefresh() {
+      setSearch("");
+      setSelectedType(null);
+      setSelectedGenres([]);
+      setSelectedVibe(null);
+      setSelectedTag(null);
+      setSort("rating");
+      setSearchResults(null);
+      setGridItems([]);
+      setRefreshKey((k) => k + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    window.addEventListener("literacy:refresh-explore", handleRefresh);
+    return () => window.removeEventListener("literacy:refresh-explore", handleRefresh);
+  }, []);
 
   const hasGenreOrVibe = selectedGenres.length > 0 || selectedVibe !== null || selectedTag !== null;
 
@@ -669,14 +688,17 @@ function ExploreContent() {
             if (selectedTag) parts.push(getTagDisplayName(selectedTag));
             const filterPrefix = parts.length > 0 ? parts.join(" + ") + " " : "";
             const curatedParam = ["top_rated", "hidden_gems", "popular"].includes(sort) ? sort : undefined;
+            // Use forYou=1 (shuffle) when browsing with no active filter so re-clicking Explore shows fresh picks
+            const noActiveFilter = !hasGenreOrVibe && !curatedParam;
             return (
               <MediaTypeRow
-                key={`${k}-${selectedGenres.join(",")}-${selectedVibe}-${selectedTag}-${sort}`}
+                key={`${k}-${selectedGenres.join(",")}-${selectedVibe}-${selectedTag}-${sort}-${refreshKey}`}
                 type={k}
                 genre={selectedGenres.length > 0 ? selectedGenres.join(",") : undefined}
                 vibe={selectedVibe || undefined}
                 curated={curatedParam}
                 tag={selectedTag || undefined}
+                forYou={noActiveFilter}
                 label={`${t.icon} ${filterPrefix}${t.label}`}
                 sub={hasGenreOrVibe ? undefined : `${count} titles`}
               />
@@ -890,7 +912,7 @@ function MediaTypeIcon({ type, color }: { type: string; color: string }) {
   }
 }
 
-function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string; curated?: string }) {
+function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated, forYou }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string; curated?: string; forYou?: boolean }) {
   const [items, setItems] = useState<Item[] | null>(null);
   useEffect(() => {
     let url = `/api/catalog?type=${type}&limit=30`;
@@ -898,10 +920,11 @@ function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated }: { type: s
     if (vibe) url += `&vibe=${encodeURIComponent(vibe)}`;
     if (tag) url += `&tag=${encodeURIComponent(tag)}`;
     if (curated) url += `&curated=${curated}`;
+    if (forYou) url += `&forYou=1`;
     fetch(url)
       .then((r) => r.json()).then((d) => setItems(Array.isArray(d) ? d : []))
       .catch(() => setItems([]));
-  }, [type, genre, vibe, tag, curated]);
+  }, [type, genre, vibe, tag, curated, forYou]);
   // Hide row if no items match the filter
   if (items !== null && items.length === 0) return null;
   if (items !== null && items.length < 4 && !genre && !vibe && !tag) return null;
