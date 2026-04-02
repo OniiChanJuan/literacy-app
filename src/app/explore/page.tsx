@@ -581,25 +581,28 @@ function ExploreContent() {
       {!selectedType && (
         <>
           {/* ── Three always-visible filter rows ─────────────────────── */}
-          {/* maxWidth caps all rows at the same point; minWidth:92px on buttons keeps them aligned */}
-          <div style={{ marginBottom: 8, maxWidth: "min(100%, 820px)" }}>
+          {/* Pill containers are fixed calc(65vw - 150px) wide so all three rows end at the same point */}
+          <div style={{ marginBottom: 8 }}>
             {/* ROW 1 — Genre */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(232,72,85,0.5)", flexShrink: 0, width: 42 }}>Genre</span>
-              <div className="filter-scroll-row" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, overflowX: "auto", flexWrap: "nowrap" }}>
-                {scrollGenres.map((g) => {
-                  const active = selectedGenres.includes(g);
-                  return (
-                    <button key={g} onClick={() => toggleStorefrontGenre(g)} style={{
-                      fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                      transition: "all 0.15s",
-                      background: active ? "rgba(232,72,85,0.18)" : "rgba(232,72,85,0.06)",
-                      border: active ? "1px solid rgba(232,72,85,0.4)" : "0.5px solid rgba(232,72,85,0.15)",
-                      color: active ? "#E84855" : "rgba(232,72,85,0.6)",
-                      fontWeight: active ? 500 : 400,
-                    }}>{g}</button>
-                  );
-                })}
+              <div style={{ width: "calc(65vw - 150px)", minWidth: 100, flexShrink: 0, overflow: "hidden", position: "relative" }}>
+                <div style={{ display: "flex", gap: 5, flexWrap: "nowrap" }}>
+                  {scrollGenres.map((g) => {
+                    const active = selectedGenres.includes(g);
+                    return (
+                      <button key={g} onClick={() => toggleStorefrontGenre(g)} style={{
+                        fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                        transition: "all 0.15s",
+                        background: active ? "rgba(232,72,85,0.18)" : "rgba(232,72,85,0.06)",
+                        border: active ? "1px solid rgba(232,72,85,0.4)" : "0.5px solid rgba(232,72,85,0.15)",
+                        color: active ? "#E84855" : "rgba(232,72,85,0.6)",
+                        fontWeight: active ? 500 : 400,
+                      }}>{g}</button>
+                    );
+                  })}
+                </div>
+                <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 28, background: "linear-gradient(to right, transparent, #0b0b10)", pointerEvents: "none" }} />
               </div>
               <button
                 onClick={() => setOpenPanel(openPanel === "genre" ? null : "genre")}
@@ -622,24 +625,27 @@ function ExploreContent() {
             {/* ROW 2 — Vibe */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(155,93,229,0.5)", flexShrink: 0, width: 42 }}>Vibe</span>
-              <div className="filter-scroll-row" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, overflowX: "auto", flexWrap: "nowrap" }}>
-                {scrollVibes.map((v) => {
-                  const vibe = VIBES[v];
-                  if (!vibe) return null;
-                  const active = selectedVibe === v;
-                  return (
-                    <button key={v} onClick={() => toggleStorefrontVibe(v)} style={{
-                      fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                      display: "flex", alignItems: "center", gap: 4, transition: "all 0.15s",
-                      background: active ? "rgba(155,93,229,0.18)" : "rgba(155,93,229,0.06)",
-                      border: active ? "1px solid rgba(155,93,229,0.4)" : "0.5px solid rgba(155,93,229,0.15)",
-                      color: active ? "#9B5DE5" : "rgba(155,93,229,0.6)",
-                      fontWeight: active ? 500 : 400,
-                    }}>
-                      {vibe.icon} {vibe.label}
-                    </button>
-                  );
-                })}
+              <div style={{ width: "calc(65vw - 150px)", minWidth: 100, flexShrink: 0, overflow: "hidden", position: "relative" }}>
+                <div style={{ display: "flex", gap: 5, flexWrap: "nowrap" }}>
+                  {scrollVibes.map((v) => {
+                    const vibe = VIBES[v];
+                    if (!vibe) return null;
+                    const active = selectedVibe === v;
+                    return (
+                      <button key={v} onClick={() => toggleStorefrontVibe(v)} style={{
+                        fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                        display: "flex", alignItems: "center", gap: 4, transition: "all 0.15s",
+                        background: active ? "rgba(155,93,229,0.18)" : "rgba(155,93,229,0.06)",
+                        border: active ? "1px solid rgba(155,93,229,0.4)" : "0.5px solid rgba(155,93,229,0.15)",
+                        color: active ? "#9B5DE5" : "rgba(155,93,229,0.6)",
+                        fontWeight: active ? 500 : 400,
+                      }}>
+                        {vibe.icon} {vibe.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 28, background: "linear-gradient(to right, transparent, #0b0b10)", pointerEvents: "none" }} />
               </div>
               <button
                 onClick={() => setOpenPanel(openPanel === "vibe" ? null : "vibe")}
@@ -662,20 +668,23 @@ function ExploreContent() {
             {/* ROW 3 — Tag */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(46,196,182,0.5)", flexShrink: 0, width: 42 }}>Tag</span>
-              <div className="filter-scroll-row" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, overflowX: "auto", flexWrap: "nowrap" }}>
-                {scrollTags.map((slug) => {
-                  const active = selectedTag === slug;
-                  return (
-                    <button key={slug} onClick={() => toggleStorefrontTag(slug)} style={{
-                      fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                      transition: "all 0.15s",
-                      background: active ? "rgba(46,196,182,0.18)" : "rgba(46,196,182,0.06)",
-                      border: active ? "1px solid rgba(46,196,182,0.4)" : "0.5px solid rgba(46,196,182,0.15)",
-                      color: active ? "#2EC4B6" : "rgba(46,196,182,0.6)",
-                      fontWeight: active ? 500 : 400,
-                    }}>{getTagDisplayName(slug)}</button>
-                  );
-                })}
+              <div style={{ width: "calc(65vw - 150px)", minWidth: 100, flexShrink: 0, overflow: "hidden", position: "relative" }}>
+                <div style={{ display: "flex", gap: 5, flexWrap: "nowrap" }}>
+                  {scrollTags.map((slug) => {
+                    const active = selectedTag === slug;
+                    return (
+                      <button key={slug} onClick={() => toggleStorefrontTag(slug)} style={{
+                        fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                        transition: "all 0.15s",
+                        background: active ? "rgba(46,196,182,0.18)" : "rgba(46,196,182,0.06)",
+                        border: active ? "1px solid rgba(46,196,182,0.4)" : "0.5px solid rgba(46,196,182,0.15)",
+                        color: active ? "#2EC4B6" : "rgba(46,196,182,0.6)",
+                        fontWeight: active ? 500 : 400,
+                      }}>{getTagDisplayName(slug)}</button>
+                    );
+                  })}
+                </div>
+                <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 28, background: "linear-gradient(to right, transparent, #0b0b10)", pointerEvents: "none" }} />
               </div>
               <button
                 onClick={() => setOpenPanel(openPanel === "tag" ? null : "tag")}
@@ -801,11 +810,6 @@ function ExploreContent() {
               </div>
             )}
 
-            {/* Hide scrollbars on pill rows */}
-            <style>{`
-              .filter-scroll-row { scrollbar-width: none; }
-              .filter-scroll-row::-webkit-scrollbar { display: none; }
-            `}</style>
           </div>
 
           {/* Media type scroll rows */}
