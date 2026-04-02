@@ -41,7 +41,7 @@ export default function Nav() {
       zIndex: 50,
     }}>
       <style>{`
-        .nav-logo-text { font-size: 32px; }
+        .nav-logo-text { font-size: 30px; }
         .nav-tabs { display: flex; }
         .nav-hamburger { display: none; }
         .nav-tab-link { min-height: auto; }
@@ -54,7 +54,7 @@ export default function Nav() {
       `}</style>
 
       {/* Top row: logo + right side */}
-      <div className="content-width" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 28, marginBottom: 26 }}>
+      <div className="content-width" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 16, marginBottom: 14 }}>
 
         {/* Logo */}
         <Link
@@ -74,9 +74,9 @@ export default function Nav() {
             Literacy
           </h1>
           <div style={{
-            fontSize: 11,
+            fontSize: 10,
             color: "rgba(255,255,255,0.3)",
-            marginTop: 4,
+            marginTop: 2,
             letterSpacing: "2px",
             textTransform: "uppercase",
           }}>
@@ -149,7 +149,7 @@ export default function Nav() {
                 background: "none",
                 border: "none",
                 color: active ? "#fff" : "rgba(255,255,255,0.35)",
-                padding: "11px 18px",
+                padding: "8px 18px",
                 fontSize: 13,
                 fontWeight: active ? 700 : 500,
                 cursor: "pointer",
