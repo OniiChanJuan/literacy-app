@@ -218,8 +218,8 @@ function ExploreContent() {
     setSelectedGenres((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]);
   };
 
-  // Filter tab state (not persisted to URL)
-  const [filterTab, setFilterTab] = useState<"genre" | "vibe" | "tag">("genre");
+  // Which "All X" dropdown panel is open
+  const [openPanel, setOpenPanel] = useState<"genre" | "vibe" | "tag" | null>(null);
 
   // Multi-select toggles — each category independent
   const toggleStorefrontGenre = (g: string) => {
@@ -570,111 +570,226 @@ function ExploreContent() {
       {/* ── DEFAULT STOREFRONT: no type selected ───────────────────────── */}
       {!selectedType && (
         <>
-          {/* Tabbed filter bar */}
+          {/* ── Three always-visible filter rows ─────────────────────── */}
           <div style={{ marginBottom: 8 }}>
-            {/* LINE 1 — Tab row + active filter badges */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              {/* Tab buttons */}
-              <div style={{ display: "flex", gap: 2 }}>
-                {(["genre", "vibe", "tag"] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setFilterTab(tab)}
-                    style={{
-                      fontSize: 11, padding: "4px 12px", borderRadius: 8, cursor: "pointer",
-                      transition: "background 0.15s",
-                      background: filterTab === tab ? "rgba(255,255,255,0.1)" : "transparent",
-                      color: filterTab === tab ? "#fff" : "rgba(255,255,255,0.3)",
-                      fontWeight: filterTab === tab ? 500 : 400,
-                      border: "none",
-                    }}
-                  >
-                    {tab === "genre" ? "Genre" : tab === "vibe" ? "Vibe" : "Tag"}
-                  </button>
-                ))}
+            {/* ROW 1 — Genre */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(232,72,85,0.5)", flexShrink: 0, width: 42 }}>Genre</span>
+              <div className="filter-scroll-row" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, overflowX: "auto", flexWrap: "nowrap" }}>
+                {ALL_GENRES.map((g) => {
+                  const active = selectedGenres.includes(g);
+                  return (
+                    <button key={g} onClick={() => toggleStorefrontGenre(g)} style={{
+                      fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                      transition: "all 0.15s",
+                      background: active ? "rgba(232,72,85,0.18)" : "rgba(232,72,85,0.06)",
+                      border: active ? "1px solid rgba(232,72,85,0.4)" : "0.5px solid rgba(232,72,85,0.15)",
+                      color: active ? "#E84855" : "rgba(232,72,85,0.6)",
+                      fontWeight: active ? 500 : 400,
+                    }}>{g}</button>
+                  );
+                })}
               </div>
-              {/* Active filter badges */}
-              {hasGenreOrVibe && (
-                <div style={{ display: "flex", gap: 4, alignItems: "center", overflowX: "auto", maxWidth: "60%" }}>
-                  {selectedGenres.map((g) => (
-                    <button key={`badge-g-${g}`} onClick={() => toggleStorefrontGenre(g)} style={{
-                      fontSize: 11, padding: "3px 10px", borderRadius: 10, display: "inline-flex", alignItems: "center", gap: 4,
-                      background: "rgba(232,72,85,0.12)", border: "0.5px solid rgba(232,72,85,0.3)", color: "#E84855",
-                      cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                    }}>
-                      {g} <span style={{ fontSize: 9, opacity: 0.5 }}>✕</span>
-                    </button>
-                  ))}
-                  {selectedVibe && VIBES[selectedVibe] && (
-                    <button onClick={() => toggleStorefrontVibe(selectedVibe)} style={{
-                      fontSize: 11, padding: "3px 10px", borderRadius: 10, display: "inline-flex", alignItems: "center", gap: 4,
-                      background: "rgba(155,93,229,0.12)", border: "0.5px solid rgba(155,93,229,0.3)", color: "#9B5DE5",
-                      cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                    }}>
-                      {VIBES[selectedVibe].label} <span style={{ fontSize: 9, opacity: 0.5 }}>✕</span>
-                    </button>
-                  )}
-                  {selectedTag && (
-                    <button onClick={() => toggleStorefrontTag(selectedTag)} style={{
-                      fontSize: 11, padding: "3px 10px", borderRadius: 10, display: "inline-flex", alignItems: "center", gap: 4,
-                      background: "rgba(46,196,182,0.12)", border: "0.5px solid rgba(46,196,182,0.3)", color: "#2EC4B6",
-                      cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                    }}>
-                      {getTagDisplayName(selectedTag)} <span style={{ fontSize: 9, opacity: 0.5 }}>✕</span>
-                    </button>
-                  )}
-                  <button onClick={clearFilters} style={{
-                    fontSize: 11, padding: "3px 10px", borderRadius: 10,
-                    background: "rgba(255,255,255,0.04)", border: "0.5px solid rgba(255,255,255,0.08)",
-                    color: "rgba(255,255,255,0.25)", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                  }}>
-                    Clear all
-                  </button>
-                </div>
-              )}
+              <button
+                onClick={() => setOpenPanel(openPanel === "genre" ? null : "genre")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 4, flexShrink: 0,
+                  fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer",
+                  background: "rgba(232,72,85,0.15)", border: "1px solid rgba(232,72,85,0.3)",
+                  color: "rgba(232,72,85,0.8)", whiteSpace: "nowrap",
+                }}
+              >
+                All genres
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
             </div>
 
-            {/* LINE 2 — Scrollable pill row */}
-            <div className="filter-pill-row" style={{ display: "flex", gap: 6, overflowX: "auto", flexWrap: "nowrap", paddingBottom: 4 }}>
-              {filterTab === "genre" && ALL_GENRES.slice(0, 20).map((g) => {
-                const active = selectedGenres.includes(g);
-                return (
-                  <button key={g} onClick={() => toggleStorefrontGenre(g)} style={{
-                    fontSize: 11, padding: "5px 12px", borderRadius: 14, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                    transition: "all 0.15s",
-                    background: active ? "rgba(232,72,85,0.15)" : "rgba(255,255,255,0.04)",
-                    border: active ? "0.5px solid rgba(232,72,85,0.4)" : "0.5px solid rgba(255,255,255,0.08)",
-                    color: active ? "#E84855" : "rgba(255,255,255,0.4)",
-                  }}>{g}</button>
-                );
-              })}
-              {filterTab === "vibe" && ALL_VIBES.map((v) => {
-                const vibe = VIBES[v];
-                if (!vibe) return null;
-                const active = selectedVibe === v;
-                return (
-                  <button key={v} onClick={() => toggleStorefrontVibe(v)} style={{
-                    fontSize: 11, padding: "5px 12px", borderRadius: 14, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                    transition: "all 0.15s",
-                    background: active ? `${vibe.color}33` : `${vibe.color}0A`,
-                    border: active ? `0.5px solid ${vibe.color}80` : `0.5px solid ${vibe.color}1A`,
-                    color: active ? "#fff" : vibe.color,
-                  }}>{vibe.icon} {vibe.label}</button>
-                );
-              })}
-              {filterTab === "tag" && POPULAR_TAGS.map((t) => {
-                const active = selectedTag === t.slug;
-                return (
-                  <button key={t.slug} onClick={() => toggleStorefrontTag(t.slug)} style={{
-                    fontSize: 11, padding: "5px 12px", borderRadius: 14, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
-                    transition: "all 0.15s",
-                    background: active ? "rgba(232,72,85,0.15)" : "rgba(255,255,255,0.04)",
-                    border: active ? "0.5px solid rgba(232,72,85,0.4)" : "0.5px solid rgba(255,255,255,0.06)",
-                    color: active ? "#E84855" : "rgba(255,255,255,0.35)",
-                  }}>{getTagDisplayName(t.slug)}</button>
-                );
-              })}
+            {/* ROW 2 — Vibe */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(155,93,229,0.5)", flexShrink: 0, width: 42 }}>Vibe</span>
+              <div className="filter-scroll-row" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, overflowX: "auto", flexWrap: "nowrap" }}>
+                {ALL_VIBES.map((v) => {
+                  const vibe = VIBES[v];
+                  if (!vibe) return null;
+                  const active = selectedVibe === v;
+                  return (
+                    <button key={v} onClick={() => toggleStorefrontVibe(v)} style={{
+                      fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                      display: "flex", alignItems: "center", gap: 4, transition: "all 0.15s",
+                      background: active ? "rgba(155,93,229,0.18)" : "rgba(155,93,229,0.06)",
+                      border: active ? "1px solid rgba(155,93,229,0.4)" : "0.5px solid rgba(155,93,229,0.15)",
+                      color: active ? "#9B5DE5" : "rgba(155,93,229,0.6)",
+                      fontWeight: active ? 500 : 400,
+                    }}>
+                      {vibe.icon} {vibe.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => setOpenPanel(openPanel === "vibe" ? null : "vibe")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 4, flexShrink: 0,
+                  fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer",
+                  background: "rgba(155,93,229,0.15)", border: "1px solid rgba(155,93,229,0.3)",
+                  color: "rgba(155,93,229,0.8)", whiteSpace: "nowrap",
+                }}
+              >
+                All vibes
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
             </div>
+
+            {/* ROW 3 — Tag */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(46,196,182,0.5)", flexShrink: 0, width: 42 }}>Tag</span>
+              <div className="filter-scroll-row" style={{ flex: 1, minWidth: 0, display: "flex", gap: 5, overflowX: "auto", flexWrap: "nowrap" }}>
+                {POPULAR_TAGS.map((t) => {
+                  const active = selectedTag === t.slug;
+                  return (
+                    <button key={t.slug} onClick={() => toggleStorefrontTag(t.slug)} style={{
+                      fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                      transition: "all 0.15s",
+                      background: active ? "rgba(46,196,182,0.18)" : "rgba(46,196,182,0.06)",
+                      border: active ? "1px solid rgba(46,196,182,0.4)" : "0.5px solid rgba(46,196,182,0.15)",
+                      color: active ? "#2EC4B6" : "rgba(46,196,182,0.6)",
+                      fontWeight: active ? 500 : 400,
+                    }}>{getTagDisplayName(t.slug)}</button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => setOpenPanel(openPanel === "tag" ? null : "tag")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 4, flexShrink: 0,
+                  fontSize: 11, padding: "4px 10px", borderRadius: 10, cursor: "pointer",
+                  background: "rgba(46,196,182,0.15)", border: "1px solid rgba(46,196,182,0.3)",
+                  color: "rgba(46,196,182,0.8)", whiteSpace: "nowrap",
+                }}
+              >
+                All tags
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Dropdown panel — inline, pushes content down */}
+            {openPanel && (
+              <div style={{
+                background: "#141419",
+                border: `0.5px solid ${openPanel === "genre" ? "rgba(232,72,85,0.2)" : openPanel === "vibe" ? "rgba(155,93,229,0.2)" : "rgba(46,196,182,0.2)"}`,
+                borderRadius: 10, padding: "14px 16px", marginBottom: 8,
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <span style={{
+                    fontSize: 12, fontWeight: 500,
+                    color: openPanel === "genre" ? "rgba(232,72,85,0.7)" : openPanel === "vibe" ? "rgba(155,93,229,0.7)" : "rgba(46,196,182,0.7)",
+                  }}>
+                    All {openPanel === "genre" ? "genres" : openPanel === "vibe" ? "vibes" : "tags"}
+                  </span>
+                  <button onClick={() => setOpenPanel(null)} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.2)", cursor: "pointer", fontSize: 11 }}>
+                    Close
+                  </button>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {openPanel === "genre" && ALL_GENRES.map((g) => {
+                    const active = selectedGenres.includes(g);
+                    return (
+                      <button key={g} onClick={() => toggleStorefrontGenre(g)} style={{
+                        fontSize: 11, padding: "5px 12px", borderRadius: 10, cursor: "pointer", transition: "all 0.15s",
+                        background: active ? "rgba(232,72,85,0.18)" : "rgba(232,72,85,0.06)",
+                        border: active ? "1px solid rgba(232,72,85,0.4)" : "0.5px solid rgba(232,72,85,0.15)",
+                        color: active ? "#E84855" : "rgba(232,72,85,0.6)",
+                        fontWeight: active ? 500 : 400,
+                      }}>{g}</button>
+                    );
+                  })}
+                  {openPanel === "vibe" && ALL_VIBES.map((v) => {
+                    const vibe = VIBES[v];
+                    if (!vibe) return null;
+                    const active = selectedVibe === v;
+                    return (
+                      <button key={v} onClick={() => toggleStorefrontVibe(v)} style={{
+                        fontSize: 11, padding: "5px 12px", borderRadius: 10, cursor: "pointer",
+                        display: "flex", alignItems: "center", gap: 4, transition: "all 0.15s",
+                        background: active ? "rgba(155,93,229,0.18)" : "rgba(155,93,229,0.06)",
+                        border: active ? "1px solid rgba(155,93,229,0.4)" : "0.5px solid rgba(155,93,229,0.15)",
+                        color: active ? "#9B5DE5" : "rgba(155,93,229,0.6)",
+                        fontWeight: active ? 500 : 400,
+                      }}>
+                        {vibe.icon} {vibe.label}
+                      </button>
+                    );
+                  })}
+                  {openPanel === "tag" && POPULAR_TAGS.map((t) => {
+                    const active = selectedTag === t.slug;
+                    return (
+                      <button key={t.slug} onClick={() => toggleStorefrontTag(t.slug)} style={{
+                        fontSize: 11, padding: "5px 12px", borderRadius: 10, cursor: "pointer", transition: "all 0.15s",
+                        background: active ? "rgba(46,196,182,0.18)" : "rgba(46,196,182,0.06)",
+                        border: active ? "1px solid rgba(46,196,182,0.4)" : "0.5px solid rgba(46,196,182,0.15)",
+                        color: active ? "#2EC4B6" : "rgba(46,196,182,0.6)",
+                        fontWeight: active ? 500 : 400,
+                      }}>{getTagDisplayName(t.slug)}</button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Active filter bar — only when filters are selected */}
+            {hasGenreOrVibe && (
+              <div style={{
+                marginTop: 8, paddingTop: 8, borderTop: "0.5px solid rgba(255,255,255,0.04)",
+                display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap",
+              }}>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>Active:</span>
+                {selectedGenres.map((g) => (
+                  <button key={`badge-g-${g}`} onClick={() => toggleStorefrontGenre(g)} style={{
+                    fontSize: 11, padding: "3px 10px", borderRadius: 10, display: "inline-flex", alignItems: "center",
+                    background: "rgba(232,72,85,0.12)", border: "0.5px solid rgba(232,72,85,0.3)", color: "#E84855",
+                    cursor: "pointer", whiteSpace: "nowrap",
+                  }}>
+                    {g} <span style={{ fontSize: 9, opacity: 0.5, marginLeft: 3 }}>✕</span>
+                  </button>
+                ))}
+                {selectedVibe && VIBES[selectedVibe] && (
+                  <button onClick={() => toggleStorefrontVibe(selectedVibe)} style={{
+                    fontSize: 11, padding: "3px 10px", borderRadius: 10, display: "inline-flex", alignItems: "center", gap: 3,
+                    background: "rgba(155,93,229,0.12)", border: "0.5px solid rgba(155,93,229,0.3)", color: "#9B5DE5",
+                    cursor: "pointer", whiteSpace: "nowrap",
+                  }}>
+                    {VIBES[selectedVibe].icon} {VIBES[selectedVibe].label} <span style={{ fontSize: 9, opacity: 0.5, marginLeft: 3 }}>✕</span>
+                  </button>
+                )}
+                {selectedTag && (
+                  <button onClick={() => toggleStorefrontTag(selectedTag)} style={{
+                    fontSize: 11, padding: "3px 10px", borderRadius: 10, display: "inline-flex", alignItems: "center",
+                    background: "rgba(46,196,182,0.12)", border: "0.5px solid rgba(46,196,182,0.3)", color: "#2EC4B6",
+                    cursor: "pointer", whiteSpace: "nowrap",
+                  }}>
+                    {getTagDisplayName(selectedTag)} <span style={{ fontSize: 9, opacity: 0.5, marginLeft: 3 }}>✕</span>
+                  </button>
+                )}
+                <button onClick={clearFilters} style={{
+                  fontSize: 11, color: "rgba(255,255,255,0.15)", background: "none", border: "none",
+                  cursor: "pointer", marginLeft: 4,
+                }}>
+                  Clear all
+                </button>
+              </div>
+            )}
+
+            {/* Hide scrollbars on pill rows */}
+            <style>{`
+              .filter-scroll-row { scrollbar-width: none; }
+              .filter-scroll-row::-webkit-scrollbar { display: none; }
+            `}</style>
           </div>
 
           {/* Media type scroll rows */}
