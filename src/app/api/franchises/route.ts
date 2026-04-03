@@ -111,6 +111,53 @@ export async function GET(req: NextRequest) {
     };
     const color = typeColors[franchise.icon] || "#C45BAA";
 
+    // Sibling franchises — other children of the same parent
+    type UniverseSeries = { id: number; name: string; icon: string; itemCount: number; firstCover: string | null };
+    let siblingFranchises: UniverseSeries[] = [];
+    if (franchise.parentFranchiseId) {
+      const rawSiblings = await (prisma as any).franchise.findMany({
+        where: { parentFranchiseId: franchise.parentFranchiseId, id: { not: franchise.id } },
+        include: {
+          _count: { select: { items: true } },
+          items: {
+            take: 1,
+            where: { item: { cover: { not: null } } },
+            include: { item: { select: { cover: true } } },
+          },
+        },
+      });
+      siblingFranchises = rawSiblings.map((s: any) => ({
+        id: s.id,
+        name: s.name,
+        icon: s.icon || "🔗",
+        itemCount: s._count.items,
+        firstCover: s.items[0]?.item?.cover ?? null,
+      }));
+    }
+
+    // Child franchises — sub-series within THIS franchise (Scenario D: item is in a parent universe directly)
+    let childFranchises: UniverseSeries[] = [];
+    const rawChildren = await (prisma as any).franchise.findMany({
+      where: { parentFranchiseId: franchise.id },
+      include: {
+        _count: { select: { items: true } },
+        items: {
+          take: 1,
+          where: { item: { cover: { not: null } } },
+          include: { item: { select: { cover: true } } },
+        },
+      },
+    });
+    if (rawChildren.length > 0) {
+      childFranchises = rawChildren.map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        icon: c.icon || "🔗",
+        itemCount: c._count.items,
+        firstCover: c.items[0]?.item?.cover ?? null,
+      }));
+    }
+
     const res = NextResponse.json({
       id: franchise.id,
       name: franchise.name,
@@ -120,10 +167,12 @@ export async function GET(req: NextRequest) {
       mediaTypes: allTypes.size,
       otherItems: deduped,
       parentFranchise: franchise.parentFranchise || null,
+      siblingFranchises,
+      childFranchises,
       communityAverage,
       totalVotes,
     });
-    res.headers.set("Cache-Control", "s-maxage=600, stale-while-revalidate=1200");
+    res.headers.set("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
     return res;
   } catch (error: any) {
     console.error("Franchise API error:", error);
