@@ -147,6 +147,23 @@ function ExploreContent() {
     }
   }, [search, selectedType, selectedGenres, selectedVibe, selectedTag, sort, router]);
 
+  // Sync URL → state when navigating externally (e.g. "See all" links, taste tags from For You,
+  // genre pills, back/forward). useState only initialises once so we must watch searchParams.
+  useEffect(() => {
+    const typeParam  = searchParams.get("type")  || null;
+    const genreParam = searchParams.get("genre")?.split(",").filter(Boolean) ?? [];
+    const vibeParam  = searchParams.get("vibe")  || null;
+    const tagParam   = searchParams.get("tag")   || null;
+    const sortParam  = (searchParams.get("sort") as SortOption) || "rating";
+    const qParam     = searchParams.get("q")     || "";
+    setSelectedType(typeParam);
+    setSelectedGenres(genreParam);
+    setSelectedVibe(vibeParam);
+    setSelectedTag(tagParam);
+    setSort(sortParam);
+    setSearch(qParam);
+  }, [searchParams]);
+
   // Load counts + filter data
   useEffect(() => {
     fetch("/api/catalog/counts").then((r) => r.json()).then((d) => { if (d.byType) setTypeCounts(d.byType); }).catch(() => {});
@@ -1067,13 +1084,11 @@ function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated, forYou }: {
   return (
     <div style={{ marginBottom: 16 }}>
       <ScrollRow label={label} sub={sub || `${items?.length || "..."} titles`} seeAllHref={seeAllHref}>
-        {items === null ? (
-          <div style={{ display: "flex", gap: 10 }}>
-            {Array.from({ length: 8 }, (_, i) => (
-              <div key={i} style={{ flex: "0 0 150px", width: 150, height: 280, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
-            ))}
-          </div>
-        ) : items.map((item) => <Card key={item.id} item={item} />)}
+        {items === null
+          ? Array.from({ length: 8 }, (_, i) => (
+              <div key={i} style={{ flex: "0 0 150px", width: 150, height: 280, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)", scrollSnapAlign: "start" }} />
+            ))
+          : items.map((item) => <Card key={item.id} item={item} />)}
       </ScrollRow>
     </div>
   );
@@ -1115,13 +1130,11 @@ function GenreRow({ type, genre, label, curated, seeAllHref }: { type: string; g
   return (
     <div style={{ marginBottom: 16 }}>
       <ScrollRow label={label} sub={`${items?.length || "..."} titles`} seeAllHref={href}>
-        {items === null ? (
-          <div style={{ display: "flex", gap: 10 }}>
-            {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} style={{ flex: "0 0 150px", width: 150, height: 280, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)" }} />
-            ))}
-          </div>
-        ) : items.map((item) => <Card key={item.id} item={item} />)}
+        {items === null
+          ? Array.from({ length: 6 }, (_, i) => (
+              <div key={i} style={{ flex: "0 0 150px", width: 150, height: 280, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)", scrollSnapAlign: "start" }} />
+            ))
+          : items.map((item) => <Card key={item.id} item={item} />)}
       </ScrollRow>
     </div>
   );

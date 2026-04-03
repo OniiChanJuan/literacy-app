@@ -44,9 +44,15 @@ const ScrollRow = memo(function ScrollRow({ label, sub, icon, iconBg, seeAllHref
     const timer = setTimeout(checkScrollState, 250);
 
     el.addEventListener("scroll", checkScrollState, { passive: true });
+
+    // Re-check when direct children change (e.g. skeleton placeholders → real cards)
+    const mo = new MutationObserver(() => setTimeout(checkScrollState, 50));
+    mo.observe(el, { childList: true });
+
     return () => {
       el.removeEventListener("scroll", checkScrollState);
       clearTimeout(timer);
+      mo.disconnect();
     };
   }, [checkScrollState]);
 
