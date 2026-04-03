@@ -96,6 +96,7 @@ function ItemCard({ item }: { item: FranchiseItem }) {
             height={85}
             quality={65}
             sizes="140px"
+            unoptimized
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         )}

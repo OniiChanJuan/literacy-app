@@ -830,7 +830,7 @@ function ExploreContent() {
           </div>
 
           {/* Media type scroll rows */}
-          {TYPE_ORDER.map((k) => {
+          {TYPE_ORDER.map((k, rowIndex) => {
             const t = TYPES[k];
             const count = typeCounts[k] || 0;
             if (count === 0 && !hasGenreOrVibe) return null;
@@ -853,6 +853,7 @@ function ExploreContent() {
                 forYou={noActiveFilter}
                 label={`${t.icon} ${filterPrefix}${t.label}`}
                 sub={hasGenreOrVibe ? undefined : `${count} titles`}
+                optimizeImages={rowIndex === 0}
               />
             );
           })}
@@ -1064,7 +1065,7 @@ function MediaTypeIcon({ type, color }: { type: string; color: string }) {
   }
 }
 
-function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated, forYou }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string; curated?: string; forYou?: boolean }) {
+function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated, forYou, optimizeImages = false }: { type: string; label: string; sub?: string; genre?: string; vibe?: string; tag?: string; curated?: string; forYou?: boolean; optimizeImages?: boolean }) {
   const [items, setItems] = useState<Item[] | null>(null);
   useEffect(() => {
     let url = `/api/catalog?type=${type}&limit=30`;
@@ -1088,7 +1089,7 @@ function MediaTypeRow({ type, label, sub, genre, vibe, tag, curated, forYou }: {
           ? Array.from({ length: 8 }, (_, i) => (
               <div key={i} style={{ flex: "0 0 150px", width: 150, height: 280, borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.04)", scrollSnapAlign: "start" }} />
             ))
-          : items.map((item) => <Card key={item.id} item={item} />)}
+          : items.map((item) => <Card key={item.id} item={item} optimized={optimizeImages} />)}
       </ScrollRow>
     </div>
   );

@@ -147,7 +147,7 @@ function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
 // Minimum items to show a row — fewer looks broken
 const MIN_ROW_ITEMS = 4;
 
-function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad, alwaysShow }: {
+function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad, alwaysShow, optimizeImages = false }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number; mediaFilter?: FilterType | null;
   /** Client-side set of item IDs to exclude from display (cross-row dedup) */
   clientExclude?: Set<number>;
@@ -155,6 +155,8 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   onLoad?: (items: Item[]) => void;
   /** If true, show the row even if it has fewer than MIN_ROW_ITEMS items */
   alwaysShow?: boolean;
+  /** Route images through Vercel optimizer — only use on the first above-the-fold row to stay under the 5k/month quota */
+  optimizeImages?: boolean;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -248,7 +250,7 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   return (
     <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}
       onLoadMore={hasMore ? handleLoadMore : undefined} loadingMore={loadingMore}>
-      {displayed.map((item) => <Card key={item.id} item={item} />)}
+      {displayed.map((item) => <Card key={item.id} item={item} optimized={optimizeImages} />)}
     </ScrollRow>
   );
 }
@@ -711,6 +713,7 @@ export default function ForYouPage() {
             mediaFilter={activeFilter}
             onLoad={setPickedForYouItems}
             alwaysShow
+            optimizeImages
           />
         </ErrorBoundary>
       )}
@@ -742,6 +745,7 @@ export default function ForYouPage() {
           mediaFilter={activeFilter}
           clientExclude={row3ExcludeIds}
           onLoad={setRow3Items}
+          optimizeImages={ratingCount < 5}
         />
       </ErrorBoundary>
 

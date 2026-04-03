@@ -64,6 +64,7 @@ export default function UpcomingCard({ item }: { item: UpcomingItem }) {
             height={210}
             quality={70}
             sizes="150px"
+            unoptimized
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}

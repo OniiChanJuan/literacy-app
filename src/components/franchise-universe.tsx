@@ -348,6 +348,7 @@ function SeriesChip({ series, onClick }: { series: UniverseSeries; onClick: () =
             width={28}
             height={38}
             sizes="28px"
+            unoptimized
             onError={() => setImgError(true)}
             style={{ width: 28, height: 38, objectFit: "cover", display: "block" }}
           />
@@ -409,6 +410,7 @@ function MiniCard({ item, franchiseName, onClick }: { item: FranchiseItemData; f
       }}>
         {showImage ? (
           <Image src={item.cover} alt={item.title} width={95} height={70} sizes="95px"
+            unoptimized
             onError={() => setImgError(true)}
             style={{ width: 95, height: 70, objectFit: "cover", display: "block" }}
           />

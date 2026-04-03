@@ -75,6 +75,7 @@ function FranchiseCard({ franchise: f }: { franchise: FollowedFranchise }) {
                 width={50}
                 height={56}
                 sizes="50px"
+                unoptimized
                 style={{ width: "100%", height: 56, objectFit: "cover", display: "block" }}
               />
             </div>

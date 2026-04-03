@@ -2,8 +2,8 @@
 
 import { memo, useCallback, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Item, TYPES, hexToRgba } from "@/lib/data";
+import CoverImage from "./cover-image";
 import { getItemUrl } from "@/lib/slugs";
 import { useRatings } from "@/lib/ratings-context";
 import { scorePassesThreshold } from "@/lib/score-thresholds";
@@ -67,7 +67,7 @@ function scoreColor(val: number): string {
 }
 
 
-const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; routeId?: string; crossMedia?: boolean }) {
+const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }: { item: Item; routeId?: string; crossMedia?: boolean; optimized?: boolean }) {
   const { ratings, rate } = useRatings();
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const userRating = ratings[item.id] || 0;
@@ -122,13 +122,14 @@ const Card = memo(function Card({ item, routeId, crossMedia }: { item: Item; rou
           : { background: item.cover?.startsWith("linear") ? item.cover : `linear-gradient(135deg, ${t.color}22, ${t.color}08)` }),
       }}>
         {hasImage && !imgError && (
-          <Image
+          <CoverImage
             src={item.cover}
             alt={item.title}
             width={150}
             height={210}
             quality={70}
             sizes="150px"
+            optimized={optimized}
             style={{
               width: "100%",
               height: "100%",
