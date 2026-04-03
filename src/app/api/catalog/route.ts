@@ -449,7 +449,7 @@ export async function GET(req: NextRequest) {
 
       // Vote floors per type (data-driven from audit)
       const VOT_FLOOR: Record<string, number> = {
-        movie: 1000, tv: 1000, game: 500, anime: 1000, manga: 1000, book: 100, music: 10,
+        movie: 1000, tv: 100, game: 500, anime: 1000, manga: 1000, book: 100, music: 10,
       };
       const typeKey = isAnimeFilter ? "anime" : type;
       const minVotes = VOT_FLOOR[typeKey] ?? 50;

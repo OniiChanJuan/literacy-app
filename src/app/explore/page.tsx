@@ -830,7 +830,7 @@ function ExploreContent() {
           </div>
 
           {/* Media type scroll rows */}
-          {TYPE_ORDER.map((k, rowIndex) => {
+          {TYPE_ORDER.map((k) => {
             const t = TYPES[k];
             const count = typeCounts[k] || 0;
             if (count === 0 && !hasGenreOrVibe) return null;
@@ -853,7 +853,6 @@ function ExploreContent() {
                 forYou={noActiveFilter}
                 label={`${t.icon} ${filterPrefix}${t.label}`}
                 sub={hasGenreOrVibe ? undefined : `${count} titles`}
-                optimizeImages={rowIndex === 0}
               />
             );
           })}

@@ -713,7 +713,6 @@ export default function ForYouPage() {
             mediaFilter={activeFilter}
             onLoad={setPickedForYouItems}
             alwaysShow
-            optimizeImages
           />
         </ErrorBoundary>
       )}
@@ -745,7 +744,6 @@ export default function ForYouPage() {
           mediaFilter={activeFilter}
           clientExclude={row3ExcludeIds}
           onLoad={setRow3Items}
-          optimizeImages={ratingCount < 5}
         />
       </ErrorBoundary>
 
