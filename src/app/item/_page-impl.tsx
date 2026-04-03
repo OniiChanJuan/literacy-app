@@ -216,21 +216,23 @@ export function ItemPageRender({
         marginBottom: 0,
       }}>
         <div className="content-width" style={{ paddingTop: 18, paddingBottom: 18 }}>
-          <div className="hero-layout" style={{ display: "flex", gap: 20, alignItems: "stretch", minHeight: 180 }}>
+          <div className="hero-layout" style={{ display: "flex", gap: 20, alignItems: "stretch", minHeight: 300 }}>
             {/* Cover */}
-            <div className="hero-cover" style={{ flexShrink: 0, width: 120, maxWidth: 120, position: "relative" }}>
+            <div className="hero-cover" style={{ flexShrink: 0, width: 200, maxWidth: 200, position: "relative" }}>
               {hasImageCover ? (
                 <Image
                   src={item.cover}
                   alt={item.title}
-                  width={120}
-                  height={180}
+                  width={200}
+                  height={300}
                   priority
-                  sizes="120px"
+                  unoptimized
+                  sizes="200px"
                   style={{
-                    objectFit: "cover", borderRadius: 8,
+                    objectFit: "contain", borderRadius: 8,
                     border: "0.5px solid rgba(255,255,255,0.1)",
-                    width: 120, height: "100%",
+                    width: 200, height: 300,
+                    background: "rgba(0,0,0,0.3)",
                   }}
                 />
               ) : (
