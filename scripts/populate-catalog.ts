@@ -80,6 +80,8 @@ const existing = {
   titleType: new Set<string>(),
   // Maps base anime title (season-stripped, normalized) → item id for season parent linking
   animeBaseIds: new Map<string, number>(),
+  // Normalized base titles of existing books — used to block split-edition ingestion
+  bookBaseTitles: new Set<string>(),
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -144,6 +146,21 @@ function normalizeTitle(t: string): string {
     .trim();
 }
 
+/**
+ * For a book title that may be a split edition (e.g. "Rhythm of War Part One"),
+ * returns the normalized base title (e.g. "rhythm of war").
+ * Returns null if the title has no recognizable split-edition suffix.
+ */
+function bookSplitBaseTitle(t: string): string | null {
+  const stripped = t
+    .replace(/[\s:,–—]+part\s+(one|two|three|1|2|3)(\s+of\s+\d+)?$/i, "")
+    .replace(/[\s:,–—]+volume\s+\d+$/i, "")
+    .replace(/[\s:,–—]+vol\.?\s*\d+$/i, "")
+    .trim();
+  if (stripped.toLowerCase() === t.toLowerCase()) return null; // no suffix found
+  return stripped.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
+}
+
 /** Strip diacritics + season suffixes for anime base-title matching */
 function animeBaseKey(title: string): string {
   return title
@@ -179,6 +196,21 @@ async function insertItem(prisma: PrismaClient, item: CatalogItem, sectionName: 
   // Fallback dedup by normalized title+type
   const key = `${normalizeTitle(item.title)}|||${item.type}`;
   if (existing.titleType.has(key)) { summary[sectionName].skipped++; return; }
+
+  // Book-specific: block split editions (Part One/Two, Volume 1/2) when the full
+  // book already exists. Also block duplicate books by same normalized title.
+  if (item.type === "book") {
+    const normTitle = item.title.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
+    if (existing.bookBaseTitles.has(normTitle)) {
+      console.log(`  Skipped duplicate: "${item.title}" — already exists`);
+      summary[sectionName].skipped++; return;
+    }
+    const splitBase = bookSplitBaseTitle(item.title);
+    if (splitBase && existing.bookBaseTitles.has(splitBase)) {
+      console.log(`  Skipped split edition: "${item.title}" — base book "${splitBase}" already exists`);
+      summary[sectionName].skipped++; return;
+    }
+  }
 
   try {
     const created = await (prisma as any).item.create({
@@ -233,6 +265,9 @@ async function insertItem(prisma: PrismaClient, item: CatalogItem, sectionName: 
     if (item.googleBooksId) existing.googleBooksIds.add(item.googleBooksId);
     if (item.comicVineId) existing.comicVineIds.add(item.comicVineId);
     existing.titleType.add(key);
+    if (item.type === "book") {
+      existing.bookBaseTitles.add(item.title.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim());
+    }
 
     // Auto-link anime seasons: if this is a season/OVA/movie entry and the base
     // show already exists, set parent_item_id so it's hidden from browse rows.
@@ -1218,6 +1253,11 @@ async function main() {
     if (e.googleBooksId) existing.googleBooksIds.add(e.googleBooksId);
     if (e.comicVineId) existing.comicVineIds.add(e.comicVineId);
     existing.titleType.add(`${normalizeTitle(e.title)}|||${e.type}`);
+    // Populate book base title set for split-edition dedup
+    if (e.type === "book") {
+      const normBook = e.title.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
+      existing.bookBaseTitles.add(normBook);
+    }
     // Populate anime base map for season-linking: only non-child, non-suffix entries
     if ((e.type === "tv" || e.type === "manga") && !e.parentItemId && !hasAnimeSuffix(e.title)) {
       const base = animeBaseKey(e.title);
