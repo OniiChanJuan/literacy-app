@@ -115,47 +115,53 @@ export async function GET(req: NextRequest) {
     type UniverseSeries = { id: number; name: string; icon: string; itemCount: number; firstCover: string | null };
     let siblingFranchises: UniverseSeries[] = [];
     if (franchise.parentFranchiseId) {
-      const rawSiblings = await (prisma as any).franchise.findMany({
-        where: { parentFranchiseId: franchise.parentFranchiseId, id: { not: franchise.id } },
-        include: {
-          _count: { select: { items: true } },
-          items: {
-            take: 1,
-            where: { item: { cover: { not: null } } },
-            include: { item: { select: { cover: true } } },
+      try {
+        const rawSiblings = await (prisma as any).franchise.findMany({
+          where: { parentFranchiseId: franchise.parentFranchiseId, id: { not: franchise.id } },
+          include: {
+            _count: { select: { items: true } },
+            items: {
+              take: 1,
+              where: { item: { cover: { not: "" } } },
+              include: { item: { select: { cover: true } } },
+            },
           },
-        },
-      });
-      siblingFranchises = rawSiblings.map((s: any) => ({
-        id: s.id,
-        name: s.name,
-        icon: s.icon || "🔗",
-        itemCount: s._count.items,
-        firstCover: s.items[0]?.item?.cover ?? null,
-      }));
+        });
+        siblingFranchises = rawSiblings.map((s: any) => ({
+          id: s.id,
+          name: s.name,
+          icon: s.icon || "🔗",
+          itemCount: s._count.items,
+          firstCover: s.items[0]?.item?.cover || null,
+        }));
+      } catch (e) {
+        console.error("Sibling franchise query failed:", e);
+      }
     }
 
     // Child franchises — sub-series within THIS franchise (Scenario D: item is in a parent universe directly)
     let childFranchises: UniverseSeries[] = [];
-    const rawChildren = await (prisma as any).franchise.findMany({
-      where: { parentFranchiseId: franchise.id },
-      include: {
-        _count: { select: { items: true } },
-        items: {
-          take: 1,
-          where: { item: { cover: { not: null } } },
-          include: { item: { select: { cover: true } } },
+    try {
+      const rawChildren = await (prisma as any).franchise.findMany({
+        where: { parentFranchiseId: franchise.id },
+        include: {
+          _count: { select: { items: true } },
+          items: {
+            take: 1,
+            where: { item: { cover: { not: "" } } },
+            include: { item: { select: { cover: true } } },
+          },
         },
-      },
-    });
-    if (rawChildren.length > 0) {
+      });
       childFranchises = rawChildren.map((c: any) => ({
         id: c.id,
         name: c.name,
         icon: c.icon || "🔗",
         itemCount: c._count.items,
-        firstCover: c.items[0]?.item?.cover ?? null,
+        firstCover: c.items[0]?.item?.cover || null,
       }));
+    } catch (e) {
+      console.error("Child franchise query failed:", e);
     }
 
     const res = NextResponse.json({
