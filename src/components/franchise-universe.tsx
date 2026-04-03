@@ -115,9 +115,13 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
 
   if (!loaded || !franchise) return null;
 
+  // Defensive fallbacks in case API response is from a stale cache missing these fields
+  const siblings: UniverseSeries[] = franchise.siblingFranchises ?? [];
+  const children: UniverseSeries[] = franchise.childFranchises ?? [];
+
   // Deduplicate items
   const seen = new Set<string>();
-  const deduped = franchise.otherItems.filter((item) => {
+  const deduped = (franchise.otherItems ?? []).filter((item) => {
     const norm = item.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
     const key = `${norm}::${item.type}::${item.year}`;
     if (seen.has(key)) return false;
@@ -125,19 +129,19 @@ export default function FranchiseUniverse({ itemId }: { itemId: number }) {
     return true;
   });
 
-  if (deduped.length === 0 && franchise.siblingFranchises.length === 0 && franchise.childFranchises.length === 0) return null;
+  if (deduped.length === 0 && siblings.length === 0 && children.length === 0) return null;
 
   // Determine which sections to show
   // hasSiblings: show parent universe card (franchise has a parent + sibling series exist)
-  const hasSiblings = franchise.parentFranchise != null && franchise.siblingFranchises.length > 0;
+  const hasSiblings = franchise.parentFranchise != null && siblings.length > 0;
   // hasChildren: show "sub-series in this universe" card (franchise IS the top-level universe)
-  const hasChildren = !franchise.parentFranchise && franchise.childFranchises.length > 0;
+  const hasChildren = !franchise.parentFranchise && children.length > 0;
   const showUniverseCard = hasSiblings || hasChildren;
 
   // The universe name + id for the card header
   const universeName = hasSiblings ? franchise.parentFranchise!.name : franchise.name;
   const universeId = hasSiblings ? franchise.parentFranchise!.id : franchise.id;
-  const universeSeries = hasSiblings ? franchise.siblingFranchises : franchise.childFranchises;
+  const universeSeries = hasSiblings ? siblings : children;
 
   const typeLabel = franchise.mediaTypes === 1
     ? `${franchise.totalItems} ${deduped[0]?.type === "book" ? "books" : deduped[0]?.type === "game" ? "games" : deduped[0]?.type === "manga" ? "volumes" : "entries"} in this series`
