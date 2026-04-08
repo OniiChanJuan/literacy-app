@@ -553,7 +553,16 @@ export async function GET(req: NextRequest) {
 
   } catch (error: any) {
     console.error("Catalog API error:", error);
-    return NextResponse.json({ error: "Failed to fetch catalog" }, { status: 500 });
+    return NextResponse.json({
+      error: "Failed to fetch catalog",
+      // TEMPORARY: expose real error for production debugging after auth migration
+      debug: {
+        message: error?.message || String(error),
+        name: error?.name,
+        code: error?.code,
+        stack: (error?.stack || "").split("\n").slice(0, 5).join("\n"),
+      },
+    }, { status: 500 });
   }
 }
 
