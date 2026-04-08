@@ -6,58 +6,13 @@ import { Item, TYPES, hexToRgba } from "@/lib/data";
 import CoverImage from "./cover-image";
 import { getItemUrl } from "@/lib/slugs";
 import { useRatings } from "@/lib/ratings-context";
-import { scorePassesThreshold } from "@/lib/score-thresholds";
+import { getBestExtScore } from "@/lib/format-ext-score";
 import Stars from "./stars";
 import HoverPreview from "./hover-preview";
 import { isAnime } from "@/lib/anime";
 
 function isImageUrl(cover: string | undefined | null): boolean {
   return !!cover && (cover.startsWith("http") || cover.startsWith("/"));
-}
-
-const EXT_SCORE_META: Record<string, { label: string; max: number }> = {
-  tmdb:              { label: "TMDB",       max: 10  },
-  imdb:              { label: "IMDb",       max: 10  },
-  mal:               { label: "MAL",        max: 10  },
-  igdb_critics:      { label: "Critics",    max: 100 },
-  igdb:              { label: "IGDB",       max: 100 },
-  google_books:      { label: "Books",      max: 5   },
-  rt_critics:        { label: "RT",         max: 100 },
-  metacritic:        { label: "Meta",       max: 100 },
-  pitchfork:         { label: "Pitchfork",  max: 10  },
-  ign:               { label: "IGN",        max: 10  },
-  steam:             { label: "Steam",      max: 100 },
-  spotify_popularity:{ label: "Spotify",    max: 100 },
-  aoty:              { label: "AOTY",       max: 100 },
-  opencritic:        { label: "OpenCritic", max: 100 },
-  anilist:           { label: "AniList",    max: 100 },
-};
-
-// Non-score ext keys to always skip
-const EXT_SKIP_KEYS = new Set(["steam_label", "igdb_count", "igdb_critics_count", "google_books_count"]);
-
-const EXT_SCORE_PRIORITY = [
-  "imdb", "tmdb", "mal", "igdb_critics", "igdb",
-  "google_books", "rt_critics",
-  "metacritic", "pitchfork", "ign",
-  // steam intentionally excluded — shown as text label on detail page only, not as a number on cards
-  "spotify_popularity", "aoty", "opencritic", "anilist",
-];
-
-/** Get the best external score for display, respecting vote-count thresholds */
-function getBestExtScore(ext: any, voteCount: number): { label: string; value: number; display: string } | null {
-  if (!ext || typeof ext !== "object") return null;
-
-  for (const key of EXT_SCORE_PRIORITY) {
-    const val = ext[key];
-    if (val === undefined || val === null) continue;
-    if (!scorePassesThreshold(key, ext, voteCount)) continue;
-    const m = EXT_SCORE_META[key] || { label: key.toUpperCase(), max: 10 };
-    const normalized = (val / m.max) * 10;
-    const scoreStr = m.max <= 10 ? val.toFixed(1) : String(Math.round(val));
-    return { label: m.label, value: normalized, display: `${scoreStr} ${m.label}` };
-  }
-  return null;
 }
 
 function scoreColor(val: number): string {
@@ -79,12 +34,19 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
     rate(item.id, s);
   }, [rate, item.id]);
 
-  const extScore = getBestExtScore(item.ext, item.voteCount ?? 0);
+  const bestScore = getBestExtScore(item.ext, item.voteCount ?? 0);
+  // Numeric scores (IMDb, TMDB, Critic Score, etc.) feed the card's
+  // compact "X ★ | YY%" display. Steam scores are text-only so they're
+  // shown via a separate branch below.
+  const numericScore = bestScore && bestScore.kind === "numeric"
+    ? { normalized10: (bestScore.value / bestScore.max) * 10, display: `${bestScore.valueStr} ${bestScore.label}` }
+    : null;
+  const steamBest = bestScore && bestScore.kind === "steam-text" ? bestScore : null;
 
   // CrossShelf score derived from external score until real community ratings are available
-  const literacyScore = extScore ? Math.min(5, extScore.value * 0.55).toFixed(1) : null;
+  const literacyScore = numericScore ? Math.min(5, numericScore.normalized10 * 0.55).toFixed(1) : null;
   const literacyScoreNum = literacyScore ? parseFloat(literacyScore) : 0;
-  const recPct = extScore ? Math.min(99, Math.round(extScore.value * 10.5)) : null;
+  const recPct = numericScore ? Math.min(99, Math.round(numericScore.normalized10 * 10.5)) : null;
 
   return (
     <HoverPreview item={item}>
@@ -252,7 +214,7 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
           {item.title}
         </div>
 
-        {/* Score row: CrossShelf score + recommend % */}
+        {/* Score row: CrossShelf score + recommend % — or Steam text label */}
         {literacyScore ? (
           <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 1 }}>
             <span style={{
@@ -275,6 +237,15 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
               </>
             )}
           </div>
+        ) : steamBest ? (
+          <div style={{
+            fontSize: 9,
+            fontWeight: 700,
+            color: steamBest.color,
+            marginBottom: 1,
+          }}>
+            {steamBest.textLabel}
+          </div>
         ) : (
           <div style={{ fontSize: 8, color: "rgba(255,255,255,0.2)", marginBottom: 1 }}>
             {item.year || "TBA"}
@@ -282,9 +253,14 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
         )}
 
         {/* External score source label */}
-        {extScore && (
+        {numericScore && (
           <div style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", marginBottom: 2 }}>
-            {extScore.display}
+            {numericScore.display}
+          </div>
+        )}
+        {steamBest && (
+          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", marginBottom: 2 }}>
+            Steam
           </div>
         )}
 

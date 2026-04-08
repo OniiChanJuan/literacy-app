@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Item, TYPES, VIBES, hexToRgba } from "@/lib/data";
+import { formatExtScores } from "@/lib/format-ext-score";
 
 interface HoverPreviewProps {
   item: Item;
@@ -31,7 +32,7 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
   }, []);
 
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
-  const extEntries = Object.entries(item.ext || {}) as [string, number][];
+  const extScores = formatExtScores(item.ext, (item as any).voteCount ?? 0, 3);
 
   return (
     <div
@@ -128,12 +129,12 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
           )}
 
           {/* Scores */}
-          {extEntries.length > 0 && (
-            <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-              {extEntries.slice(0, 3).map(([source, score]) => (
-                <span key={source} style={{ fontSize: 11, color: "var(--text-muted)" }}>
-                  <span style={{ fontWeight: 700, color: "#fff" }}>{score}</span>{" "}
-                  {source.toUpperCase()}
+          {extScores.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 10 }}>
+              {extScores.map((s) => (
+                <span key={s.key} style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                  <span style={{ fontWeight: 700, color: s.color }}>{s.valueStr}</span>{" "}
+                  {s.label}
                 </span>
               ))}
             </div>

@@ -27,12 +27,13 @@ const CARD_EXT_KEYS = [
   "imdb", "tmdb", "mal", "igdb", "igdb_critics", "google_books",
   "rt_critics", "metacritic", "pitchfork", "ign", "spotify_popularity",
   "aoty", "opencritic", "anilist",
+  "steam", "steam_label",
   "igdb_count", "igdb_critics_count", // needed by scorePassesThreshold
 ] as const;
 
-function slimExt(ext: any): Record<string, number> {
+function slimExt(ext: any): Record<string, number | string> {
   if (!ext || typeof ext !== "object") return {};
-  const out: Record<string, number> = {};
+  const out: Record<string, number | string> = {};
   for (const k of CARD_EXT_KEYS) {
     if (ext[k] !== undefined && ext[k] !== null) out[k] = ext[k];
   }
