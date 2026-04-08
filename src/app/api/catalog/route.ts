@@ -480,7 +480,10 @@ export async function GET(req: NextRequest) {
       async function fetchForYouPool(voteFloor: number) {
         const fyWhere: any = { ...where };
         if (voteFloor > 0) fyWhere.voteCount = { gte: voteFloor };
-        return prisma.item.findMany({ where: fyWhere, orderBy: { voteCount: "desc" }, take: 150, select: ITEM_SELECT });
+        // 300-item pool so that after quality-floor filtering AND a
+        // cross-cutting filter like excludeAnime (which removes ~30-40%
+        // of top TV), we still have ≥30 items to fill the row.
+        return prisma.item.findMany({ where: fyWhere, orderBy: { voteCount: "desc" }, take: 300, select: ITEM_SELECT });
       }
 
       let pool = await fetchForYouPool(minVotes);
@@ -510,8 +513,10 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      // Take top 50 quality items then shuffle — fresh each visit
-      const topPool = qualified.slice(0, 50);
+      // Take top 80 quality items then shuffle — fresh each visit, and
+      // large enough that rows like "Top shows" (excludeAnime) still
+      // end up with ≥30 items to display.
+      const topPool = qualified.slice(0, 80);
       const picked = shuffleAndPick(topPool, Math.min(limit, topPool.length));
       return jsonResponseNoCache(picked.map(mapItem));
     }

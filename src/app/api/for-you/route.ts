@@ -235,6 +235,18 @@ export async function GET(req: NextRequest) {
         if (picked.length >= limit) break;
       }
 
+      // Guarantee row fullness: if per-type caps left us short, fill
+      // without the cap from the shuffled pool.
+      if (picked.length < limit) {
+        const usedIds = new Set(picked.map((i: any) => i.id));
+        for (const item of shuffled) {
+          if (usedIds.has(item.id)) continue;
+          picked.push(item);
+          usedIds.add(item.id);
+          if (picked.length >= limit) break;
+        }
+      }
+
       const page = interleaveByType(picked).map(mapItem);
       const res = NextResponse.json(page);
       res.headers.set("Cache-Control", "private, no-store");
@@ -244,17 +256,19 @@ export async function GET(req: NextRequest) {
 
     if (section === "discoverAcrossMedia") {
       const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
-      // Build pool of 60: 70%+ from unexplored types (rated < 3 times), rest from any non-topType
-      const POOL_SIZE = 60;
-      const unexploredTarget = Math.ceil(POOL_SIZE * 0.70);
+      // Build pool of 120: 60%+ from unexplored types (rated < 5 times), rest from any non-topType.
+      // Relaxed from POOL_SIZE=60 / threshold=3 because strict filters were
+      // leaving the row with <20 items once users had rated more widely.
+      const POOL_SIZE = 120;
+      const unexploredTarget = Math.ceil(POOL_SIZE * 0.60);
       const pool: any[] = [];
       const poolTypeCounts: Record<string, number> = {};
-      const maxPerTypePool = Math.ceil(POOL_SIZE * 0.25);
+      const maxPerTypePool = Math.ceil(POOL_SIZE * 0.30);
 
-      // First pass: unexplored types only
+      // First pass: lightly-explored types only (< 5 ratings in that type)
       for (const s of scored) {
         const typeRateCount = typeCounts[s.item.type] || 0;
-        if (typeRateCount >= 3 || s.item.type === topType) continue;
+        if (typeRateCount >= 5 || s.item.type === topType) continue;
         const tc = poolTypeCounts[s.item.type] || 0;
         if (tc >= maxPerTypePool) continue;
         poolTypeCounts[s.item.type] = tc + 1;
@@ -277,11 +291,23 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Shuffle pool then pick `limit` items with type diversity (max 25% per type)
+      // Last-resort fill: include topType items if we still can't reach limit.
+      // Better to show the user's favorite type than a short row.
+      if (pool.length < limit) {
+        const usedIds = new Set(pool.map((i: any) => i.id));
+        for (const s of scored) {
+          if (usedIds.has(s.item.id)) continue;
+          pool.push(s.item);
+          usedIds.add(s.item.id);
+          if (pool.length >= POOL_SIZE) break;
+        }
+      }
+
+      // Shuffle pool then pick `limit` items with type diversity (max 35% per type)
       const shuffled = shuffleAndPick(pool, POOL_SIZE);
       const picked: any[] = [];
       const pickedTypeCounts: Record<string, number> = {};
-      const maxPerTypePick = Math.max(Math.ceil(limit * 0.25), 4);
+      const maxPerTypePick = Math.max(Math.ceil(limit * 0.35), 6);
 
       for (const item of shuffled) {
         const tc = pickedTypeCounts[item.type] || 0;
@@ -289,6 +315,18 @@ export async function GET(req: NextRequest) {
         pickedTypeCounts[item.type] = tc + 1;
         picked.push(item);
         if (picked.length >= limit) break;
+      }
+
+      // Guarantee row fullness: if diversity caps left us short, fill
+      // from the pool without the per-type cap.
+      if (picked.length < limit) {
+        const usedIds = new Set(picked.map((i: any) => i.id));
+        for (const item of shuffled) {
+          if (usedIds.has(item.id)) continue;
+          picked.push(item);
+          usedIds.add(item.id);
+          if (picked.length >= limit) break;
+        }
       }
 
       const page = interleaveByType(picked).map(mapItem);
