@@ -8,34 +8,27 @@ export interface AuthClaims {
 }
 
 /**
- * Server-side auth. Returns the verified JWT claims, or null if the
- * user is not signed in / the token is invalid.
+ * Server-side auth. Returns the verified user's id/email as a claims
+ * object, or null if not signed in.
  *
- * SECURITY: uses getClaims() (signature-validated) when available,
- * falling back to getUser() which hits the Supabase auth server. Never
- * uses getSession() — that only reads the cookie and can be spoofed.
+ * SECURITY: uses supabase.auth.getUser(), which makes a server-to-server
+ * call to Supabase's /auth/v1/user endpoint. That endpoint validates the
+ * JWT's signature before returning the user. This is the pattern
+ * recommended by Supabase for server-side auth checks — never
+ * getSession(), which only reads a cookie and can be spoofed.
+ *
+ * We intentionally do NOT call getClaims() here. The newer getClaims()
+ * helper is faster (no network round-trip) but has had a few API shape
+ * changes and fails silently with chunked session cookies in some
+ * @supabase/ssr versions. Since for-you / ratings / library all hit
+ * Postgres anyway, the extra ~30ms from getUser() is negligible.
  */
 export async function getClaims(): Promise<AuthClaims | null> {
-  const supabase = await createClient();
-  const anyAuth = supabase.auth as unknown as {
-    getClaims?: () => Promise<{ data: { claims: AuthClaims | null } | null; error: unknown }>;
-    getUser: () => Promise<{ data: { user: { id: string; email?: string } | null }; error: unknown }>;
-  };
-
-  if (typeof anyAuth.getClaims === "function") {
-    try {
-      const { data } = await anyAuth.getClaims();
-      return data?.claims ?? null;
-    } catch {
-      return null;
-    }
-  }
-
-  // Fallback for older @supabase/ssr versions
   try {
-    const { data } = await anyAuth.getUser();
-    if (!data?.user) return null;
-    return { sub: data.user.id, email: data.user.email };
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user) return null;
+    return { sub: data.user.id, email: data.user.email ?? undefined };
   } catch {
     return null;
   }

@@ -34,21 +34,15 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // IMPORTANT: Do not run code between createServerClient and getClaims().
+  // IMPORTANT: Do not run code between createServerClient and getUser().
   // Touching cookies or awaiting other work here will desync the session.
   try {
-    // getClaims() is available in recent @supabase/ssr versions and
-    // validates the JWT signature. If it's not exposed, fall back to
-    // getUser() which also triggers a refresh and hits /auth/v1/user.
-    const anyAuth = supabase.auth as unknown as {
-      getClaims?: () => Promise<unknown>;
-      getUser: () => Promise<unknown>;
-    };
-    if (typeof anyAuth.getClaims === "function") {
-      await anyAuth.getClaims();
-    } else {
-      await anyAuth.getUser();
-    }
+    // getUser() hits Supabase's /auth/v1/user endpoint which both
+    // refreshes the access token (so the Set-Cookie propagates back
+    // to the browser via the setAll callback above) and returns the
+    // authenticated user. This is the pattern Supabase recommends for
+    // Next.js SSR middleware.
+    await supabase.auth.getUser();
   } catch {
     // Ignore — proxy must not block the request on auth errors.
   }
