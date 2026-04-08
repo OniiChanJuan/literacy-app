@@ -44,15 +44,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         parentItemId: null,
         type: { in: Array.from(VALID_SLUG_TYPES) },
       },
-      select: { type: true, slug: true, updatedAt: true },
+      select: { type: true, slug: true, createdAt: true },
       orderBy: { voteCount: "desc" },
       take: 10000, // sitemap hard-cap — split into multiple files later if needed
     });
     itemEntries = items
-      .filter((i): i is { type: string; slug: string; updatedAt: Date } => !!i.slug)
+      .filter((i): i is { type: string; slug: string; createdAt: Date } => !!i.slug)
       .map((i) => ({
         url: `${SITE_URL}/${i.type}/${i.slug}`,
-        lastModified: i.updatedAt || now,
+        lastModified: i.createdAt || now,
         changeFrequency: "weekly" as const,
         priority: 0.6,
       }));
