@@ -54,7 +54,7 @@ export default function AwardBrowsePage({ params }: { params: Promise<{ award: s
           {award.label}
         </h1>
         <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
-          {winners.length} {winners.length === 1 ? "winner" : "winners"} on Literacy
+          {winners.length} {winners.length === 1 ? "winner" : "winners"} on CrossShelf
         </p>
       </div>
 

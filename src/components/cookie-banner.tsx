@@ -52,7 +52,7 @@ export default function CookieBanner() {
         .cookie-btn:hover { background: rgba(255,255,255,0.15) !important; }
       `}</style>
       <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
-        Literacy uses essential cookies for authentication. We don&apos;t use
+        CrossShelf uses essential cookies for authentication. We don&apos;t use
         tracking or advertising cookies.
       </span>
       <Link

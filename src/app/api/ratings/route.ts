@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { isValidScore, isValidRecTag, rateLimit } from "@/lib/validation";
 import { updateTasteProfile, neutralDimensions, type TasteDimensions } from "@/lib/taste-dimensions";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ ratings: {}, recTags: {} });
   }
 
   try {
     const rows = await prisma.rating.findMany({
-      where: { userId: session.user.id },
+      where: { userId: claims.sub },
     });
 
     const ratings: Record<number, number> = {};
@@ -30,12 +30,12 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const userId = session.user.id;
+  const userId = claims.sub;
 
   // Rate limit: 30 ratings per minute per user
   if (!rateLimit(`rate:${userId}`, 30, 60 * 1000)) {

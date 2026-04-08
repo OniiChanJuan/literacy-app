@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
 
@@ -8,16 +8,16 @@ import { rateLimit } from "@/lib/validation";
  * Returns a JSON file containing ALL user data.
  */
 export async function GET(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`export-data:${session.user.id}`, 5, 60_000)) {
+  if (!rateLimit(`export-data:${claims.sub}`, 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
-  const uid = session.user.id;
+  const uid = claims.sub;
 
   const [user, settings, ratings, reviews, library, following, followers, signals, dismissed] = await Promise.all([
     prisma.user.findUnique({
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
 
   const exportData = {
     exportDate: new Date().toISOString(),
-    exportedBy: "Literacy — literacy.app",
+    exportedBy: "CrossShelf — crossshelf.app",
     profile: {
       email: user?.email,
       username: user?.username,

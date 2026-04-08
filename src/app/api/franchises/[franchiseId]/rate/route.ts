@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { prisma } from "@/lib/prisma";
 
 async function getStats(franchiseId: number) {
@@ -23,13 +23,13 @@ export async function GET(
   const franchiseId = parseInt(fIdStr);
   if (!franchiseId) return NextResponse.json({ error: "Invalid franchise ID" }, { status: 400 });
 
-  const session = await auth();
+  const claims = await getClaims();
   const stats = await getStats(franchiseId);
 
   let userRating: number | null = null;
-  if (session?.user?.id) {
+  if (claims?.sub) {
     const row = await prisma.franchiseRating.findUnique({
-      where: { userId_franchiseId: { userId: session.user.id, franchiseId } },
+      where: { userId_franchiseId: { userId: claims.sub, franchiseId } },
       select: { rating: true },
     });
     userRating = row?.rating ?? null;
@@ -43,8 +43,8 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ franchiseId: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
@@ -59,8 +59,8 @@ export async function POST(
   }
 
   await prisma.franchiseRating.upsert({
-    where: { userId_franchiseId: { userId: session.user.id, franchiseId } },
-    create: { userId: session.user.id, franchiseId, rating },
+    where: { userId_franchiseId: { userId: claims.sub, franchiseId } },
+    create: { userId: claims.sub, franchiseId, rating },
     update: { rating, updatedAt: new Date() },
   });
 
@@ -73,8 +73,8 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ franchiseId: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
@@ -83,7 +83,7 @@ export async function DELETE(
   if (!franchiseId) return NextResponse.json({ error: "Invalid franchise ID" }, { status: 400 });
 
   await prisma.franchiseRating.deleteMany({
-    where: { userId: session.user.id, franchiseId },
+    where: { userId: claims.sub, franchiseId },
   });
 
   const stats = await getStats(franchiseId);

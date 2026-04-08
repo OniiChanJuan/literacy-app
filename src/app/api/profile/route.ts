@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { validateName, validateBio, rateLimit } from "@/lib/validation";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: claims.sub },
       select: {
         id: true, name: true, email: true, bio: true, avatar: true, image: true,
         isPrivate: true, createdAt: true,
@@ -26,13 +26,13 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   // Rate limit profile updates
-  if (!rateLimit(`profile:${session.user.id}`, 10, 60 * 1000)) {
+  if (!rateLimit(`profile:${claims.sub}`, 10, 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
@@ -65,7 +65,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const user = await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: claims.sub },
       data,
       select: { id: true, name: true, bio: true, isPrivate: true },
     });
@@ -78,14 +78,14 @@ export async function PATCH(req: NextRequest) {
 
 /** DELETE /api/profile — delete account and all data */
 export async function DELETE() {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   try {
     // Cascade deletes handle ratings, reviews, library entries, follows, sessions, accounts
-    await prisma.user.delete({ where: { id: session.user.id } });
+    await prisma.user.delete({ where: { id: claims.sub } });
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

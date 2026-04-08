@@ -1,7 +1,7 @@
 import type { Item, Person, ExternalSource, MediaType } from "./data";
 
 const BASE = "https://comicvine.gamespot.com/api";
-const UA = "Literacy-App/1.0";
+const UA = "CrossShelf-App/1.0";
 
 function apiKey(): string {
   return process.env.COMICVINE_API_KEY || "";

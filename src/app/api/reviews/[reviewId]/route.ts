@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { validateReviewText, rateLimit } from "@/lib/validation";
 
 /**
@@ -10,12 +10,12 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ reviewId: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`review-edit:${session.user.id}`, 120, 60_000)) {
+  if (!rateLimit(`review-edit:${claims.sub}`, 120, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
@@ -25,7 +25,7 @@ export async function PUT(
     return NextResponse.json({ error: "Valid reviewId required" }, { status: 400 });
   }
 
-  const userId = session.user.id;
+  const userId = claims.sub;
 
   let body: any;
   try {
@@ -100,12 +100,12 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ reviewId: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`review-delete:${session.user.id}`, 120, 60_000)) {
+  if (!rateLimit(`review-delete:${claims.sub}`, 120, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
@@ -115,7 +115,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Valid reviewId required" }, { status: 400 });
   }
 
-  const userId = session.user.id;
+  const userId = claims.sub;
 
   try {
     const review = await prisma.review.findUnique({ where: { id: reviewId } });

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { validateReviewText, rateLimit } from "@/lib/validation";
 
 /**
@@ -39,8 +39,8 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") || "10"), 50);
   const offset = Math.max(parseInt(req.nextUrl.searchParams.get("offset") || "0"), 0);
 
-  const session = await auth();
-  const currentUserId = session?.user?.id || null;
+  const claims = await getClaims();
+  const currentUserId = claims?.sub || null;
 
   try {
     // Fetch all reviews for item (flat), then build tree in JS.
@@ -142,12 +142,12 @@ export async function GET(req: NextRequest) {
  * - parentId set → reply (multiple allowed per user)
  */
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const userId = session.user.id;
+  const userId = claims.sub;
 
   if (!rateLimit(`review:${userId}`, 30, 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests. Slow down." }, { status: 429 });

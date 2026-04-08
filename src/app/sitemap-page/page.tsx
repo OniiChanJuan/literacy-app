@@ -15,7 +15,7 @@ export default function SitemapPage() {
       <p style={updated}>Last updated: March 24, 2026</p>
 
       <p style={p}>
-        A complete list of all pages on Literacy.
+        A complete list of all pages on CrossShelf.
       </p>
 
       <h2 style={h2Style}>Main Pages</h2>
@@ -30,7 +30,7 @@ export default function SitemapPage() {
       <h2 style={h2Style}>Legal &amp; Compliance</h2>
       <ul style={ul}>
         <li><Link href="/privacy" style={linkStyle}>Privacy Policy</Link> — How we handle your data</li>
-        <li><Link href="/terms" style={linkStyle}>Terms of Service</Link> — Rules for using Literacy</li>
+        <li><Link href="/terms" style={linkStyle}>Terms of Service</Link> — Rules for using CrossShelf</li>
         <li><Link href="/guidelines" style={linkStyle}>Content Guidelines</Link> — Community standards for reviews and interactions</li>
         <li><Link href="/cookies" style={linkStyle}>Cookie Policy</Link> — How we use cookies</li>
         <li><Link href="/dmca" style={linkStyle}>DMCA / Copyright</Link> — Copyright policy and takedown process</li>

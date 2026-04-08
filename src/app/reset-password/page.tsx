@@ -1,30 +1,39 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { Suspense } from "react";
 
 function ResetPasswordForm() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const { data: session } = useSession();
-  const token = searchParams.get("token");
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Supabase puts the user into a recovery session via /auth/callback
+  // before redirecting here, so we should already be authenticated.
+  const [hasRecoverySession, setHasRecoverySession] = useState<boolean | null>(null);
 
-  // Redirect if already logged in
-  if (session?.user) {
-    router.push("/");
-    return null;
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => {
+      setHasRecoverySession(!!data.session);
+    });
+  }, []);
+
+  if (hasRecoverySession === null) {
+    return (
+      <div className="content-width" style={{ maxWidth: 400, marginTop: 60, textAlign: "center" }}>
+        <p style={{ color: "var(--text-muted)" }}>Loading...</p>
+      </div>
+    );
   }
 
-  if (!token) {
+  if (!hasRecoverySession) {
     return (
       <div className="content-width" style={{ maxWidth: 400, marginTop: 60, textAlign: "center" }}>
         <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 900, marginBottom: 12, color: "#fff" }}>
@@ -66,17 +75,13 @@ function ResetPasswordForm() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Something went wrong");
+      const supabase = createClient();
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      if (updateError) {
+        setError(updateError.message);
       } else {
+        // Sign out so the user logs in fresh with their new password
+        await supabase.auth.signOut();
         setSuccess(true);
       }
     } catch {

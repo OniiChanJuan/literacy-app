@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 import { normalizeScore, meetsQualityFloor, interleaveByType } from "@/lib/ranking";
 import { tasteSimilarity, neutralDimensions, type TasteDimensions } from "@/lib/taste-dimensions";
@@ -18,9 +18,64 @@ function shuffleAndPick<T>(arr: T[], count: number): T[] {
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
   year: true, cover: true, description: true, people: true,
-  awards: true, platforms: true, ext: true, totalEp: true,
+  ext: true, totalEp: true,
   popularityScore: true, voteCount: true, itemDimensions: true, malId: true,
 } as const;
+
+// Only the ext keys Card/HoverPreview actually read. Drops bulky API payload data.
+const CARD_EXT_KEYS = [
+  "imdb", "tmdb", "mal", "igdb", "igdb_critics", "google_books",
+  "rt_critics", "metacritic", "pitchfork", "ign", "spotify_popularity",
+  "aoty", "opencritic", "anilist",
+  "igdb_count", "igdb_critics_count", // needed by scorePassesThreshold
+] as const;
+
+function slimExt(ext: any): Record<string, number> {
+  if (!ext || typeof ext !== "object") return {};
+  const out: Record<string, number> = {};
+  for (const k of CARD_EXT_KEYS) {
+    if (ext[k] !== undefined && ext[k] !== null) out[k] = ext[k];
+  }
+  return out;
+}
+
+function truncateDesc(d: string | null | undefined): string {
+  if (!d) return "";
+  return d.length > 280 ? d.slice(0, 280).trimEnd() + "…" : d;
+}
+
+// ── In-memory candidate pool cache ───────────────────────────────────────
+// The top-3000 pool is the same for every user. Cache it for 120s so
+// concurrent For You requests don't each hammer Postgres.
+type Candidate = Awaited<ReturnType<typeof fetchCandidatesFromDb>>[number];
+let CANDIDATE_CACHE: { data: Candidate[]; expires: number } | null = null;
+let CANDIDATE_INFLIGHT: Promise<Candidate[]> | null = null;
+const CANDIDATE_TTL_MS = 120_000;
+
+async function fetchCandidatesFromDb() {
+  return prisma.item.findMany({
+    where: { isUpcoming: false, parentItemId: null },
+    orderBy: { voteCount: "desc" },
+    take: 3000,
+    select: ITEM_SELECT,
+  });
+}
+
+async function getCandidatePool(): Promise<Candidate[]> {
+  const now = Date.now();
+  if (CANDIDATE_CACHE && CANDIDATE_CACHE.expires > now) {
+    return CANDIDATE_CACHE.data;
+  }
+  // Deduplicate concurrent refreshes — one DB query wins, others await it
+  if (CANDIDATE_INFLIGHT) return CANDIDATE_INFLIGHT;
+  CANDIDATE_INFLIGHT = fetchCandidatesFromDb()
+    .then((data) => {
+      CANDIDATE_CACHE = { data, expires: Date.now() + CANDIDATE_TTL_MS };
+      return data;
+    })
+    .finally(() => { CANDIDATE_INFLIGHT = null; });
+  return CANDIDATE_INFLIGHT;
+}
 
 /**
  * GET /api/for-you — Personalized recommendations based on user's taste profile
@@ -40,20 +95,20 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
-  const session = await auth();
+  const claims = await getClaims();
   const { searchParams } = new URL(req.url);
   const section = searchParams.get("section");
   const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 100);
   const offset = parseInt(searchParams.get("offset") || "0");
 
-  if (!session?.user?.id) {
+  if (!claims?.sub) {
     if (section) return NextResponse.json([]);
     return NextResponse.json({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null });
   }
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: claims.sub },
       select: { tasteProfile: true },
     });
 
@@ -65,7 +120,7 @@ export async function GET(req: NextRequest) {
 
     // Get user's rated items to exclude + learn preferred types + top genres
     const ratings = await prisma.rating.findMany({
-      where: { userId: session.user.id },
+      where: { userId: claims.sub },
       select: { itemId: true, score: true, item: { select: { type: true, genre: true } } },
     });
 
@@ -101,19 +156,14 @@ export async function GET(req: NextRequest) {
 
     // Get dismissed items
     const dismissed = await prisma.dismissedItem.findMany({
-      where: { userId: session.user.id },
+      where: { userId: claims.sub },
       select: { itemId: true },
     });
     const dismissedIds = new Set(dismissed.map((d) => d.itemId));
 
-    // Fetch candidate pool
-    const candidates = await prisma.item.findMany({
-      where: {
-        isUpcoming: false,
-        parentItemId: null,
-      },
-      select: ITEM_SELECT,
-    });
+    // Fetch candidate pool — top 3,000 most-voted items, cached in-memory
+    // for 120s across users (pool is the same for everyone; only scoring is per-user).
+    const candidates = await getCandidatePool();
 
     // Filter pool
     const pool = candidates.filter((c) => {
@@ -318,9 +368,10 @@ function mapItem(item: any) {
     id: item.id, title: item.title, type: item.type,
     genre: item.genre || [], vibes: item.vibes || [],
     year: item.year, cover: item.cover || "",
-    desc: item.description || "", people: item.people || [],
-    awards: item.awards || [], platforms: item.platforms || [],
-    ext: item.ext || {}, totalEp: item.totalEp || 0,
+    desc: truncateDesc(item.description),
+    people: (item.people || []).slice(0, 3),
+    awards: [], platforms: [],
+    ext: slimExt(item.ext), totalEp: item.totalEp || 0,
     voteCount: item.voteCount || 0,
     malId: item.malId ?? null,
   };

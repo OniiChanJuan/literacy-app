@@ -19,7 +19,7 @@ export default function ShareButton({ title, text, size = 28 }: ShareButtonProps
       try {
         await navigator.share({
           title,
-          text: text || "Check out " + title + " on Literacy",
+          text: text || "Check out " + title + " on CrossShelf",
           url: window.location.href,
         });
       } catch {

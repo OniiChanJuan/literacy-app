@@ -12,7 +12,18 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { VALID_SLUG_TYPES } from "@/lib/slugs";
 import { ItemPageRender, dbItemToItem } from "@/app/item/_page-impl";
+import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 import type { Metadata } from "next";
+
+const TYPE_LABEL: Record<string, string> = {
+  movie: "Movie", tv: "TV Show", book: "Book", manga: "Manga",
+  comic: "Comic", game: "Game", music: "Album", podcast: "Podcast",
+};
+
+const SCHEMA_TYPE: Record<string, string> = {
+  movie: "Movie", tv: "TVSeries", book: "Book", manga: "Book",
+  comic: "Book", game: "VideoGame", music: "MusicAlbum", podcast: "PodcastSeries",
+};
 
 // ISR: regenerate page in background every 5 minutes.
 // Item metadata (title, cover, description, scores) rarely changes —
@@ -27,28 +38,42 @@ export async function generateMetadata({
   params: Promise<{ type: string; slug: string }>;
 }): Promise<Metadata> {
   const { type, slug } = await params;
-  if (!VALID_SLUG_TYPES.has(type)) return { title: "Literacy" };
+  if (!VALID_SLUG_TYPES.has(type)) return { title: SITE_NAME };
 
   const dbItem = await prisma.item
-    .findFirst({ where: { type, slug }, select: { title: true, description: true, cover: true } })
+    .findFirst({ where: { type, slug }, select: { title: true, description: true, cover: true, year: true } })
     .catch(() => null);
 
-  if (!dbItem) return { title: "Literacy" };
+  if (!dbItem) return { title: SITE_NAME };
 
-  const title = `${dbItem.title} — Literacy`;
-  const description = (dbItem.description || "").slice(0, 160).replace(/<[^>]*>/g, "");
+  const typeLabel = TYPE_LABEL[type] || type;
+  const yearSuffix = dbItem.year ? ` (${dbItem.year})` : "";
+  // Unique per-item title: "Dune (2021) — Movie Reviews & Ratings | CrossShelf"
+  const pageTitle = `${dbItem.title}${yearSuffix} — ${typeLabel} Reviews & Ratings`;
+  const descSrc = (dbItem.description || "").replace(/<[^>]*>/g, "").trim();
+  const description = descSrc
+    ? `${descSrc.slice(0, 150)}${descSrc.length > 150 ? "…" : ""} Rate and review ${dbItem.title} on ${SITE_NAME}.`
+    : `Rate, review, and discover ${dbItem.title} and similar ${typeLabel.toLowerCase()}s on ${SITE_NAME}.`;
   const image = dbItem.cover?.startsWith("http") ? dbItem.cover : undefined;
 
   return {
-    title,
+    title: pageTitle,
     description,
     alternates: { canonical: `/${type}/${slug}` },
     openGraph: {
-      title,
+      type: "website",
+      url: absoluteUrl(`/${type}/${slug}`),
+      title: pageTitle,
       description,
+      siteName: SITE_NAME,
       ...(image ? { images: [{ url: image, width: 300, height: 450 }] } : {}),
     },
-    twitter: { card: image ? "summary_large_image" : "summary" },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title: pageTitle,
+      description,
+      ...(image ? { images: [image] } : {}),
+    },
   };
 }
 
@@ -112,16 +137,36 @@ export default async function ItemSlugPage({
     } catch {}
   }
 
+  // Structured data for item detail pages — helps Google show rich results
+  const schemaType = SCHEMA_TYPE[type] || "CreativeWork";
+  const cleanDesc = (dbItem.description || "").replace(/<[^>]*>/g, "").slice(0, 500);
+  const ldJson: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": schemaType,
+    name: dbItem.title,
+    url: absoluteUrl(`/${type}/${slug}`),
+    ...(cleanDesc ? { description: cleanDesc } : {}),
+    ...(dbItem.cover?.startsWith("http") ? { image: dbItem.cover } : {}),
+    ...(dbItem.year ? { datePublished: String(dbItem.year) } : {}),
+  };
+
   return (
-    <ItemPageRender
-      item={item}
-      routeId={String(dbItem.id)}
-      isExternal={false}
-      primaryColor={primaryColor}
-      secondaryColor={secondaryColor}
-      dlcs={dlcs}
-      parentGame={parentGame}
-      itemSubtype={itemSubtype}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJson) }}
+      />
+      <ItemPageRender
+        item={item}
+        routeId={String(dbItem.id)}
+        isExternal={false}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+        dlcs={dlcs}
+        parentGame={parentGame}
+        itemSubtype={itemSubtype}
+      />
+    </>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "@/lib/supabase/use-session";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";

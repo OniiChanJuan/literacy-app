@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Literacy -- Fluent in Every Medium';
+export const alt = 'CrossShelf -- Fluent in Every Medium';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -23,7 +23,7 @@ export default function OgImage() {
           color: '#fff',
           letterSpacing: '-1px',
           marginBottom: 16,
-        }}>Literacy</span>
+        }}>CrossShelf</span>
         <span style={{
           fontSize: 24,
           color: 'rgba(255,255,255,0.4)',

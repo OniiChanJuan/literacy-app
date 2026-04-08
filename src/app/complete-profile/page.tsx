@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import { useRouter } from "next/navigation";
 
 export default function CompleteProfilePage() {
@@ -94,7 +94,7 @@ export default function CompleteProfilePage() {
           fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 900, marginBottom: 8,
           color: "#fff",
         }}>
-          Welcome to Literacy!
+          Welcome to CrossShelf!
         </h1>
         <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
           Choose a username to complete your profile

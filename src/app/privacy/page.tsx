@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
       <h2 style={h2Style}>1. Introduction</h2>
       <p style={p}>
-        Literacy (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates the Literacy platform at literacy.app (the &quot;Service&quot;), a cross-media review and recommendation platform. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our Service.
+        CrossShelf (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates the CrossShelf platform at crossshelf.app (the &quot;Service&quot;), a cross-media review and recommendation platform. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our Service.
       </p>
       <p style={p}>
         We are committed to protecting your privacy and complying with applicable data protection laws, including the EU General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA), the Brazilian General Data Protection Law (LGPD), and the Children&apos;s Online Privacy Protection Act (COPPA).
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
         We automatically collect limited usage data through our servers:
       </p>
       <ul style={ul}>
-        <li><strong>Page views:</strong> We record which pages you visit on Literacy through our implicit signals system. This data is used to understand general platform usage patterns and may inform future recommendation features.</li>
+        <li><strong>Page views:</strong> We record which pages you visit on CrossShelf through our implicit signals system. This data is used to understand general platform usage patterns and may inform future recommendation features.</li>
         <li><strong>Standard server request logs:</strong> Our servers automatically log your IP address, browser type (user agent string), and timestamp for each request. These logs are used for security monitoring, debugging, and abuse prevention.</li>
       </ul>
       <p style={p}>
@@ -169,7 +169,7 @@ export default function PrivacyPage() {
         <li><strong>Right to lodge a complaint:</strong> File a complaint with your local data protection supervisory authority.</li>
       </ul>
       <p style={p}>
-        To exercise these rights, contact us at <a href="mailto:privacy@literacy.app" style={{ color: "#E84855" }}>privacy@literacy.app</a>. We will respond within 30 days.
+        To exercise these rights, contact us at <a href="mailto:privacy@crossshelf.app" style={{ color: "#E84855" }}>privacy@crossshelf.app</a>. We will respond within 30 days.
       </p>
 
       <h3 style={h3Style}>8.3 California Residents (CCPA/CPRA)</h3>
@@ -185,7 +185,7 @@ export default function PrivacyPage() {
       <p style={p}><strong>Categories of personal information collected in the last 12 months:</strong></p>
       <ul style={ul}>
         <li><strong>Identifiers:</strong> Email address, display name, IP address, account ID</li>
-        <li><strong>Internet activity:</strong> Page views on Literacy, browser type, server request logs</li>
+        <li><strong>Internet activity:</strong> Page views on CrossShelf, browser type, server request logs</li>
         <li><strong>User-generated content:</strong> Ratings, reviews, library entries, profile information</li>
       </ul>
       <p style={p}>
@@ -207,18 +207,18 @@ export default function PrivacyPage() {
         <li>Revocation of consent</li>
       </ul>
       <p style={p}>
-        To exercise your rights under LGPD, contact us at <a href="mailto:privacy@literacy.app" style={{ color: "#E84855" }}>privacy@literacy.app</a>.
+        To exercise your rights under LGPD, contact us at <a href="mailto:privacy@crossshelf.app" style={{ color: "#E84855" }}>privacy@crossshelf.app</a>.
       </p>
 
       <h2 style={h2Style}>9. Children&apos;s Privacy</h2>
       <p style={p}>
-        Literacy is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13, in compliance with the Children&apos;s Online Privacy Protection Act (COPPA).
+        CrossShelf is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13, in compliance with the Children&apos;s Online Privacy Protection Act (COPPA).
       </p>
       <p style={p}>
         In the European Union, users under the age of 16 require verifiable parental consent to create an account, in accordance with GDPR Article 8.
       </p>
       <p style={p}>
-        If we discover that we have collected personal information from a child under the applicable age threshold without appropriate consent, we will delete that information promptly. If you believe a child has provided us with personal information, please contact us at <a href="mailto:privacy@literacy.app" style={{ color: "#E84855" }}>privacy@literacy.app</a>.
+        If we discover that we have collected personal information from a child under the applicable age threshold without appropriate consent, we will delete that information promptly. If you believe a child has provided us with personal information, please contact us at <a href="mailto:privacy@crossshelf.app" style={{ color: "#E84855" }}>privacy@crossshelf.app</a>.
       </p>
 
       <h2 style={h2Style}>10. Security</h2>
@@ -250,7 +250,7 @@ export default function PrivacyPage() {
         If you have questions about this Privacy Policy, want to exercise your data rights, or have concerns about how we handle your information, please contact us:
       </p>
       <p style={p}>
-        Email: <a href="mailto:privacy@literacy.app" style={{ color: "#E84855" }}>privacy@literacy.app</a>
+        Email: <a href="mailto:privacy@crossshelf.app" style={{ color: "#E84855" }}>privacy@crossshelf.app</a>
       </p>
       <p style={p}>
         For GDPR inquiries, you may also contact your local data protection supervisory authority.

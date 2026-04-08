@@ -13,7 +13,7 @@ export default function AccessibilityPage() {
 
       <h2 style={h2Style}>Our Commitment</h2>
       <p style={p}>
-        Literacy is committed to ensuring digital accessibility for all users, including people with disabilities. We believe everyone should be able to discover, rate, and review media regardless of ability. We are continually improving the user experience for everyone and applying relevant accessibility standards.
+        CrossShelf is committed to ensuring digital accessibility for all users, including people with disabilities. We believe everyone should be able to discover, rate, and review media regardless of ability. We are continually improving the user experience for everyone and applying relevant accessibility standards.
       </p>
 
       <h2 style={h2Style}>Standards</h2>
@@ -25,7 +25,7 @@ export default function AccessibilityPage() {
 
       <h3 style={h3Style}>Keyboard Navigation</h3>
       <p style={p}>
-        All interactive elements on Literacy can be accessed and operated using a keyboard alone. You can navigate through the site using the Tab key, activate buttons and links with Enter or Space, and close modals with Escape.
+        All interactive elements on CrossShelf can be accessed and operated using a keyboard alone. You can navigate through the site using the Tab key, activate buttons and links with Enter or Space, and close modals with Escape.
       </p>
 
       <h3 style={h3Style}>Screen Reader Support</h3>
@@ -69,10 +69,10 @@ export default function AccessibilityPage() {
 
       <h2 style={h2Style}>Feedback</h2>
       <p style={p}>
-        We welcome your feedback on the accessibility of Literacy. If you encounter any accessibility barriers, have suggestions for improvement, or need assistance using any part of the platform, please contact us:
+        We welcome your feedback on the accessibility of CrossShelf. If you encounter any accessibility barriers, have suggestions for improvement, or need assistance using any part of the platform, please contact us:
       </p>
       <p style={p}>
-        Email: <a href="mailto:accessibility@literacy.app" style={{ color: "#E84855" }}>accessibility@literacy.app</a>
+        Email: <a href="mailto:accessibility@crossshelf.app" style={{ color: "#E84855" }}>accessibility@crossshelf.app</a>
       </p>
       <p style={p}>
         When contacting us about an accessibility issue, please include:

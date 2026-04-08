@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 import { normalizeScore } from "@/lib/ranking";
 import { tasteSimilarity, type TasteDimensions } from "@/lib/taste-dimensions";
@@ -42,20 +42,20 @@ export async function GET(req: NextRequest) {
     const sourceFranchiseIds = sourceItem.franchiseItems.map((fi) => fi.franchiseId);
 
     // Get user-specific exclusions (dropped items, low-rated, dismissed)
-    const session = await auth();
+    const claims = await getClaims();
     const excludeIds = new Set<number>();
-    if (session?.user?.id) {
+    if (claims?.sub) {
       const [lowRated, dropped, dismissed] = await Promise.all([
         prisma.rating.findMany({
-          where: { userId: session.user.id, score: { lte: 2 } },
+          where: { userId: claims.sub, score: { lte: 2 } },
           select: { itemId: true },
         }),
         prisma.libraryEntry.findMany({
-          where: { userId: session.user.id, status: "dropped" },
+          where: { userId: claims.sub, status: "dropped" },
           select: { itemId: true },
         }),
         prisma.dismissedItem.findMany({
-          where: { userId: session.user.id },
+          where: { userId: claims.sub },
           select: { itemId: true },
         }),
       ]);
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
       trySomethingDifferent: trySomethingDifferent.map(toClientItem),
     });
     // Cache publicly if no user session, privately otherwise
-    if (session?.user?.id) {
+    if (claims?.sub) {
       res.headers.set("Cache-Control", "private, max-age=120");
     } else {
       res.headers.set("Cache-Control", "s-maxage=600, stale-while-revalidate=1200");

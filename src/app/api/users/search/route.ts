@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 // GET /api/users/search?q=username — search users by name
@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json([]);
   }
 
-  const session = await auth();
-  const currentUserId = session?.user?.id;
+  const claims = await getClaims();
+  const currentUserId = claims?.sub;
 
   const users = await prisma.user.findMany({
     where: {

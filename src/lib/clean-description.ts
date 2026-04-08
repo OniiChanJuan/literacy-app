@@ -2,7 +2,7 @@
  * Description cleaning utility — strips external reviews, marketing text,
  * author backlists, and promotional content from item descriptions.
  *
- * Literacy is a review-first platform. Only OUR community reviews should
+ * CrossShelf is a review-first platform. Only OUR community reviews should
  * appear on the site — external review quotes muddy the identity.
  */
 

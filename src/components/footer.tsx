@@ -70,7 +70,7 @@ export default function Footer() {
                 color: "#fff",
               }}
             >
-              Literacy
+              CrossShelf
             </div>
             <div
               style={{
@@ -124,7 +124,7 @@ export default function Footer() {
               </Link>
             ))}
             <a
-              href="mailto:privacy@literacy.app"
+              href="mailto:privacy@crossshelf.app"
               className="footer-link"
               style={linkStyle}
               rel="noopener noreferrer"
@@ -149,7 +149,7 @@ export default function Footer() {
           }}
         >
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.15)" }}>
-            &copy; 2025 Literacy. All rights reserved.
+            &copy; 2025 CrossShelf. All rights reserved.
           </div>
           <div
             style={{

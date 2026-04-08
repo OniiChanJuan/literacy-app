@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
 
@@ -10,12 +10,12 @@ import { rateLimit } from "@/lib/validation";
  * Can be triggered manually from admin panel when catalog feels stale.
  */
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`admin-refresh:${session.user.id}`, 5, 60_000)) {
+  if (!rateLimit(`admin-refresh:${claims.sub}`, 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
@@ -207,7 +207,7 @@ async function refreshComics(): Promise<number> {
       url.searchParams.set("limit", "10");
       url.searchParams.set("field_list", "id,name,start_year,image,description,count_of_issues,publisher,deck");
 
-      const res = await fetch(url.toString(), { headers: { "User-Agent": "Literacy/1.0" } });
+      const res = await fetch(url.toString(), { headers: { "User-Agent": "CrossShelf/1.0" } });
       if (!res.ok) continue;
       const data = await res.json();
       if (!data?.results) continue;

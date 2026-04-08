@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 export interface FollowedFranchise {
@@ -22,13 +22,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json([]);
   }
 
   const follows = await prisma.franchiseFollow.findMany({
-    where: { userId: session.user.id },
+    where: { userId: claims.sub },
     orderBy: { createdAt: "desc" },
     include: {
       franchise: {
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
   const uniqueItemIds = [...new Set(allItemIds)];
 
   const ratings = await prisma.rating.findMany({
-    where: { userId: session.user.id, itemId: { in: uniqueItemIds } },
+    where: { userId: claims.sub, itemId: { in: uniqueItemIds } },
     select: { itemId: true },
   });
   const ratedSet = new Set(ratings.map((r) => r.itemId));

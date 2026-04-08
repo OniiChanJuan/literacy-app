@@ -13,10 +13,10 @@ export default function TermsPage() {
 
       <h2 style={h2Style}>1. Acceptance of Terms</h2>
       <p style={p}>
-        By accessing or using Literacy (&quot;the Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, do not use the Service.
+        By accessing or using CrossShelf (&quot;the Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, do not use the Service.
       </p>
       <p style={p}>
-        You must be at least 13 years old to use Literacy. In the European Union, users under the age of 16 must have verifiable parental or guardian consent to create an account. By creating an account, you represent that you meet these age requirements.
+        You must be at least 13 years old to use CrossShelf. In the European Union, users under the age of 16 must have verifiable parental or guardian consent to create an account. By creating an account, you represent that you meet these age requirements.
       </p>
 
       <h2 style={h2Style}>2. Account Responsibility</h2>
@@ -35,10 +35,10 @@ export default function TermsPage() {
 
       <h2 style={h2Style}>3. User Content</h2>
       <p style={p}>
-        <strong>Ownership:</strong> You retain ownership of all content you create on Literacy, including your reviews, ratings, and profile information. We do not claim ownership of your content.
+        <strong>Ownership:</strong> You retain ownership of all content you create on CrossShelf, including your reviews, ratings, and profile information. We do not claim ownership of your content.
       </p>
       <p style={p}>
-        <strong>License grant:</strong> By posting content on Literacy, you grant us a worldwide, non-exclusive, royalty-free, sublicensable license to use, display, reproduce, and distribute your content solely in connection with operating and providing the Service. This license exists only for as long as your content remains on the platform.
+        <strong>License grant:</strong> By posting content on CrossShelf, you grant us a worldwide, non-exclusive, royalty-free, sublicensable license to use, display, reproduce, and distribute your content solely in connection with operating and providing the Service. This license exists only for as long as your content remains on the platform.
       </p>
       <p style={p}>
         <strong>Deletion:</strong> You may delete your content at any time. When you delete a review or rating, it is removed from public display. When you delete your account, all of your content is permanently deleted within 30 days, as described in our <a href="/privacy" style={{ color: "#E84855" }}>Privacy Policy</a>.
@@ -75,7 +75,7 @@ export default function TermsPage() {
 
       <h2 style={h2Style}>6. External Content Disclaimer</h2>
       <p style={p}>
-        Literacy displays media metadata (titles, descriptions, cover art, release dates, cast and crew information) sourced from third-party APIs including TMDB, IGDB, Google Books, Spotify, Jikan, and Comic Vine. This content is provided by those services and is subject to their respective terms of use.
+        CrossShelf displays media metadata (titles, descriptions, cover art, release dates, cast and crew information) sourced from third-party APIs including TMDB, IGDB, Google Books, Spotify, Jikan, and Comic Vine. This content is provided by those services and is subject to their respective terms of use.
       </p>
       <p style={p}>
         We also display external review scores from sources such as IMDb, Rotten Tomatoes, Metacritic, and others. These scores are the property of their respective owners and are displayed for informational purposes only.
@@ -86,10 +86,10 @@ export default function TermsPage() {
 
       <h2 style={h2Style}>7. Intellectual Property</h2>
       <p style={p}>
-        The Literacy brand, logo, design, and original software are the property of Literacy and are protected by applicable intellectual property laws. You may not use our branding without prior written permission.
+        The CrossShelf brand, logo, design, and original software are the property of CrossShelf and are protected by applicable intellectual property laws. You may not use our branding without prior written permission.
       </p>
       <p style={p}>
-        Media metadata, cover art, and related content displayed on the platform belong to their respective owners (studios, publishers, developers, artists, and the API providers that aggregate this data). Literacy uses this content under the terms of the respective API agreements.
+        Media metadata, cover art, and related content displayed on the platform belong to their respective owners (studios, publishers, developers, artists, and the API providers that aggregate this data). CrossShelf uses this content under the terms of the respective API agreements.
       </p>
       <p style={p}>
         User-generated content (reviews, ratings) is owned by the users who created it, subject to the license grant described in Section 3.
@@ -100,7 +100,7 @@ export default function TermsPage() {
         The Service is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.
       </p>
       <p style={p}>
-        To the maximum extent permitted by applicable law, Literacy shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenue, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from:
+        To the maximum extent permitted by applicable law, CrossShelf shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenue, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from:
       </p>
       <ul style={ul}>
         <li>Your use of or inability to use the Service</li>
@@ -142,7 +142,7 @@ export default function TermsPage() {
 
       <h2 style={h2Style}>12. Contact</h2>
       <p style={p}>
-        If you have questions about these Terms of Service, please contact us at <a href="mailto:privacy@literacy.app" style={{ color: "#E84855" }}>privacy@literacy.app</a>.
+        If you have questions about these Terms of Service, please contact us at <a href="mailto:privacy@crossshelf.app" style={{ color: "#E84855" }}>privacy@crossshelf.app</a>.
       </p>
     </div>
   );

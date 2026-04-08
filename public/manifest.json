@@ -1,7 +1,7 @@
 {
-  "name": "Literacy",
-  "short_name": "Literacy",
-  "description": "Rate, review, and discover across every medium",
+  "name": "CrossShelf",
+  "short_name": "CrossShelf",
+  "description": "Rate, collect, and discover across movies, TV, games, anime, books, manga, music, podcasts, and comics. Your shelf across every medium.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0b0b10",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import { useRatings } from "@/lib/ratings-context";
 import Stars from "./stars";

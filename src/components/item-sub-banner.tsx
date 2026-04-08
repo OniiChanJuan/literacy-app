@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import type { Item, RecTag as RecTagType } from "@/lib/data";
 import { scorePassesThreshold } from "@/lib/score-thresholds";
@@ -238,7 +238,7 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
           </button>
         )}
 
-        {/* Literacy community score */}
+        {/* CrossShelf community score */}
         {agg && (
           <>
             <div style={{
@@ -252,7 +252,7 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
                 {agg.avg}
               </div>
               <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1 }}>
-                Literacy
+                CrossShelf
               </div>
             </div>
 

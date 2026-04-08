@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 // GET /api/import/steam?steamid=xxx
 // Fetches a user's Steam library via Steam Web API
 export async function GET(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`import-steam:${session.user.id}`, 5, 60_000)) {
+  if (!rateLimit(`import-steam:${claims.sub}`, 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 

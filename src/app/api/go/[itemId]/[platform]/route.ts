@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 import { buildPlatformUrl } from "@/lib/platform-links";
 
@@ -76,8 +76,8 @@ export async function GET(
   // Log click asynchronously (don't block redirect)
   let userId: string | null = null;
   try {
-    const session = await auth();
-    userId = session?.user?.id || null;
+    const claims = await getClaims();
+    userId = claims?.sub || null;
   } catch {
     // Skip auth if it fails
   }

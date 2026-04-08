@@ -20,7 +20,7 @@ export default function Icon() {
           fontWeight: 900,
           color: '#E84855',
           fontFamily: 'serif',
-        }}>L</span>
+        }}>X</span>
       </div>
     ),
     { ...size }

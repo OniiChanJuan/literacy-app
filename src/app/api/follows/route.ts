@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 // GET /api/follows — get current user's following list
@@ -10,13 +10,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ following: [], followers: [] });
   }
 
   const following = await prisma.follow.findMany({
-    where: { followerId: session.user.id },
+    where: { followerId: claims.sub },
     include: {
       followed: {
         select: { id: true, name: true, image: true, avatar: true },
@@ -35,29 +35,29 @@ export async function GET(req: NextRequest) {
 
 // POST /api/follows — follow a user
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`follows-post:${session.user.id}`, 120, 60_000)) {
+  if (!rateLimit(`follows-post:${claims.sub}`, 120, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
   const { userId } = await req.json() as { userId: string };
-  if (!userId || userId === session.user.id) {
+  if (!userId || userId === claims.sub) {
     return NextResponse.json({ error: "Invalid user" }, { status: 400 });
   }
 
   await prisma.follow.upsert({
     where: {
       followerId_followedId: {
-        followerId: session.user.id,
+        followerId: claims.sub,
         followedId: userId,
       },
     },
     update: {},
-    create: { followerId: session.user.id, followedId: userId },
+    create: { followerId: claims.sub, followedId: userId },
   });
 
   return NextResponse.json({ followed: true });
@@ -65,12 +65,12 @@ export async function POST(req: NextRequest) {
 
 // DELETE /api/follows — unfollow a user
 export async function DELETE(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`follows-delete:${session.user.id}`, 120, 60_000)) {
+  if (!rateLimit(`follows-delete:${claims.sub}`, 120, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
@@ -80,7 +80,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   await prisma.follow.deleteMany({
-    where: { followerId: session.user.id, followedId: userId },
+    where: { followerId: claims.sub, followedId: userId },
   });
 
   return NextResponse.json({ unfollowed: true });

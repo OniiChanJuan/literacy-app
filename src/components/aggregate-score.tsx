@@ -75,7 +75,7 @@ export function AggregateScorePanel({ itemId }: { itemId: number }) {
     <div>
       {/* Score + Recommend side by side */}
       <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
-        {/* Literacy score */}
+        {/* CrossShelf score */}
         <div style={{
           flex: 1,
           display: "flex",
@@ -89,7 +89,7 @@ export function AggregateScorePanel({ itemId }: { itemId: number }) {
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 32, fontWeight: 900, color, lineHeight: 1 }}>{agg.avg}</div>
             <div style={{ fontSize: 9, color: "var(--text-faint)", marginTop: 4, textTransform: "uppercase", letterSpacing: 1 }}>
-              Literacy
+              CrossShelf
             </div>
           </div>
           <div style={{ width: 1, height: 36, background: "var(--surface-3)" }} />

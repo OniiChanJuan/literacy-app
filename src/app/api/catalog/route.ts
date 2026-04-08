@@ -29,9 +29,31 @@ function jsonResponseNoCache(data: any) {
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
   year: true, cover: true, description: true, people: true,
-  awards: true, platforms: true, ext: true, totalEp: true,
+  ext: true, totalEp: true,
   popularityScore: true, voteCount: true, malId: true,
 } as const;
+
+// Only ext keys Card/HoverPreview render. Drops bulky raw API payload data.
+const CARD_EXT_KEYS = [
+  "imdb", "tmdb", "mal", "igdb", "igdb_critics", "google_books",
+  "rt_critics", "metacritic", "pitchfork", "ign", "spotify_popularity",
+  "aoty", "opencritic", "anilist",
+  "igdb_count", "igdb_critics_count",
+] as const;
+
+function slimExt(ext: any): Record<string, number> {
+  if (!ext || typeof ext !== "object") return {};
+  const out: Record<string, number> = {};
+  for (const k of CARD_EXT_KEYS) {
+    if (ext[k] !== undefined && ext[k] !== null) out[k] = ext[k];
+  }
+  return out;
+}
+
+function truncateDesc(d: string | null | undefined): string {
+  if (!d) return "";
+  return d.length > 280 ? d.slice(0, 280).trimEnd() + "…" : d;
+}
 
 /**
  * Genre synonym expansion.
@@ -235,7 +257,7 @@ export async function GET(req: NextRequest) {
       const filtered = items.filter((i) => meetsQualityFloor({ ...i, ext: (i.ext || {}) as Record<string, number> }));
       if (filtered.length === 0) return jsonResponse([], false);
 
-      // FIX 4: blend TMDB trending score (70%) + recent Literacy rating activity (30%)
+      // FIX 4: blend TMDB trending score (70%) + recent CrossShelf rating activity (30%)
       const itemIds = filtered.map((i) => i.id);
       const recentCounts = await prisma.$queryRawUnsafe<{ item_id: number; cnt: number }[]>(`
         SELECT item_id, COUNT(*)::int AS cnt
@@ -547,9 +569,10 @@ function mapItem(item: any) {
     id: item.id, title: item.title, type: item.type,
     genre: item.genre || [], vibes: item.vibes || [],
     year: item.year, cover: item.cover || "",
-    desc: item.description || "", people: item.people || [],
-    awards: item.awards || [], platforms: item.platforms || [],
-    ext: item.ext || {}, totalEp: item.totalEp || 0,
+    desc: truncateDesc(item.description),
+    people: (item.people || []).slice(0, 3),
+    awards: [], platforms: [],
+    ext: slimExt(item.ext), totalEp: item.totalEp || 0,
     voteCount: item.voteCount || 0,
     malId: item.malId ?? null,
   };

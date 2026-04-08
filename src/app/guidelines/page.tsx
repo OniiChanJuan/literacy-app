@@ -12,12 +12,12 @@ export default function GuidelinesPage() {
       <p style={updated}>Last updated: March 24, 2026</p>
 
       <p style={p}>
-        Literacy is a community built around honest reviews and genuine media discussion. These guidelines help ensure the platform remains a respectful, trustworthy space for everyone. All users are expected to follow these guidelines when posting reviews, ratings, and interacting with others.
+        CrossShelf is a community built around honest reviews and genuine media discussion. These guidelines help ensure the platform remains a respectful, trustworthy space for everyone. All users are expected to follow these guidelines when posting reviews, ratings, and interacting with others.
       </p>
 
       <h2 style={h2Style}>Write Honest Reviews</h2>
       <p style={p}>
-        Your reviews should reflect your genuine opinion of the media you are reviewing. A great review helps others decide whether something is worth their time. You do not need to be a professional critic — personal, authentic perspectives are what make Literacy valuable.
+        Your reviews should reflect your genuine opinion of the media you are reviewing. A great review helps others decide whether something is worth their time. You do not need to be a professional critic — personal, authentic perspectives are what make CrossShelf valuable.
       </p>
       <ul style={ul}>
         <li>Rate and review media you have actually experienced (watched, read, played, listened to)</li>
@@ -39,7 +39,7 @@ export default function GuidelinesPage() {
 
       <h2 style={h2Style}>Use Spoiler Tags</h2>
       <p style={p}>
-        Many people use Literacy to decide what to watch, read, play, or listen to next. Protect their experience by marking spoilers appropriately.
+        Many people use CrossShelf to decide what to watch, read, play, or listen to next. Protect their experience by marking spoilers appropriately.
       </p>
       <ul style={ul}>
         <li>Use spoiler tags when discussing specific plot points, twists, endings, or major reveals</li>
@@ -69,7 +69,7 @@ export default function GuidelinesPage() {
 
       <h2 style={h2Style}>No Hate Speech, Harassment, or Threats</h2>
       <p style={p}>
-        The following content is prohibited on Literacy:
+        The following content is prohibited on CrossShelf:
       </p>
       <ul style={ul}>
         <li><strong>Hate speech:</strong> Content that promotes violence, hatred, or discrimination against individuals or groups based on race, ethnicity, nationality, religion, gender, gender identity, sexual orientation, age, disability, or other protected characteristics</li>

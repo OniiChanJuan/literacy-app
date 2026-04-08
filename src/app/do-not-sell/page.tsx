@@ -14,9 +14,9 @@ export default function DoNotSellPage() {
         This page is provided in compliance with the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA), which require businesses to provide California residents with the ability to opt out of the sale or sharing of their personal information.
       </p>
 
-      <h2 style={h2Style}>Literacy Does Not Sell Your Personal Information</h2>
+      <h2 style={h2Style}>CrossShelf Does Not Sell Your Personal Information</h2>
       <p style={p}>
-        Literacy does not sell your personal information to third parties. We have never sold personal information. We have no plans to sell personal information.
+        CrossShelf does not sell your personal information to third parties. We have never sold personal information. We have no plans to sell personal information.
       </p>
       <p style={p}>
         This means:
@@ -31,12 +31,12 @@ export default function DoNotSellPage() {
 
       <h2 style={h2Style}>No Advertising or Data Brokerage</h2>
       <p style={p}>
-        Literacy does not display advertisements and does not work with advertising networks, data brokers, or any third parties that would use your personal information for targeted advertising. We do not use advertising cookies, tracking pixels, or similar technologies.
+        CrossShelf does not display advertisements and does not work with advertising networks, data brokers, or any third parties that would use your personal information for targeted advertising. We do not use advertising cookies, tracking pixels, or similar technologies.
       </p>
 
       <h2 style={h2Style}>How We Do Use Your Data</h2>
       <p style={p}>
-        Your personal information is used solely to provide and improve the Literacy service. This includes displaying your reviews, powering recommendations, and enabling social features like following other users. For complete details, see our <a href="/privacy" style={{ color: "#E84855" }}>Privacy Policy</a>.
+        Your personal information is used solely to provide and improve the CrossShelf service. This includes displaying your reviews, powering recommendations, and enabling social features like following other users. For complete details, see our <a href="/privacy" style={{ color: "#E84855" }}>Privacy Policy</a>.
       </p>
 
       <h2 style={h2Style}>Your Rights Under CCPA/CPRA</h2>
@@ -56,7 +56,7 @@ export default function DoNotSellPage() {
         If you have questions about this page, our data practices, or wish to exercise any of your rights under CCPA/CPRA, please contact us:
       </p>
       <p style={p}>
-        Email: <a href="mailto:privacy@literacy.app" style={{ color: "#E84855" }}>privacy@literacy.app</a>
+        Email: <a href="mailto:privacy@crossshelf.app" style={{ color: "#E84855" }}>privacy@crossshelf.app</a>
       </p>
       <p style={p}>
         We will respond to verifiable consumer requests within 45 days as required by law.

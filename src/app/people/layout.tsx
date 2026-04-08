@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "People — Literacy",
+  title: "People — CrossShelf",
   description: "Find and follow people with similar taste across all media.",
 };
 

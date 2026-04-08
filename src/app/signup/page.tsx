@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, useSession } from "@/lib/supabase/use-session";
+import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -73,26 +74,55 @@ export default function SignupPage() {
     if (!confirmedAge) { setError("You must confirm you are at least 13 years old"); return; }
     if (!agreedToTerms) { setError("You must agree to the Terms of Service and Privacy Policy"); return; }
 
+    if (honeypot) { setError("Bot detected"); return; }
+
     setLoading(true);
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, username: username.toLowerCase().trim(), email, password, honeypot, agreedToTerms, confirmedAge }),
+    // 1. Create the Supabase Auth user. The handle_new_user trigger
+    //    in Postgres will auto-create the matching public.users row
+    //    with member_number assigned via advisory lock.
+    const supabase = createClient();
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+          name,
+          // username goes through a separate /api/users/set-username
+          // call below because the unique constraint lives on
+          // public.users, not auth.users
+          terms_accepted_at: new Date().toISOString(),
+        },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error || "Something went wrong");
+    if (signUpError) {
+      setError(signUpError.message);
       setLoading(false);
       return;
     }
 
-    const result = await signIn("credentials", { email, password, redirect: false });
+    // 2. Set the username on public.users (the trigger only sets name).
+    //    If the user must confirm their email first, this will fail
+    //    silently — they'll set it on /complete-profile after confirming.
+    if (data.session) {
+      try {
+        await fetch("/api/users/set-username", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: username.toLowerCase().trim() }),
+        });
+      } catch { /* non-fatal */ }
+    }
+
     setLoading(false);
 
-    if (result?.error) {
-      setError("Account created but login failed. Try signing in.");
+    // 3. If email confirmation is required, Supabase returns no session.
+    //    Otherwise we have a session and can redirect straight away.
+    if (!data.session) {
+      router.push("/login?confirm=1");
     } else {
       router.push("/");
       router.refresh();
@@ -119,7 +149,7 @@ export default function SignupPage() {
           background: "linear-gradient(135deg, #E84855, #3185FC, #2EC4B6)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         }}>
-          Join Literacy
+          Join CrossShelf
         </h1>
         <p style={{ fontSize: 13, color: "var(--text-muted)" }}>
           Create an account to start rating and reviewing

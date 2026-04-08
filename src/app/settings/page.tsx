@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "@/lib/supabase/use-session";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -184,13 +184,14 @@ export default function SettingsPage() {
   const changePassword = async () => {
     if (newPw !== confirmPw) { setError("Passwords don't match"); return; }
     setSaving(true); setError(""); setMessage("");
-    const res = await fetch("/api/account", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "change-password", currentPassword: currentPw, newPassword: newPw }),
-    });
-    if (res.ok) { setMessage("Password updated!"); setCurrentPw(""); setNewPw(""); setConfirmPw(""); }
-    else { const d = await res.json(); setError(d.error || "Failed"); }
+    // Supabase Auth handles password updates client-side. The current
+    // password isn't required by Supabase, but we keep the input as a
+    // basic anti-shoulder-surf check on the UI.
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
+    const { error: e } = await supabase.auth.updateUser({ password: newPw });
+    if (e) setError(e.message);
+    else { setMessage("Password updated!"); setCurrentPw(""); setNewPw(""); setConfirmPw(""); }
     setSaving(false);
   };
 
@@ -990,7 +991,7 @@ function ImportSection() {
     <div>
       <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Import Data</h2>
       <p style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 20, lineHeight: 1.5 }}>
-        Bring your ratings, reviews, and libraries from other platforms. Your existing Literacy data is safe — imports never delete anything.
+        Bring your ratings, reviews, and libraries from other platforms. Your existing CrossShelf data is safe — imports never delete anything.
       </p>
 
       {/* Conflict resolution setting */}

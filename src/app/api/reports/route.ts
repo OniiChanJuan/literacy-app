@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
 
@@ -9,13 +9,13 @@ const VALID_REASONS = ["spam", "harassment", "hate_speech", "spoilers", "other"]
  * POST /api/reports — Report a review for moderation
  */
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   // Rate limit: 10 reports per hour per user
-  if (!rateLimit(`report:${session.user.id}`, 10, 60 * 60 * 1000)) {
+  if (!rateLimit(`report:${claims.sub}`, 10, 60 * 60 * 1000)) {
     return NextResponse.json({ error: "Too many reports. Try again later." }, { status: 429 });
   }
 
@@ -42,13 +42,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Can't report your own review
-  if (review.userId === session.user.id) {
+  if (review.userId === claims.sub) {
     return NextResponse.json({ error: "Cannot report your own review" }, { status: 400 });
   }
 
   // Check for duplicate report
   const existing = await prisma.report.findFirst({
-    where: { reporterUserId: session.user.id, reviewId },
+    where: { reporterUserId: claims.sub, reviewId },
   });
   if (existing) {
     return NextResponse.json({ error: "You have already reported this review" }, { status: 409 });
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
   await prisma.report.create({
     data: {
-      reporterUserId: session.user.id,
+      reporterUserId: claims.sub,
       reviewId,
       reason,
       details: typeof details === "string" ? details.slice(0, 500) : "",

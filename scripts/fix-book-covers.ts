@@ -18,8 +18,54 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const DRY_RUN = process.argv.includes("--dry-run");
+const CHECK_BROKEN = process.argv.includes("--check-broken");
 const GB_KEY = process.env.GOOGLE_BOOKS_API_KEY!;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Hosts whose images browsers (Chrome ORB) silently block even though
+// HEAD requests return 200. The prior fix scripts didn't catch these.
+const ORB_BROKEN_HOSTS = [
+  "images-na.ssl-images-amazon.com",
+  "m.media-amazon.com",
+];
+
+/**
+ * HEAD-test a URL and follow redirects manually so we can detect when a
+ * covers.openlibrary.org URL chains into archive.org/view_archive.php
+ * (which is also browser-ORB-blocked).
+ */
+async function headCheck(url: string, depth = 0): Promise<{ ok: boolean; broken: boolean; reason?: string; finalUrl?: string }> {
+  if (depth > 5) return { ok: false, broken: true, reason: "too many redirects" };
+  try {
+    const res = await fetch(url, {
+      method: "HEAD",
+      redirect: "manual",
+      headers: { "User-Agent": "Literacy-CoverCheck/1.0" },
+    });
+    if ([301, 302, 303, 307, 308].includes(res.status)) {
+      const loc = res.headers.get("location");
+      if (loc) {
+        const next = loc.startsWith("http") ? loc : new URL(loc, url).toString();
+        return headCheck(next, depth + 1);
+      }
+    }
+    if (res.status !== 200) return { ok: false, broken: true, reason: `HTTP ${res.status}`, finalUrl: url };
+    const ct = res.headers.get("content-type") || "";
+    if (!/^image\//i.test(ct)) return { ok: false, broken: true, reason: `content-type ${ct}`, finalUrl: url };
+    const cl = parseInt(res.headers.get("content-length") || "0");
+    if (cl > 0 && cl < 1000) return { ok: false, broken: true, reason: `content-length ${cl}`, finalUrl: url };
+    if (/archive\.org\/.*view_archive\.php/.test(url)) {
+      return { ok: false, broken: true, reason: "redirected to archive.org view_archive (browser-ORB)", finalUrl: url };
+    }
+    return { ok: true, broken: false, finalUrl: url };
+  } catch (e: any) {
+    return { ok: false, broken: true, reason: e?.message || "network error" };
+  }
+}
+
+function isOrbBrokenHost(url: string): boolean {
+  return ORB_BROKEN_HOSTS.some((h) => url.includes(h));
+}
 
 async function fetchJson(url: string): Promise<any> {
   const res = await fetch(url, {
@@ -111,7 +157,7 @@ async function main() {
   const adapter = new PrismaPg({ connectionString: connUrl });
   const prisma = new PrismaClient({ adapter });
 
-  console.log(`=== fix-book-covers.ts ${DRY_RUN ? "[DRY RUN]" : ""} ===\n`);
+  console.log(`=== fix-book-covers.ts ${DRY_RUN ? "[DRY RUN]" : ""}${CHECK_BROKEN ? " [CHECK-BROKEN]" : ""} ===\n`);
 
   // ── 1. Collect items to fix ─────────────────────────────────────────────────
 
@@ -137,6 +183,48 @@ async function main() {
     ORDER BY vote_count DESC NULLS LAST
   `);
 
+  // --check-broken mode: also include books on browser-broken hosts and
+  // any popular book whose URL fails HEAD/ORB checks. This is the missing
+  // category prior runs never touched — covers that exist in the DB and
+  // resolve from Node, but Chrome silently drops in the browser.
+  let brokenBooks: any[] = [];
+  if (CHECK_BROKEN) {
+    const orbHostClause = ORB_BROKEN_HOSTS.map((h) => `cover LIKE '%${h}%'`).join(" OR ");
+    const orbHosted: any[] = await prisma.$queryRawUnsafe(`
+      SELECT id, title, type, cover, people
+      FROM items
+      WHERE type IN ('book','manga') AND parent_item_id IS NULL
+        AND (${orbHostClause})
+      ORDER BY vote_count DESC NULLS LAST
+    `);
+    console.log(`  [check-broken] ${orbHosted.length} books on ORB-broken hosts (auto-replace)`);
+
+    // HEAD-test all popular books and add ones that fail
+    const popular: any[] = await prisma.$queryRawUnsafe(`
+      SELECT id, title, type, cover, people
+      FROM items
+      WHERE type IN ('book','manga') AND parent_item_id IS NULL
+        AND cover IS NOT NULL AND cover LIKE 'http%'
+        AND vote_count >= 50
+      ORDER BY vote_count DESC NULLS LAST
+      LIMIT 500
+    `);
+    console.log(`  [check-broken] HEAD-testing ${popular.length} popular books...`);
+    let brokenCount = 0;
+    for (const item of popular) {
+      if (isOrbBrokenHost(item.cover)) continue; // already in orbHosted
+      const r = await headCheck(item.cover);
+      if (r.broken) {
+        brokenBooks.push(item);
+        brokenCount++;
+        console.log(`    BROKEN [${item.id}] "${item.title.substring(0, 50)}" — ${r.reason}`);
+      }
+      await sleep(20);
+    }
+    console.log(`  [check-broken] ${brokenCount} popular books fail HEAD/ORB checks`);
+    brokenBooks = [...orbHosted, ...brokenBooks];
+  }
+
   // Merge: priority IDs first, then popular OpenLibrary, then missing — deduplicate
   const seen = new Set<number>();
   const queue: any[] = [];
@@ -151,7 +239,7 @@ async function main() {
     if (item && !seen.has(item.id)) { seen.add(item.id); queue.push(item); }
   }
 
-  for (const item of [...popularOpenlibrary, ...missingCovers]) {
+  for (const item of [...brokenBooks, ...popularOpenlibrary, ...missingCovers]) {
     if (!seen.has(item.id)) { seen.add(item.id); queue.push(item); }
   }
 
@@ -197,6 +285,13 @@ async function main() {
     const source = coverUrl.includes("books.google.com") ? "Google Books" : "OpenLibrary";
     console.log(`  ✓ [${item.id}] "${item.title.substring(0, 50)}" → ${source}`);
     console.log(`      ${coverUrl.substring(0, 80)}`);
+
+    // Safeguard: never overwrite an existing non-empty cover with null/empty.
+    if (!coverUrl || coverUrl.length === 0) {
+      console.log(`    ❌ safeguard tripped — refusing to write empty cover for [${item.id}]`);
+      skipped++;
+      continue;
+    }
 
     if (!DRY_RUN) {
       await prisma.$executeRawUnsafe(

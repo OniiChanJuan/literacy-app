@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import { TYPES, type MediaType } from "@/lib/data";
 import BackButton from "@/components/back-button";
 

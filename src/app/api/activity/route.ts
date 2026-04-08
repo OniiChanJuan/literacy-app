@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 // GET /api/activity — reviews + ratings from followed users
@@ -11,8 +11,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
-  const session = await auth();
-  if (!session?.user?.id) return NextResponse.json([]);
+  const claims = await getClaims();
+  if (!claims?.sub) return NextResponse.json([]);
 
   const { searchParams } = new URL(req.url);
   const sort = searchParams.get("sort") === "top" ? "top" : "recent";
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   // Get who the user follows
   const follows = await prisma.follow.findMany({
-    where: { followerId: session.user.id },
+    where: { followerId: claims.sub },
     select: { followedId: true },
   });
   const followedIds = follows.map((f) => f.followedId);

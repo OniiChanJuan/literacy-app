@@ -81,7 +81,7 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
 
   const extScore = getBestExtScore(item.ext, item.voteCount ?? 0);
 
-  // Literacy score derived from external score until real community ratings are available
+  // CrossShelf score derived from external score until real community ratings are available
   const literacyScore = extScore ? Math.min(5, extScore.value * 0.55).toFixed(1) : null;
   const literacyScoreNum = literacyScore ? parseFloat(literacyScore) : 0;
   const recPct = extScore ? Math.min(99, Math.round(extScore.value * 10.5)) : null;
@@ -252,7 +252,7 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
           {item.title}
         </div>
 
-        {/* Score row: Literacy score + recommend % */}
+        {/* Score row: CrossShelf score + recommend % */}
         {literacyScore ? (
           <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 1 }}>
             <span style={{

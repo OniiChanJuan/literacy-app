@@ -1,50 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
+import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { sanitize, rateLimit } from "@/lib/validation";
-import bcrypt from "bcryptjs";
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]{3,20}$/;
 
 /** GET /api/settings — get current user's profile + settings */
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  const claims = await getClaims();
+  if (!claims?.sub) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: claims.sub },
       select: {
         id: true, email: true, username: true, name: true, image: true,
         bio: true, avatar: true, authProvider: true, isPrivate: true,
         memberNumber: true, createdAt: true,
-        password: false, // never return password hash
       },
     });
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     // Get or create settings
-    let settings = await prisma.userSettings.findUnique({ where: { userId: session.user.id } });
+    let settings = await prisma.userSettings.findUnique({ where: { userId: claims.sub } });
     if (!settings) {
-      settings = await prisma.userSettings.create({ data: { userId: session.user.id } });
+      settings = await prisma.userSettings.create({ data: { userId: claims.sub } });
     }
 
-    // Check if user has a password set
-    const hasPassword = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { password: true },
-    });
-
-    // Check connected accounts
-    const accounts = await prisma.account.findMany({
-      where: { userId: session.user.id },
-      select: { provider: true },
-    });
+    // Look up identities (OAuth providers + email/password) from
+    // Supabase Auth. The user's `app_metadata.providers` array tells
+    // us which sign-in methods are linked.
+    let connectedProviders: string[] = [];
+    let hasPassword = false;
+    try {
+      const supabase = await createServerSupabase();
+      const { data: { user: au } } = await supabase.auth.getUser();
+      const providers = (au?.app_metadata?.providers as string[] | undefined) || [];
+      connectedProviders = providers.filter((p) => p !== "email");
+      hasPassword = providers.includes("email");
+    } catch { /* non-fatal */ }
 
     return NextResponse.json({
-      user: { ...user, hasPassword: !!hasPassword?.password },
+      user: { ...user, hasPassword },
       settings,
-      connectedProviders: accounts.map((a) => a.provider),
+      connectedProviders,
     });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
@@ -53,10 +53,10 @@ export async function GET() {
 
 /** PUT /api/settings — update profile and/or settings */
 export async function PUT(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  const claims = await getClaims();
+  if (!claims?.sub) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-  if (!rateLimit(`settings:${session.user.id}`, 10, 60 * 1000)) {
+  if (!rateLimit(`settings:${claims.sub}`, 10, 60 * 1000)) {
     return NextResponse.json({ error: "Too many changes. Try again in a minute." }, { status: 429 });
   }
 
@@ -79,7 +79,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Username: 3-20 chars, letters/numbers/underscores/hyphens" }, { status: 400 });
     }
     const existing = await prisma.user.findUnique({ where: { username: clean } });
-    if (existing && existing.id !== session.user.id) {
+    if (existing && existing.id !== claims.sub) {
       return NextResponse.json({ error: "Username already taken" }, { status: 409 });
     }
     updates.username = clean;
@@ -97,7 +97,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
     const existing = await prisma.user.findUnique({ where: { email: clean } });
-    if (existing && existing.id !== session.user.id) {
+    if (existing && existing.id !== claims.sub) {
       return NextResponse.json({ error: "Email already in use" }, { status: 409 });
     }
     updates.email = clean;
@@ -126,13 +126,13 @@ export async function PUT(req: NextRequest) {
 
   try {
     if (Object.keys(updates).length > 0) {
-      await prisma.user.update({ where: { id: session.user.id }, data: updates });
+      await prisma.user.update({ where: { id: claims.sub }, data: updates });
     }
     if (Object.keys(settingsUpdates).length > 0) {
       await prisma.userSettings.upsert({
-        where: { userId: session.user.id },
+        where: { userId: claims.sub },
         update: settingsUpdates,
-        create: { userId: session.user.id, ...settingsUpdates },
+        create: { userId: claims.sub, ...settingsUpdates },
       });
     }
 

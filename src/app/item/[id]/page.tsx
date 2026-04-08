@@ -23,23 +23,23 @@ import type { Metadata } from "next";
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const numId = parseInt(id);
-  let title = "Literacy";
+  let title = "CrossShelf";
   let description = "Rate, review, and discover across every medium.";
   let image: string | undefined;
 
   if (!isNaN(numId)) {
     const item = ALL_ITEMS.find((i) => i.id === numId);
     if (item) {
-      title = `${item.title} — Literacy`;
+      title = `${item.title} — CrossShelf`;
       description = (item.desc || "").slice(0, 160).replace(/<[^>]*>/g, "");
       if (item.cover?.startsWith("http")) image = item.cover;
     }
   }
-  if (title === "Literacy" && !isNaN(numId)) {
+  if (title === "CrossShelf" && !isNaN(numId)) {
     try {
       const dbItem = await prisma.item.findUnique({ where: { id: numId }, select: { title: true, description: true, cover: true } });
       if (dbItem) {
-        title = `${dbItem.title} — Literacy`;
+        title = `${dbItem.title} — CrossShelf`;
         description = (dbItem.description || "").slice(0, 160).replace(/<[^>]*>/g, "");
         if (dbItem.cover?.startsWith("http")) image = dbItem.cover;
       }

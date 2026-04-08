@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
@@ -29,50 +29,24 @@ async function getSpotifyToken(): Promise<string | null> {
 // For now, we use a simpler approach: user connects their Spotify account via
 // the existing OAuth (if connected), or we return an error suggesting connection.
 export async function GET(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`import-spotify:${session.user.id}`, 5, 60_000)) {
+  if (!rateLimit(`import-spotify:${claims.sub}`, 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
-  // Try to get user's Spotify access token from their connected account
-  const { prisma } = await import("@/lib/prisma");
-  const account = await prisma.account.findFirst({
-    where: { userId: session.user.id, provider: "spotify" },
-  });
-
-  if (account?.access_token) {
-    // Use user's token to get their saved albums
-    try {
-      const albums = await fetchAllSavedAlbums(account.access_token);
-      return NextResponse.json({ albums });
-    } catch {
-      // Token might be expired — try refresh
-      if (account.refresh_token) {
-        const newToken = await refreshSpotifyToken(account.refresh_token);
-        if (newToken) {
-          // Update token in DB
-          await prisma.account.update({
-            where: { provider_providerAccountId: { provider: "spotify", providerAccountId: account.providerAccountId } },
-            data: { access_token: newToken },
-          });
-          const albums = await fetchAllSavedAlbums(newToken);
-          return NextResponse.json({ albums });
-        }
-      }
-    }
-  }
-
-  // No Spotify connected — can't access user libraries without OAuth
-  // Tell the UI to show instructions rather than try to redirect
+  // Spotify import is temporarily unavailable post-auth-migration.
+  // The previous flow read OAuth refresh tokens from the NextAuth
+  // accounts table; under Supabase Auth this needs to be re-implemented
+  // by linking Spotify as a Supabase identity. Tracked separately.
   return NextResponse.json({
-    error: "Spotify account not connected.",
+    error: "Spotify import is temporarily unavailable.",
     needsAuth: true,
-    message: "Connect your Spotify account first: go to Settings → Account and link Spotify, then come back here to import your saved albums.",
-  }, { status: 400 });
+    message: "We're updating our Spotify connection. Please check back soon.",
+  }, { status: 503 });
 }
 
 async function fetchAllSavedAlbums(token: string): Promise<any[]> {

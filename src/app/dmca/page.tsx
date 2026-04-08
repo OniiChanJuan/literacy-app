@@ -13,12 +13,12 @@ export default function DMCAPage() {
 
       <h2 style={h2Style}>Respect for Intellectual Property</h2>
       <p style={p}>
-        Literacy respects the intellectual property rights of others and expects our users to do the same. We comply with the Digital Millennium Copyright Act (DMCA) and respond promptly to valid notices of alleged copyright infringement.
+        CrossShelf respects the intellectual property rights of others and expects our users to do the same. We comply with the Digital Millennium Copyright Act (DMCA) and respond promptly to valid notices of alleged copyright infringement.
       </p>
 
       <h2 style={h2Style}>Media Metadata and Third-Party Content</h2>
       <p style={p}>
-        Literacy is a review and recommendation platform. We display media metadata — including titles, descriptions, cover art, release dates, and credits — sourced from third-party APIs under their respective terms of service:
+        CrossShelf is a review and recommendation platform. We display media metadata — including titles, descriptions, cover art, release dates, and credits — sourced from third-party APIs under their respective terms of service:
       </p>
       <ul style={ul}>
         <li><strong>TMDB (The Movie Database):</strong> Movie and TV show metadata, used under the TMDB API Terms of Use</li>
@@ -29,7 +29,7 @@ export default function DMCAPage() {
         <li><strong>Comic Vine API:</strong> Comic book metadata, used under the Comic Vine API terms</li>
       </ul>
       <p style={p}>
-        If you believe that any metadata displayed on Literacy infringes your copyright, please note that this content is sourced from the above providers. We recommend contacting the source API provider directly. However, you may also file a DMCA notice with us, and we will address the issue.
+        If you believe that any metadata displayed on CrossShelf infringes your copyright, please note that this content is sourced from the above providers. We recommend contacting the source API provider directly. However, you may also file a DMCA notice with us, and we will address the issue.
       </p>
 
       <h2 style={h2Style}>User-Generated Content</h2>
@@ -39,12 +39,12 @@ export default function DMCAPage() {
 
       <h2 style={h2Style}>Filing a DMCA Takedown Notice</h2>
       <p style={p}>
-        If you believe that content on Literacy infringes your copyright, you may submit a DMCA takedown notice. Your notice must include all of the following:
+        If you believe that content on CrossShelf infringes your copyright, you may submit a DMCA takedown notice. Your notice must include all of the following:
       </p>
       <ul style={ul}>
         <li>Your full legal name and contact information (mailing address, phone number, and email address)</li>
         <li>Identification of the copyrighted work you claim has been infringed, or if multiple works are covered by a single notification, a representative list</li>
-        <li>The specific URL(s) on Literacy where the allegedly infringing material is located, described with enough detail for us to find it</li>
+        <li>The specific URL(s) on CrossShelf where the allegedly infringing material is located, described with enough detail for us to find it</li>
         <li>A statement that you have a good faith belief that the use of the material in the manner complained of is not authorized by the copyright owner, its agent, or the law</li>
         <li>A statement, made under penalty of perjury, that the information in your notice is accurate and that you are the copyright owner or authorized to act on the copyright owner&apos;s behalf</li>
         <li>Your physical or electronic signature</li>
@@ -53,7 +53,7 @@ export default function DMCAPage() {
         Send your DMCA takedown notice to:
       </p>
       <p style={p}>
-        Email: <a href="mailto:dmca@literacy.app" style={{ color: "#E84855" }}>dmca@literacy.app</a>
+        Email: <a href="mailto:dmca@crossshelf.app" style={{ color: "#E84855" }}>dmca@crossshelf.app</a>
       </p>
 
       <h2 style={h2Style}>Response Timeline</h2>
@@ -74,11 +74,11 @@ export default function DMCAPage() {
         <li>Your full legal name and contact information (mailing address, phone number, and email address)</li>
         <li>Identification of the material that was removed and the URL where it appeared before removal</li>
         <li>A statement under penalty of perjury that you have a good faith belief that the material was removed or disabled as a result of mistake or misidentification</li>
-        <li>A statement that you consent to the jurisdiction of the federal court in your judicial district (or, if outside the United States, any judicial district in which Literacy may be found), and that you will accept service of process from the person who filed the original DMCA notice or their agent</li>
+        <li>A statement that you consent to the jurisdiction of the federal court in your judicial district (or, if outside the United States, any judicial district in which CrossShelf may be found), and that you will accept service of process from the person who filed the original DMCA notice or their agent</li>
         <li>Your physical or electronic signature</li>
       </ul>
       <p style={p}>
-        Send counter-notifications to: <a href="mailto:dmca@literacy.app" style={{ color: "#E84855" }}>dmca@literacy.app</a>
+        Send counter-notifications to: <a href="mailto:dmca@crossshelf.app" style={{ color: "#E84855" }}>dmca@crossshelf.app</a>
       </p>
       <p style={p}>
         Upon receiving a valid counter-notification, we will forward it to the original complainant. If the original complainant does not file a court action within 10 business days, we will restore the removed content.

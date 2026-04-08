@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 /**
@@ -12,12 +12,12 @@ import { rateLimit } from "@/lib/validation";
  * - If opposite vote exists: switch vote type, update voteScore by 2
  */
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const userId = session.user.id;
+  const userId = claims.sub;
 
   if (!rateLimit(`helpful:${userId}`, 60, 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });

@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
 
 // Simple admin check — in production, use a proper admin role system
-const ADMIN_EMAILS = ["admin@literacy.app"];
+const ADMIN_EMAILS = ["admin@crossshelf.app"];
 
 async function isAdmin() {
-  const session = await auth();
-  if (!session?.user?.email) return false;
+  const claims = await getClaims();
+  if (!claims?.email) return false;
   // For now, any authenticated user can view reports
   // TODO: Add proper admin role check
-  return !!session.user.id;
+  return !!claims.sub;
 }
 
 /**

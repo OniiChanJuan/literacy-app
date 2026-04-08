@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import { TYPES, type Item } from "@/lib/data";
 import Card from "@/components/card";

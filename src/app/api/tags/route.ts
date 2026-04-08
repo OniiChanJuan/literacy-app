@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 import { TAG_MAP, tagAppliesTo } from "@/lib/tags";
 
@@ -30,12 +30,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`tags-post:${session.user.id}`, 120, 60_000)) {
+  if (!rateLimit(`tags-post:${claims.sub}`, 120, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
@@ -64,14 +64,14 @@ export async function POST(req: NextRequest) {
   await prisma.userTagSuggestion.upsert({
     where: {
       userId_itemId_tagSlug: {
-        userId: session.user.id,
+        userId: claims.sub,
         itemId: Number(itemId),
         tagSlug,
       },
     },
     update: {},
     create: {
-      userId: session.user.id,
+      userId: claims.sub,
       itemId: Number(itemId),
       tagSlug,
     },

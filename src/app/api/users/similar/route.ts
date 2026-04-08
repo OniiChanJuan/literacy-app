@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 // GET /api/users/similar — find users with overlapping ratings
@@ -10,14 +10,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json([]);
   }
 
   // Get current user's ratings
   const myRatings = await prisma.rating.findMany({
-    where: { userId: session.user.id },
+    where: { userId: claims.sub },
     select: { itemId: true, score: true },
   });
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
   const otherRatings = await prisma.rating.findMany({
     where: {
       itemId: { in: myItemIds },
-      userId: { not: session.user.id },
+      userId: { not: claims.sub },
     },
     select: { userId: true, itemId: true, score: true },
   });
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
 
   // Check follow status
   const follows = await prisma.follow.findMany({
-    where: { followerId: session.user.id, followedId: { in: userIds } },
+    where: { followerId: claims.sub, followedId: { in: userIds } },
     select: { followedId: true },
   });
   const followedIds = new Set(follows.map((f) => f.followedId));

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sign In — Literacy",
-  description: "Sign in to your Literacy account.",
+  title: "Sign In — CrossShelf",
+  description: "Sign in to your CrossShelf account.",
 };
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {

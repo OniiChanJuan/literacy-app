@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 // GET /api/users/[id] — get public profile + stats + top rated + library
@@ -29,17 +29,17 @@ export async function GET(
   }
 
   // Check if this is the user's own profile
-  const session = await auth();
-  const isOwn = session?.user?.id === id;
+  const claims = await getClaims();
+  const isOwn = claims?.sub === id;
   const showLibrary = !user.isPrivate || isOwn;
 
   // Follower/following counts + isFollowing
   const [followerCount, followingCount, followRecord] = await Promise.all([
     prisma.follow.count({ where: { followedId: id } }),
     prisma.follow.count({ where: { followerId: id } }),
-    session?.user?.id && !isOwn
+    claims?.sub && !isOwn
       ? prisma.follow.findUnique({
-          where: { followerId_followedId: { followerId: session.user.id, followedId: id } },
+          where: { followerId_followedId: { followerId: claims.sub, followedId: id } },
         })
       : Promise.resolve(null),
   ]);

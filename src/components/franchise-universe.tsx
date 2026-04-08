@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Image from "next/image";
 import { TYPES, hexToRgba } from "@/lib/data";
 

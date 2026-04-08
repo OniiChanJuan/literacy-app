@@ -1,11 +1,219 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import * as dotenvLocal from 'dotenv';
+import * as path from 'path';
+dotenvLocal.config({ path: path.join(process.cwd(), '.env.local') });
 
 async function main() {
   const connUrl = process.env.DIRECT_URL || process.env.DATABASE_URL!;
   const adapter = new PrismaPg({ connectionString: connUrl });
-  const prisma = new PrismaClient({ adapter });
+  const prisma = new PrismaClient({ adapter } as any);
+
+  function sep(title: string) {
+    console.log('\n' + '='.repeat(60));
+    console.log(title);
+    console.log('='.repeat(60));
+  }
+
+  // QUERY 1
+  sep('QUERY 1 — Little Prince items');
+  const q1: any[] = await (prisma as any).$queryRaw`
+    SELECT id, title, type, slug, "franchiseId", ext, genres, "createdAt"
+    FROM items
+    WHERE title ILIKE '%little prince%' OR title ILIKE '%petit prince%'
+  `;
+  console.log(JSON.stringify(q1, null, 2));
+  const lpIds: string[] = q1.map((r: any) => r.id);
+  console.log('IDs found:', lpIds);
+
+  // QUERY 2
+  sep('QUERY 2 — Reviews per Little Prince item');
+  if (lpIds.length > 0) {
+    const q2: any[] = await (prisma as any).$queryRaw`
+      SELECT "itemId", COUNT(*) as review_count
+      FROM reviews
+      WHERE "itemId" = ANY(${lpIds}::uuid[])
+      GROUP BY "itemId"
+    `;
+    console.log(JSON.stringify(q2, null, 2));
+  } else {
+    console.log('No IDs to query.');
+  }
+
+  // QUERY 3
+  sep('QUERY 3 — Ratings per Little Prince item');
+  if (lpIds.length > 0) {
+    const q3: any[] = await (prisma as any).$queryRaw`
+      SELECT "itemId", COUNT(*) as rating_count, AVG(score) as avg_score
+      FROM ratings
+      WHERE "itemId" = ANY(${lpIds}::uuid[])
+      GROUP BY "itemId"
+    `;
+    console.log(JSON.stringify(q3, null, 2));
+  } else {
+    console.log('No IDs to query.');
+  }
+
+  // QUERY 4
+  sep('QUERY 4 — Library entries per Little Prince item');
+  if (lpIds.length > 0) {
+    const q4: any[] = await (prisma as any).$queryRaw`
+      SELECT "itemId", status, COUNT(*)
+      FROM library_entries
+      WHERE "itemId" = ANY(${lpIds}::uuid[])
+      GROUP BY "itemId", status
+    `;
+    console.log(JSON.stringify(q4, null, 2));
+  } else {
+    console.log('No IDs to query.');
+  }
+
+  // QUERY 5
+  sep('QUERY 5 — Same Google Books ID, different items');
+  const q5: any[] = await (prisma as any).$queryRaw`
+    SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b,
+           a.ext->>'google_books_id' as gbooks_id
+    FROM items a JOIN items b ON a.id < b.id AND a.type = b.type
+    WHERE a.ext->>'google_books_id' IS NOT NULL
+      AND a.ext->>'google_books_id' = b.ext->>'google_books_id'
+    LIMIT 20
+  `;
+  console.log(JSON.stringify(q5, null, 2));
+
+  // QUERY 6
+  sep('QUERY 6 — Same TMDB ID, different items');
+  const q6: any[] = await (prisma as any).$queryRaw`
+    SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b,
+           a.ext->>'tmdb_id' as tmdb_id
+    FROM items a JOIN items b ON a.id < b.id AND a.type = b.type
+    WHERE a.ext->>'tmdb_id' IS NOT NULL
+      AND a.ext->>'tmdb_id' = b.ext->>'tmdb_id'
+    LIMIT 20
+  `;
+  console.log(JSON.stringify(q6, null, 2));
+
+  // QUERY 7
+  sep('QUERY 7 — Same IGDB ID, different items');
+  const q7: any[] = await (prisma as any).$queryRaw`
+    SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b,
+           a.ext->>'igdb_id' as igdb_id
+    FROM items a JOIN items b ON a.id < b.id AND a.type = b.type
+    WHERE a.ext->>'igdb_id' IS NOT NULL
+      AND a.ext->>'igdb_id' = b.ext->>'igdb_id'
+    LIMIT 20
+  `;
+  console.log(JSON.stringify(q7, null, 2));
+
+  // QUERY 8
+  sep('QUERY 8 — Same MAL ID, different items');
+  const q8: any[] = await (prisma as any).$queryRaw`
+    SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b,
+           a.ext->>'mal_id' as mal_id
+    FROM items a JOIN items b ON a.id < b.id AND a.type = b.type
+    WHERE a.ext->>'mal_id' IS NOT NULL
+      AND a.ext->>'mal_id' = b.ext->>'mal_id'
+    LIMIT 20
+  `;
+  console.log(JSON.stringify(q8, null, 2));
+
+  // QUERY 9
+  sep('QUERY 9 — Same Spotify ID, different items');
+  const q9: any[] = await (prisma as any).$queryRaw`
+    SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b,
+           a.ext->>'spotify_id' as spotify_id
+    FROM items a JOIN items b ON a.id < b.id AND a.type = b.type
+    WHERE a.ext->>'spotify_id' IS NOT NULL
+      AND a.ext->>'spotify_id' = b.ext->>'spotify_id'
+    LIMIT 20
+  `;
+  console.log(JSON.stringify(q9, null, 2));
+
+  // QUERY 10
+  sep('QUERY 10 — Same title + type + year');
+  const q10: any[] = await (prisma as any).$queryRaw`
+    SELECT title, type, year, COUNT(*) as dupes
+    FROM items
+    GROUP BY title, type, year
+    HAVING COUNT(*) > 1
+    ORDER BY dupes DESC
+    LIMIT 30
+  `;
+  console.log(JSON.stringify(q10, null, 2));
+
+  // QUERY 11
+  sep('QUERY 11 — Same external ID cross-check (books: google_books + openlibrary)');
+  const q11: any[] = await (prisma as any).$queryRaw`
+    SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b, a.type
+    FROM items a JOIN items b ON a.type = b.type AND a.id != b.id AND a.id < b.id
+    WHERE (
+      (a.ext->>'google_books_id' = b.ext->>'google_books_id' AND a.ext->>'google_books_id' IS NOT NULL)
+      OR (a.ext->>'openlibrary_id' = b.ext->>'openlibrary_id' AND a.ext->>'openlibrary_id' IS NOT NULL)
+    )
+    LIMIT 20
+  `;
+  console.log(JSON.stringify(q11, null, 2));
+
+  // QUERY 12
+  sep('QUERY 12 — Title contains other title');
+  const q12: any[] = await (prisma as any).$queryRaw`
+    SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b, a.type
+    FROM items a JOIN items b ON a.type = b.type AND a.id < b.id
+    WHERE (a.title ILIKE '%' || b.title || '%' OR b.title ILIKE '%' || a.title || '%')
+      AND length(a.title) > 5 AND length(b.title) > 5
+      AND a.title != b.title
+    LIMIT 30
+  `;
+  console.log(JSON.stringify(q12, null, 2));
+
+  // QUERY 13
+  sep('QUERY 13 — Count duplicate pairs by type (all external IDs)');
+  const q13: any[] = await (prisma as any).$queryRaw`
+    SELECT a.type,
+      SUM(CASE WHEN a.ext->>'google_books_id' = b.ext->>'google_books_id' AND a.ext->>'google_books_id' IS NOT NULL THEN 1 ELSE 0 END) as gbooks_dups,
+      SUM(CASE WHEN a.ext->>'tmdb_id' = b.ext->>'tmdb_id' AND a.ext->>'tmdb_id' IS NOT NULL THEN 1 ELSE 0 END) as tmdb_dups,
+      SUM(CASE WHEN a.ext->>'igdb_id' = b.ext->>'igdb_id' AND a.ext->>'igdb_id' IS NOT NULL THEN 1 ELSE 0 END) as igdb_dups,
+      SUM(CASE WHEN a.ext->>'mal_id' = b.ext->>'mal_id' AND a.ext->>'mal_id' IS NOT NULL THEN 1 ELSE 0 END) as mal_dups,
+      SUM(CASE WHEN a.ext->>'spotify_id' = b.ext->>'spotify_id' AND a.ext->>'spotify_id' IS NOT NULL THEN 1 ELSE 0 END) as spotify_dups,
+      SUM(CASE WHEN a.ext->>'openlibrary_id' = b.ext->>'openlibrary_id' AND a.ext->>'openlibrary_id' IS NOT NULL THEN 1 ELSE 0 END) as openlibrary_dups
+    FROM items a JOIN items b ON a.id < b.id AND a.type = b.type
+    GROUP BY a.type
+    ORDER BY a.type
+  `;
+  console.log(JSON.stringify(q13, null, 2));
+
+  // QUERY 14
+  sep('QUERY 14 — High priority: duplicates with reviews/ratings');
+  const q14: any[] = await (prisma as any).$queryRaw`
+    WITH dup_pairs AS (
+      SELECT a.id as id_a, a.title as title_a, b.id as id_b, b.title as title_b, a.type
+      FROM items a JOIN items b ON a.type = b.type AND a.id < b.id
+      WHERE (
+        (a.ext->>'google_books_id' = b.ext->>'google_books_id' AND a.ext->>'google_books_id' IS NOT NULL)
+        OR (a.ext->>'tmdb_id' = b.ext->>'tmdb_id' AND a.ext->>'tmdb_id' IS NOT NULL)
+        OR (a.ext->>'igdb_id' = b.ext->>'igdb_id' AND a.ext->>'igdb_id' IS NOT NULL)
+        OR (a.ext->>'mal_id' = b.ext->>'mal_id' AND a.ext->>'mal_id' IS NOT NULL)
+      )
+    )
+    SELECT dp.*,
+      (SELECT COUNT(*) FROM reviews WHERE "itemId" = dp.id_a) as reviews_a,
+      (SELECT COUNT(*) FROM reviews WHERE "itemId" = dp.id_b) as reviews_b,
+      (SELECT COUNT(*) FROM ratings WHERE "itemId" = dp.id_a) as ratings_a,
+      (SELECT COUNT(*) FROM ratings WHERE "itemId" = dp.id_b) as ratings_b
+    FROM dup_pairs dp
+    ORDER BY (
+      (SELECT COUNT(*) FROM reviews WHERE "itemId" = dp.id_a) +
+      (SELECT COUNT(*) FROM reviews WHERE "itemId" = dp.id_b) +
+      (SELECT COUNT(*) FROM ratings WHERE "itemId" = dp.id_a) +
+      (SELECT COUNT(*) FROM ratings WHERE "itemId" = dp.id_b)
+    ) DESC
+    LIMIT 20
+  `;
+  console.log(JSON.stringify(q14, null, 2));
+
+  await prisma.$disconnect();
+  console.log('\nDone.');
+  // ─── LEGACY CONTENT BELOW (kept for reference) ──────────────────────────
 
   // ─── SECTION 1: Per-title lookup ────────────────────────────────────────────
   const titlesToCheck = [

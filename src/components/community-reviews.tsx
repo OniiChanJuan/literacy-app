@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import Image from "next/image";
 import { useRatings } from "@/lib/ratings-context";

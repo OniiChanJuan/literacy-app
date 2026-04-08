@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import { getMemberTier, type MemberTier } from "@/components/member-badge";
 import { TYPES } from "@/lib/data";

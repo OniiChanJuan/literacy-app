@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 
 // GET /api/franchises/:franchiseId/follow — check if current user follows this franchise
@@ -8,8 +8,8 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ franchiseId: string }> },
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ following: false });
   }
 
@@ -18,7 +18,7 @@ export async function GET(
   if (isNaN(id)) return NextResponse.json({ error: "Invalid franchise ID" }, { status: 400 });
 
   const row = await prisma.franchiseFollow.findUnique({
-    where: { userId_franchiseId: { userId: session.user.id, franchiseId: id } },
+    where: { userId_franchiseId: { userId: claims.sub, franchiseId: id } },
     select: { franchiseId: true },
   });
 
@@ -37,8 +37,8 @@ export async function POST(
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
@@ -51,16 +51,16 @@ export async function POST(
   if (!franchise) return NextResponse.json({ error: "Franchise not found" }, { status: 404 });
 
   const existing = await prisma.franchiseFollow.findUnique({
-    where: { userId_franchiseId: { userId: session.user.id, franchiseId: id } },
+    where: { userId_franchiseId: { userId: claims.sub, franchiseId: id } },
   });
 
   if (existing) {
     await prisma.franchiseFollow.delete({
-      where: { userId_franchiseId: { userId: session.user.id, franchiseId: id } },
+      where: { userId_franchiseId: { userId: claims.sub, franchiseId: id } },
     });
   } else {
     await prisma.franchiseFollow.create({
-      data: { userId: session.user.id, franchiseId: id },
+      data: { userId: claims.sub, franchiseId: id },
     });
   }
 

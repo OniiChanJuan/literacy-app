@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import { Item, TYPES } from "@/lib/data";
 import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";

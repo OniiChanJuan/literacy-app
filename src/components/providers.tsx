@@ -1,6 +1,6 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider } from "@/lib/supabase/use-session";
 import { RatingsProvider } from "@/lib/ratings-context";
 import { LibraryProvider } from "@/lib/library-context";
 

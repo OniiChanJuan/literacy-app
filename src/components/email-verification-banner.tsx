@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
+import { createClient } from "@/lib/supabase/client";
 
 /**
  * Banner shown to logged-in users who haven't verified their email.
@@ -14,27 +15,27 @@ export default function EmailVerificationBanner() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [needsVerification, setNeedsVerification] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     if (status !== "authenticated" || !session?.user?.id) return;
-
-    // Check if email is verified
-    fetch("/api/auth/check-verification")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.needsVerification) {
-          setNeedsVerification(true);
-        }
-      })
-      .catch(() => {});
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return;
+      setUserEmail(data.user.email ?? null);
+      // email_confirmed_at is set by Supabase once the user clicks the link
+      setNeedsVerification(!data.user.email_confirmed_at);
+    });
   }, [status, session?.user?.id]);
 
   if (!needsVerification || dismissed || status !== "authenticated") return null;
 
   const handleResend = async () => {
+    if (!userEmail) return;
     setSending(true);
     try {
-      await fetch("/api/auth/resend-verification", { method: "POST" });
+      const supabase = createClient();
+      await supabase.auth.resend({ type: "signup", email: userEmail });
       setSent(true);
     } catch {
       // silently fail

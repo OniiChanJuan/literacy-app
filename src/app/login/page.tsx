@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, useSession } from "@/lib/supabase/use-session";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 

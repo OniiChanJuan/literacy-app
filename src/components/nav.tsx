@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import { useLibrary } from "@/lib/library-context";
 import UserMenu from "./user-menu";
 import GlobalSearch from "./global-search";
@@ -71,7 +71,7 @@ export default function Nav() {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}>
-            Literacy
+            CrossShelf
           </h1>
           <div style={{
             fontSize: 10,

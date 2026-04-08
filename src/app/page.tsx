@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, memo, useCallback, useMemo } from "react";
 import { TYPES, type Item, type UpcomingItem, type MediaType } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/supabase/use-session";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
@@ -147,7 +147,7 @@ function getBaseUrl(fetchUrl: string): { base: string; limit: number } {
 // Minimum items to show a row — fewer looks broken
 const MIN_ROW_ITEMS = 4;
 
-function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad, alwaysShow, optimizeImages = false }: {
+function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 0, mediaFilter, clientExclude, onLoad, alwaysShow, optimizeImages = false, lazy = false }: {
   fetchUrl: string; label: string; sub?: string; icon?: string; iconBg?: string; seeAllHref?: string; delay?: number; mediaFilter?: FilterType | null;
   /** Client-side set of item IDs to exclude from display (cross-row dedup) */
   clientExclude?: Set<number>;
@@ -157,16 +157,32 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   alwaysShow?: boolean;
   /** Route images through Vercel optimizer — only use on the first above-the-fold row to stay under the 5k/month quota */
   optimizeImages?: boolean;
+  /** If true, defer the initial fetch until the row scrolls near the viewport (IntersectionObserver). */
+  lazy?: boolean;
 }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [visible, setVisible] = useState(!lazy);
   const offsetRef = useRef(0);
   const loadingRef = useRef(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const onLoadRef = useRef(onLoad);
   onLoadRef.current = onLoad;
   const { base } = getBaseUrl(fetchUrl);
+
+  useEffect(() => {
+    if (!lazy || visible) return;
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { rootMargin: "300px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [lazy, visible]);
 
   const doFetch = useCallback(() => {
     setFailed(false);
@@ -191,7 +207,7 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
     return () => clearTimeout(timer);
   }, [base, delay]);
 
-  useEffect(() => { return doFetch(); }, [doFetch]);
+  useEffect(() => { if (visible) return doFetch(); }, [doFetch, visible]);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || loadingRef.current) return;
@@ -213,7 +229,11 @@ function PaginatedRow({ fetchUrl, label, sub, icon, iconBg, seeAllHref, delay = 
   }, [base, hasMore]);
 
   if (items === null && !failed) {
-    return <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}><SkeletonRow count={8} /></ScrollRow>;
+    return (
+      <div ref={sentinelRef}>
+        <ScrollRow label={label} sub={sub} icon={icon} iconBg={iconBg} seeAllHref={seeAllHref}><SkeletonRow count={8} /></ScrollRow>
+      </div>
+    );
   }
   if (failed) {
     return (
@@ -597,11 +617,10 @@ export default function ForYouPage() {
   const [upcoming, setUpcoming] = useState<UpcomingItem[] | null>(null);
   const [returningSoon, setReturningSoon] = useState<ReturningSoonItem[]>([]);
   const [forYouData, setForYouData] = useState<{
-    personalPicks: Item[];
-    discoverAcrossMedia: Item[];
     tasteProfile: TasteProfile | null;
     topGenres: string[];
   } | null>(null);
+  const [discoverItems, setDiscoverItems] = useState<Item[]>([]);
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const { ratings } = useRatings();
   const ratingCount = Object.keys(ratings).length;
@@ -620,6 +639,7 @@ export default function ForYouPage() {
       setUpcoming(null);
       setReturningSoon([]);
       setForYouData(null);
+      setDiscoverItems([]);
       setPickedForYouItems([]);
       setRow3Items([]);
       setRow4Items([]);
@@ -635,9 +655,9 @@ export default function ForYouPage() {
   const forYouIdSet = useMemo(() => {
     const ids = new Set<number>();
     pickedForYouItems.forEach((i) => ids.add(i.id));
-    (forYouData?.discoverAcrossMedia || []).forEach((i) => ids.add(i.id));
+    discoverItems.forEach((i) => ids.add(i.id));
     return ids;
-  }, [pickedForYouItems, forYouData]);
+  }, [pickedForYouItems, discoverItems]);
 
   // IDs to exclude from Discover Across Media (items already in Picked for you)
   const discoverExcludeIds = useMemo(() => new Set(pickedForYouItems.map((i) => i.id)), [pickedForYouItems]);
@@ -683,10 +703,12 @@ export default function ForYouPage() {
   }, [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    fetch("/api/for-you")
+    // Lightweight profile endpoint — just tasteProfile + topGenres.
+    // The heavy scoring pipeline now only runs via the ?section= paginated rows.
+    fetch("/api/for-you/profile")
       .then((r) => r.json())
       .then((data) => setForYouData(data))
-      .catch(() => setForYouData({ personalPicks: [], discoverAcrossMedia: [], tasteProfile: null, topGenres: [] }));
+      .catch(() => setForYouData({ tasteProfile: null, topGenres: [] }));
   }, [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -728,6 +750,7 @@ export default function ForYouPage() {
             icon="🌐" iconBg="rgba(49,133,252,0.15)" seeAllHref="/explore"
             mediaFilter={activeFilter}
             clientExclude={discoverExcludeIds}
+            onLoad={setDiscoverItems}
             alwaysShow
           />
         </ErrorBoundary>
@@ -744,6 +767,7 @@ export default function ForYouPage() {
           mediaFilter={activeFilter}
           clientExclude={row3ExcludeIds}
           onLoad={setRow3Items}
+          lazy
         />
       </ErrorBoundary>
 
@@ -757,6 +781,7 @@ export default function ForYouPage() {
           mediaFilter={activeFilter}
           clientExclude={row4ExcludeIds}
           onLoad={setRow4Items}
+          lazy
         />
       </ErrorBoundary>
 
@@ -770,6 +795,7 @@ export default function ForYouPage() {
           mediaFilter={activeFilter}
           clientExclude={row5ExcludeIds}
           onLoad={setRow5Items}
+          lazy
         />
       </ErrorBoundary>
 

@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { isValidStatus, rateLimit } from "@/lib/validation";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ entries: {}, items: {} });
   }
 
   try {
     const rows = await prisma.libraryEntry.findMany({
-      where: { userId: session.user.id },
+      where: { userId: claims.sub },
       include: {
         item: {
           select: {
@@ -60,12 +60,12 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const userId = session.user.id;
+  const userId = claims.sub;
 
   if (!rateLimit(`library:${userId}`, 30, 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });

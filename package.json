@@ -17,16 +17,15 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.11.1",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
+    "@supabase/ssr": "^0.10.0",
+    "@supabase/supabase-js": "^2.102.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "bcryptjs": "^3.0.3",
     "dotenv": "^17.3.1",
     "jszip": "^3.10.1",
     "next": "^16.2.1",
-    "next-auth": "^5.0.0-beta.30",
     "node-vibrant": "^4.0.4",
     "papaparse": "^5.5.3",
     "prisma": "^7.5.0",
@@ -35,7 +34,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^19",

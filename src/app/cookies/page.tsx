@@ -12,7 +12,7 @@ export default function CookiesPage() {
       <p style={updated}>Last updated: March 24, 2026</p>
 
       <p style={p}>
-        This Cookie Policy explains how Literacy (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) uses cookies on our platform at literacy.app. We are committed to transparency about the technologies we use.
+        This Cookie Policy explains how CrossShelf (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) uses cookies on our platform at crossshelf.app. We are committed to transparency about the technologies we use.
       </p>
 
       <h2 style={h2Style}>What Are Cookies</h2>
@@ -24,7 +24,7 @@ export default function CookiesPage() {
 
       <h3 style={h3Style}>Session / Authentication Cookie</h3>
       <p style={p}>
-        We use a single essential cookie to manage your authentication session. When you log in to Literacy, a session cookie is set to keep you logged in as you navigate the site. This cookie is:
+        We use a single essential cookie to manage your authentication session. When you log in to CrossShelf, a session cookie is set to keep you logged in as you navigate the site. This cookie is:
       </p>
       <ul style={ul}>
         <li><strong>HTTP-only:</strong> It cannot be accessed by client-side JavaScript, which protects against cross-site scripting attacks</li>
@@ -37,7 +37,7 @@ export default function CookiesPage() {
 
       <h2 style={h2Style}>Cookies We Do NOT Use</h2>
       <p style={p}>
-        Literacy does not use any of the following types of cookies:
+        CrossShelf does not use any of the following types of cookies:
       </p>
       <ul style={ul}>
         <li><strong>Advertising cookies:</strong> We do not serve ads and do not use cookies for ad targeting or retargeting</li>
@@ -62,7 +62,7 @@ export default function CookiesPage() {
 
       <h2 style={h2Style}>How to Manage Cookies</h2>
       <p style={p}>
-        You can control and manage cookies through your browser settings. Please note that disabling cookies will prevent you from logging in to Literacy, though you will still be able to browse publicly available content.
+        You can control and manage cookies through your browser settings. Please note that disabling cookies will prevent you from logging in to CrossShelf, though you will still be able to browse publicly available content.
       </p>
       <p style={p}>
         Instructions for managing cookies in common browsers:
@@ -95,7 +95,7 @@ export default function CookiesPage() {
 
       <h2 style={h2Style}>Contact</h2>
       <p style={p}>
-        If you have questions about our use of cookies, please contact us at <a href="mailto:privacy@literacy.app" style={{ color: "#E84855" }}>privacy@literacy.app</a>.
+        If you have questions about our use of cookies, please contact us at <a href="mailto:privacy@crossshelf.app" style={{ color: "#E84855" }}>privacy@crossshelf.app</a>.
       </p>
     </div>
   );

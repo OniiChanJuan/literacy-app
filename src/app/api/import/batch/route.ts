@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
 import {
   ParsedImportItem,
@@ -332,16 +332,16 @@ async function resolveViaSpotify(item: ParsedImportItem): Promise<number | null>
 // taste profile recalculation.
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const claims = await getClaims();
+  if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!rateLimit(`import-batch:${session.user.id}`, 30, 60_000)) {
+  if (!rateLimit(`import-batch:${claims.sub}`, 30, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
   }
 
-  const userId = session.user.id;
+  const userId = claims.sub;
 
   let body: any;
   try {
