@@ -19,12 +19,7 @@ export async function GET(req: NextRequest) {
 
   const claims = await getClaims();
   if (!claims?.sub) {
-    // TEMPORARY debug: expose whether claims was null vs tasteProfile empty
-    return NextResponse.json({
-      tasteProfile: null,
-      topGenres: [],
-      _debug_authed: false,
-    });
+    return NextResponse.json({ tasteProfile: null, topGenres: [] });
   }
 
   try {
@@ -51,22 +46,11 @@ export async function GET(req: NextRequest) {
       .slice(0, 10)
       .map(([g]) => g);
 
-    const res = NextResponse.json({
-      tasteProfile,
-      topGenres,
-      _debug_authed: true,
-      _debug_uid: claims.sub,
-      _debug_rating_count: ratings.length,
-    });
+    const res = NextResponse.json({ tasteProfile, topGenres });
     res.headers.set("Cache-Control", "private, max-age=60");
     return res;
-  } catch (err: any) {
+  } catch (err) {
     console.error("For You profile error:", err);
-    return NextResponse.json({
-      tasteProfile: null,
-      topGenres: [],
-      _debug_authed: true,
-      _debug_error: err?.message || String(err),
-    });
+    return NextResponse.json({ tasteProfile: null, topGenres: [] });
   }
 }
