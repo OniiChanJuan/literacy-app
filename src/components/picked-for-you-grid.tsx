@@ -9,32 +9,48 @@ import { TYPES, hexToRgba } from "@/lib/data";
 type FilterType = MediaType | "anime";
 
 // ── Hard-pinned grid card stylesheet ──────────────────────────────────────────
-// Single source of truth for card sizing: the grid cell. Cards fill their
-// cell (100% × 100%), covers flex-grow to absorb whatever vertical space
-// is left after the fixed-height meta, images fill the cover via object-fit.
-// No heights, max-heights, min-heights, or aspect-ratios on cards or cover
-// containers — the grid row is the only place pixel sizes live.
+// Pure block layout. Every element has an explicit pixel height. No flex,
+// no aspect-ratio, no min/max heights, no percentage heights — every size
+// is a literal number, so nothing can calculate its own dimensions from
+// the image's natural aspect.
+//
+// Card = block. Cover = block, height 180 (regular) / 374 (featured).
+// Cover img = width/height 100% of its block container, object-fit cover.
+// Meta = block wrapper with height 60 / 120; its INTERNAL layout is flex
+// (for stacking title/score/genre) but that doesn't affect its own size.
 const GRID_CSS = `
-.picked-regular,
-.picked-featured {
-  display: flex !important;
-  flex-direction: column !important;
+.picked-regular {
+  display: block !important;
   width: 100% !important;
-  height: 100% !important;
+  height: 240px !important;
   overflow: hidden !important;
   border-radius: 10px !important;
   box-sizing: border-box !important;
+  position: relative !important;
 }
 .picked-featured {
+  display: block !important;
+  width: 100% !important;
+  height: 494px !important;
   grid-row: span 2 !important;
+  overflow: hidden !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
 }
-.picked-regular-cover,
-.picked-featured-cover {
-  flex: 1 1 0 !important;
-  min-height: 0 !important;
+.picked-regular-cover {
+  display: block !important;
+  width: 100% !important;
+  height: 180px !important;
   overflow: hidden !important;
   position: relative !important;
+}
+.picked-featured-cover {
+  display: block !important;
   width: 100% !important;
+  height: 374px !important;
+  overflow: hidden !important;
+  position: relative !important;
 }
 .picked-regular-cover > img,
 .picked-featured-cover > img {
@@ -43,18 +59,17 @@ const GRID_CSS = `
   object-fit: cover !important;
   object-position: center top !important;
   display: block !important;
-  aspect-ratio: auto !important;
 }
 .picked-regular-meta {
+  width: 100% !important;
   height: 60px !important;
-  flex: 0 0 60px !important;
   padding: 8px 10px !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
 }
 .picked-featured-meta {
+  width: 100% !important;
   height: 120px !important;
-  flex: 0 0 120px !important;
   padding: 12px 14px !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
