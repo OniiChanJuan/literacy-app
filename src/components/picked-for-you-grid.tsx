@@ -134,7 +134,10 @@ export default function PickedForYouGrid({
         </Link>
       </div>
 
-      {/* Editorial grid */}
+      {/* Editorial grid — capped overall width so columns don't stretch
+          absurdly on ultrawide monitors, which was pushing aspect-ratio
+          covers to 500px+ tall. Combined with max-height on covers, this
+          keeps the whole grid in roughly one viewport height. */}
       <div
         className="picked-grid"
         style={{
@@ -142,6 +145,7 @@ export default function PickedForYouGrid({
           gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
           gridTemplateRows: "auto auto",
           gap: 14,
+          maxWidth: 1100,
         }}
       >
         {featured && <FeaturedCard item={featured} agg={featuredAgg} />}
@@ -224,12 +228,17 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)";
         }}
       >
-        <div style={{
-          position: "relative",
-          width: "100%",
-          aspectRatio: "3 / 4",
-          background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
-        }}>
+        <div
+          className="picked-featured-cover"
+          style={{
+            position: "relative",
+            width: "100%",
+            aspectRatio: "3 / 4",
+            maxHeight: 350,
+            background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
+            overflow: "hidden",
+          }}
+        >
           {item.cover && item.cover.startsWith("http") && (
             <CoverImage
               src={item.cover}
@@ -273,7 +282,7 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           </div>
         </div>
 
-        <div style={{ padding: "14px 16px 16px", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
+        <div style={{ padding: "14px 16px 16px", display: "flex", flexDirection: "column", gap: 8, flex: 1, minHeight: 0 }}>
           <div style={{
             fontFamily: "var(--font-serif)",
             fontSize: 18,
@@ -390,12 +399,17 @@ function RegularCard({ item }: { item: Item }) {
           e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)";
         }}
       >
-        <div style={{
-          position: "relative",
-          width: "100%",
-          aspectRatio: "2 / 3",
-          background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
-        }}>
+        <div
+          className="picked-regular-cover"
+          style={{
+            position: "relative",
+            width: "100%",
+            aspectRatio: "2 / 3",
+            maxHeight: 200,
+            background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
+            overflow: "hidden",
+          }}
+        >
           {item.cover && item.cover.startsWith("http") && (
             <CoverImage
               src={item.cover}
@@ -523,19 +537,22 @@ function GridSkeleton() {
           gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
           gridTemplateRows: "auto auto",
           gap: 14,
+          maxWidth: 1100,
         }}
       >
         <div className="picked-featured" style={{
           gridRow: "span 2",
           background: "rgba(255,255,255,0.02)",
           borderRadius: 10,
-          aspectRatio: "3 / 4",
+          maxHeight: 534, // matches ≈ 2 regular cards + gap
+          minHeight: 450,
         }} />
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} style={{
             background: "rgba(255,255,255,0.02)",
             borderRadius: 10,
-            aspectRatio: "2 / 3",
+            maxHeight: 260,
+            minHeight: 220,
           }} />
         ))}
       </div>
