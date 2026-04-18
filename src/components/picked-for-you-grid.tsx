@@ -7,7 +7,76 @@ import { TYPES, hexToRgba } from "@/lib/data";
 
 // Mirrors the FilterType defined in src/app/page.tsx so we don't couple to it.
 type FilterType = MediaType | "anime";
-import CoverImage from "./cover-image";
+
+// ── Hard-pinned grid card stylesheet ──────────────────────────────────────────
+// Using classes with !important keeps React inline styles, the browser's
+// auto aspect-ratio on <img width height>, and flexbox default stretching
+// from ever changing card size. If it's in this sheet, it wins.
+const GRID_CSS = `
+.picked-regular {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: 240px !important;
+  overflow: hidden !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+}
+.picked-regular-cover {
+  width: 100% !important;
+  height: 180px !important;
+  flex: 0 0 180px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+.picked-regular-cover > img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  display: block !important;
+  aspect-ratio: auto !important;
+}
+.picked-regular-meta {
+  height: 60px !important;
+  flex: 0 0 60px !important;
+  padding: 8px 10px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+.picked-featured {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-row: span 2 !important;
+  width: 100% !important;
+  height: 494px !important;
+  overflow: hidden !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+}
+.picked-featured-cover {
+  width: 100% !important;
+  height: 374px !important;
+  flex: 0 0 374px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+.picked-featured-cover > img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  display: block !important;
+  aspect-ratio: auto !important;
+}
+.picked-featured-meta {
+  height: 120px !important;
+  flex: 0 0 120px !important;
+  padding: 12px 14px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+`;
 import HoverPreview from "./hover-preview";
 import { getItemUrl } from "@/lib/slugs";
 import { isAnime } from "@/lib/anime";
@@ -107,6 +176,8 @@ export default function PickedForYouGrid({
 
   return (
     <section className="picked-for-you-section" style={{ marginBottom: 40 }}>
+      {/* eslint-disable-next-line react/no-danger */}
+      <style dangerouslySetInnerHTML={{ __html: GRID_CSS }} />
       {/* Header */}
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "flex-end",
@@ -209,21 +280,12 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
         href={href}
         className="picked-featured"
         style={{
-          gridRow: "span 2",
-          display: "flex",
-          flexDirection: "column",
           background: "rgba(255,255,255,0.02)",
           border: "1px solid rgba(255,255,255,0.04)",
-          borderRadius: 10,
-          overflow: "hidden",
           cursor: "pointer",
           textDecoration: "none",
           color: "inherit",
-          transition: "transform 200ms, border-color 200ms, box-shadow 200ms",
-          // Absolute fixed height = 374px cover + 120px meta
-          // which equals 2 × regular-card-height (240) + 14px gap.
-          width: "100%",
-          height: 494,
+          transition: "transform 200ms, border-color 200ms",
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
@@ -237,25 +299,16 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
         <div
           className="picked-featured-cover"
           style={{
-            position: "relative",
-            width: "100%",
-            // Fixed height = 2 × regular cover (180) + grid gap (14)
-            // so the featured column visually aligns with two stacked regulars.
-            height: 374,
-            flexShrink: 0,
             background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
-            overflow: "hidden",
           }}
         >
           {item.cover && item.cover.startsWith("http") && (
-            <CoverImage
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={item.cover}
               alt={item.title}
-              width={400}
-              height={533}
-              quality={80}
-              sizes="(max-width: 768px) 100vw, 40vw"
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              loading="lazy"
+              decoding="async"
             />
           )}
 
@@ -290,16 +343,14 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           </div>
         </div>
 
-        <div style={{
-          padding: "12px 14px 14px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-          height: 120,
-          overflow: "hidden",
-          boxSizing: "border-box",
-          flexShrink: 0,
-        }}>
+        <div
+          className="picked-featured-meta"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+          }}
+        >
           <div style={{
             fontFamily: "var(--font-serif)",
             fontSize: 18,
@@ -413,19 +464,12 @@ function RegularCard({ item }: { item: Item }) {
         href={href}
         className="picked-regular"
         style={{
-          display: "flex",
-          flexDirection: "column",
           background: "rgba(255,255,255,0.02)",
           border: "1px solid rgba(255,255,255,0.04)",
-          borderRadius: 10,
-          overflow: "hidden",
           cursor: "pointer",
           textDecoration: "none",
           color: "inherit",
           transition: "transform 200ms, border-color 200ms",
-          // Fixed card dimensions — every regular card identical.
-          width: "100%",
-          height: 240,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
@@ -439,23 +483,16 @@ function RegularCard({ item }: { item: Item }) {
         <div
           className="picked-regular-cover"
           style={{
-            position: "relative",
-            width: "100%",
-            height: 180,
-            flexShrink: 0,
             background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
-            overflow: "hidden",
           }}
         >
           {item.cover && item.cover.startsWith("http") && (
-            <CoverImage
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={item.cover}
               alt={item.title}
-              width={200}
-              height={300}
-              quality={70}
-              sizes="(max-width: 768px) 50vw, 20vw"
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              loading="lazy"
+              decoding="async"
             />
           )}
 
@@ -490,16 +527,14 @@ function RegularCard({ item }: { item: Item }) {
           </div>
         </div>
 
-        <div style={{
-          padding: "8px 10px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-          height: 60,
-          flexShrink: 0,
-          overflow: "hidden",
-          boxSizing: "border-box",
-        }}>
+        <div
+          className="picked-regular-meta"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
           <div style={{
             fontSize: 13,
             fontWeight: 500,
