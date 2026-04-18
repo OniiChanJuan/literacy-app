@@ -7,6 +7,7 @@ import { useScrollRestore } from "@/lib/use-scroll-restore";
 import { useSession } from "@/lib/supabase/use-session";
 import Card from "@/components/card";
 import TasteIdentityCard from "@/components/taste-identity-card";
+import PickedForYouGrid from "@/components/picked-for-you-grid";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
@@ -721,18 +722,15 @@ export default function ForYouPage() {
         </ErrorBoundary>
       )}
 
-      {/* 3. Personalized rows (5+ ratings) — taste-matched, now with infinite scroll */}
+      {/* 3. Picked for you — editorial magazine-style grid (1 featured + 6 regular) */}
       {ratingCount >= 5 && (
         <ErrorBoundary>
-          <PaginatedRow
-            key={`picked-${refreshKey}`}
-            fetchUrl="/api/for-you?section=personalPicks&limit=30"
-            label="Picked for you"
-            sub="Matched to your taste profile across all media"
-            icon="✨" iconBg="rgba(232,72,85,0.15)" seeAllHref="/explore"
+          <PickedForYouGrid
+            key={`picked-grid-${refreshKey}`}
+            tasteTags={tasteTagsForCard}
             mediaFilter={activeFilter}
             onLoad={setPickedForYouItems}
-            alwaysShow
+            refreshKey={refreshKey}
           />
         </ErrorBoundary>
       )}
