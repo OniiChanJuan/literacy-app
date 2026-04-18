@@ -142,7 +142,9 @@ export default function PickedForYouGrid({
         style={{
           display: "grid",
           gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
-          gridTemplateRows: "1fr 1fr",
+          // Rows are explicitly fixed at 240px so every regular card
+          // cell is identical regardless of content; featured spans both.
+          gridTemplateRows: "240px 240px",
           gap: 14,
           width: "100%",
         }}
@@ -218,9 +220,10 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           textDecoration: "none",
           color: "inherit",
           transition: "transform 200ms, border-color 200ms, box-shadow 200ms",
-          // Fill the full grid row-span height (240px * 2 + 14px gap = 494px)
-          height: "100%",
-          minHeight: 0,
+          // Absolute fixed height = 374px cover + 120px meta
+          // which equals 2 × regular-card-height (240) + 14px gap.
+          width: "100%",
+          height: 494,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
@@ -292,6 +295,9 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           display: "flex",
           flexDirection: "column",
           gap: 6,
+          height: 120,
+          overflow: "hidden",
+          boxSizing: "border-box",
           flexShrink: 0,
         }}>
           <div style={{
@@ -405,6 +411,7 @@ function RegularCard({ item }: { item: Item }) {
     <HoverPreview item={item}>
       <Link
         href={href}
+        className="picked-regular"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -416,8 +423,9 @@ function RegularCard({ item }: { item: Item }) {
           textDecoration: "none",
           color: "inherit",
           transition: "transform 200ms, border-color 200ms",
-          height: "100%",
-          minHeight: 0,
+          // Fixed card dimensions — every regular card identical.
+          width: "100%",
+          height: 240,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
@@ -483,12 +491,13 @@ function RegularCard({ item }: { item: Item }) {
         </div>
 
         <div style={{
-          padding: "8px 10px 8px",
+          padding: "8px 10px",
           display: "flex",
           flexDirection: "column",
           gap: 4,
           height: 60,
           flexShrink: 0,
+          overflow: "hidden",
           boxSizing: "border-box",
         }}>
           <div style={{
@@ -504,7 +513,7 @@ function RegularCard({ item }: { item: Item }) {
           </div>
 
           {literacyScore ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, height: 14 }}>
               <span style={{ fontSize: 14, fontWeight: 700, color: "#2EC4B6", lineHeight: 1 }}>
                 {literacyScore}
               </span>
@@ -525,11 +534,16 @@ function RegularCard({ item }: { item: Item }) {
               )}
             </div>
           ) : steamBest ? (
-            <div style={{ fontSize: 11, fontWeight: 700, color: steamBest.color, lineHeight: 1.2,
-              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{
+              fontSize: 11, fontWeight: 700, color: steamBest.color, lineHeight: 1.2,
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", height: 14,
+            }}>
               {steamBest.textLabel}
             </div>
-          ) : null}
+          ) : (
+            /* No-score placeholder preserves the score row height so cards align */
+            <div style={{ fontSize: 14, color: "rgba(232,230,225,0.2)", lineHeight: 1, height: 14 }}>—</div>
+          )}
 
           <div style={{
             fontSize: 11,
@@ -538,9 +552,10 @@ function RegularCard({ item }: { item: Item }) {
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            minHeight: 13,
+            height: 13,
+            // Non-breaking space ensures the line keeps its height when genre is missing
           }}>
-            {item.genre && item.genre.length > 0 ? item.genre.slice(0, 2).join(" · ") : ""}
+            {item.genre && item.genre.length > 0 ? item.genre.slice(0, 2).join(" · ") : "\u00A0"}
           </div>
         </div>
       </Link>

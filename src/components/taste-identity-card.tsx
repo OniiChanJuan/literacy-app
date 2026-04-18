@@ -21,15 +21,15 @@ interface TasteIdentityCardProps {
 }
 
 const MEDIA_TYPE_META: Record<string, { label: string; bar: string }> = {
-  movie:   { label: "Movies",   bar: "rgba(232,72,85,0.4)"  },
-  tv:      { label: "TV",       bar: "rgba(74,144,226,0.4)" },
-  anime:   { label: "Anime",    bar: "rgba(155,93,229,0.4)" },
-  book:    { label: "Books",    bar: "rgba(218,165,32,0.4)" },
-  game:    { label: "Games",    bar: "rgba(46,196,182,0.4)" },
-  manga:   { label: "Manga",    bar: "rgba(255,107,107,0.4)" },
-  music:   { label: "Music",    bar: "rgba(255,165,0,0.4)"  },
-  podcast: { label: "Podcasts", bar: "rgba(124,179,66,0.4)" },
-  comic:   { label: "Comics",   bar: "rgba(249,166,32,0.4)" },
+  movie:   { label: "Movies",   bar: "rgba(232,72,85,0.5)"  },
+  tv:      { label: "TV",       bar: "rgba(74,144,226,0.5)" },
+  anime:   { label: "Anime",    bar: "rgba(155,93,229,0.5)" },
+  book:    { label: "Books",    bar: "rgba(218,165,32,0.5)" },
+  game:    { label: "Games",    bar: "rgba(46,196,182,0.5)" },
+  manga:   { label: "Manga",    bar: "rgba(255,107,107,0.5)" },
+  music:   { label: "Music",    bar: "rgba(255,165,0,0.5)"  },
+  podcast: { label: "Podcasts", bar: "rgba(124,179,66,0.5)" },
+  comic:   { label: "Comics",   bar: "rgba(249,166,32,0.5)" },
 };
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -111,160 +111,180 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
         padding: "24px 28px",
         margin: "28px 0 36px",
         display: "flex",
-        alignItems: "center",
-        gap: 20,
+        flexDirection: "column",
+        gap: 16,
       }}
     >
-      {/* Avatar */}
+      {/* ── Top row: avatar + identity + stats ───────────────── */}
       <div
+        className="taste-identity-top"
         style={{
-          width: 64,
-          height: 64,
-          borderRadius: "50%",
-          background: "linear-gradient(135deg, #E84855, #2EC4B6)",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-        aria-hidden
-      >
-        <span style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>{initial}</span>
-      </div>
-
-      {/* Identity + tags */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 17, fontWeight: 500, color: "#fff", lineHeight: 1.2 }}>
-          {stats.displayName}
-        </div>
-        <div style={{ fontSize: 11, color: "rgba(232,230,225,0.3)", marginTop: 3 }}>
-          {stats.memberNumber != null ? `Member #${stats.memberNumber} · ` : ""}
-          {formatJoined(stats.joinedAt)}
-          {" · "}
-          <Link href={`/user/${stats.userId}`} style={{ color: "#2EC4B6", textDecoration: "none" }}>
-            View profile →
-          </Link>
-        </div>
-
-        {tasteTags.length > 0 && (
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
-            {tasteTags.map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  fontSize: 11,
-                  padding: "3px 10px",
-                  borderRadius: 16,
-                  border: "1px solid rgba(232,72,85,0.18)",
-                  color: "rgba(232,72,85,0.75)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Stats block */}
-      <div
-        className="taste-identity-stats"
-        style={{
-          display: "flex",
-          gap: 22,
-          flexShrink: 0,
-          paddingLeft: 20,
-          borderLeft: "1px solid rgba(255,255,255,0.06)",
+          gap: 20,
         }}
       >
-        <Stat label="Rated" value={String(stats.ratingCount)} />
-        <Stat label="Types" value={String(stats.typesCount)} />
-        <Stat label="Avg" value={stats.avgScore > 0 ? stats.avgScore.toFixed(1) : "—"} />
-      </div>
-
-      {/* Mini media-type breakdown — compact vertical bars inline with stats */}
-      {breakdownEntries.length > 0 && (
+        {/* Avatar */}
         <div
-          className="taste-identity-chart"
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #E84855, #2EC4B6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+          aria-hidden
+        >
+          <span style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>{initial}</span>
+        </div>
+
+        {/* Identity + tags */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 17, fontWeight: 500, color: "#fff", lineHeight: 1.2 }}>
+            {stats.displayName}
+          </div>
+          <div style={{ fontSize: 11, color: "rgba(232,230,225,0.3)", marginTop: 3 }}>
+            {stats.memberNumber != null ? `Member #${stats.memberNumber} · ` : ""}
+            {formatJoined(stats.joinedAt)}
+            {" · "}
+            <Link href={`/user/${stats.userId}`} style={{ color: "#2EC4B6", textDecoration: "none" }}>
+              View profile →
+            </Link>
+          </div>
+
+          {tasteTags.length > 0 && (
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
+              {tasteTags.map((tag) => (
+                <span
+                  key={tag}
+                  style={{
+                    fontSize: 11,
+                    padding: "3px 10px",
+                    borderRadius: 16,
+                    border: "1px solid rgba(232,72,85,0.18)",
+                    color: "rgba(232,72,85,0.75)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Stats block — inline with name/tags per spec */}
+        <div
+          className="taste-identity-stats"
           style={{
             display: "flex",
-            gap: 12,
-            alignItems: "flex-end",
-            height: 80,
+            gap: 22,
             flexShrink: 0,
             paddingLeft: 20,
             borderLeft: "1px solid rgba(255,255,255,0.06)",
           }}
-          aria-label="Media type breakdown"
         >
-          {breakdownEntries.map(([type, count]) => {
-            const meta = MEDIA_TYPE_META[type] || { label: type.toUpperCase(), bar: "rgba(255,255,255,0.2)" };
-            const barHeight = Math.max(Math.round((count / maxCount) * 60), 4);
-            return (
-              <div
-                key={type}
-                style={{
-                  width: 36,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 3,
-                }}
-              >
-                <span style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: "rgba(232,230,225,0.5)",
-                  lineHeight: 1,
-                }}>
-                  {count}
-                </span>
+          <Stat label="Rated" value={String(stats.ratingCount)} />
+          <Stat label="Types" value={String(stats.typesCount)} />
+          <Stat label="Avg" value={stats.avgScore > 0 ? stats.avgScore.toFixed(1) : "—"} />
+        </div>
+      </div>
+
+      {/* ── Bottom row: full-width "Across media" bar chart ──── */}
+      {breakdownEntries.length > 0 && (
+        <div
+          className="taste-identity-chart-row"
+          style={{
+            marginTop: 0,
+            paddingTop: 4,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              textTransform: "uppercase",
+              letterSpacing: 2,
+              color: "rgba(232,230,225,0.2)",
+              marginBottom: 8,
+            }}
+          >
+            Across media
+          </div>
+          <div
+            className="taste-identity-chart"
+            style={{
+              display: "flex",
+              gap: 12,
+              alignItems: "flex-end",
+              width: "100%",
+            }}
+            aria-label="Media type breakdown"
+          >
+            {breakdownEntries.map(([type, count]) => {
+              const meta = MEDIA_TYPE_META[type] || { label: type.toUpperCase(), bar: "rgba(255,255,255,0.25)" };
+              const barHeight = Math.max(Math.round((count / maxCount) * 50), 4);
+              return (
                 <div
+                  key={type}
                   style={{
-                    width: "100%",
-                    height: barHeight,
-                    background: meta.bar,
-                    borderRadius: 3,
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: 8,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.8,
-                    color: "rgba(232,230,225,0.35)",
-                    lineHeight: 1,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 4,
                   }}
                 >
-                  {meta.label}
-                </span>
-              </div>
-            );
-          })}
+                  <span style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "rgba(232,230,225,0.5)",
+                    lineHeight: 1,
+                  }}>
+                    {count}
+                  </span>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: barHeight,
+                      background: meta.bar,
+                      borderRadius: 4,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 9,
+                      textTransform: "uppercase",
+                      letterSpacing: 1,
+                      color: "rgba(232,230,225,0.3)",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {meta.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
       <style>{`
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
           .taste-identity-card {
-            flex-wrap: wrap !important;
-            gap: 16px !important;
             padding: 20px !important;
+            gap: 14px !important;
           }
-          .taste-identity-chart {
-            border-left: none !important;
-            padding-left: 0 !important;
-            order: 10;
-            width: 100%;
-            justify-content: flex-start !important;
+          .taste-identity-top {
+            flex-wrap: wrap !important;
           }
-        }
-        @media (max-width: 640px) {
           .taste-identity-stats {
             border-left: none !important;
             padding-left: 0 !important;
-            order: 9;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 12px;
             width: 100%;
             justify-content: space-around !important;
           }
@@ -277,12 +297,12 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ textAlign: "center" }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: "#2EC4B6", lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 22, fontWeight: 700, color: "#2EC4B6", lineHeight: 1 }}>{value}</div>
       <div style={{
         fontSize: 10,
         textTransform: "uppercase",
         letterSpacing: 1.2,
-        color: "rgba(232,230,225,0.4)",
+        color: "rgba(232,230,225,0.3)",
         marginTop: 6,
       }}>
         {label}
