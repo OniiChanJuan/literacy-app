@@ -142,7 +142,7 @@ export default function PickedForYouGrid({
         style={{
           display: "grid",
           gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
-          gridTemplateRows: "240px 240px",
+          gridTemplateRows: "1fr 1fr",
           gap: 14,
           width: "100%",
         }}
@@ -162,7 +162,6 @@ export default function PickedForYouGrid({
           .picked-featured {
             grid-column: span 2 !important;
             grid-row: auto !important;
-            min-height: 360px !important;
           }
         }
         @media (max-width: 480px) {
@@ -172,7 +171,6 @@ export default function PickedForYouGrid({
           }
           .picked-featured {
             grid-column: auto !important;
-            min-height: 360px !important;
           }
         }
       `}</style>
@@ -238,8 +236,10 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           style={{
             position: "relative",
             width: "100%",
-            flex: 1,
-            minHeight: 0,
+            // Fixed height = 2 × regular cover (180) + grid gap (14)
+            // so the featured column visually aligns with two stacked regulars.
+            height: 374,
+            flexShrink: 0,
             background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
             overflow: "hidden",
           }}
