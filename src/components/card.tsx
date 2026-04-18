@@ -15,11 +15,6 @@ function isImageUrl(cover: string | undefined | null): boolean {
   return !!cover && (cover.startsWith("http") || cover.startsWith("/"));
 }
 
-function scoreColor(val: number): string {
-  if (val >= 4.0) return "#2EC4B6";
-  if (val >= 3.0) return "#F9A620";
-  return "#E84855";
-}
 
 
 const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }: { item: Item; routeId?: string; crossMedia?: boolean; optimized?: boolean }) {
@@ -198,14 +193,14 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
         )}
       </div>
 
-      {/* Info area */}
-      <div style={{ background: "var(--bg-card)", padding: "6px 8px 5px" }}>
+      {/* Info area — visible at all times (not hover-gated) */}
+      <div style={{ background: "var(--bg-card)", padding: "6px 8px 6px" }}>
         {/* Title */}
         <div style={{
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: 500,
           lineHeight: 1.2,
-          marginBottom: 2,
+          marginBottom: 4,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -214,57 +209,59 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
           {item.title}
         </div>
 
-        {/* Score row: CrossShelf score + recommend % — or Steam text label */}
+        {/* Score row: number + bar + liked % (all one line) */}
         {literacyScore ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 1 }}>
+          <div style={{
+            display: "flex", alignItems: "center", gap: 5, marginBottom: 3,
+          }}>
             <span style={{
-              fontSize: 9,
-              fontWeight: 700,
-              color: scoreColor(literacyScoreNum),
+              fontSize: 12, fontWeight: 700, color: "#2EC4B6", lineHeight: 1, flexShrink: 0,
             }}>
-              {literacyScore} ★
+              {literacyScore}
             </span>
+            <div style={{
+              flex: 1, minWidth: 0,
+              height: 3, background: "rgba(255,255,255,0.05)",
+              borderRadius: 2, overflow: "hidden",
+            }}>
+              <div style={{
+                width: `${Math.min(100, Math.max(0, (literacyScoreNum / 5) * 100))}%`,
+                height: "100%", background: "#2EC4B6", borderRadius: 2,
+              }} />
+            </div>
             {recPct !== null && (
-              <>
-                <span style={{ fontSize: 7, color: "rgba(255,255,255,0.15)" }}>|</span>
-                <span style={{
-                  fontSize: 8,
-                  fontWeight: 600,
-                  color: recPct >= 70 ? "#2EC4B6" : recPct >= 40 ? "#F9A620" : "#E84855",
-                }}>
-                  {recPct}% 👍
-                </span>
-              </>
+              <span style={{
+                fontSize: 10, color: "rgba(232,230,225,0.25)", lineHeight: 1, flexShrink: 0,
+              }}>
+                {recPct}%
+              </span>
             )}
           </div>
         ) : steamBest ? (
           <div style={{
-            fontSize: 9,
-            fontWeight: 700,
-            color: steamBest.color,
-            marginBottom: 1,
+            fontSize: 11, fontWeight: 700, color: steamBest.color, lineHeight: 1.2,
+            marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}>
             {steamBest.textLabel}
           </div>
         ) : (
-          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.2)", marginBottom: 1 }}>
+          <div style={{ fontSize: 10, color: "rgba(232,230,225,0.2)", marginBottom: 3 }}>
             {item.year || "TBA"}
           </div>
         )}
 
-        {/* External score source label */}
-        {numericScore && (
-          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", marginBottom: 2 }}>
-            {numericScore.display}
-          </div>
-        )}
-        {steamBest && (
-          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", marginBottom: 2 }}>
-            Steam
+        {/* Genre (always visible, not hover-gated) */}
+        {item.genre && item.genre.length > 0 && (
+          <div style={{
+            fontSize: 10, color: "rgba(232,230,225,0.2)", lineHeight: 1.2,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            marginBottom: !routeId ? 4 : 0,
+          }}>
+            {item.genre.slice(0, 2).join(" · ")}
           </div>
         )}
 
-        {/* Inline stars */}
+        {/* Inline stars — lets users rate without navigating */}
         {!routeId && (
           <Stars
             rating={userRating}

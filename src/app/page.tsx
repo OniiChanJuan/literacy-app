@@ -6,6 +6,7 @@ import { useRatings } from "@/lib/ratings-context";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
 import { useSession } from "@/lib/supabase/use-session";
 import Card from "@/components/card";
+import TasteIdentityCard from "@/components/taste-identity-card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
@@ -450,45 +451,21 @@ function TasteFilterBar({
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, rgba(232,72,85,0.04), rgba(155,93,229,0.02))",
+      background: "linear-gradient(135deg, rgba(232,72,85,0.03), rgba(155,93,229,0.015))",
       borderRadius: 10,
-      padding: "14px 20px",
+      padding: "12px 16px",
       marginBottom: 20,
     }}>
-      {/* Tagline */}
-      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", letterSpacing: "0.5px", marginBottom: 10 }}>
-        RATE ANYTHING. DISCOVER EVERYTHING.
-      </div>
-
-      {/* Main row */}
+      {/* Main row — genre pills + media type filter grid (identity moved to TasteIdentityCard above) */}
       <div className="taste-filter-main" style={{
-        display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12,
+        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
       }}>
-        {/* Left: Your taste info */}
-        <div style={{ flexShrink: 0 }}>
-          <div style={{ fontFamily: "var(--font-serif)", fontSize: 15, fontWeight: 500, color: "#fff" }}>
-            Your taste
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-            <span style={{ fontSize: 11, color: "#2EC4B6" }}>{ratingCount} rated</span>
-            <a
-              href={profileHref}
-              style={{ fontSize: 11, color: "rgba(232,72,85,0.6)", cursor: "pointer", textDecoration: "none" }}
-            >
-              View profile →
-            </a>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="taste-divider" style={{ width: "0.5px", alignSelf: "stretch", background: "rgba(255,255,255,0.06)", flexShrink: 0 }} />
-
         {/* Middle: Taste tags + Genre pills */}
         <div className="taste-tags-section" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
           {/* Row 1: Taste / vibe tags */}
-          <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-            {tags.length > 0 ? (
-              tags.map((tag) => (
+          {tags.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+              {tags.map((tag) => (
                 <a
                   key={tag}
                   href={TASTE_TAG_EXPLORE_MAP[tag] || "/explore"}
@@ -502,13 +479,9 @@ function TasteFilterBar({
                 >
                   {tag}
                 </a>
-              ))
-            ) : (
-              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>
-                Rate some titles to discover your taste profile
-              </span>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Row 2: Genre pills */}
           {genrePills.length > 0 && (
@@ -619,6 +592,16 @@ export default function ForYouPage() {
   const [forYouData, setForYouData] = useState<{
     tasteProfile: TasteProfile | null;
     topGenres: string[];
+    stats: {
+      ratingCount: number;
+      typesCount: number;
+      avgScore: number;
+      typeBreakdown: Record<string, number>;
+      displayName: string;
+      memberNumber: number | null;
+      joinedAt: string | null;
+      userId: string;
+    } | null;
   } | null>(null);
   const [discoverItems, setDiscoverItems] = useState<Item[]>([]);
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
@@ -708,20 +691,35 @@ export default function ForYouPage() {
     fetch("/api/for-you/profile")
       .then((r) => r.json())
       .then((data) => setForYouData(data))
-      .catch(() => setForYouData({ tasteProfile: null, topGenres: [] }));
+      .catch(() => setForYouData({ tasteProfile: null, topGenres: [], stats: null }));
   }, [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const { data: sessionData, status: sessionStatus } = useSession();
+  const authed = sessionStatus === "authenticated" && !!sessionData?.user;
+  const tasteTagsForCard = forYouData?.tasteProfile ? getTasteTags(forYouData.tasteProfile) : [];
 
   return (
     <div className="content-width">
-      {/* 1. Combined taste + filter bar */}
+      {/* 1a. Taste identity card — personal stats up top */}
       <ErrorBoundary>
-        <TasteFilterBar
-          tasteProfile={forYouData?.tasteProfile || null}
-          topGenres={forYouData?.topGenres || []}
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
+        <TasteIdentityCard
+          stats={forYouData?.stats ?? null}
+          tasteTags={tasteTagsForCard}
+          authed={authed}
         />
       </ErrorBoundary>
+
+      {/* 1b. Genre pills + media-type filter bar (only for authed users — there's nothing to filter by taste otherwise) */}
+      {authed && (
+        <ErrorBoundary>
+          <TasteFilterBar
+            tasteProfile={forYouData?.tasteProfile || null}
+            topGenres={forYouData?.topGenres || []}
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+          />
+        </ErrorBoundary>
+      )}
 
       {/* 3. Personalized rows (5+ ratings) — taste-matched, now with infinite scroll */}
       {ratingCount >= 5 && (

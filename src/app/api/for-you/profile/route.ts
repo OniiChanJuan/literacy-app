@@ -5,11 +5,14 @@ import { rateLimit } from "@/lib/validation";
 import type { TasteDimensions } from "@/lib/taste-dimensions";
 
 /**
- * GET /api/for-you/profile — Lightweight taste profile endpoint.
+ * GET /api/for-you/profile — Lightweight taste profile + identity-card
+ * stats endpoint. No item scoring, no candidate scan. Used by the
+ * For You TasteIdentityCard + the (smaller) TasteFilterBar beneath it.
  *
- * Returns only { tasteProfile, topGenres } — NO item scoring, NO candidate
- * scan. Used by the For You banner so the page no longer has to run the
- * full scoring pipeline just to render the taste header.
+ * Returns:
+ *   tasteProfile     — raw TasteDimensions JSON for tag derivation
+ *   topGenres        — weighted genre list for the genre-pills row
+ *   stats            — { ratingCount, typesCount, avgScore, typeBreakdown, memberNumber, displayName, email, joinedAt }
  */
 export async function GET(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for") || "unknown";
@@ -19,22 +22,29 @@ export async function GET(req: NextRequest) {
 
   const claims = await getClaims();
   if (!claims?.sub) {
-    return NextResponse.json({ tasteProfile: null, topGenres: [] });
+    return NextResponse.json({ tasteProfile: null, topGenres: [], stats: null });
   }
 
   try {
     const user = await prisma.user.findUnique({
       where: { id: claims.sub },
-      select: { tasteProfile: true },
+      select: {
+        tasteProfile: true,
+        name: true,
+        email: true,
+        memberNumber: true,
+        createdAt: true,
+      },
     });
     const tasteProfile = (user?.tasteProfile as unknown as TasteDimensions) || null;
 
-    // Compute top genres from user's ratings (weight high-rated items double)
+    // Pull all ratings joined to item.type + item.genre in one query.
     const ratings = await prisma.rating.findMany({
       where: { userId: claims.sub },
-      select: { score: true, item: { select: { genre: true } } },
+      select: { score: true, item: { select: { type: true, genre: true } } },
     });
 
+    // ── Top genres (weight 4+ stars double) ────────────────────────────
     const genreCounts: Record<string, number> = {};
     for (const r of ratings) {
       for (const g of (r.item.genre || [])) {
@@ -46,11 +56,35 @@ export async function GET(req: NextRequest) {
       .slice(0, 10)
       .map(([g]) => g);
 
-    const res = NextResponse.json({ tasteProfile, topGenres });
+    // ── Identity-card stats ────────────────────────────────────────────
+    const typeBreakdown: Record<string, number> = {};
+    let scoreSum = 0;
+    for (const r of ratings) {
+      typeBreakdown[r.item.type] = (typeBreakdown[r.item.type] || 0) + 1;
+      scoreSum += r.score;
+    }
+    const ratingCount = ratings.length;
+    const typesCount = Object.keys(typeBreakdown).length;
+    const avgScore = ratingCount > 0 ? scoreSum / ratingCount : 0;
+
+    const stats = user
+      ? {
+          ratingCount,
+          typesCount,
+          avgScore: Number(avgScore.toFixed(1)),
+          typeBreakdown, // e.g. { movie: 8, tv: 4, game: 2 }
+          displayName: user.name || user.email?.split("@")[0] || "You",
+          memberNumber: user.memberNumber ?? null,
+          joinedAt: user.createdAt?.toISOString() ?? null,
+          userId: claims.sub,
+        }
+      : null;
+
+    const res = NextResponse.json({ tasteProfile, topGenres, stats });
     res.headers.set("Cache-Control", "private, max-age=60");
     return res;
   } catch (err) {
     console.error("For You profile error:", err);
-    return NextResponse.json({ tasteProfile: null, topGenres: [] });
+    return NextResponse.json({ tasteProfile: null, topGenres: [], stats: null });
   }
 }
