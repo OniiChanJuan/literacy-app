@@ -461,30 +461,9 @@ function TasteFilterBar({
       <div className="taste-filter-main" style={{
         display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
       }}>
-        {/* Middle: Taste tags + Genre pills */}
+        {/* Middle: Genre pills only. Taste/vibe tags are rendered in the
+            TasteIdentityCard above to avoid duplication. */}
         <div className="taste-tags-section" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
-          {/* Row 1: Taste / vibe tags */}
-          {tags.length > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-              {tags.map((tag) => (
-                <a
-                  key={tag}
-                  href={TASTE_TAG_EXPLORE_MAP[tag] || "/explore"}
-                  className="taste-tag-pill"
-                  style={{
-                    fontSize: 11, padding: "3px 8px", borderRadius: 10,
-                    background: "rgba(255,255,255,0.03)", border: "0.5px solid rgba(255,255,255,0.06)",
-                    color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap", cursor: "pointer",
-                    textDecoration: "none", transition: "background 150ms, color 150ms",
-                  }}
-                >
-                  {tag}
-                </a>
-              ))}
-            </div>
-          )}
-
-          {/* Row 2: Genre pills */}
           {genrePills.length > 0 && (
             <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
               <span style={{ fontSize: 11, color: "rgba(232,72,85,0.35)", fontWeight: 500, marginRight: 1, whiteSpace: "nowrap" }}>

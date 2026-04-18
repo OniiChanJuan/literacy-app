@@ -106,7 +106,7 @@ export default function PickedForYouGrid({
   const regulars = rest.slice(0, 6);
 
   return (
-    <section className="picked-for-you-section" style={{ marginBottom: 28 }}>
+    <section className="picked-for-you-section" style={{ marginBottom: 40 }}>
       {/* Header */}
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "flex-end",
@@ -134,18 +134,17 @@ export default function PickedForYouGrid({
         </Link>
       </div>
 
-      {/* Editorial grid — capped overall width so columns don't stretch
-          absurdly on ultrawide monitors, which was pushing aspect-ratio
-          covers to 500px+ tall. Combined with max-height on covers, this
-          keeps the whole grid in roughly one viewport height. */}
+      {/* Editorial grid. Row heights are fixed so every regular card has
+          identical dimensions (cover + meta) and the featured card's
+          column spans both rows for a total height of 2*row + gap. */}
       <div
         className="picked-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
-          gridTemplateRows: "auto auto",
+          gridTemplateRows: "240px 240px",
           gap: 14,
-          maxWidth: 1100,
+          width: "100%",
         }}
       >
         {featured && <FeaturedCard item={featured} agg={featuredAgg} />}
@@ -158,19 +157,22 @@ export default function PickedForYouGrid({
         @media (max-width: 768px) {
           .picked-grid {
             grid-template-columns: 1fr 1fr !important;
-            grid-template-rows: auto !important;
+            grid-template-rows: auto auto auto auto !important;
           }
           .picked-featured {
             grid-column: span 2 !important;
             grid-row: auto !important;
+            min-height: 360px !important;
           }
         }
         @media (max-width: 480px) {
           .picked-grid {
             grid-template-columns: 1fr !important;
+            grid-template-rows: auto !important;
           }
           .picked-featured {
             grid-column: auto !important;
+            min-height: 360px !important;
           }
         }
       `}</style>
@@ -218,6 +220,9 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           textDecoration: "none",
           color: "inherit",
           transition: "transform 200ms, border-color 200ms, box-shadow 200ms",
+          // Fill the full grid row-span height (240px * 2 + 14px gap = 494px)
+          height: "100%",
+          minHeight: 0,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
@@ -233,8 +238,8 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           style={{
             position: "relative",
             width: "100%",
-            aspectRatio: "3 / 4",
-            maxHeight: 350,
+            flex: 1,
+            minHeight: 0,
             background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
             overflow: "hidden",
           }}
@@ -282,22 +287,38 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
           </div>
         </div>
 
-        <div style={{ padding: "14px 16px 16px", display: "flex", flexDirection: "column", gap: 8, flex: 1, minHeight: 0 }}>
+        <div style={{
+          padding: "12px 14px 14px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+          flexShrink: 0,
+        }}>
           <div style={{
             fontFamily: "var(--font-serif)",
             fontSize: 18,
             fontWeight: 600,
             color: "#fff",
-            lineHeight: 1.25,
+            lineHeight: 1.2,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical" as const,
+            overflow: "hidden",
           }}>
             {item.title}
           </div>
 
-          {item.genre && item.genre.length > 0 && (
-            <div style={{ fontSize: 11, color: "rgba(232,230,225,0.25)", lineHeight: 1.3 }}>
-              {item.genre.slice(0, 3).join(" · ")}
-            </div>
-          )}
+          <div style={{
+            fontSize: 11,
+            color: "rgba(232,230,225,0.25)",
+            lineHeight: 1.3,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            minHeight: 14,
+          }}>
+            {item.genre && item.genre.length > 0 ? item.genre.slice(0, 3).join(" · ") : ""}
+          </div>
 
           {/* Score row — larger than regular cards */}
           {literacyScore ? (
@@ -331,7 +352,7 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
 
           {/* Community indicator — only on featured */}
           {communityCount > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto", paddingTop: 4 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ display: "flex" }} aria-hidden>
                 {FEATURED_AVATAR_COLORS.map((c, i) => (
                   <span
@@ -347,7 +368,13 @@ function FeaturedCard({ item, agg }: { item: Item; agg: FeaturedAgg | null }) {
                   />
                 ))}
               </div>
-              <span style={{ fontSize: 10, color: "rgba(232,230,225,0.25)" }}>
+              <span style={{
+                fontSize: 10,
+                color: "rgba(232,230,225,0.3)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}>
                 {communityCount} with similar taste rated this
               </span>
             </div>
@@ -389,6 +416,8 @@ function RegularCard({ item }: { item: Item }) {
           textDecoration: "none",
           color: "inherit",
           transition: "transform 200ms, border-color 200ms",
+          height: "100%",
+          minHeight: 0,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
@@ -404,8 +433,8 @@ function RegularCard({ item }: { item: Item }) {
           style={{
             position: "relative",
             width: "100%",
-            aspectRatio: "2 / 3",
-            maxHeight: 200,
+            height: 180,
+            flexShrink: 0,
             background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
             overflow: "hidden",
           }}
@@ -453,7 +482,15 @@ function RegularCard({ item }: { item: Item }) {
           </div>
         </div>
 
-        <div style={{ padding: "8px 10px 10px", display: "flex", flexDirection: "column", gap: 5 }}>
+        <div style={{
+          padding: "8px 10px 8px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+          height: 60,
+          flexShrink: 0,
+          boxSizing: "border-box",
+        }}>
           <div style={{
             fontSize: 13,
             fontWeight: 500,
@@ -494,18 +531,17 @@ function RegularCard({ item }: { item: Item }) {
             </div>
           ) : null}
 
-          {item.genre && item.genre.length > 0 && (
-            <div style={{
-              fontSize: 11,
-              color: "rgba(232,230,225,0.25)",
-              lineHeight: 1.2,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>
-              {item.genre.slice(0, 2).join(" · ")}
-            </div>
-          )}
+          <div style={{
+            fontSize: 11,
+            color: "rgba(232,230,225,0.25)",
+            lineHeight: 1.2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            minHeight: 13,
+          }}>
+            {item.genre && item.genre.length > 0 ? item.genre.slice(0, 2).join(" · ") : ""}
+          </div>
         </div>
       </Link>
     </HoverPreview>
@@ -535,35 +571,38 @@ function GridSkeleton() {
         style={{
           display: "grid",
           gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
-          gridTemplateRows: "auto auto",
+          gridTemplateRows: "240px 240px",
           gap: 14,
-          maxWidth: 1100,
+          width: "100%",
         }}
       >
         <div className="picked-featured" style={{
           gridRow: "span 2",
           background: "rgba(255,255,255,0.02)",
           borderRadius: 10,
-          maxHeight: 534, // matches ≈ 2 regular cards + gap
-          minHeight: 450,
         }} />
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} style={{
             background: "rgba(255,255,255,0.02)",
             borderRadius: 10,
-            maxHeight: 260,
-            minHeight: 220,
           }} />
         ))}
       </div>
       <style>{`
         @media (max-width: 768px) {
-          .picked-grid { grid-template-columns: 1fr 1fr !important; }
-          .picked-featured { grid-column: span 2 !important; grid-row: auto !important; aspect-ratio: 16 / 9 !important; }
+          .picked-grid {
+            grid-template-columns: 1fr 1fr !important;
+            grid-template-rows: auto auto auto auto !important;
+          }
+          .picked-featured {
+            grid-column: span 2 !important;
+            grid-row: auto !important;
+            min-height: 360px !important;
+          }
         }
         @media (max-width: 480px) {
-          .picked-grid { grid-template-columns: 1fr !important; }
-          .picked-featured { grid-column: auto !important; aspect-ratio: 2 / 3 !important; }
+          .picked-grid { grid-template-columns: 1fr !important; grid-template-rows: auto !important; }
+          .picked-featured { grid-column: auto !important; min-height: 360px !important; }
         }
       `}</style>
     </section>
