@@ -7,9 +7,16 @@ import { formatExtScores } from "@/lib/format-ext-score";
 interface HoverPreviewProps {
   item: Item;
   children: React.ReactNode;
+  /**
+   * When true, the wrapper div sizes to fill its parent (100% × 100%)
+   * instead of shrinking to fit its children. Required when the child
+   * card uses height: 100% to fill a grid cell — otherwise the card
+   * has no sized parent and collapses to its content's natural height.
+   */
+  fill?: boolean;
 }
 
-export default function HoverPreview({ item, children }: HoverPreviewProps) {
+export default function HoverPreview({ item, children, fill = false }: HoverPreviewProps) {
   const [show, setShow] = useState(false);
   const [position, setPosition] = useState<"right" | "left">("right");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -39,7 +46,11 @@ export default function HoverPreview({ item, children }: HoverPreviewProps) {
       ref={containerRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ position: "relative", display: "block", width: "fit-content" }}
+      style={
+        fill
+          ? { position: "relative", display: "block", width: "100%", height: "100%" }
+          : { position: "relative", display: "block", width: "fit-content" }
+      }
     >
       {children}
 

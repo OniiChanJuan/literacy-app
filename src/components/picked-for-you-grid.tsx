@@ -86,11 +86,15 @@ export default function PickedForYouGrid({
           gridTemplateRows: "240px 240px",
           gap: 14,
           width: "100%",
+          // Belt-and-suspenders: if anything inside tries to overflow the
+          // grid's cell height, it gets clipped here before it can bleed
+          // into the next section below.
+          overflow: "hidden",
         }}
       >
         {/* Featured — wrapped in a span-2 div so the card inside can use
             height: 100% against an outer fixed pixel height of 494. */}
-        <div className="picked-grid-featured-cell" style={{ gridRow: "span 2" }}>
+        <div className="picked-grid-featured-cell" style={{ gridRow: "span 2", minHeight: 0, overflow: "hidden" }}>
           <EditorialCard item={featured} featured />
         </div>
         {regulars.map((it) => (
@@ -180,7 +184,7 @@ function EditorialCard({ item, featured = false }: { item: Item; featured?: bool
   const scoreSize = featured ? 14 : 12;
 
   return (
-    <HoverPreview item={item}>
+    <HoverPreview item={item} fill>
       <Link
         href={href}
         style={{
@@ -227,6 +231,10 @@ function EditorialCard({ item, featured = false }: { item: Item; featured?: bool
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
+                // Crop from the bottom instead of center so landscape
+                // cover art preserves faces/titles that typically live
+                // at the top of poster imagery.
+                objectPosition: "center top",
                 display: "block",
               }}
             />
