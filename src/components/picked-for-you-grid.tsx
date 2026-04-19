@@ -35,7 +35,9 @@ export default function PickedForYouGrid({
     setFailed(false);
     setItems(null);
     let cancelled = false;
-    fetch("/api/for-you?section=personalPicks&limit=7")
+    // Fetch the maximum needed across all tiers. CSS hides extras on
+    // smaller viewports. Mobile shows 5, tablet 6, laptop+ 7, ultrawide 9.
+    fetch("/api/for-you?section=personalPicks&limit=9")
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((data: Item[]) => {
         if (cancelled) return;
@@ -71,38 +73,59 @@ export default function PickedForYouGrid({
 
   const featured = displayed[0];
   const regulars = displayed.slice(1, 7);
+  const mobileItems = displayed.slice(0, 5); // 1 banner + 4 row cards
 
   return (
-    <section style={{ marginBottom: 40 }}>
+    <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
       <Header subtitle={subtitle} />
 
-      {/* Fixed-pixel rows so every cell is literally 240px tall.
-          Cards inside use height: 100% to fill that cell. */}
+      {/* Desktop/tablet grid — fixed-pixel rows so every cell is 240px tall.
+          Hidden on mobile via .picked-grid-wrap. */}
       <div
-        className="picked-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
-          gridTemplateRows: "240px 240px",
-          gap: 14,
-          width: "100%",
-          // Belt-and-suspenders: if anything inside tries to overflow the
-          // grid's cell height, it gets clipped here before it can bleed
-          // into the next section below.
-          overflow: "hidden",
-        }}
+        className="picked-grid-wrap picked-grid-wrap-desktop"
+        style={{ width: "100%" }}
       >
-        {/* Featured — wrapped in a span-2 div so the card inside can use
-            height: 100% against an outer fixed pixel height of 494. */}
-        <div className="picked-grid-featured-cell" style={{ gridRow: "span 2", minHeight: 0, overflow: "hidden" }}>
-          <EditorialCard item={featured} featured />
+        <div
+          className="picked-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.3fr 1fr 1fr 1fr",
+            gridTemplateRows: "240px 240px",
+            gap: 14,
+            width: "100%",
+            // Belt-and-suspenders: if anything inside tries to overflow the
+            // grid's cell height, it gets clipped here before it can bleed
+            // into the next section below.
+            overflow: "hidden",
+          }}
+        >
+          {/* Featured — wrapped in a span-2 div so the card inside can use
+              height: 100% against an outer fixed pixel height of 494. */}
+          <div className="picked-grid-featured-cell" style={{ gridRow: "span 2", minHeight: 0, overflow: "hidden" }}>
+            <EditorialCard item={featured} featured />
+          </div>
+          {regulars.map((it) => (
+            <EditorialCard key={it.id} item={it} />
+          ))}
         </div>
-        {regulars.map((it) => (
-          <EditorialCard key={it.id} item={it} />
+      </div>
+
+      {/* Mobile stack — 1 full-width banner + 4 row-cards. Hidden ≥640px. */}
+      <div className="picked-mobile-stack">
+        <div className="picked-mobile-banner-wrap">
+          <EditorialCard item={mobileItems[0]} featured />
+        </div>
+        {mobileItems.slice(1).map((it) => (
+          <div key={it.id} className="picked-mobile-row-wrap">
+            <EditorialCard item={it} mobileRow />
+          </div>
         ))}
       </div>
 
       <style>{`
+        /* Default (≥640px): desktop grid shows, mobile stack hidden */
+        .picked-mobile-stack { display: none; }
+
         @media (max-width: 768px) {
           .picked-grid {
             grid-template-columns: 1fr 1fr !important;
@@ -114,14 +137,21 @@ export default function PickedForYouGrid({
             height: 360px;
           }
         }
-        @media (max-width: 480px) {
-          .picked-grid {
-            grid-template-columns: 1fr !important;
-            grid-template-rows: auto !important;
+        @media (max-width: 639px) {
+          .picked-grid-wrap-desktop { display: none !important; }
+          .picked-mobile-stack {
+            display: flex !important;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
           }
-          .picked-grid-featured-cell {
-            grid-column: auto !important;
-            height: 360px;
+          .picked-mobile-banner-wrap {
+            width: 100%;
+            height: 280px;
+          }
+          .picked-mobile-row-wrap {
+            width: 100%;
+            height: 96px;
           }
         }
       `}</style>
@@ -166,7 +196,15 @@ function Header({ subtitle }: { subtitle: string }) {
 
 // ── Editorial card — ONE component for both featured and regular ────────────
 
-function EditorialCard({ item, featured = false }: { item: Item; featured?: boolean }) {
+function EditorialCard({
+  item,
+  featured = false,
+  mobileRow = false,
+}: {
+  item: Item;
+  featured?: boolean;
+  mobileRow?: boolean;
+}) {
   const href = getItemUrl(item);
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const best = getBestExtScore(item.ext, item.voteCount ?? 0);
@@ -182,6 +220,135 @@ function EditorialCard({ item, featured = false }: { item: Item; featured?: bool
   const metaHeight = featured ? 80 : 60;
   const titleSize = featured ? 16 : 13;
   const scoreSize = featured ? 14 : 12;
+
+  // Mobile row-card variant: 72px cover on the left, flex:1 meta on the
+  // right. Override all the stack-layout rules.
+  if (mobileRow) {
+    return (
+      <Link
+        href={href}
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          height: "100%",
+          borderRadius: 10,
+          overflow: "hidden",
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.04)",
+          textDecoration: "none",
+          color: "inherit",
+          cursor: "pointer",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* Cover — 72px wide, full-height */}
+        <div style={{
+          position: "relative",
+          width: 72,
+          height: "100%",
+          flexShrink: 0,
+          overflow: "hidden",
+          background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.12)}, ${hexToRgba(t.color, 0.04)})`,
+        }}>
+          {item.cover?.startsWith("http") && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.cover}
+              alt={item.title}
+              loading="lazy"
+              decoding="async"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
+                display: "block",
+              }}
+            />
+          )}
+          <span style={{
+            position: "absolute",
+            top: 4,
+            left: 4,
+            background: hexToRgba(t.color, 0.88),
+            color: "#fff",
+            fontSize: 7,
+            fontWeight: 600,
+            padding: "2px 5px",
+            borderRadius: 3,
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+          }}>
+            {t.label.replace(/s$/, "")}
+          </span>
+        </div>
+
+        {/* Meta — title + score + genre, vertically centered */}
+        <div style={{
+          flex: 1,
+          minWidth: 0,
+          padding: "10px 12px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 4,
+        }}>
+          <div style={{
+            fontSize: 14,
+            fontWeight: 500,
+            color: "#fff",
+            lineHeight: 1.2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}>
+            {item.title}
+          </div>
+          {literacyScore ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#2EC4B6", lineHeight: 1 }}>
+                {literacyScore}
+              </span>
+              <div style={{
+                flex: 1, minWidth: 0, height: 3,
+                background: "rgba(255,255,255,0.05)",
+                borderRadius: 2, overflow: "hidden",
+              }}>
+                <div style={{
+                  width: `${Math.min(100, Math.max(0, (literacyNum / 5) * 100))}%`,
+                  height: "100%", background: "#2EC4B6", borderRadius: 2,
+                }} />
+              </div>
+              {recPct !== null && (
+                <span style={{ fontSize: 10, color: "rgba(232,230,225,0.25)", lineHeight: 1 }}>
+                  {recPct}%
+                </span>
+              )}
+            </div>
+          ) : steamBest ? (
+            <div style={{
+              fontSize: 11, fontWeight: 700, color: steamBest.color,
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            }}>
+              {steamBest.textLabel}
+            </div>
+          ) : null}
+          {item.genre && item.genre.length > 0 && (
+            <div style={{
+              fontSize: 11,
+              color: "rgba(232,230,225,0.2)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}>
+              {item.genre.slice(0, 2).join(" · ")}
+            </div>
+          )}
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <HoverPreview item={item} fill>
@@ -424,7 +591,7 @@ function EditorialCard({ item, featured = false }: { item: Item; featured?: bool
 
 function GridSkeleton() {
   return (
-    <section style={{ marginBottom: 40 }}>
+    <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
       <Header subtitle="Loading your picks…" />
       <div
         className="picked-grid"

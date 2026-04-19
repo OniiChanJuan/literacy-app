@@ -126,6 +126,7 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
       >
         {/* Avatar */}
         <div
+          className="taste-identity-avatar"
           style={{
             width: 64,
             height: 64,
@@ -138,15 +139,15 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
           }}
           aria-hidden
         >
-          <span style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>{initial}</span>
+          <span className="taste-identity-avatar-text" style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>{initial}</span>
         </div>
 
         {/* Identity + tags */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 17, fontWeight: 500, color: "#fff", lineHeight: 1.2 }}>
+          <div className="taste-identity-name" style={{ fontSize: 17, fontWeight: 500, color: "#fff", lineHeight: 1.2 }}>
             {stats.displayName}
           </div>
-          <div style={{ fontSize: 11, color: "rgba(232,230,225,0.3)", marginTop: 3 }}>
+          <div className="taste-identity-subtitle" style={{ fontSize: 11, color: "rgba(232,230,225,0.3)", marginTop: 3 }}>
             {stats.memberNumber != null ? `Member #${stats.memberNumber} · ` : ""}
             {formatJoined(stats.joinedAt)}
             {" · "}
@@ -156,10 +157,11 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
           </div>
 
           {tasteTags.length > 0 && (
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
+            <div className="taste-identity-tags-row" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
               {tasteTags.map((tag) => (
                 <span
                   key={tag}
+                  className="taste-identity-tag"
                   style={{
                     fontSize: 11,
                     padding: "3px 10px",
@@ -272,7 +274,16 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
       )}
 
       <style>{`
-        @media (max-width: 768px) {
+        /* Hide the Across Media chart on laptop-and-smaller. It's a
+           discovery-browsing feature, not essential. */
+        @media (max-width: 1023px) {
+          .taste-identity-chart-row {
+            display: none !important;
+          }
+        }
+        /* Tablet / large mobile (640-1023px): keep stats visible next to
+           identity but let the block wrap if needed. */
+        @media (max-width: 1023px) {
           .taste-identity-card {
             padding: 20px !important;
             gap: 14px !important;
@@ -280,13 +291,38 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
           .taste-identity-top {
             flex-wrap: wrap !important;
           }
+        }
+        /* Mobile (< 640px) compressed strip: avatar shrinks, stats and
+           subtitle row hide, only identity + taste tags remain. */
+        @media (max-width: 639px) {
+          .taste-identity-card {
+            padding: 14px 16px !important;
+            margin: 16px 0 24px !important;
+          }
+          .taste-identity-avatar {
+            width: 44px !important;
+            height: 44px !important;
+          }
+          .taste-identity-avatar-text {
+            font-size: 18px !important;
+          }
+          .taste-identity-subtitle {
+            display: none !important;
+          }
           .taste-identity-stats {
-            border-left: none !important;
-            padding-left: 0 !important;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            padding-top: 12px;
-            width: 100%;
-            justify-content: space-around !important;
+            display: none !important;
+          }
+          .taste-identity-name {
+            font-size: 15px !important;
+          }
+          .taste-identity-tags-row {
+            margin-top: 6px !important;
+            max-height: 26px;
+            overflow: hidden;
+          }
+          .taste-identity-tag {
+            font-size: 10px !important;
+            padding: 2px 8px !important;
           }
         }
       `}</style>

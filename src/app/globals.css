@@ -55,8 +55,14 @@ body {
 }
 
 /* ── Content width container ─────────────────────────────── */
+/* Global cap at 1800px keeps ultrawide monitors (2560+ px, 32"+ displays)
+   from sprawling the layout edge-to-edge. Everything wider than 1800px
+   centers with auto margins. */
 .content-width {
   width: 100%;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
   padding-left: 24px;
   padding-right: 24px;
   box-sizing: border-box;

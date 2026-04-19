@@ -37,7 +37,7 @@ export default function WhatsHappening({ refreshKey }: { refreshKey?: number }) 
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/activity-public?limit=4")
+    fetch("/api/activity-public?limit=8")
       .then((r) => (r.ok ? r.json() : []))
       .then((d) => { if (!cancelled) setActivity(Array.isArray(d) ? d : []); })
       .catch(() => { if (!cancelled) setActivity([]); });
@@ -55,7 +55,7 @@ export default function WhatsHappening({ refreshKey }: { refreshKey?: number }) 
   }
 
   return (
-    <section style={{ marginBottom: 40 }}>
+    <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
       <div
         className="whats-happening-grid"
         style={{
@@ -74,11 +74,32 @@ export default function WhatsHappening({ refreshKey }: { refreshKey?: number }) 
         </div>
       </div>
       <style>{`
-        @media (max-width: 768px) {
+        /* Laptop-and-smaller: hide the trending sidebar entirely, activity
+           feed takes full width. Mobile doesn't need a denser discovery UI
+           — the feed is enough. */
+        @media (max-width: 1023px) {
           .whats-happening-grid {
             grid-template-columns: 1fr !important;
           }
           .whats-happening-sidebar {
+            display: none !important;
+          }
+        }
+        /* Mobile: cap activity feed at 3 items. */
+        @media (max-width: 639px) {
+          .activity-feed-list > *:nth-child(n+4) {
+            display: none !important;
+          }
+        }
+        /* Tablet / small laptop: cap activity feed at 4 items. */
+        @media (min-width: 640px) and (max-width: 1439px) {
+          .activity-feed-list > *:nth-child(n+5) {
+            display: none !important;
+          }
+        }
+        /* Desktop: 6 items. Ultrawide inherits all 8 fetched. */
+        @media (min-width: 1440px) and (max-width: 1919px) {
+          .activity-feed-list > *:nth-child(n+7) {
             display: none !important;
           }
         }
@@ -127,7 +148,7 @@ function ActivityFeed({ entries }: { entries: ActivityEntry[] | null }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+    <div className="activity-feed-list" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {entries.map((e, idx) => (
         <ActivityRow key={`${e.kind}-${e.user.id}-${e.item.id}-${idx}`} entry={e} />
       ))}

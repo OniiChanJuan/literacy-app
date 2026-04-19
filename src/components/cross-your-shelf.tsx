@@ -48,8 +48,10 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
     ? "Connections across your taste that only CrossShelf can see"
     : "Editorial picks to help you see between media";
 
+  // Ultrawide (≥1920): up to 6 visible. Laptop-standard (1024-1919): 3.
+  // Tablet (640-1023): 2. Mobile (<640): 2.
   return (
-    <section style={{ marginBottom: 40 }}>
+    <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
       <Header title={title} subtitle={subtitle} />
       <div
         className="cross-shelf-grid"
@@ -64,9 +66,30 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
         ))}
       </div>
       <style>{`
-        @media (max-width: 768px) {
+        /* Ultrawide — more picks visible */
+        @media (min-width: 1920px) {
+          .cross-shelf-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+        }
+        /* Tablet / large mobile */
+        @media (max-width: 1023px) {
+          .cross-shelf-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+          /* Trim to 2 on tablet to avoid lopsided row */
+          .cross-shelf-grid > *:nth-child(n+3) {
+            display: none !important;
+          }
+        }
+        /* Mobile */
+        @media (max-width: 639px) {
           .cross-shelf-grid {
             grid-template-columns: 1fr !important;
+          }
+          /* Mobile shows 2 connections, not more */
+          .cross-shelf-grid > *:nth-child(n+3) {
+            display: none !important;
           }
         }
       `}</style>
@@ -95,7 +118,7 @@ function Header({ title, subtitle }: { title: string; subtitle: string }) {
 
 function Skeleton() {
   return (
-    <section style={{ marginBottom: 40 }}>
+    <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
       <Header title="Cross your shelf" subtitle="Loading connections…" />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
         {Array.from({ length: 3 }).map((_, i) => (
@@ -167,13 +190,23 @@ function ConnectionCard({ connection }: { connection: Connection }) {
         </Link>
       </div>
 
-      {/* Items row: source → rec1 → rec2 */}
-      <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "nowrap", overflow: "hidden" }}>
+      {/* Items chain: source → rec1 → rec2 (horizontal ≥640px, vertical on mobile) */}
+      <div
+        className="cross-shelf-chain"
+        style={{
+          display: "flex",
+          gap: 6,
+          alignItems: "center",
+          flexWrap: "nowrap",
+          overflow: "hidden",
+        }}
+      >
         {items.map((it, idx) => (
           <Fragment key={`chain-${idx}-${it.id}`}>
             {idx > 0 && (
               <span
                 aria-hidden
+                className="cross-shelf-arrow"
                 style={{ color: "rgba(232,230,225,0.1)", fontSize: 16, lineHeight: 1 }}
               >
                 →
@@ -183,6 +216,19 @@ function ConnectionCard({ connection }: { connection: Connection }) {
           </Fragment>
         ))}
       </div>
+      <style>{`
+        @media (max-width: 639px) {
+          .cross-shelf-chain {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+          }
+          .cross-shelf-arrow {
+            transform: rotate(90deg);
+            line-height: 1 !important;
+          }
+        }
+      `}</style>
 
       {/* Reason */}
       <div style={{
@@ -301,7 +347,11 @@ function VoteBtn({
       style={{
         background: "none",
         border: "none",
-        padding: 4,
+        // 44×44 minimum touch target on mobile. Wider hit-zone than the
+        // 10px icon, but the icon itself doesn't look larger.
+        minWidth: 44,
+        minHeight: 44,
+        padding: 0,
         cursor: "pointer",
         color: active ? activeColor : "rgba(232,230,225,0.15)",
         display: "flex",

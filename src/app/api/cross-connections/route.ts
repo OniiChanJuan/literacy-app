@@ -90,11 +90,13 @@ export async function GET(req: NextRequest) {
       return !recs.some((r: any) => ratedIds.has(Number(r.item_id)));
     });
 
-    const chosen: typeof personalized = filteredPersonalized.slice(0, 3);
+    // Fetch up to 6 so ultrawide can show more; CSS hides extras on smaller viewports.
+    const TARGET = 6;
+    const chosen: typeof personalized = filteredPersonalized.slice(0, TARGET);
     const mode: ConnectionOut["mode"] = chosen.length > 0 ? "because_you_loved" : "discovery";
 
-    // Fill up to 3 with random editorial connections.
-    if (chosen.length < 3) {
+    // Fill up to TARGET with random editorial connections.
+    if (chosen.length < TARGET) {
       const excludeIds = new Set(chosen.map((c) => c.id));
       const randoms: any[] = await prisma.$queryRawUnsafe(`
         SELECT id, source_item_id AS "sourceItemId", recommended_items AS "recommendedItems",
@@ -103,7 +105,7 @@ export async function GET(req: NextRequest) {
         WHERE quality_score >= 0.3
           ${excludeIds.size > 0 ? `AND id NOT IN (${[...excludeIds].join(",")})` : ""}
         ORDER BY RANDOM()
-        LIMIT ${3 - chosen.length}
+        LIMIT ${TARGET - chosen.length}
       `);
       // Attach sourceItem to each random pick.
       const srcIds = randoms.map((r) => r.sourceItemId);
