@@ -192,16 +192,34 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(46,196,182,0.15)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; }}
     >
-      {/* "Because you loved X" */}
-      <div style={{ fontSize: 12, color: "rgba(232,230,225,0.45)", marginBottom: 12, lineHeight: 1.3 }}>
-        {mode === "personalized" ? "Because you loved " : "If you love "}
-        <Link
-          href={getItemUrl(connection.sourceItem as any)}
-          style={{ color: "#2EC4B6", fontWeight: 700, textDecoration: "none" }}
-        >
-          {connection.sourceItem.title}
-        </Link>
-      </div>
+      {/* Per-card framing. Personalized mode maps exactly to the API's
+          `ratings.score >= 4` filter, so "rated ... highly" is literal
+          truth. Trending/discovery cards never claim a user signal —
+          they're labeled "Editor's pick" to set honest expectations. */}
+      {mode === "personalized" ? (
+        <div style={{ fontSize: 12, color: "rgba(232,230,225,0.45)", marginBottom: 12, lineHeight: 1.3 }}>
+          {"Because you rated "}
+          <Link
+            href={getItemUrl(connection.sourceItem as any)}
+            style={{ color: "#2EC4B6", fontWeight: 700, textDecoration: "none" }}
+          >
+            {connection.sourceItem.title}
+          </Link>
+          {" highly"}
+        </div>
+      ) : (
+        <div style={{
+          fontSize: 10,
+          color: "rgba(232,230,225,0.35)",
+          marginBottom: 12,
+          lineHeight: 1.3,
+          textTransform: "uppercase",
+          letterSpacing: 1,
+          fontWeight: 600,
+        }}>
+          Editor&rsquo;s pick
+        </div>
+      )}
 
       {/* Items chain: source → rec1 → rec2 (horizontal ≥640px, vertical on mobile) */}
       <div
