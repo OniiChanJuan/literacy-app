@@ -1,5 +1,46 @@
 "use client";
 
+/**
+ * Cross your shelf — editorial cross-media recommendations.
+ *
+ * ────────────────────────────────────────────────────────────────────
+ * FUTURE ENHANCEMENTS (deferred — do not build in this iteration)
+ * ────────────────────────────────────────────────────────────────────
+ *
+ * 1. Negative-signal recommendations
+ *    "Because you skipped X, also avoid Y" framing. Requires:
+ *      - A negative-edge layer in the cross_connections table (or a
+ *        sibling table) so editors can hand-curate these without
+ *        polluting the positive-signal corpus.
+ *      - A separate UI mode ('avoidance'?) so the user clearly
+ *        understands when they're seeing "skip these" vs "try these".
+ *      - User-controllable opt-out: some users will not want this.
+ *    Reason for deferral: trust before density. Get personalized
+ *    positive recs feeling solid first; negative recs amplify any
+ *    miscalibration.
+ *
+ * 2. Expand the positive signal beyond `score >= 4`
+ *    Today personalized mode is gated on the rating-score column.
+ *    Could fold in:
+ *      - ratings.recommendTag === 'recommend'   (explicit thumbs-up)
+ *      - libraryEntries.status === 'completed'  (finished AND kept it)
+ *      - recent reviews with positive sentiment (would need NLP)
+ *    Phrasing already chosen ("Because you rated X highly") still
+ *    holds for the score-only path; will need a second copy variant
+ *    if we add the recommend-tag path.
+ *
+ * 3. Per-mode visual differentiation
+ *    Currently personalized vs trending vs discovery only differs in
+ *    copy. Could add a colored side-stripe or icon to make the mode
+ *    glanceable without reading.
+ *
+ * 4. "More like this" card-level affordance
+ *    Long-press / right-click → "show more like this" or "less of
+ *    this source". Feeds into quality_score adjustments without
+ *    requiring an explicit thumbs vote.
+ * ────────────────────────────────────────────────────────────────────
+ */
+
 import { Fragment, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { TYPES } from "@/lib/data";
@@ -221,13 +262,15 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         </div>
       )}
 
-      {/* Items chain: source → rec1 → rec2 (horizontal ≥640px, vertical on mobile) */}
+      {/* Items chain: source → rec1 → rec2 (horizontal ≥640px, vertical on mobile).
+          Chain aligns to flex-start so arrows can be vertically positioned to
+          align with the cover (not the cover+title column). */}
       <div
         className="cross-shelf-chain"
         style={{
           display: "flex",
           gap: 6,
-          alignItems: "center",
+          alignItems: "flex-start",
           flexWrap: "nowrap",
           overflow: "hidden",
         }}
@@ -238,7 +281,14 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
               <span
                 aria-hidden
                 className="cross-shelf-arrow"
-                style={{ color: "rgba(232,230,225,0.1)", fontSize: 16, lineHeight: 1 }}
+                style={{
+                  color: "rgba(232,230,225,0.1)",
+                  fontSize: 16,
+                  lineHeight: 1,
+                  // Cover is 72px tall; align arrow to its midpoint.
+                  marginTop: 30,
+                  flexShrink: 0,
+                }}
               >
                 →
               </span>
@@ -257,6 +307,19 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
           .cross-shelf-arrow {
             transform: rotate(90deg);
             line-height: 1 !important;
+            /* Reset desktop's vertical arrow offset — irrelevant in column layout. */
+            margin-top: 0 !important;
+            margin-left: 26px !important;
+          }
+          .cross-shelf-thumb {
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 10px !important;
+          }
+          .cross-shelf-thumb > div:last-child {
+            text-align: left !important;
+            max-width: none !important;
+            width: auto !important;
           }
         }
       `}</style>
@@ -309,53 +372,85 @@ function ItemThumbnail({ item }: { item: ItemThumb }) {
   return (
     <Link
       href={href}
+      className="cross-shelf-thumb"
       style={{
-        position: "relative",
-        width: 52,
-        height: 72,
+        // Flex column wrapping cover + title. Width is set via the title's
+        // max-width so titles can extend slightly past the cover edge for
+        // breathing room without breaking the chain layout.
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 5,
         flexShrink: 0,
-        borderRadius: 5,
-        overflow: "hidden",
-        border: "1px solid rgba(255,255,255,0.06)",
-        display: "block",
         textDecoration: "none",
-        transition: "transform 150ms",
-        background: `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+        color: "inherit",
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.04)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.transform = ""; }}
       title={item.title}
     >
-      {item.cover?.startsWith("http") && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={item.cover}
-          alt={item.title}
-          loading="lazy"
-          decoding="async"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-        />
-      )}
-      {/* Media type badge */}
-      <span
+      {/* Cover */}
+      <div
         style={{
-          position: "absolute",
-          bottom: -5,
-          left: "50%",
-          transform: "translateX(-50%)",
-          background: t.color,
-          color: "#fff",
-          fontSize: 7,
-          fontWeight: 700,
-          padding: "2px 6px",
-          borderRadius: 4,
-          textTransform: "uppercase",
-          letterSpacing: 0.5,
+          position: "relative",
+          width: 52,
+          height: 72,
+          borderRadius: 5,
+          overflow: "hidden",
+          border: "1px solid rgba(255,255,255,0.06)",
+          background: `linear-gradient(135deg, ${t.color}22, ${t.color}08)`,
+          transition: "transform 150ms",
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1.04)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = ""; }}
+      >
+        {item.cover?.startsWith("http") && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.cover}
+            alt={item.title}
+            loading="lazy"
+            decoding="async"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+        {/* Media type badge — top-left corner of cover, matches main Card */}
+        <span
+          style={{
+            position: "absolute",
+            top: 3,
+            left: 3,
+            background: t.color,
+            color: "#fff",
+            fontSize: 7,
+            fontWeight: 700,
+            padding: "1px 4px",
+            borderRadius: 3,
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+            whiteSpace: "nowrap",
+            lineHeight: 1.4,
+          }}
+        >
+          {t.label.replace(/s$/, "")}
+        </span>
+      </div>
+
+      {/* Title — single line ellipsis. max-width slightly wider than the
+          cover for legibility ("Crouching Tig…" instead of "Crouchin…"). */}
+      <div
+        style={{
+          fontSize: 10,
+          color: "rgba(232,230,225,0.55)",
+          maxWidth: 60,
+          width: 60,
+          textAlign: "center",
           whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          lineHeight: 1.2,
         }}
       >
-        {t.label.replace(/s$/, "")}
-      </span>
+        {item.title}
+      </div>
     </Link>
   );
 }
