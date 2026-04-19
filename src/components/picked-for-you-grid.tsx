@@ -210,7 +210,12 @@ function EditorialCard({ item, featured = false }: { item: Item; featured?: bool
           e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)";
         }}
       >
-        {/* Cover — height is whatever remains after the fixed meta. */}
+        {/* Cover — height is whatever remains after the fixed meta.
+            Editorial blurred-backdrop treatment: the cover container is
+            landscape-ish on regulars (~260 × 180) but most cover art is
+            portrait. object-fit: cover would slice off faces and titles.
+            Instead: show the art contained with a blurred copy of itself
+            filling the letterbox space. No pixel of the art is cropped. */}
         <div
           style={{
             width: "100%",
@@ -221,32 +226,68 @@ function EditorialCard({ item, featured = false }: { item: Item; featured?: bool
           }}
         >
           {item.cover?.startsWith("http") && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.cover}
-              alt={item.title}
-              loading="lazy"
-              decoding="async"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                // Crop from the bottom instead of center so landscape
-                // cover art preserves faces/titles that typically live
-                // at the top of poster imagery.
-                objectPosition: "center top",
-                display: "block",
-              }}
-            />
+            <>
+              {/* Blurred backdrop — same src, heavily blurred, scaled up
+                  to hide blur edge fade. aria-hidden because the art
+                  itself is announced by the main <img> below. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.cover}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  filter: "blur(24px) saturate(1.2)",
+                  transform: "scale(1.15)",
+                  transformOrigin: "center",
+                  display: "block",
+                }}
+              />
+              {/* Dark overlay so the contained art and badges stay
+                  legible regardless of how bright the backdrop is. */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.35)",
+                }}
+              />
+              {/* Main artwork — contained so nothing is cropped. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.cover}
+                alt={item.title}
+                loading="lazy"
+                decoding="async"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  objectPosition: "center",
+                  display: "block",
+                }}
+              />
+            </>
           )}
 
-          {/* Type badge */}
+          {/* Type badge — sits above the art via DOM order */}
           <div style={{
             position: "absolute",
             top: featured ? 10 : 6,
             left: featured ? 10 : 6,
             display: "flex",
             gap: featured ? 4 : 3,
+            zIndex: 1,
           }}>
             <span style={{
               background: hexToRgba(t.color, 0.88),
