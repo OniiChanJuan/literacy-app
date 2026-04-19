@@ -8,6 +8,8 @@ import { useSession } from "@/lib/supabase/use-session";
 import Card from "@/components/card";
 import TasteIdentityCard from "@/components/taste-identity-card";
 import PickedForYouGrid from "@/components/picked-for-you-grid";
+import CrossYourShelf from "@/components/cross-your-shelf";
+import WhatsHappening from "@/components/whats-happening";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
@@ -713,6 +715,16 @@ export default function ForYouPage() {
           />
         </ErrorBoundary>
       )}
+
+      {/* 4. Cross your shelf — editorial cross-media connections */}
+      <ErrorBoundary>
+        <CrossYourShelf key={`cross-${refreshKey}`} refreshKey={refreshKey} />
+      </ErrorBoundary>
+
+      {/* 5. What's happening — activity feed + trending sidebar */}
+      <ErrorBoundary>
+        <WhatsHappening key={`whats-${refreshKey}`} refreshKey={refreshKey} />
+      </ErrorBoundary>
 
       {/* 3b. Discover across media — types user hasn't explored, now with infinite scroll */}
       {ratingCount >= 5 && (
