@@ -5,6 +5,8 @@ import Link from "next/link";
 import { TYPES } from "@/lib/data";
 import { getItemUrl } from "@/lib/slugs";
 
+type SectionMode = "personalized" | "trending" | "discovery";
+
 interface ItemThumb {
   id: number;
   title: string;
@@ -14,7 +16,6 @@ interface ItemThumb {
 }
 interface Connection {
   id: number;
-  mode: "because_you_loved" | "discovery";
   sourceItem: ItemThumb;
   recommendedItems: ItemThumb[];
   reason: string;
@@ -24,14 +25,14 @@ interface Connection {
 }
 
 export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) {
-  const [mode, setMode] = useState<Connection["mode"] | null>(null);
+  const [mode, setMode] = useState<SectionMode | null>(null);
   const [connections, setConnections] = useState<Connection[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     fetch("/api/cross-connections")
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then((data: { mode: Connection["mode"]; connections: Connection[] }) => {
+      .then((data: { mode: SectionMode; connections: Connection[] }) => {
         if (cancelled) return;
         setMode(data.mode);
         setConnections(data.connections ?? []);
@@ -43,10 +44,22 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
   if (!connections) return <Skeleton />;
   if (connections.length === 0) return null;
 
-  const title = mode === "because_you_loved" ? "Cross your shelf" : "Discover connections across media";
-  const subtitle = mode === "because_you_loved"
-    ? "Connections across your taste that only CrossShelf can see"
-    : "Editorial picks to help you see between media";
+  // Explicit per-mode copy so the framing never lies about the signal.
+  const headerFor: Record<SectionMode, { title: string; subtitle: string }> = {
+    personalized: {
+      title: "Cross your shelf",
+      subtitle: "Connections across your taste that only CrossShelf can see",
+    },
+    trending: {
+      title: "Trending connections",
+      subtitle: "Popular cross-media picks across CrossShelf",
+    },
+    discovery: {
+      title: "Discover connections across media",
+      subtitle: "Cross-media picks from our editors",
+    },
+  };
+  const { title, subtitle } = headerFor[mode ?? "discovery"];
 
   // Ultrawide (≥1920): up to 6 visible. Laptop-standard (1024-1919): 3.
   // Tablet (640-1023): 2. Mobile (<640): 2.
@@ -62,7 +75,7 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
         }}
       >
         {connections.map((c) => (
-          <ConnectionCard key={c.id} connection={c} />
+          <ConnectionCard key={c.id} connection={c} mode={mode ?? "discovery"} />
         ))}
       </div>
       <style>{`
@@ -139,7 +152,7 @@ function Skeleton() {
 
 // ── Connection card ────────────────────────────────────────────────────────
 
-function ConnectionCard({ connection }: { connection: Connection }) {
+function ConnectionCard({ connection, mode }: { connection: Connection; mode: SectionMode }) {
   const [vote, setVote] = useState<-1 | 0 | 1>(connection.userVote);
   const [submitting, setSubmitting] = useState(false);
 
@@ -181,7 +194,7 @@ function ConnectionCard({ connection }: { connection: Connection }) {
     >
       {/* "Because you loved X" */}
       <div style={{ fontSize: 12, color: "rgba(232,230,225,0.45)", marginBottom: 12, lineHeight: 1.3 }}>
-        {connection.mode === "because_you_loved" ? "Because you loved " : "If you love "}
+        {mode === "personalized" ? "Because you loved " : "If you love "}
         <Link
           href={getItemUrl(connection.sourceItem as any)}
           style={{ color: "#2EC4B6", fontWeight: 700, textDecoration: "none" }}
