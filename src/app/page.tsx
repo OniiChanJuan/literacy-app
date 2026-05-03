@@ -712,6 +712,7 @@ export default function ForYouPage() {
             mediaFilter={activeFilter}
             onLoad={setPickedForYouItems}
             refreshKey={refreshKey}
+            onClearFilter={() => setActiveFilter(null)}
           />
         </ErrorBoundary>
       )}

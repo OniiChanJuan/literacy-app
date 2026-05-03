@@ -11,6 +11,9 @@ Literacy is a cross-media review and recommendation platform. Think Goodreads me
 - The cross-media recommendation engine is the unique selling point.
 - The "rabbit hole" experience is central — users should get lost exploring connections between media.
 
+## Platform principle: honest labeling
+Section copy must reflect the actual basis of what's shown — never overclaim a personal connection the data doesn't support. If a section is mostly personalized → personalized framing. If it's mostly popularity-driven (filter mismatch, sparse user, cold-start) → popular framing. If it's empty under a user's filter → an intentional empty-state with a CTA, never a collapsed/hidden section that looks broken. The shared helper for new sections is `src/lib/section-framing.ts`. Existing implementations of this principle: `Cross your shelf` (three-mode logic in `src/components/cross-your-shelf.tsx`) and `Picked for you` (uses `framePickedForYou` from the helper).
+
 ## Supported Media Types
 - 🎬 Movies
 - 📺 TV Shows

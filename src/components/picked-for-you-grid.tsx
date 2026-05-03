@@ -8,6 +8,7 @@ import HoverPreview from "./hover-preview";
 import { getItemUrl } from "@/lib/slugs";
 import { isAnime } from "@/lib/anime";
 import { getBestExtScore } from "@/lib/format-ext-score";
+import { framePickedForYou } from "@/lib/section-framing";
 
 // Mirrors the FilterType defined in src/app/page.tsx
 type FilterType = MediaType | "anime";
@@ -21,6 +22,8 @@ interface PickedForYouGridProps {
   onLoad?: (items: Item[]) => void;
   /** Remount key from page refreshes. */
   refreshKey?: number;
+  /** Empty-state CTA: clear the active filter on the parent page. */
+  onClearFilter?: () => void;
 }
 
 // ── Component ───────────────────────────────────────────────────────────────
@@ -32,10 +35,9 @@ interface ResultMeta {
 }
 
 export default function PickedForYouGrid({
-  tasteTags, mediaFilter, onLoad, refreshKey,
+  tasteTags, mediaFilter, onLoad, refreshKey, onClearFilter,
 }: PickedForYouGridProps) {
   const [items, setItems] = useState<Item[] | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [meta, setMeta] = useState<ResultMeta | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -100,15 +102,27 @@ export default function PickedForYouGrid({
     return items.filter((i) => i.cover && i.cover.startsWith("http"));
   }, [items]);
 
-  const subtitle = useMemo(() => {
-    const top = tasteTags.slice(0, 3);
-    if (top.length === 0) return "Matched to your taste profile";
-    return `Based on your taste in ${top.join(", ")}`;
-  }, [tasteTags]);
+  // Honest section framing — title/subtitle/see-all driven by composition.
+  // See src/lib/section-framing.ts for the platform-wide principle.
+  const framing = useMemo(() => framePickedForYou(
+    meta?.composition ?? { personal: items?.length ?? 0, popular: 0 },
+    { filterType: meta?.filterType ?? mediaFilter ?? null, tasteTags, target: 9 },
+  ), [meta, mediaFilter, tasteTags, items]);
 
   if (failed) return null;
-  if (!displayed) return <GridSkeleton />;
-  if (displayed.length === 0) return null;
+  if (!displayed) return <GridSkeleton headerTitle={framing.title} headerSubtitle={framing.subtitle} seeAllHref={framing.seeAllHref} />;
+
+  // Empty state — filter active AND no items returned. Render an
+  // intentional message instead of collapsing the section.
+  if (displayed.length === 0) {
+    if (!mediaFilter) return null; // unfiltered + empty = something else is wrong; hide.
+    return (
+      <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
+        <Header title={framing.title} subtitle={framing.subtitle} seeAllHref={framing.seeAllHref} />
+        <EmptyState filterLabel={mediaFilter} onClear={onClearFilter} />
+      </section>
+    );
+  }
 
   const featured = displayed[0];
   const regulars = displayed.slice(1, 7);
@@ -116,7 +130,7 @@ export default function PickedForYouGrid({
 
   return (
     <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
-      <Header subtitle={subtitle} />
+      <Header title={framing.title} subtitle={framing.subtitle} seeAllHref={framing.seeAllHref} />
 
       {/* Desktop/tablet grid — fixed-pixel rows so every cell is 240px tall.
           Hidden on mobile via .picked-grid-wrap. */}
@@ -200,7 +214,15 @@ export default function PickedForYouGrid({
 
 // ── Header ──────────────────────────────────────────────────────────────────
 
-function Header({ subtitle }: { subtitle: string }) {
+function Header({
+  title,
+  subtitle,
+  seeAllHref,
+}: {
+  title: string;
+  subtitle: string;
+  seeAllHref: string;
+}) {
   return (
     <div style={{
       display: "flex",
@@ -209,7 +231,7 @@ function Header({ subtitle }: { subtitle: string }) {
       marginBottom: 14,
       gap: 12,
     }}>
-      <div>
+      <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{
           fontFamily: "var(--font-serif)",
           fontSize: 20,
@@ -217,18 +239,83 @@ function Header({ subtitle }: { subtitle: string }) {
           color: "#fff",
           lineHeight: 1.1,
         }}>
-          Picked for you
+          {title}
         </div>
-        <div style={{ fontSize: 12, color: "rgba(232,230,225,0.25)", marginTop: 4 }}>
+        <div style={{
+          fontSize: 12,
+          color: "rgba(232,230,225,0.25)",
+          marginTop: 4,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}>
           {subtitle}
         </div>
       </div>
       <Link
-        href="/explore?sort=picked"
+        href={seeAllHref}
         style={{ fontSize: 12, color: "#2EC4B6", textDecoration: "none", flexShrink: 0 }}
       >
         See all →
       </Link>
+    </div>
+  );
+}
+
+// ── Empty state — filter active but no items returned ──────────────────────
+function EmptyState({
+  filterLabel,
+  onClear,
+}: {
+  filterLabel: string;
+  onClear?: () => void;
+}) {
+  // Friendly noun for the type pill the user clicked.
+  const FRIENDLY_TYPE: Record<string, string> = {
+    movie: "Movies", tv: "Shows", anime: "Anime",
+    book: "Books", manga: "Manga", comic: "Comics",
+    game: "Games", music: "Music", podcast: "Podcasts",
+  };
+  const label = FRIENDLY_TYPE[filterLabel] ?? filterLabel;
+  return (
+    <div
+      style={{
+        // Match the typical grid section height so the page doesn't jump
+        // when the section toggles between full / empty states.
+        minHeight: 240,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 14,
+        padding: "32px 20px",
+        background: "rgba(255,255,255,0.02)",
+        border: "1px solid rgba(255,255,255,0.04)",
+        borderRadius: 12,
+        textAlign: "center",
+      }}
+    >
+      <div style={{ fontSize: 14, color: "rgba(232,230,225,0.55)" }}>
+        No picks match <strong style={{ color: "#fff" }}>{label}</strong> right now.
+      </div>
+      {onClear && (
+        <button
+          onClick={onClear}
+          style={{
+            border: "1px solid rgba(46,196,182,0.3)",
+            background: "rgba(46,196,182,0.08)",
+            color: "#2EC4B6",
+            padding: "8px 16px",
+            borderRadius: 8,
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            minHeight: 36,
+          }}
+        >
+          Clear filter
+        </button>
+      )}
     </div>
   );
 }
@@ -628,10 +715,18 @@ function EditorialCard({
 
 // ── Loading skeleton ────────────────────────────────────────────────────────
 
-function GridSkeleton() {
+function GridSkeleton({
+  headerTitle = "Picked for you",
+  headerSubtitle = "Loading your picks…",
+  seeAllHref = "/explore?sort=picked",
+}: {
+  headerTitle?: string;
+  headerSubtitle?: string;
+  seeAllHref?: string;
+} = {}) {
   return (
     <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
-      <Header subtitle="Loading your picks…" />
+      <Header title={headerTitle} subtitle={headerSubtitle} seeAllHref={seeAllHref} />
       <div
         className="picked-grid"
         style={{
