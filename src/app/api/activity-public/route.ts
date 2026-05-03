@@ -51,12 +51,14 @@ export async function GET(req: NextRequest) {
   try {
     // Pull a little more than needed from each stream so the interleaved
     // merge still has `limit` results after sorting.
+    // Drop the user include in favor of a separate
+    // publicUserProfile fetch + in-memory join. Keeps the user
+    // read surface narrow (view, not base table).
     const [reviews, ratings, library] = await Promise.all([
       prisma.review.findMany({
         orderBy: { createdAt: "desc" },
         take: limit + 4,
         include: {
-          user: { select: { id: true, name: true, memberNumber: true, avatar: true } },
           item: { select: { id: true, title: true, type: true, cover: true, slug: true, genre: true } },
         },
       }),
@@ -64,7 +66,6 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: "desc" },
         take: limit + 4,
         include: {
-          user: { select: { id: true, name: true, memberNumber: true, avatar: true } },
           item: { select: { id: true, title: true, type: true, cover: true, slug: true, genre: true } },
         },
       }),
@@ -73,31 +74,49 @@ export async function GET(req: NextRequest) {
         where: { status: { in: ["want_to", "in_progress", "completed"] } },
         take: limit + 4,
         include: {
-          user: { select: { id: true, name: true, memberNumber: true, avatar: true } },
           item: { select: { id: true, title: true, type: true, cover: true, slug: true, genre: true } },
         },
       }),
     ]);
 
+    const userIds = Array.from(new Set([
+      ...reviews.map((r) => r.userId),
+      ...ratings.map((r) => r.userId),
+      ...library.map((l) => l.userId),
+    ]));
+    const profiles = userIds.length > 0
+      ? await prisma.publicUserProfile.findMany({ where: { id: { in: userIds } } })
+      : [];
+    const profileMap = new Map(profiles.map((p) => [p.id, p]));
+    const userOrFallback = (id: string) => {
+      const p = profileMap.get(id);
+      return {
+        id,
+        name: p?.name ?? "Someone",
+        memberNumber: p?.memberNumber ?? null,
+        avatar: p?.avatar ?? null,
+      };
+    };
+
     const combined: FeedEntry[] = [
       ...reviews.map((r): FeedEntry => ({
         kind: "review",
         createdAt: r.createdAt.toISOString(),
-        user: { id: r.user.id, name: r.user.name ?? "Someone", memberNumber: r.user.memberNumber, avatar: r.user.avatar },
+        user: userOrFallback(r.userId),
         item: { ...r.item, genre: r.item.genre ?? [] },
         reviewSnippet: r.text?.slice(0, 80) ?? "",
       })),
       ...ratings.map((r): FeedEntry => ({
         kind: "rating",
         createdAt: r.createdAt.toISOString(),
-        user: { id: r.user.id, name: r.user.name ?? "Someone", memberNumber: r.user.memberNumber, avatar: r.user.avatar },
+        user: userOrFallback(r.userId),
         item: { ...r.item, genre: r.item.genre ?? [] },
         rating: r.score,
       })),
       ...library.map((l): FeedEntry => ({
         kind: "library",
         createdAt: (l.startedAt ?? new Date(0)).toISOString(),
-        user: { id: l.user.id, name: l.user.name ?? "Someone", memberNumber: l.user.memberNumber, avatar: l.user.avatar },
+        user: userOrFallback(l.userId),
         item: { ...l.item, genre: l.item.genre ?? [] },
         libraryStatus: l.status,
       })),
