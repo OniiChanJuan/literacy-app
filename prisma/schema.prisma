@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
+  provider        = "prisma-client-js"
+  output          = "../node_modules/.prisma/client"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -44,6 +45,25 @@ model User {
   crossConnectionVotes CrossConnectionVote[]
 
   @@map("users")
+}
+
+/// Public-safe projection of users. SQL view defined in
+/// scripts/migrate-create-public-user-profiles-view.ts. Granted
+/// SELECT to anon and authenticated; not insertable/updatable from
+/// the app side. Use this model anywhere the app reads other users'
+/// public profile data so that the read surface stays narrow.
+view PublicUserProfile {
+  id           String   @unique @db.Uuid
+  name         String?
+  username     String?
+  bio          String
+  avatar       String
+  image        String?
+  memberNumber Int?     @map("member_number")
+  createdAt    DateTime @map("created_at")
+  isPrivate    Boolean  @map("is_private")
+
+  @@map("public_user_profiles")
 }
 
 model UserSettings {
