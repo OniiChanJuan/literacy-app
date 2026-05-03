@@ -25,41 +25,80 @@ interface PickedForYouGridProps {
 
 // ── Component ───────────────────────────────────────────────────────────────
 
+// Stashed alongside items so commit 3 can use it for honest labeling.
+interface ResultMeta {
+  composition: { personal: number; popular: number };
+  filterType: string | null;
+}
+
 export default function PickedForYouGrid({
   tasteTags, mediaFilter, onLoad, refreshKey,
 }: PickedForYouGridProps) {
   const [items, setItems] = useState<Item[] | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [meta, setMeta] = useState<ResultMeta | null>(null);
   const [failed, setFailed] = useState(false);
 
+  // Refetch on filter / refresh change. Filter changes are debounced 250ms
+  // so rapid pill-clicking ("try every type quickly") fires one request
+  // after the user settles, not one per click.
   useEffect(() => {
-    setFailed(false);
-    setItems(null);
     let cancelled = false;
-    // Fetch the maximum needed across all tiers. CSS hides extras on
-    // smaller viewports. Mobile shows 5, tablet 6, laptop+ 7, ultrawide 9.
-    fetch("/api/for-you?section=personalPicks&limit=9")
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then((data: Item[]) => {
-        if (cancelled) return;
-        const arr = Array.isArray(data) ? data : [];
-        setItems(arr);
-        onLoad?.(arr);
-      })
-      .catch(() => {
-        if (!cancelled) setFailed(true);
-      });
+    let aborter: AbortController | null = null;
+
+    const debounceMs = mediaFilter === null ? 0 : 250;
+    const timer = setTimeout(() => {
+      setFailed(false);
+      setItems(null);
+      setMeta(null);
+      aborter = new AbortController();
+
+      // Always pass &type=, including empty for the no-filter case, so the
+      // backend returns the v2 object shape consistently. CSS hides extras
+      // on smaller viewports — same total fetch (9) as before.
+      const typeParam = mediaFilter ?? "";
+      const url = `/api/for-you?section=personalPicks&limit=9&type=${encodeURIComponent(typeParam)}`;
+
+      fetch(url, { signal: aborter.signal })
+        .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+        .then((data: any) => {
+          if (cancelled) return;
+          // v2 shape: { items, composition, filterType }
+          // v1 shape: Item[] (unchanged backwards-compat path; not hit
+          // anymore since we always pass type, but kept defensive).
+          const arr: Item[] = Array.isArray(data)
+            ? data
+            : (Array.isArray(data?.items) ? data.items : []);
+          const compositionMeta: ResultMeta = Array.isArray(data)
+            ? { composition: { personal: arr.length, popular: 0 }, filterType: null }
+            : {
+                composition: data?.composition ?? { personal: arr.length, popular: 0 },
+                filterType: data?.filterType ?? null,
+              };
+          setItems(arr);
+          setMeta(compositionMeta);
+          onLoad?.(arr);
+        })
+        .catch((e) => {
+          // AbortError is expected when filter changes mid-request.
+          if (e?.name === "AbortError") return;
+          if (!cancelled) setFailed(true);
+        });
+    }, debounceMs);
+
     return () => {
       cancelled = true;
+      clearTimeout(timer);
+      aborter?.abort();
     };
-  }, [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [refreshKey, mediaFilter]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Server-side filtered now — only enforce the cover-art sanity filter
+  // here. Type filter no longer happens client-side.
   const displayed = useMemo(() => {
     if (!items) return null;
-    let filtered = items.filter((i) => i.cover && i.cover.startsWith("http"));
-    if (mediaFilter === "anime") filtered = filtered.filter(isAnime);
-    else if (mediaFilter) filtered = filtered.filter((i) => i.type === mediaFilter);
-    return filtered;
-  }, [items, mediaFilter]);
+    return items.filter((i) => i.cover && i.cover.startsWith("http"));
+  }, [items]);
 
   const subtitle = useMemo(() => {
     const top = tasteTags.slice(0, 3);
