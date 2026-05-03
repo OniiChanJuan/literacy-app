@@ -18,17 +18,28 @@ export async function GET(req: NextRequest) {
   const claims = await getClaims();
   const currentUserId = claims?.sub;
 
-  const users = await prisma.user.findMany({
+  // Read profile data from public_user_profiles view; _count comes
+  // from a parallel base-User fetch since views don't carry relations.
+  const profiles = await prisma.publicUserProfile.findMany({
     where: {
       name: { contains: q, mode: "insensitive" },
       ...(currentUserId ? { id: { not: currentUserId } } : {}),
     },
-    select: {
-      id: true, name: true, image: true, avatar: true, bio: true, memberNumber: true,
-      _count: { select: { ratings: true, reviews: true } },
-    },
     take: 20,
   });
+
+  const counts = profiles.length > 0
+    ? await prisma.user.findMany({
+        where: { id: { in: profiles.map((p) => p.id) } },
+        select: { id: true, _count: { select: { ratings: true, reviews: true } } },
+      })
+    : [];
+  const countMap = new Map(counts.map((c) => [c.id, c._count]));
+
+  const users = profiles.map((p) => ({
+    ...p,
+    _count: countMap.get(p.id) ?? { ratings: 0, reviews: 0 },
+  }));
 
   // If logged in, check which of these the current user follows
   let followedIds = new Set<string>();
