@@ -62,16 +62,21 @@ export async function GET(req: NextRequest) {
     return NextResponse.json([]);
   }
 
-  // Fetch user details
+  // Fetch user details from the safe-fields view; _count fetched
+  // in parallel from base User since views don't carry relations.
   const userIds = ranked.map((r) => r.userId);
-  const users = await prisma.user.findMany({
-    where: { id: { in: userIds } },
-    select: {
-      id: true, name: true, image: true, avatar: true, bio: true, memberNumber: true,
-      _count: { select: { ratings: true, reviews: true } },
-    },
-  });
-  const userMap = new Map(users.map((u) => [u.id, u]));
+  const [profiles, counts] = await Promise.all([
+    prisma.publicUserProfile.findMany({ where: { id: { in: userIds } } }),
+    prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, _count: { select: { ratings: true, reviews: true } } },
+    }),
+  ]);
+  const countMap = new Map(counts.map((c) => [c.id, c._count]));
+  const userMap = new Map(profiles.map((p) => [p.id, {
+    ...p,
+    _count: countMap.get(p.id) ?? { ratings: 0, reviews: 0 },
+  }]));
 
   // Check follow status
   const follows = await prisma.follow.findMany({
