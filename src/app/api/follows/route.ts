@@ -15,20 +15,24 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ following: [], followers: [] });
   }
 
-  const following = await prisma.follow.findMany({
+  const follows = await prisma.follow.findMany({
     where: { followerId: claims.sub },
-    include: {
-      followed: {
-        select: { id: true, name: true, image: true, avatar: true },
-      },
-    },
+    select: { followedId: true },
   });
 
+  // Fetch profile data via the safe-fields view rather than a base
+  // include — keeps the public read surface narrow.
+  const profiles = follows.length > 0
+    ? await prisma.publicUserProfile.findMany({
+        where: { id: { in: follows.map((f) => f.followedId) } },
+      })
+    : [];
+
   return NextResponse.json({
-    following: following.map((f) => ({
-      id: f.followed.id,
-      name: f.followed.name || "Anonymous",
-      avatar: f.followed.image || f.followed.avatar || "",
+    following: profiles.map((p) => ({
+      id: p.id,
+      name: p.name || "Anonymous",
+      avatar: p.image || p.avatar || "",
     })),
   });
 }
