@@ -28,11 +28,11 @@ export async function GET(req: NextRequest) {
 
   if (followedIds.length === 0) return NextResponse.json([]);
 
-  // Fetch reviews from followed users
+  // Fetch reviews from followed users (without user include — we'll
+  // fetch profile data via the public_user_profiles view below).
   const reviews = await prisma.review.findMany({
     where: { userId: { in: followedIds } },
     include: {
-      user: { select: { id: true, name: true, image: true, avatar: true, memberNumber: true } },
       item: { select: { id: true, title: true, type: true, cover: true, year: true, slug: true } },
       _count: { select: { helpfulVotes: true } },
     },
@@ -47,12 +47,21 @@ export async function GET(req: NextRequest) {
   const allRatings = await prisma.rating.findMany({
     where: { userId: { in: followedIds } },
     include: {
-      user: { select: { id: true, name: true, image: true, avatar: true, memberNumber: true } },
       item: { select: { id: true, title: true, type: true, cover: true, year: true, slug: true } },
     },
     orderBy: { createdAt: "desc" },
     take: 100,
   });
+
+  // Fetch the safe-fields profile for every author appearing in either set.
+  const authorIds = Array.from(new Set([
+    ...reviews.map((r) => r.userId),
+    ...allRatings.map((r) => r.userId),
+  ]));
+  const profiles = authorIds.length > 0
+    ? await prisma.publicUserProfile.findMany({ where: { id: { in: authorIds } } })
+    : [];
+  const profileMap = new Map(profiles.map((p) => [p.id, p]));
 
   // Build lookup map for ratings by userId+itemId (for reviews needing score)
   const ratingMap = new Map(allRatings.map((r) => [`${r.userId}-${r.itemId}`, r]));
@@ -84,12 +93,13 @@ export async function GET(req: NextRequest) {
 
   const reviewEntries: ActivityEntry[] = reviews.map((r) => {
     const rating = ratingMap.get(`${r.userId}-${r.itemId}`);
+    const u = profileMap.get(r.userId);
     return {
       id: `review-${r.id}`,
-      userId: r.user.id,
-      userName: r.user.name || "Anonymous",
-      userAvatar: r.user.image || r.user.avatar || "",
-      userMemberNumber: r.user.memberNumber ?? null,
+      userId: r.userId,
+      userName: u?.name || "Anonymous",
+      userAvatar: u?.image || u?.avatar || "",
+      userMemberNumber: u?.memberNumber ?? null,
       itemId: r.item.id,
       itemTitle: r.item.title,
       itemType: r.item.type,
@@ -104,12 +114,14 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  const ratingEntries: ActivityEntry[] = ratingOnlyItems.map((r) => ({
+  const ratingEntries: ActivityEntry[] = ratingOnlyItems.map((r) => {
+    const u = profileMap.get(r.userId);
+    return {
     id: `rating-${r.userId}-${r.itemId}`,
-    userId: r.user.id,
-    userName: r.user.name || "Anonymous",
-    userAvatar: r.user.image || r.user.avatar || "",
-    userMemberNumber: r.user.memberNumber ?? null,
+    userId: r.userId,
+    userName: u?.name || "Anonymous",
+    userAvatar: u?.image || u?.avatar || "",
+    userMemberNumber: u?.memberNumber ?? null,
     itemId: r.item.id,
     itemTitle: r.item.title,
     itemType: r.item.type,
@@ -121,7 +133,8 @@ export async function GET(req: NextRequest) {
     text: "",
     helpfulCount: 0,
     createdAt: r.createdAt.toISOString(),
-  }));
+    };
+  });
 
   // Merge and sort
   const all = [...reviewEntries, ...ratingEntries];
