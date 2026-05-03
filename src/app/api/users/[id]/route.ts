@@ -15,18 +15,19 @@ export async function GET(
 
   const { id } = await params;
 
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true, name: true, username: true, bio: true, avatar: true, image: true,
-      isPrivate: true, createdAt: true, memberNumber: true,
-      _count: { select: { ratings: true, reviews: true, libraryEntries: true } },
-    },
-  });
+  // Read profile via the public_user_profiles view (the safe-fields
+  // projection of users — see scripts/migrate-create-public-user-profiles-view.ts).
+  // _count lives on the base User model and is fetched separately.
+  const user = await prisma.publicUserProfile.findUnique({ where: { id } });
 
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
+
+  const counts = await prisma.user.findUnique({
+    where: { id },
+    select: { _count: { select: { ratings: true, reviews: true, libraryEntries: true } } },
+  });
 
   // Check if this is the user's own profile
   const claims = await getClaims();
@@ -88,9 +89,9 @@ export async function GET(
       avatar: user.avatar || user.image || "",
       isPrivate: user.isPrivate,
       createdAt: user.createdAt,
-      ratingsCount: showLibrary ? user._count.ratings : 0,
-      reviewsCount: showLibrary ? user._count.reviews : 0,
-      trackedCount: showLibrary ? user._count.libraryEntries : 0,
+      ratingsCount: showLibrary ? (counts?._count.ratings ?? 0) : 0,
+      reviewsCount: showLibrary ? (counts?._count.reviews ?? 0) : 0,
+      trackedCount: showLibrary ? (counts?._count.libraryEntries ?? 0) : 0,
       memberNumber: user.memberNumber,
       followerCount,
       followingCount,
