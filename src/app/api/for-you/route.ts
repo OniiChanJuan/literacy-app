@@ -207,9 +207,75 @@ export async function GET(req: NextRequest) {
 
     // ─── Section-based paginated response ───
     if (section === "personalPicks") {
+      // Optional &type= filter from the For You filter banner. When present
+      // (even as ""), the response returns the v2 object shape:
+      //   { items, composition: { personal, popular }, filterType }
+      // When absent, the legacy Item[] shape is returned for backwards compat.
+      const typeParamRaw = searchParams.get("type");
+      const typeParam = typeParamRaw === null
+        ? undefined
+        : typeParamRaw.trim().toLowerCase() || null;
+      const filterActive = typeParam !== undefined && typeParam !== null;
+      const isAnimeFilter = typeParam === "anime";
+
+      // ── Filtered path: tier waterfall (personal → popular → empty) ───
+      if (filterActive) {
+        // For anime, filter by isAnime predicate (since anime items are
+        // stored as type=tv|movie with anime markers); for any other type,
+        // strict type match.
+        const matchesType = (it: any) => {
+          if (isAnimeFilter) {
+            // Inline check: type is tv|movie AND any anime marker is set.
+            // Cheaper than importing isAnime() here for one comparison.
+            const t = it.type;
+            if (t !== "tv" && t !== "movie") return false;
+            const ext: any = it.ext || {};
+            return !!(ext.mal || ext.anilist || it.malId || (it.genre || []).includes("Animation"));
+          }
+          return it.type === typeParam;
+        };
+
+        // ── Tier 1: taste-scored items of the requested type ─────────
+        // `scored` is already sorted by taste score desc. Just filter.
+        const tier1: any[] = [];
+        for (const s of scored) {
+          if (!matchesType(s.item)) continue;
+          tier1.push(s.item);
+          if (tier1.length >= limit) break;
+        }
+
+        // ── Tier 2: popular items of the requested type, excluding
+        // anything already in Tier 1. Sort the entire pool of that type
+        // by voteCount desc.
+        const tier1Ids = new Set(tier1.map((i) => i.id));
+        let tier2: any[] = [];
+        if (tier1.length < limit) {
+          tier2 = pool
+            .filter((c) => matchesType(c) && !tier1Ids.has(c.id))
+            .sort((a, b) => (b.voteCount ?? 0) - (a.voteCount ?? 0))
+            .slice(0, limit - tier1.length);
+        }
+
+        const merged = [...tier1, ...tier2];
+        const items = merged.map(mapItem);
+
+        const res = NextResponse.json({
+          items,
+          composition: {
+            personal: tier1.length,
+            popular: tier2.length,
+          },
+          filterType: typeParam,
+        });
+        res.headers.set("Cache-Control", "private, no-store");
+        res.headers.set("X-Has-More", "0");
+        return res;
+      }
+
+      // ── Unfiltered path: legacy diversity-capped behavior ───────────
       // Build quality pool of top 80 (max 25% per type), then shuffle for freshness
       const POOL_SIZE = 80;
-      const pool: any[] = [];
+      const ppool: any[] = [];
       const poolTypeCounts: Record<string, number> = {};
       const maxPerTypePool = Math.ceil(POOL_SIZE * 0.25);
 
@@ -217,12 +283,12 @@ export async function GET(req: NextRequest) {
         const tc = poolTypeCounts[s.item.type] || 0;
         if (tc >= maxPerTypePool) continue;
         poolTypeCounts[s.item.type] = tc + 1;
-        pool.push(s.item);
-        if (pool.length >= POOL_SIZE) break;
+        ppool.push(s.item);
+        if (ppool.length >= POOL_SIZE) break;
       }
 
       // Shuffle pool then pick `limit` items respecting type diversity (max 20% per type)
-      const shuffled = shuffleAndPick(pool, POOL_SIZE);
+      const shuffled = shuffleAndPick(ppool, POOL_SIZE);
       const picked: any[] = [];
       const pickedTypeCounts: Record<string, number> = {};
       const maxPerTypePick = Math.max(Math.ceil(limit * 0.20), 3);
