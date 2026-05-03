@@ -9,8 +9,11 @@ import { rateLimit } from "@/lib/validation";
  * POST /api/account
  *
  * Actions:
- *   - "delete-account" — verifies username, deletes the auth.users row
- *     (which cascades into public.users via the FK), then returns success.
+ *   - "delete-account" — verifies username, then performs the manual
+ *     teardown below: there is NO FK from public.users to auth.users,
+ *     so we can't rely on cascade. Order: deleteMany on each related
+ *     public-schema table → prisma.user.delete → admin.auth.admin
+ *     .deleteUser → sign out the current session.
  *
  * Password changes are NOT handled here anymore — they happen client-side
  * via supabase.auth.updateUser({ password }).

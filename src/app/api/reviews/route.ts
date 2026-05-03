@@ -48,7 +48,6 @@ export async function GET(req: NextRequest) {
     const allReviews = await prisma.review.findMany({
       where: { itemId },
       include: {
-        user: { select: { id: true, name: true, image: true, avatar: true, memberNumber: true } },
         ...(currentUserId
           ? { helpfulVotes: { where: { userId: currentUserId }, select: { userId: true, voteType: true } } }
           : {}),
@@ -56,8 +55,14 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "asc" }, // stable base order for tree building
     });
 
-    // Fetch ratings for all review authors
+    // Fetch ratings + author profiles for all review authors
     const userIds = [...new Set(allReviews.map((r) => r.userId))];
+    // Profile data goes through the safe-fields view rather than a base
+    // include — keeps the user read surface narrow.
+    const profiles = userIds.length > 0
+      ? await prisma.publicUserProfile.findMany({ where: { id: { in: userIds } } })
+      : [];
+    const profileMap = new Map(profiles.map((p) => [p.id, p]));
     const ratings = userIds.length > 0
       ? await prisma.rating.findMany({
           where: { itemId, userId: { in: userIds } },
@@ -68,6 +73,7 @@ export async function GET(req: NextRequest) {
     // Shape each review
     const shaped = allReviews.map((r) => {
       const rating = ratingMap.get(r.userId);
+      const u = profileMap.get(r.userId);
       const votes = (r as any).helpfulVotes as { userId: string; voteType: string }[] | undefined;
       const myVote = votes && votes.length > 0 ? votes[0].voteType : null; // "up" | "down" | null
       return {
@@ -75,9 +81,9 @@ export async function GET(req: NextRequest) {
         userId: r.userId,
         parentId: r.parentId,
         depth: r.depth,
-        userName: r.user.name || "Anonymous",
-        userAvatar: r.user.image || r.user.avatar || "",
-        memberNumber: (r.user as any).memberNumber ?? null,
+        userName: u?.name || "Anonymous",
+        userAvatar: u?.image || u?.avatar || "",
+        memberNumber: u?.memberNumber ?? null,
         score: rating?.score ?? 0,
         recommendTag: rating?.recommendTag ?? null,
         text: r.text,
@@ -227,9 +233,10 @@ export async function POST(req: NextRequest) {
         text: textResult.value,
         containsSpoilers: !!containsSpoilers,
       },
-      include: {
-        user: { select: { id: true, name: true, image: true, avatar: true, memberNumber: true } },
-      },
+    });
+    // Author profile via the safe-fields view.
+    const authorProfile = await prisma.publicUserProfile.findUnique({
+      where: { id: userId },
     });
 
     // Auto-add to library for top-level reviews
@@ -271,9 +278,9 @@ export async function POST(req: NextRequest) {
       userId: review.userId,
       parentId: review.parentId,
       depth: review.depth,
-      userName: review.user.name || "Anonymous",
-      userAvatar: review.user.image || review.user.avatar || "",
-      memberNumber: (review.user as any).memberNumber ?? null,
+      userName: authorProfile?.name || "Anonymous",
+      userAvatar: authorProfile?.image || authorProfile?.avatar || "",
+      memberNumber: authorProfile?.memberNumber ?? null,
       score: rating?.score ?? 0,
       recommendTag: rating?.recommendTag ?? null,
       text: review.text,

@@ -57,23 +57,22 @@ export async function PUT(
         containsSpoilers: containsSpoilers !== undefined ? !!containsSpoilers : review.containsSpoilers,
         updatedAt: new Date(),
       },
-      include: {
-        user: { select: { id: true, name: true, image: true, avatar: true } },
-      },
     });
-
-    // Get rating for response
-    const rating = await prisma.rating.findUnique({
-      where: { userId_itemId: { userId, itemId: review.itemId } },
-    });
+    // Author profile via the safe-fields view + rating in parallel.
+    const [authorProfile, rating] = await Promise.all([
+      prisma.publicUserProfile.findUnique({ where: { id: userId } }),
+      prisma.rating.findUnique({
+        where: { userId_itemId: { userId, itemId: review.itemId } },
+      }),
+    ]);
 
     return NextResponse.json({
       id: updated.id,
       userId: updated.userId,
       parentId: updated.parentId,
       depth: updated.depth,
-      userName: updated.user.name || "Anonymous",
-      userAvatar: updated.user.image || updated.user.avatar || "",
+      userName: authorProfile?.name || "Anonymous",
+      userAvatar: authorProfile?.image || authorProfile?.avatar || "",
       score: rating?.score ?? 0,
       recommendTag: rating?.recommendTag ?? null,
       text: updated.text,
