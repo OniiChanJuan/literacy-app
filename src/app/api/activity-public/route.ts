@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
+import { loadPrivacyFlags } from "@/lib/privacy";
 
 /**
  * GET /api/activity-public
@@ -98,13 +99,20 @@ export async function GET(req: NextRequest) {
       };
     };
 
-    // Privacy gates. Anon public feed — owner-exception not applicable here
-    // because the route has no authed-caller distinction (any caller is "other").
-    // is_private=true hides rating + library events but NOT review events
-    // (reviews are an intentional public act). Reviews are gated below by
-    // showActivityPublicly in commit 4.
+    // Privacy gates. Anon public feed — every caller is "other", so the
+    // owner-exception isn't applicable. The toggles compound:
+    //   - is_private=true                hides rating + library events
+    //                                    (reviews still surface; gated
+    //                                    by showActivityPublicly below)
+    //   - showRatingsPublicly=false      hides rating events
+    //   - showLibraryPublicly=false      hides library events  (commit 3)
+    //   - showActivityPublicly=false     hides ALL events incl. reviews
+    //                                    (commit 4)
+    const flagsMap = userIds.length > 0 ? await loadPrivacyFlags(userIds) : new Map();
     const isHiddenByPrivacy = (userId: string): boolean =>
       profileMap.get(userId)?.isPrivate === true;
+    const hidesRatings = (userId: string): boolean =>
+      isHiddenByPrivacy(userId) || flagsMap.get(userId)?.showRatingsPublicly === false;
 
     const combined: FeedEntry[] = [
       ...reviews.map((r): FeedEntry => ({
@@ -115,7 +123,7 @@ export async function GET(req: NextRequest) {
         reviewSnippet: r.text?.slice(0, 80) ?? "",
       })),
       ...ratings
-        .filter((r) => !isHiddenByPrivacy(r.userId))
+        .filter((r) => !hidesRatings(r.userId))
         .map((r): FeedEntry => ({
           kind: "rating",
           createdAt: r.createdAt.toISOString(),

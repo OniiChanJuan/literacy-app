@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import { loadPrivacyFlags } from "@/lib/privacy";
 
 // GET /api/activity — reviews + ratings from followed users
 // Query params: sort=recent|top (default: recent), offset=0, limit=20
@@ -63,22 +64,28 @@ export async function GET(req: NextRequest) {
     : [];
   const profileMap = new Map(profiles.map((p) => [p.id, p]));
 
-  // Privacy gate: followee with is_private=true contributes reviews but
-  // NOT rating events to the feed (ratings are passive consumption, hidden
-  // by is_private per the product decision). Reviews are gated below by
-  // showActivityPublicly in commit 4. Owner (claims.sub) sees their own
-  // events regardless — note this feed only shows followed users' events,
-  // never the caller's own.
+  // Privacy gates compound:
+  //   - is_private=true            hides rating events (passive consumption)
+  //                                — reviews still surface (gated below
+  //                                by showActivityPublicly in commit 4).
+  //   - showRatingsPublicly=false  hides rating events.
+  //   - showActivityPublicly=false hides ALL events incl. reviews (commit 4).
+  //
+  // Owner exception isn't applicable: this feed only shows followed users,
+  // never the caller's own activity.
+  const flagsMap = authorIds.length > 0 ? await loadPrivacyFlags(authorIds) : new Map();
   const isHiddenByPrivacy = (userId: string): boolean =>
     profileMap.get(userId)?.isPrivate === true;
+  const hidesRatings = (userId: string): boolean =>
+    isHiddenByPrivacy(userId) || flagsMap.get(userId)?.showRatingsPublicly === false;
 
   // Build lookup map for ratings by userId+itemId (for reviews needing score)
   const ratingMap = new Map(allRatings.map((r) => [`${r.userId}-${r.itemId}`, r]));
 
   // Rating-only: ratings with no corresponding review in our set, AND
-  // not from a private user.
+  // not from a user who hides ratings.
   const ratingOnlyItems = allRatings.filter(
-    (r) => !reviewedSet.has(`${r.userId}-${r.itemId}`) && !isHiddenByPrivacy(r.userId),
+    (r) => !reviewedSet.has(`${r.userId}-${r.itemId}`) && !hidesRatings(r.userId),
   );
 
   // Build unified activity list
@@ -94,7 +101,7 @@ export async function GET(req: NextRequest) {
     itemSlug: string | null;
     itemCover: string;
     itemYear: number;
-    score: number;
+    score: number | null;
     recommendTag: string | null;
     text: string;      // empty string = rating only
     helpfulCount: number;
@@ -104,6 +111,11 @@ export async function GET(req: NextRequest) {
   const reviewEntries: ActivityEntry[] = reviews.map((r) => {
     const rating = ratingMap.get(`${r.userId}-${r.itemId}`);
     const u = profileMap.get(r.userId);
+    // When the review author has showRatingsPublicly=false (or is_private),
+    // surface the review text but omit the paired score so the UI renders
+    // no star block. The review remains visible — it's an intentional
+    // public act per the privacy product decision.
+    const ratingHidden = hidesRatings(r.userId);
     return {
       id: `review-${r.id}`,
       userId: r.userId,
@@ -116,8 +128,8 @@ export async function GET(req: NextRequest) {
       itemSlug: (r.item as any).slug || null,
       itemCover: r.item.cover,
       itemYear: r.item.year,
-      score: rating?.score ?? 0,
-      recommendTag: rating?.recommendTag ?? null,
+      score: ratingHidden ? null : (rating?.score ?? 0),
+      recommendTag: ratingHidden ? null : (rating?.recommendTag ?? null),
       text: r.text,
       helpfulCount: r._count.helpfulVotes,
       createdAt: r.createdAt.toISOString(),

@@ -17,7 +17,7 @@ interface ReviewData {
   userName: string;
   userAvatar: string;
   memberNumber: number | null;
-  score: number;
+  score: number | null;
   recommendTag: string | null;
   text: string;
   containsSpoilers: boolean;
@@ -592,7 +592,7 @@ export default function CommunityReviews({ itemId, heroColor }: { itemId: number
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-              {myReview.score > 0 && (
+              {myReview.score !== null && myReview.score > 0 && (
                 <span style={{ color: "#f1c40f", fontSize: 12 }}>
                   {"★".repeat(myReview.score)}{"☆".repeat(5 - myReview.score)}
                 </span>
@@ -1558,7 +1558,10 @@ function ReviewCard({
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-          {review.score > 0 && (
+          {/* Score is null when the author has showRatingsPublicly=false
+              (or is_private) and the viewer isn't the author. No star
+              block is rendered in that case. */}
+          {review.score !== null && review.score > 0 && (
             <span style={{ color: "#f1c40f", fontSize: 12 }}>
               {"★".repeat(review.score)}{"☆".repeat(5 - review.score)}
             </span>

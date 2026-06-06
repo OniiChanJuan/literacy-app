@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import { loadPrivacyFlagsForUser } from "@/lib/privacy";
 
 // GET /api/users/[id] — get public profile + stats + top rated + library
 export async function GET(
@@ -32,7 +33,14 @@ export async function GET(
   // Check if this is the user's own profile
   const claims = await getClaims();
   const isOwn = claims?.sub === id;
-  const showLibrary = !user.isPrivate || isOwn;
+
+  // Privacy gates. Owner sees their own data regardless of toggle state.
+  // is_private acts as a master switch over the passive-consumption
+  // surfaces (ratings + library). The show* toggles narrow further
+  // even when is_private=false.
+  const flags = await loadPrivacyFlagsForUser(id);
+  const showRatings = isOwn || (!user.isPrivate && flags.showRatingsPublicly);
+  const showLibrary = isOwn || (!user.isPrivate && flags.showLibraryPublicly);
 
   // Follower/following counts + isFollowing
   const [followerCount, followingCount, followRecord] = await Promise.all([
@@ -47,7 +55,7 @@ export async function GET(
 
   // Top rated items — include item data
   let topRatings: any[] = [];
-  if (showLibrary) {
+  if (showRatings) {
     topRatings = await prisma.rating.findMany({
       where: { userId: id },
       orderBy: { score: "desc" },
@@ -89,8 +97,8 @@ export async function GET(
       avatar: user.avatar || user.image || "",
       isPrivate: user.isPrivate,
       createdAt: user.createdAt,
-      ratingsCount: showLibrary ? (counts?._count.ratings ?? 0) : 0,
-      reviewsCount: showLibrary ? (counts?._count.reviews ?? 0) : 0,
+      ratingsCount: showRatings ? (counts?._count.ratings ?? 0) : 0,
+      reviewsCount: counts?._count.reviews ?? 0, // reviews are always public
       trackedCount: showLibrary ? (counts?._count.libraryEntries ?? 0) : 0,
       memberNumber: user.memberNumber,
       followerCount,

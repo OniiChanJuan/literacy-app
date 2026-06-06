@@ -41,7 +41,7 @@ interface ActivityItem {
   itemSlug?: string | null;
   itemCover: string;
   itemYear: number;
-  score: number;
+  score: number | null;
   recommendTag: string | null;
   text: string;
   helpfulCount: number;
@@ -485,7 +485,7 @@ function ActivityCard({ item }: { item: ActivityItem }) {
             {timeAgo(item.createdAt)}
           </div>
         </div>
-        {item.score > 0 && <StarRow score={item.score} />}
+        {item.score !== null && item.score > 0 && <StarRow score={item.score} />}
       </div>
 
       {/* Review text or rating-only label */}

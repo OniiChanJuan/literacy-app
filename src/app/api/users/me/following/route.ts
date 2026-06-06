@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import { loadPrivacyFlags } from "@/lib/privacy";
 
 // GET /api/users/me/following — full list of users the current user follows
 export async function GET(req: NextRequest) {
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
 
   const followedIds = follows.map((f) => f.followedId);
 
-  const [profiles, counts, ratings] = await Promise.all([
+  const [profiles, counts, ratings, flags] = await Promise.all([
     prisma.publicUserProfile.findMany({ where: { id: { in: followedIds } } }),
     prisma.user.findMany({
       where: { id: { in: followedIds } },
@@ -41,6 +42,7 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
       take: 200 * followedIds.length, // headroom across all followed users
     }),
+    loadPrivacyFlags(followedIds),
   ]);
 
   const profileMap = new Map(profiles.map((p) => [p.id, p]));
@@ -56,17 +58,18 @@ export async function GET(req: NextRequest) {
   // Privacy gates:
   //   - Profile + name + avatar + member number always shown (the user
   //     accepted the follow — basic identity stays visible).
-  //   - is_private=true → hide rating-derived stats (topMediaTypes,
-  //     lastActiveAt, ratedCount) because ratings are passive consumption.
-  //     reviewCount stays visible (reviews are an intentional public act
-  //     per the privacy-toggles product decision).
+  //   - is_private=true OR showRatingsPublicly=false → hide rating-derived
+  //     stats (topMediaTypes, lastActiveAt, ratedCount). Ratings are passive
+  //     consumption; either gate suppresses them. reviewCount stays visible
+  //     (reviews are an intentional public act per the product decision).
   const users = follows
     .map((f) => {
       const p = profileMap.get(f.followedId);
       if (!p) return null;
       const c = countMap.get(f.followedId);
-      const isPrivate = p.isPrivate === true;
-      const userRatings = isPrivate ? [] : ratingsByUser.get(f.followedId) ?? [];
+      const f_ = flags.get(f.followedId);
+      const ratingsHidden = p.isPrivate === true || f_?.showRatingsPublicly === false;
+      const userRatings = ratingsHidden ? [] : ratingsByUser.get(f.followedId) ?? [];
 
       const typeCounts: Record<string, number> = {};
       let lastActiveAt: string | null = null;
@@ -84,7 +87,7 @@ export async function GET(req: NextRequest) {
         name: p.name || "Anonymous",
         avatar: p.avatar || p.image || "",
         memberNumber: p.memberNumber,
-        ratedCount: isPrivate ? 0 : (c?.ratings ?? 0),
+        ratedCount: ratingsHidden ? 0 : (c?.ratings ?? 0),
         reviewCount: c?.reviews ?? 0,
         topMediaTypes,
         lastActiveAt,

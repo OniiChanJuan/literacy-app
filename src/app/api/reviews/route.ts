@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { validateReviewText, rateLimit } from "@/lib/validation";
+import { loadPrivacyFlags } from "@/lib/privacy";
 
 /**
  * Build a review tree from a flat list.
@@ -55,27 +56,38 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "asc" }, // stable base order for tree building
     });
 
-    // Fetch ratings + author profiles for all review authors
-    const userIds = [...new Set(allReviews.map((r) => r.userId))];
+    // Fetch ratings + author profiles + privacy flags for all review authors.
     // Profile data goes through the safe-fields view rather than a base
     // include — keeps the user read surface narrow.
-    const profiles = userIds.length > 0
-      ? await prisma.publicUserProfile.findMany({ where: { id: { in: userIds } } })
-      : [];
-    const profileMap = new Map(profiles.map((p) => [p.id, p]));
-    const ratings = userIds.length > 0
-      ? await prisma.rating.findMany({
-          where: { itemId, userId: { in: userIds } },
-        })
-      : [];
-    const ratingMap = new Map(ratings.map((r) => [r.userId, r]));
+    const userIds = [...new Set(allReviews.map((r) => r.userId))];
+    const [profiles, ratings, flags] = await Promise.all([
+      userIds.length > 0
+        ? prisma.publicUserProfile.findMany({ where: { id: { in: userIds } } })
+        : Promise.resolve([] as any[]),
+      userIds.length > 0
+        ? prisma.rating.findMany({ where: { itemId, userId: { in: userIds } } })
+        : Promise.resolve([] as any[]),
+      loadPrivacyFlags(userIds),
+    ]);
+    const profileMap = new Map(profiles.map((p: any) => [p.id, p]));
+    const ratingMap = new Map(ratings.map((r: any) => [r.userId, r]));
 
-    // Shape each review
+    // Shape each review.
+    // Privacy: when the author has showRatingsPublicly=false (or is_private),
+    // the paired star score is suppressed. Review text + identity remain
+    // public — writing a review is an intentional public act. Owner sees
+    // their own score regardless.
     const shaped = allReviews.map((r) => {
-      const rating = ratingMap.get(r.userId);
-      const u = profileMap.get(r.userId);
+      const rating = ratingMap.get(r.userId) as { score: number; recommendTag: string | null } | undefined;
+      const u = profileMap.get(r.userId) as { name: string | null; image: string | null; avatar: string; memberNumber: number | null; isPrivate: boolean } | undefined;
       const votes = (r as any).helpfulVotes as { userId: string; voteType: string }[] | undefined;
       const myVote = votes && votes.length > 0 ? votes[0].voteType : null; // "up" | "down" | null
+      const isAuthor = currentUserId === r.userId;
+      const authorHidesRatings =
+        !isAuthor && (
+          u?.isPrivate === true ||
+          flags.get(r.userId)?.showRatingsPublicly === false
+        );
       return {
         id: r.id,
         userId: r.userId,
@@ -84,15 +96,15 @@ export async function GET(req: NextRequest) {
         userName: u?.name || "Anonymous",
         userAvatar: u?.image || u?.avatar || "",
         memberNumber: u?.memberNumber ?? null,
-        score: rating?.score ?? 0,
-        recommendTag: rating?.recommendTag ?? null,
+        score: authorHidesRatings ? null : (rating?.score ?? null),
+        recommendTag: authorHidesRatings ? null : (rating?.recommendTag ?? null),
         text: r.text,
         containsSpoilers: r.containsSpoilers,
         helpfulCount: r.helpfulCount,
         voteScore: r.voteScore,
         myVote,
         votedHelpful: myVote === "up", // backward compat
-        isAuthor: currentUserId === r.userId,
+        isAuthor,
         createdAt: r.createdAt.toISOString(),
         updatedAt: r.updatedAt.toISOString(),
         replies: [] as any[],

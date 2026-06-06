@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import { loadPrivacyFlags } from "@/lib/privacy";
 
 // GET /api/users/similar — find users with overlapping ratings
 export async function GET(req: NextRequest) {
@@ -37,23 +38,34 @@ export async function GET(req: NextRequest) {
     select: { userId: true, itemId: true, score: true },
   });
 
-  // Privacy gate — exclude rating rows belonging to is_private=true users
-  // from the similarity computation. Their ratings are passive consumption,
-  // hidden by is_private per the product decision, and surfacing them
-  // here would expose private-mode users via a side channel.
+  // Privacy gates — exclude rating rows belonging to:
+  //   - is_private=true users (passive-consumption surface hidden)
+  //   - users with showRatingsPublicly=false (per-flag opt-out)
+  // Both compound: matching as "similar taste" is a side channel that
+  // surfaces ratings indirectly, so either gate suppresses the user
+  // from the candidate set.
   const candidateIds = Array.from(new Set(otherRatings.map((r) => r.userId)));
-  const candidateProfiles = candidateIds.length > 0
-    ? await prisma.publicUserProfile.findMany({
-        where: { id: { in: candidateIds } },
-        select: { id: true, isPrivate: true },
-      })
-    : [];
-  const privateSet = new Set(candidateProfiles.filter((p) => p.isPrivate).map((p) => p.id));
+  const [candidateProfiles, candidateFlags] = await Promise.all([
+    candidateIds.length > 0
+      ? prisma.publicUserProfile.findMany({
+          where: { id: { in: candidateIds } },
+          select: { id: true, isPrivate: true },
+        })
+      : Promise.resolve([] as { id: string; isPrivate: boolean }[]),
+    loadPrivacyFlags(candidateIds),
+  ]);
+  const hiddenSet = new Set<string>();
+  for (const p of candidateProfiles) {
+    if (p.isPrivate) hiddenSet.add(p.id);
+  }
+  for (const [uid, f] of candidateFlags) {
+    if (!f.showRatingsPublicly) hiddenSet.add(uid);
+  }
 
   // Compute similarity: count of shared ratings + score closeness
   const userScores: Record<string, { shared: number; closeness: number }> = {};
   for (const r of otherRatings) {
-    if (privateSet.has(r.userId)) continue;
+    if (hiddenSet.has(r.userId)) continue;
     if (!userScores[r.userId]) userScores[r.userId] = { shared: 0, closeness: 0 };
     userScores[r.userId].shared++;
     const myScore = myScoreMap.get(r.itemId) ?? 0;
