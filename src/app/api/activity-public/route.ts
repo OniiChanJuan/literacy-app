@@ -113,6 +113,8 @@ export async function GET(req: NextRequest) {
       profileMap.get(userId)?.isPrivate === true;
     const hidesRatings = (userId: string): boolean =>
       isHiddenByPrivacy(userId) || flagsMap.get(userId)?.showRatingsPublicly === false;
+    const hidesLibrary = (userId: string): boolean =>
+      isHiddenByPrivacy(userId) || flagsMap.get(userId)?.showLibraryPublicly === false;
 
     const combined: FeedEntry[] = [
       ...reviews.map((r): FeedEntry => ({
@@ -132,7 +134,7 @@ export async function GET(req: NextRequest) {
           rating: r.score,
         })),
       ...library
-        .filter((l) => !isHiddenByPrivacy(l.userId))
+        .filter((l) => !hidesLibrary(l.userId))
         .map((l): FeedEntry => ({
           kind: "library",
           createdAt: (l.startedAt ?? new Date(0)).toISOString(),

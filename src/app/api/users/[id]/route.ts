@@ -40,6 +40,7 @@ export async function GET(
   // even when is_private=false.
   const flags = await loadPrivacyFlagsForUser(id);
   const showRatings = isOwn || (!user.isPrivate && flags.showRatingsPublicly);
+  // showLibraryPublicly already considered alongside is_private here.
   const showLibrary = isOwn || (!user.isPrivate && flags.showLibraryPublicly);
 
   // Follower/following counts + isFollowing
