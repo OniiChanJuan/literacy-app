@@ -196,6 +196,9 @@ function Skeleton() {
 function ConnectionCard({ connection, mode }: { connection: Connection; mode: SectionMode }) {
   const [vote, setVote] = useState<-1 | 0 | 1>(connection.userVote);
   const [submitting, setSubmitting] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [dismissing, setDismissing] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
 
   const submitVote = useCallback(async (next: -1 | 1) => {
     if (submitting) return;
@@ -218,7 +221,32 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
     }
   }, [connection.id, vote, submitting]);
 
+  const submitDismiss = useCallback(async () => {
+    if (dismissing || dismissed) return;
+    setDismissing(true);
+    // Optimistic fade-out — the card collapses immediately and won't
+    // reappear on next render thanks to the server-side exclusion.
+    setTimeout(() => setDismissed(true), 200);
+    fetch(`/api/cross-connections/${connection.id}/dismiss`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    }).catch(() => {});
+  }, [connection.id, dismissing, dismissed]);
+
   const items = [connection.sourceItem, ...connection.recommendedItems].filter(Boolean);
+
+  if (dismissed) {
+    return (
+      <div
+        aria-hidden
+        style={{
+          opacity: 0,
+          height: 0,
+          transition: "opacity 200ms, height 200ms",
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -228,11 +256,41 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         border: "1px solid rgba(255,255,255,0.04)",
         borderRadius: 10,
         padding: 18,
-        transition: "border-color 200ms",
+        transition: "border-color 200ms, opacity 200ms",
+        opacity: dismissing ? 0 : 1,
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(46,196,182,0.15)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(46,196,182,0.15)"; setHovered(true); }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; setHovered(false); }}
     >
+      {hovered && (
+        <button
+          onClick={submitDismiss}
+          aria-label="Dismiss this connection"
+          title="Not for me"
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            zIndex: 10,
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: "rgba(0,0,0,0.7)",
+            backdropFilter: "blur(4px)",
+            border: "0.5px solid rgba(255,255,255,0.15)",
+            color: "rgba(255,255,255,0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 13,
+            lineHeight: 1,
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          ×
+        </button>
+      )}
       {/* Per-card framing. Personalized mode maps exactly to the API's
           `ratings.score >= 4` filter, so "rated ... highly" is literal
           truth. Trending/discovery cards never claim a user signal —

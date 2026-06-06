@@ -43,6 +43,7 @@ model User {
   imports         Import[]
   tagSuggestions  UserTagSuggestion[]
   crossConnectionVotes CrossConnectionVote[]
+  connectionDismissals ConnectionDismissal[]
 
   @@map("users")
 }
@@ -494,12 +495,31 @@ model CrossConnection {
   qualityScore     Float    @default(1.0) @map("quality_score")
   createdAt        DateTime @default(now()) @map("created_at")
 
-  sourceItem Item                   @relation(fields: [sourceItemId], references: [id], onDelete: Cascade)
-  votes      CrossConnectionVote[]
+  sourceItem  Item                   @relation(fields: [sourceItemId], references: [id], onDelete: Cascade)
+  votes       CrossConnectionVote[]
+  dismissals  ConnectionDismissal[]
 
   @@index([sourceItemId])
   @@index([qualityScore])
   @@map("cross_connections")
+}
+
+/// One row per (user, connection) that the user dismissed from the
+/// Cross your shelf section. PK enforces idempotency so the −0.15
+/// dismiss delta only applies once per pair. Hidden connections are
+/// excluded from /api/cross-connections GET in code (Prisma bypasses
+/// RLS via the superuser pooler).
+model ConnectionDismissal {
+  userId       String   @db.Uuid @map("user_id")
+  connectionId Int      @map("connection_id")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  connection CrossConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, connectionId])
+  @@index([connectionId])
+  @@map("connection_dismissals")
 }
 
 /// One vote per user per connection. +1 upvote, -1 downvote.

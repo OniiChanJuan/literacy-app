@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import { SCORE_DELTAS } from "@/lib/connection-score";
 
 /**
  * POST /api/cross-connections/[id]/vote
  *
  * Body: { vote: 1 | -1 | 0 }
- *   1  → upvote    (qualityScore += 0.1, capped 2.0)
- *  -1  → downvote  (qualityScore -= 0.1, floored 0.0)
+ *   1  → upvote    (qualityScore += SCORE_DELTAS.voteUp, capped 2.0)
+ *  -1  → downvote  (qualityScore += SCORE_DELTAS.voteDown, floored 0.0)
  *   0  → clear existing vote (reverses whatever delta was applied)
  *
  * Idempotent: switching vote direction applies the net delta.
@@ -43,7 +44,9 @@ export async function POST(
       select: { vote: true },
     });
     const prev = existing?.vote ?? 0;
-    const delta = (next - prev) * 0.1; // net change in quality_score
+    // Net change. (next - prev) is in {-2,-1,0,1,2}; multiply by the
+    // per-step magnitude (voteUp == -voteDown so either works).
+    const delta = (next - prev) * SCORE_DELTAS.voteUp;
 
     if (next === 0) {
       await prisma.crossConnectionVote.deleteMany({

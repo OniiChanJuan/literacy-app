@@ -75,13 +75,22 @@ export async function GET(req: NextRequest) {
         .map((r) => r.itemId);
     }
 
-    const userVotes = userId
-      ? await prisma.crossConnectionVote.findMany({
-          where: { userId },
-          select: { connectionId: true, vote: true },
-        })
-      : [];
+    const [userVotes, userDismissals] = await Promise.all([
+      userId
+        ? prisma.crossConnectionVote.findMany({
+            where: { userId },
+            select: { connectionId: true, vote: true },
+          })
+        : Promise.resolve([] as { connectionId: number; vote: number }[]),
+      userId
+        ? prisma.connectionDismissal.findMany({
+            where: { userId },
+            select: { connectionId: true },
+          })
+        : Promise.resolve([] as { connectionId: number }[]),
+    ]);
     const voteMap = new Map<number, number>(userVotes.map((v) => [v.connectionId, v.vote]));
+    const dismissedConnectionIds = new Set<number>(userDismissals.map((d) => d.connectionId));
 
     // ── Attempt personalized selection ───────────────────────────────
     let personalized: any[] = [];
@@ -90,6 +99,9 @@ export async function GET(req: NextRequest) {
         where: {
           sourceItemId: { in: ratedHighlyIds },
           qualityScore: { gte: 0.3 },
+          ...(dismissedConnectionIds.size > 0
+            ? { id: { notIn: Array.from(dismissedConnectionIds) } }
+            : {}),
         },
         orderBy: [{ qualityScore: "desc" }, { id: "asc" }],
         include: {
@@ -134,13 +146,13 @@ export async function GET(req: NextRequest) {
     } else if (totalRatings === 0) {
       // Cold-start: brand-new signed-out or never-rated user.
       mode = "discovery";
-      chosen = await fetchEditorialFill(TARGET, "random");
+      chosen = await fetchEditorialFill(TARGET, "random", dismissedConnectionIds);
     } else {
       // Sparse: user has ratings but fewer than MIN_PERSONALIZED_SOURCES
       // rated-highly items map to seed-connection sources. Offer honest
       // fallback instead of padding lies into personalized.
       mode = "trending";
-      chosen = await fetchEditorialFill(TARGET, "top_quality");
+      chosen = await fetchEditorialFill(TARGET, "top_quality", dismissedConnectionIds);
     }
 
     // ── Hydrate recommended items with current cover + slug ─────────
@@ -192,7 +204,11 @@ export async function GET(req: NextRequest) {
       });
 
     const res = NextResponse.json({ mode, connections: out });
-    res.headers.set("Cache-Control", "private, max-age=60");
+    // Per-user state (userVote, dismissed filter) makes this response
+    // unsafe to cache even for 60s — a fresh vote or dismiss must be
+    // reflected on the next render. Was previously max-age=60 which
+    // caused stale userVote/qualityScore for 60s after every action.
+    res.headers.set("Cache-Control", "no-store");
     return res;
   } catch (err) {
     console.error("cross-connections error:", err);
@@ -208,20 +224,41 @@ export async function GET(req: NextRequest) {
 async function fetchEditorialFill(
   limit: number,
   order: "top_quality" | "random",
+  excludeIds: Set<number> = new Set(),
 ): Promise<any[]> {
   const orderClause = order === "top_quality"
     ? "ORDER BY quality_score DESC, id ASC"
     : "ORDER BY RANDOM()";
-  return prisma.$queryRawUnsafe<any[]>(`
-    SELECT id,
-           source_item_id AS "sourceItemId",
-           recommended_items AS "recommendedItems",
-           reason,
-           theme_tags AS "themeTags",
-           quality_score AS "qualityScore"
-    FROM cross_connections
-    WHERE quality_score >= 0.3
-    ${orderClause}
-    LIMIT ${limit}
-  `);
+  if (excludeIds.size === 0) {
+    return prisma.$queryRawUnsafe<any[]>(`
+      SELECT id,
+             source_item_id AS "sourceItemId",
+             recommended_items AS "recommendedItems",
+             reason,
+             theme_tags AS "themeTags",
+             quality_score AS "qualityScore"
+      FROM cross_connections
+      WHERE quality_score >= 0.3
+      ${orderClause}
+      LIMIT ${limit}
+    `);
+  }
+  // Parameterize the NOT IN list via Prisma.sql to avoid injection.
+  const excludeArr = Array.from(excludeIds);
+  return prisma.$queryRawUnsafe<any[]>(
+    `
+      SELECT id,
+             source_item_id AS "sourceItemId",
+             recommended_items AS "recommendedItems",
+             reason,
+             theme_tags AS "themeTags",
+             quality_score AS "qualityScore"
+      FROM cross_connections
+      WHERE quality_score >= 0.3
+        AND id <> ALL($1::int[])
+      ${orderClause}
+      LIMIT ${limit}
+    `,
+    excludeArr,
+  );
 }
