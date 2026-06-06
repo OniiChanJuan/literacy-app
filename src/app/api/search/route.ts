@@ -8,6 +8,13 @@ import { searchSpotify, spotifyItemId } from "@/lib/spotify";
 import { searchJikanManga, searchJikanAnime, jikanItemId } from "@/lib/jikan";
 import { searchComicVine, cvItemId } from "@/lib/comicvine";
 
+// Per-media-type display cap. The grouped response surfaces up to
+// this many results per type; the pre-cap total is also sent so the
+// UI can render an honest "Showing N of M" treatment when truncation
+// happens. 20 is a modest bump from the original 12, enough headroom
+// for popular queries while keeping the section compact.
+const MAX_RESULTS_PER_TYPE = 20;
+
 // ── Title match scoring ─────────────────────────────────────────────────
 function titleMatchScore(title: string, query: string): number {
   const t = title.toLowerCase();
@@ -327,6 +334,8 @@ export async function GET(req: NextRequest) {
   const bestMatch = all[0] || null;
 
   const groups: Record<string, any[]> = {};
+  // Per-type pre-cap totals so the UI can render "Showing N of M".
+  const groupTotals: Record<string, number> = {};
   const typeLabels: Record<string, string> = {
     movie: "Movies", tv: "TV Shows", book: "Books", manga: "Manga",
     comic: "Comics", game: "Games", music: "Music", podcast: "Podcasts",
@@ -335,18 +344,23 @@ export async function GET(req: NextRequest) {
   for (const item of all) {
     const type = item.type || "other";
     if (!groups[type]) groups[type] = [];
-    if (groups[type].length < 12) {
+    groupTotals[type] = (groupTotals[type] || 0) + 1;
+    if (groups[type].length < MAX_RESULTS_PER_TYPE) {
       groups[type].push(item);
     }
   }
 
   // Remove empty groups and sort by result count
-  const sortedGroups: Record<string, { label: string; items: any[] }> = {};
+  const sortedGroups: Record<string, { label: string; items: any[]; totalResults: number }> = {};
   Object.entries(groups)
     .filter(([, items]) => items.length > 0)
     .sort(([, a], [, b]) => b.length - a.length)
     .forEach(([type, items]) => {
-      sortedGroups[type] = { label: typeLabels[type] || type, items };
+      sortedGroups[type] = {
+        label: typeLabels[type] || type,
+        items,
+        totalResults: groupTotals[type] ?? items.length,
+      };
     });
 
   // ── Creator match detection ──────────────────────────────────────────

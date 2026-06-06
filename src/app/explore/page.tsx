@@ -384,18 +384,25 @@ function ExploreContent() {
             )}
 
             {/* Type-grouped results */}
-            {Object.entries(groups).map(([type, group]: [string, any]) => (
-              <div key={type} style={{ marginBottom: 16 }}>
-                <ScrollRow
-                  label={group.label}
-                  sub={`${group.items.length} result${group.items.length !== 1 ? "s" : ""}`}
-                >
-                  {group.items.map((item: any) => (
-                    <Card key={`${item.source}-${item.id}`} item={item} routeId={item.routeId} />
-                  ))}
-                </ScrollRow>
-              </div>
-            ))}
+            {Object.entries(groups).map(([type, group]: [string, any]) => {
+              // When the per-type cap truncated the available matches,
+              // surface honest "Showing X of Y" copy. Otherwise the
+              // simple "N results" treatment.
+              const shown = group.items.length;
+              const total = typeof group.totalResults === "number" ? group.totalResults : shown;
+              const sub = total > shown
+                ? `Showing ${shown} of ${total} results`
+                : `${shown} result${shown !== 1 ? "s" : ""}`;
+              return (
+                <div key={type} style={{ marginBottom: 16 }}>
+                  <ScrollRow label={group.label} sub={sub}>
+                    {group.items.map((item: any) => (
+                      <Card key={`${item.source}-${item.id}`} item={item} routeId={item.routeId} />
+                    ))}
+                  </ScrollRow>
+                </div>
+              );
+            })}
 
             {!hasResults && !searching && (
               <div style={{ textAlign: "center", padding: "40px 20px" }}>
