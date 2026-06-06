@@ -94,12 +94,24 @@ export async function searchComicVine(query: string): Promise<CVSearchResult[]> 
 
   if (!data?.results) return [];
 
+  // Comic Vine doesn't expose any user-rating / vote-count signal we
+  // could surface as popularityScore. We use count_of_issues as a weak
+  // proxy — long-running series tend to be more established / popular
+  // than one-shots — but this is genuinely just better than the 0
+  // signal that would otherwise dominate. Worth replacing with a real
+  // signal whenever Comic Vine exposes one.
   return data.results
     .filter((v) => v.image?.original_url || v.image?.medium_url)
-    .map((v) => ({
-      ...mapVolumeToItem(v),
-      cvId: v.id,
-    }));
+    .map((v) => {
+      const base = mapVolumeToItem(v);
+      const issueCount = v.count_of_issues ?? 0;
+      return {
+        ...base,
+        cvId: v.id,
+        voteCount: 0,                      // no vote data available
+        popularityScore: issueCount,       // weak proxy via count_of_issues
+      };
+    });
 }
 
 /** Fetch full Comic Vine volume details */

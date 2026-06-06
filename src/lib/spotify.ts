@@ -126,6 +126,7 @@ interface SpotifyAlbum {
   images: SpotifyImage[];
   album_type: string;
   label?: string;
+  popularity?: number;       // 0-100 — returned on /albums but not always on /search results
 }
 
 interface SpotifyShow {
@@ -135,6 +136,7 @@ interface SpotifyShow {
   description: string;
   total_episodes: number;
   images: SpotifyImage[];
+  popularity?: number;       // 0-100 — sometimes populated on /search results
 }
 
 interface SpotifyArtist {
@@ -159,21 +161,35 @@ export async function searchSpotify(query: string): Promise<SpotifySearchResult[
 
   const results: SpotifySearchResult[] = [];
 
-  // Albums
+  // Albums. Search path enriches with the Spotify popularity index
+  // (0-100) when present. The shared mapAlbumToItem is reused by
+  // catalog-ingestion code paths so we don't touch it; popularity is
+  // glued on here only on the search response. ext.spotify_popularity
+  // is set as a 0-10 scaled signal for computeSearchRank.
   for (const album of (data.albums?.items || [])) {
+    const base = mapAlbumToItem(album, []);
+    const pop = typeof album.popularity === "number" ? album.popularity : 0;
     results.push({
-      ...mapAlbumToItem(album, []),
+      ...base,
       spotifyId: album.id,
       spotifyType: "album",
+      voteCount: 0,                                   // Spotify doesn't expose vote count
+      popularityScore: pop,
+      ext: pop > 0 ? { ...base.ext, spotify_popularity: pop / 10 } : base.ext,
     });
   }
 
-  // Podcasts
+  // Podcasts — same shape as albums above.
   for (const show of (data.shows?.items || [])) {
+    const base = mapShowToItem(show);
+    const pop = typeof show.popularity === "number" ? show.popularity : 0;
     results.push({
-      ...mapShowToItem(show),
+      ...base,
       spotifyId: show.id,
       spotifyType: "show",
+      voteCount: 0,
+      popularityScore: pop,
+      ext: pop > 0 ? { ...base.ext, spotify_popularity: pop / 10 } : base.ext,
     });
   }
 

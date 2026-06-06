@@ -41,6 +41,7 @@ export interface TmdbSearchResult {
   genre_ids: number[];
   vote_average: number;
   vote_count: number;
+  popularity?: number;       // TMDB's own popularity index (numeric, no fixed scale)
   media_type?: string;
   origin_country?: string[]; // tv only
 }
@@ -101,7 +102,11 @@ export async function searchTmdbByPerson(query: string): Promise<Item[]> {
     const year = parseInt((isMovie ? c.release_date : c.first_air_date)?.split("-")[0] || "0");
     const poster = c.poster_path ? `${IMG}/w500${c.poster_path}` : "";
     const ext: Partial<Record<ExternalSource, number>> = {};
-    if (c.vote_average > 0) ext.imdb = Math.round(c.vote_average * 10) / 10;
+    if (c.vote_average > 0) {
+      const rounded = Math.round(c.vote_average * 10) / 10;
+      ext.imdb = rounded;
+      ext.tmdb = rounded;
+    }
 
     results.push({
       id: c.id,
@@ -117,6 +122,8 @@ export async function searchTmdbByPerson(query: string): Promise<Item[]> {
       platforms: [],
       ext,
       totalEp: isMovie ? 1 : 0,
+      voteCount: c.vote_count ?? 0,
+      popularityScore: typeof c.popularity === "number" ? c.popularity : 0,
     } as Item);
   }
 
@@ -134,7 +141,11 @@ export async function searchTmdbByPerson(query: string): Promise<Item[]> {
       const year = parseInt((isMovie ? c.release_date : c.first_air_date)?.split("-")[0] || "0");
       const poster = c.poster_path ? `${IMG}/w500${c.poster_path}` : "";
       const ext: Partial<Record<ExternalSource, number>> = {};
-      if (c.vote_average > 0) ext.imdb = Math.round(c.vote_average * 10) / 10;
+      if (c.vote_average > 0) {
+        const rounded = Math.round(c.vote_average * 10) / 10;
+        ext.imdb = rounded;
+        ext.tmdb = rounded;
+      }
 
       results.push({
         id: c.id,
@@ -150,6 +161,8 @@ export async function searchTmdbByPerson(query: string): Promise<Item[]> {
         platforms: [],
         ext,
         totalEp: isMovie ? 1 : 0,
+        voteCount: c.vote_count ?? 0,
+        popularityScore: typeof c.popularity === "number" ? c.popularity : 0,
       } as Item);
 
       if (results.length >= 20) break;
@@ -238,8 +251,16 @@ function mapSearchResult(r: TmdbSearchResult): Item {
   const poster = r.poster_path ? `${IMG}/w500${r.poster_path}` : "";
   const genres = r.genre_ids.map((id) => TMDB_GENRES[id]).filter(Boolean);
 
+  // ext.tmdb is set in addition to the legacy ext.imdb so search-time
+  // computeSearchRank has a 0-10 quality signal it recognizes (it picks
+  // max(ext) / 10). Catalog ingestion code paths go through different
+  // mappers and aren't affected.
   const ext: Partial<Record<ExternalSource, number>> = {};
-  if (r.vote_average > 0) ext.imdb = Math.round(r.vote_average * 10) / 10;
+  if (r.vote_average > 0) {
+    const rounded = Math.round(r.vote_average * 10) / 10;
+    ext.imdb = rounded;
+    ext.tmdb = rounded;
+  }
 
   return {
     id: r.id,
@@ -255,6 +276,8 @@ function mapSearchResult(r: TmdbSearchResult): Item {
     platforms: [],
     ext,
     totalEp: isMovie ? 1 : 0,
+    voteCount: r.vote_count ?? 0,
+    popularityScore: typeof r.popularity === "number" ? r.popularity : 0,
   };
 }
 

@@ -149,7 +149,22 @@ export async function searchIgdb(query: string): Promise<Item[]> {
     `search "${query.replace(/"/g, "")}"; ${SEARCH_FIELDS} limit 15;`
   ) as IgdbGame[];
 
-  return results.map(mapGameToItem);
+  // Search path enriches with popularity signals that the shared
+  // mapGameToItem doesn't set (it's also used by getIgdbDetails for
+  // catalog ingestion, which we leave untouched).
+  return results.map((g) => {
+    const base = mapGameToItem(g);
+    const ratingCount = g.total_rating_count ?? 0;
+    const totalRating = g.total_rating;
+    return {
+      ...base,
+      voteCount: ratingCount,
+      popularityScore: ratingCount,
+      ext: typeof totalRating === "number" && totalRating > 0
+        ? { ...base.ext, igdb: Math.min(totalRating / 10, 10) }
+        : base.ext,
+    };
+  });
 }
 
 /** Fetch full IGDB game details by ID, including Steam review score */

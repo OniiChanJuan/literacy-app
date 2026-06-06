@@ -93,6 +93,34 @@ export interface GoogleBookSearchResult extends Item {
   volumeId: string;
 }
 
+/**
+ * Inject the popularity signals that mapVolumeToItem doesn't set,
+ * applied only on search-result paths so catalog ingestion via
+ * getGoogleBookDetails stays untouched.
+ *
+ *   voteCount         = ratingsCount     (Google Books user-rating count)
+ *   popularityScore   = ratingsCount     (highest-volume books rank up)
+ *   ext.google_books  = averageRating × 2 (rescaled to the 0-10 convention
+ *                                          computeSearchRank assumes)
+ *
+ * If averageRating is missing, leave ext.google_books at whatever the
+ * shared mapper produced (typically absent) — don't write garbage.
+ */
+function enrichSearchResult(v: GoogleBookVolume): GoogleBookSearchResult {
+  const item = mapVolumeToItem(v);
+  const ratingsCount = v.volumeInfo.ratingsCount ?? 0;
+  const avgRating = v.volumeInfo.averageRating;
+  return {
+    ...item,
+    volumeId: v.id,
+    voteCount: ratingsCount,
+    popularityScore: ratingsCount,
+    ext: typeof avgRating === "number" && avgRating > 0
+      ? { ...item.ext, google_books: Math.min(avgRating * 2, 10) }
+      : item.ext,
+  };
+}
+
 /** Search Google Books */
 export async function searchGoogleBooks(query: string): Promise<GoogleBookSearchResult[]> {
   const res = await fetch(
@@ -107,10 +135,7 @@ export async function searchGoogleBooks(query: string): Promise<GoogleBookSearch
     return !title.includes("movie tie-in") && !title.includes("study guide") && !title.includes("spark notes");
   });
 
-  return filtered.map((v: GoogleBookVolume) => ({
-    ...mapVolumeToItem(v),
-    volumeId: v.id,
-  }));
+  return filtered.map(enrichSearchResult);
 }
 
 /** Search Google Books by author name using inauthor: qualifier */
@@ -126,10 +151,7 @@ export async function searchGoogleBooksByAuthor(authorName: string): Promise<Goo
     return !title.includes("movie tie-in") && !title.includes("study guide") && !title.includes("spark notes");
   });
 
-  return filtered.map((v: GoogleBookVolume) => ({
-    ...mapVolumeToItem(v),
-    volumeId: v.id,
-  }));
+  return filtered.map(enrichSearchResult);
 }
 
 /** Fetch a single Google Books volume by ID */

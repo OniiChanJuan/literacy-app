@@ -38,6 +38,14 @@ export interface Item {
   ext: Partial<Record<ExternalSource, number>>;
   totalEp: number;
   voteCount?: number;
+  /**
+   * Aggregate popularity signal used by computeSearchRank when reranking
+   * mixed local + external results. Populated by external API search
+   * wrappers (TMDB popularity, Google Books ratingsCount, etc.) so the
+   * search re-rank isn't flat across externally-sourced items. The
+   * local DB column popularity_score serves the same role.
+   */
+  popularityScore?: number;
   tmdbId?: number;
   malId?: number | null;
   slug?: string | null;

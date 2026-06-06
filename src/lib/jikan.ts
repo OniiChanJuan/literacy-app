@@ -59,6 +59,7 @@ interface JikanManga {
   genres?: { name: string }[];
   demographics?: { name: string }[];
   score?: number;
+  scored_by?: number;        // MAL "scored by" count — popularity signal
   status?: string;
   synopsis?: string;
 }
@@ -74,6 +75,7 @@ interface JikanAnime {
   genres?: { name: string }[];
   demographics?: { name: string }[];
   score?: number;
+  scored_by?: number;        // MAL "scored by" count — popularity signal
   status?: string;
   synopsis?: string;
   type?: string;
@@ -92,10 +94,16 @@ export async function searchJikanManga(query: string): Promise<JikanSearchResult
   const data = await jikanFetch(`/manga?q=${encodeURIComponent(query)}&limit=10&sfw=true`) as { data: JikanManga[] } | null;
   if (!data?.data) return [];
 
+  // Search path enriches with MAL popularity signals (scored_by =
+  // number of users who scored the item, used here as both voteCount
+  // and popularityScore). mapMangaToItem stays untouched because it's
+  // shared with the catalog-ingestion path getJikanMangaDetails.
   return data.data.map((m) => ({
     ...mapMangaToItem(m),
     malId: m.mal_id,
     jikanType: "manga" as const,
+    voteCount: m.scored_by ?? 0,
+    popularityScore: m.scored_by ?? 0,
   }));
 }
 
@@ -108,6 +116,8 @@ export async function searchJikanAnime(query: string): Promise<JikanSearchResult
     ...mapAnimeToItem(a),
     malId: a.mal_id,
     jikanType: "anime" as const,
+    voteCount: a.scored_by ?? 0,
+    popularityScore: a.scored_by ?? 0,
   }));
 }
 
