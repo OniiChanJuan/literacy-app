@@ -111,19 +111,31 @@ export async function GET(req: NextRequest) {
     const flagsMap = userIds.length > 0 ? await loadPrivacyFlags(userIds) : new Map();
     const isHiddenByPrivacy = (userId: string): boolean =>
       profileMap.get(userId)?.isPrivate === true;
+    // showActivityPublicly is the master switch — when false, EVERY
+    // event type (including reviews) is suppressed from the feed.
+    // Note: reviews remain visible on the item page itself via
+    // /api/reviews — only the activity-feed surface is suppressed.
+    const hidesActivity = (userId: string): boolean =>
+      flagsMap.get(userId)?.showActivityPublicly === false;
     const hidesRatings = (userId: string): boolean =>
-      isHiddenByPrivacy(userId) || flagsMap.get(userId)?.showRatingsPublicly === false;
+      isHiddenByPrivacy(userId) ||
+      flagsMap.get(userId)?.showRatingsPublicly === false ||
+      hidesActivity(userId);
     const hidesLibrary = (userId: string): boolean =>
-      isHiddenByPrivacy(userId) || flagsMap.get(userId)?.showLibraryPublicly === false;
+      isHiddenByPrivacy(userId) ||
+      flagsMap.get(userId)?.showLibraryPublicly === false ||
+      hidesActivity(userId);
 
     const combined: FeedEntry[] = [
-      ...reviews.map((r): FeedEntry => ({
-        kind: "review",
-        createdAt: r.createdAt.toISOString(),
-        user: userOrFallback(r.userId),
-        item: { ...r.item, genre: r.item.genre ?? [] },
-        reviewSnippet: r.text?.slice(0, 80) ?? "",
-      })),
+      ...reviews
+        .filter((r) => !hidesActivity(r.userId))
+        .map((r): FeedEntry => ({
+          kind: "review",
+          createdAt: r.createdAt.toISOString(),
+          user: userOrFallback(r.userId),
+          item: { ...r.item, genre: r.item.genre ?? [] },
+          reviewSnippet: r.text?.slice(0, 80) ?? "",
+        })),
       ...ratings
         .filter((r) => !hidesRatings(r.userId))
         .map((r): FeedEntry => ({

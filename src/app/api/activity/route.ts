@@ -76,8 +76,15 @@ export async function GET(req: NextRequest) {
   const flagsMap = authorIds.length > 0 ? await loadPrivacyFlags(authorIds) : new Map();
   const isHiddenByPrivacy = (userId: string): boolean =>
     profileMap.get(userId)?.isPrivate === true;
+  // Master switch: showActivityPublicly=false suppresses ALL events
+  // (incl. reviews) from feeds. Reviews remain visible on item pages
+  // via /api/reviews, just not in activity-feed surfaces.
+  const hidesActivity = (userId: string): boolean =>
+    flagsMap.get(userId)?.showActivityPublicly === false;
   const hidesRatings = (userId: string): boolean =>
-    isHiddenByPrivacy(userId) || flagsMap.get(userId)?.showRatingsPublicly === false;
+    isHiddenByPrivacy(userId) ||
+    flagsMap.get(userId)?.showRatingsPublicly === false ||
+    hidesActivity(userId);
 
   // Build lookup map for ratings by userId+itemId (for reviews needing score)
   const ratingMap = new Map(allRatings.map((r) => [`${r.userId}-${r.itemId}`, r]));
@@ -108,7 +115,9 @@ export async function GET(req: NextRequest) {
     createdAt: string;
   };
 
-  const reviewEntries: ActivityEntry[] = reviews.map((r) => {
+  const reviewEntries: ActivityEntry[] = reviews
+    .filter((r) => !hidesActivity(r.userId))
+    .map((r) => {
     const rating = ratingMap.get(`${r.userId}-${r.itemId}`);
     const u = profileMap.get(r.userId);
     // When the review author has showRatingsPublicly=false (or is_private),
