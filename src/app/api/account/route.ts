@@ -9,11 +9,18 @@ import { rateLimit } from "@/lib/validation";
  * POST /api/account
  *
  * Actions:
- *   - "delete-account" — verifies username, then performs the manual
- *     teardown below: there is NO FK from public.users to auth.users,
- *     so we can't rely on cascade. Order: deleteMany on each related
+ *   - "delete-account" — verifies the caller's email matches the
+ *     account on record, then performs the manual teardown below:
+ *     there is NO FK from public.users to auth.users, so we can't
+ *     rely on cascade. Order: deleteMany on each related
  *     public-schema table → prisma.user.delete → admin.auth.admin
  *     .deleteUser → sign out the current session.
+ *
+ *     Email is used as the confirmation token (not username) because
+ *     username is nullable on users — anyone who signed up via
+ *     email/password and skipped picking a username would otherwise be
+ *     locked out of account deletion. Email is the canonical auth
+ *     identity and is always present.
  *
  * Password changes are NOT handled here anymore — they happen client-side
  * via supabase.auth.updateUser({ password }).
@@ -26,22 +33,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Too many attempts" }, { status: 429 });
   }
 
-  let body: { action?: string; confirmUsername?: string };
+  let body: { action?: string; confirmEmail?: string };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid request" }, { status: 400 }); }
 
   const { action } = body;
 
   if (action === "delete-account") {
-    const { confirmUsername } = body;
+    const { confirmEmail } = body;
 
     const user = await prisma.user.findUnique({
       where: { id: claims.sub },
-      select: { username: true },
+      select: { email: true },
     });
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    if (confirmUsername !== user.username) {
-      return NextResponse.json({ error: "Username doesn't match" }, { status: 400 });
+    const provided = (confirmEmail ?? "").toLowerCase().trim();
+    const expected = (user.email ?? "").toLowerCase().trim();
+    if (!provided || provided !== expected) {
+      return NextResponse.json({ error: "Email doesn't match" }, { status: 400 });
     }
 
     // Hard delete public-schema rows. Cascade FKs handle the rest.

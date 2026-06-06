@@ -45,7 +45,7 @@ export default function SettingsPage() {
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
-  const [deleteUsername, setDeleteUsername] = useState("");
+  const [deleteEmail, setDeleteEmail] = useState("");
   const [deletePw, setDeletePw] = useState("");
   const [showDelete, setShowDelete] = useState(false);
 
@@ -200,7 +200,7 @@ export default function SettingsPage() {
     const res = await fetch("/api/account", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "delete-account", confirmUsername: deleteUsername, password: deletePw }),
+      body: JSON.stringify({ action: "delete-account", confirmEmail: deleteEmail, password: deletePw }),
     });
     if (res.ok) { signOut({ callbackUrl: "/" }); }
     else { const d = await res.json(); setError(d.error || "Failed"); }
@@ -462,9 +462,15 @@ export default function SettingsPage() {
                     </p>
                     <div style={{ marginBottom: 10 }}>
                       <label style={{ display: "block", fontSize: 11, color: "var(--text-faint)", marginBottom: 4 }}>
-                        Type your username <strong>{originalUsername}</strong> to confirm
+                        Type your email <strong>{email}</strong> to confirm
                       </label>
-                      <input value={deleteUsername} onChange={(e) => setDeleteUsername(e.target.value)} style={inputStyle} />
+                      <input
+                        type="email"
+                        autoComplete="email"
+                        value={deleteEmail}
+                        onChange={(e) => setDeleteEmail(e.target.value)}
+                        style={inputStyle}
+                      />
                     </div>
                     {hasPassword && (
                       <div style={{ marginBottom: 10 }}>
@@ -472,18 +478,25 @@ export default function SettingsPage() {
                         <input type="password" value={deletePw} onChange={(e) => setDeletePw(e.target.value)} style={inputStyle} />
                       </div>
                     )}
-                    <button
-                      onClick={deleteAccount}
-                      disabled={saving || deleteUsername !== originalUsername}
-                      style={{
-                        padding: "8px 18px", borderRadius: 8, border: "none",
-                        background: deleteUsername === originalUsername ? "#E84855" : "rgba(255,255,255,0.06)",
-                        color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",
-                        opacity: deleteUsername === originalUsername ? 1 : 0.4,
-                      }}
-                    >
-                      Delete permanently
-                    </button>
+                    {(() => {
+                      const emailMatches =
+                        !!deleteEmail.trim() &&
+                        deleteEmail.toLowerCase().trim() === (email || "").toLowerCase().trim();
+                      return (
+                        <button
+                          onClick={deleteAccount}
+                          disabled={saving || !emailMatches}
+                          style={{
+                            padding: "8px 18px", borderRadius: 8, border: "none",
+                            background: emailMatches ? "#E84855" : "rgba(255,255,255,0.06)",
+                            color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",
+                            opacity: emailMatches ? 1 : 0.4,
+                          }}
+                        >
+                          Delete permanently
+                        </button>
+                      );
+                    })()}
                   </div>
                 )}
               </div>
