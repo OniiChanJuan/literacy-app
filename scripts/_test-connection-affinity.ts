@@ -11,12 +11,14 @@ import {
   computeTagMatch,
   computeSourceAffinity,
   buildHighRatedTagBag,
+  selectPersonalizedSlate,
   AFFINITY_NEUTRAL,
   AFFINITY_MIN,
   AFFINITY_MAX,
   type AffinityRecItem,
   type AffinityConnection,
   type AffinityUser,
+  type PersonalizedCandidate,
 } from "../src/lib/connection-affinity";
 import { neutralDimensions, type TasteDimensions } from "../src/lib/taste-dimensions";
 
@@ -310,6 +312,178 @@ console.log("\n=== Composition: computeConnectionAffinity ===\n");
     // Difference = (1.0 - 0.2) * 0.20 = 0.16
     record("case8.delta = 0.20 * (1.0 - 0.2) = 0.16",
       near(rPos.affinity - rNeg.affinity, 0.16, 1e-9), `delta=${(rPos.affinity - rNeg.affinity).toFixed(4)}`);
+  }
+}
+
+// ── Stage 4b: slate selection ───────────────────────────────────────────
+
+console.log("\n=== Stage 4b: selectPersonalizedSlate ===\n");
+{
+  const c = (id: number, sourceItemId: number, qualityScore: number, personalAffinity: number) =>
+    ({ id, sourceItemId, qualityScore, personalAffinity }) as PersonalizedCandidate;
+
+  // Helper to verbose-print order
+  const idsOf = (arr: { id: number; isSerendipity?: boolean }[]) =>
+    arr.map((x) => `${x.id}${x.isSerendipity ? "*" : ""}`).join(",");
+
+  // Case 1: simple — affinity flips order
+  // 3 candidates, all distinct sources, no serendipity (pool < 6).
+  {
+    // Without affinity, order by quality desc would be: A, B, C
+    // With affinity:
+    //   A: 1.5 × 0.6 = 0.90
+    //   B: 1.0 × 1.4 = 1.40   ← winner
+    //   C: 1.4 × 1.0 = 1.40   ← tied with B but higher id loses
+    // So final order: B, C, A
+    const slate = selectPersonalizedSlate([
+      c(1, 100, 1.5, 0.6),
+      c(2, 200, 1.0, 1.4),
+      c(3, 300, 1.4, 1.0),
+    ], { totalSlots: 6, primarySlots: 5 });
+    record("4b.case1.sort by final_score, id tiebreak", idsOf(slate.chosen) === "2,3,1", `chosen=${idsOf(slate.chosen)}`);
+    record("4b.case1.no serendipity when pool<totalSlots", slate.serendipityId === null);
+  }
+
+  // Case 2: distinct-source diversity preferred in primary slots
+  // Sources: 1 has 2 candidates, 2 has 1 candidate, 3 has 1 candidate.
+  // After sort by final_score: A(src1, fin=1.4), B(src1, fin=1.3), C(src2, fin=1.2), D(src3, fin=1.0)
+  // firstPass = [A (src1 first), C (src2 first), D (src3 first)]   — diversity prefers
+  // secondPass = [B]
+  // primary[5] = [A, C, D, B] (no serendipity because nothing left)
+  {
+    const slate = selectPersonalizedSlate([
+      c(101, 1, 1.4, 1.0),     // A
+      c(102, 1, 1.3, 1.0),     // B (same source as A)
+      c(103, 2, 1.2, 1.0),     // C
+      c(104, 3, 1.0, 1.0),     // D
+    ], { totalSlots: 6, primarySlots: 5 });
+    record("4b.case2.distinct-source diversity wins over raw final_score within primary",
+      idsOf(slate.chosen) === "101,103,104,102",
+      `chosen=${idsOf(slate.chosen)}`);
+  }
+
+  // Case 3: serendipity slot picks highest RAW quality from remaining
+  // 6 candidates needed. Primary slots take top 5 by final_score with
+  // diversity. Serendipity slot is the leftover by raw quality.
+  //
+  // Candidates (id, src, qs, aff, final = qs*aff):
+  //   201 src=A qs=2.0 aff=0.5 final=1.0   ← high raw, low aff
+  //   202 src=B qs=1.8 aff=0.9 final=1.62
+  //   203 src=C qs=1.5 aff=1.2 final=1.80
+  //   204 src=D qs=1.2 aff=1.4 final=1.68
+  //   205 src=E qs=1.0 aff=1.5 final=1.50
+  //   206 src=F qs=0.9 aff=1.5 final=1.35
+  //   207 src=G qs=0.6 aff=1.5 final=0.90
+  //
+  // Final order: 203(1.80), 204(1.68), 202(1.62), 205(1.50), 206(1.35), 201(1.00), 207(0.90)
+  // Primary 5 (all distinct sources already): 203, 204, 202, 205, 206
+  // Remaining: 201, 207
+  // Serendipity by raw qs: 201 (qs=2.0). Source A not in primary — pick wins.
+  {
+    const slate = selectPersonalizedSlate([
+      c(201, 1, 2.0, 0.5),
+      c(202, 2, 1.8, 0.9),
+      c(203, 3, 1.5, 1.2),
+      c(204, 4, 1.2, 1.4),
+      c(205, 5, 1.0, 1.5),
+      c(206, 6, 0.9, 1.5),
+      c(207, 7, 0.6, 1.5),
+    ], { totalSlots: 6, primarySlots: 5 });
+
+    record("4b.case3.primary slots in final_score order with diversity",
+      idsOf(slate.chosen).startsWith("203,204,202,205,206"),
+      `chosen=${idsOf(slate.chosen)}`);
+    record("4b.case3.serendipity = highest raw quality of remaining",
+      slate.serendipityId === 201,
+      `serendipityId=${slate.serendipityId}`);
+    record("4b.case3.serendipity marked with isSerendipity flag",
+      slate.chosen[5].isSerendipity === true && slate.chosen[5].id === 201);
+    record("4b.case3.slate length = 6", slate.chosen.length === 6);
+  }
+
+  // Case 4: serendipity respects source diversity preference
+  // 6 candidates, top 5 cover sources 1-5, remaining candidate is from
+  // source 1 (already seen). When no remaining candidate has a new source,
+  // the helper still picks the highest-raw-quality remaining candidate.
+  {
+    const slate = selectPersonalizedSlate([
+      c(301, 1, 2.0, 1.5),     // primary slot 1
+      c(302, 2, 1.5, 1.5),     // primary slot 2
+      c(303, 3, 1.4, 1.5),     // primary slot 3
+      c(304, 4, 1.3, 1.5),     // primary slot 4
+      c(305, 5, 1.2, 1.5),     // primary slot 5
+      c(306, 1, 1.1, 1.0),     // remaining — same source as 301
+    ], { totalSlots: 6, primarySlots: 5 });
+
+    record("4b.case4.serendipity falls back when no new source available",
+      slate.serendipityId === 306,
+      `serendipityId=${slate.serendipityId}`);
+  }
+
+  // Case 5: serendipity prefers a NEW source over a higher-quality
+  // candidate from an already-seen source.
+  // Primary 5 uses sources 1-5. Two remaining:
+  //   401 src=1 (already seen) qs=1.9
+  //   402 src=6 (new!)         qs=1.0
+  // Helper prefers 402 even though 401 has higher quality, because
+  // 402 introduces a new source. This mirrors the diversity preference.
+  {
+    const slate = selectPersonalizedSlate([
+      c(401, 1, 1.9, 1.0),
+      c(402, 6, 1.0, 1.0),
+      c(403, 2, 2.0, 1.5),     // primary
+      c(404, 3, 1.8, 1.5),     // primary
+      c(405, 4, 1.6, 1.5),     // primary
+      c(406, 5, 1.4, 1.5),     // primary
+      c(407, 1, 1.5, 1.5),     // primary (covers source 1)
+    ], { totalSlots: 6, primarySlots: 5 });
+
+    record("4b.case5.serendipity prefers new-source candidate over higher-quality-but-seen-source",
+      slate.serendipityId === 402,
+      `serendipityId=${slate.serendipityId} (expected 402 since src6 is new)`);
+  }
+
+  // Case 6: empty input
+  {
+    const slate = selectPersonalizedSlate([], { totalSlots: 6, primarySlots: 5 });
+    record("4b.case6.empty input → empty slate", slate.chosen.length === 0 && slate.serendipityId === null);
+  }
+
+  // Case 7: exactly TOTAL_SLOTS candidates with distinct sources — all 6 fit, slot 6 = serendipity
+  {
+    const slate = selectPersonalizedSlate([
+      c(701, 1, 1.5, 1.0),     // 1.5
+      c(702, 2, 1.4, 1.0),     // 1.4
+      c(703, 3, 1.3, 1.0),     // 1.3
+      c(704, 4, 1.2, 1.0),     // 1.2
+      c(705, 5, 1.1, 1.0),     // 1.1
+      c(706, 6, 2.0, 0.5),     // 1.0  ← lowest final, highest raw qs
+    ], { totalSlots: 6, primarySlots: 5 });
+    record("4b.case7.slot 6 = serendipity even when full", slate.serendipityId === 706);
+    record("4b.case7.primary in final_score order", idsOf(slate.chosen).startsWith("701,702,703,704,705"));
+  }
+
+  // Case 8: invariant — no candidate appears twice
+  {
+    const slate = selectPersonalizedSlate([
+      c(801, 1, 1.0, 1.0),
+      c(802, 2, 1.0, 1.0),
+      c(803, 3, 1.0, 1.0),
+      c(804, 4, 1.0, 1.0),
+      c(805, 5, 1.0, 1.0),
+      c(806, 6, 1.0, 1.0),
+    ], { totalSlots: 6, primarySlots: 5 });
+    const ids = slate.chosen.map((c) => c.id);
+    const unique = new Set(ids);
+    record("4b.case8.no candidate appears twice", unique.size === ids.length);
+  }
+
+  // Case 9: invariant — primarySlots > totalSlots throws
+  {
+    let threw = false;
+    try { selectPersonalizedSlate([], { totalSlots: 3, primarySlots: 5 }); }
+    catch { threw = true; }
+    record("4b.case9.invariant primarySlots ≤ totalSlots", threw);
   }
 }
 

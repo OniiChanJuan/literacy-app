@@ -6,8 +6,10 @@ import type { TasteDimensions } from "@/lib/taste-dimensions";
 import {
   computeConnectionAffinity,
   buildHighRatedTagBag,
+  selectPersonalizedSlate,
   AFFINITY_NEUTRAL,
   type AffinityRecItem,
+  type PersonalizedCandidate,
 } from "@/lib/connection-affinity";
 
 /**
@@ -34,6 +36,7 @@ import {
  */
 
 const TARGET = 6;
+const PERSONALIZED_PRIMARY_SLOTS = 5;          // 5 affinity-ranked + 1 serendipity = TARGET
 const MIN_PERSONALIZED_SOURCES = 3;
 const RATED_HIGHLY_MIN_SCORE = 4;
 
@@ -55,12 +58,24 @@ interface ConnectionOut {
   qualityScore: number;
   userVote: -1 | 0 | 1;
   /**
-   * Stage 4a: per-user affinity in [0.5, 1.5]. Computed only for
-   * personalized-mode connections; AFFINITY_NEUTRAL (1.0) for
-   * trending/discovery and for signed-out users. NOT applied to
-   * ordering in this stage — exposed for telemetry + dev observation.
+   * Per-user affinity in [0.5, 1.5]. Computed only for personalized-mode
+   * connections; AFFINITY_NEUTRAL (1.0) for trending/discovery and for
+   * signed-out users. Stage 4b multiplies this onto qualityScore to
+   * produce the personalized sort order.
    */
   personalAffinity: number;
+  /**
+   * Stage 4b serendipity slot (the 6th and final card in personalized
+   * mode). True only on the single connection that was picked by raw
+   * qualityScore from the candidates NOT in the top-5 final_score
+   * picks. The client uses this flag to drive a distinct framing
+   * branch ("Also loved across CrossShelf" rather than "Because you
+   * rated X highly") — honesty about the basis.
+   *
+   * Optional + omitted (undefined) on the 5 primary personalized cards
+   * and on every trending / discovery card.
+   */
+  isSerendipitySlot?: boolean;
 }
 
 export async function GET(req: NextRequest) {
@@ -160,25 +175,114 @@ export async function GET(req: NextRequest) {
     // ── Decide section mode ──────────────────────────────────────────
     let mode: SectionMode;
     let chosen: any[] = [];
+    // Built during personalized mode; reused by output hydration so we
+    // don't re-fetch the same rec items.
+    const recMap = new Map<number, any>();
+    // Captured during personalized mode for dev-only telemetry.
+    type AffinityDebugRow = { id: number; aff: number; finalScore: number; dim: number; tag: number; src: number; dimSig: boolean; serendipity: boolean };
+    const affinityDebug: AffinityDebugRow[] = [];
 
     if (distinctSources >= MIN_PERSONALIZED_SOURCES) {
       mode = "personalized";
-      // Take up to TARGET connections, preferring variety across distinct
-      // sources. Greedy: walk personalized in qualityScore order, skip a
-      // connection if we already have one from that source — but only
-      // until we've hit every distinct source once.
-      const seenSources = new Set<number>();
-      const firstPass: any[] = [];
-      const secondPass: any[] = [];
-      for (const c of personalized) {
-        if (!seenSources.has(c.sourceItemId)) {
-          firstPass.push(c);
-          seenSources.add(c.sourceItemId);
-        } else {
-          secondPass.push(c);
-        }
+
+      // ── Stage 4b: personalized slate builder ───────────────────────
+      //
+      // 1. Pre-hydrate rec items for the full personalized pool so we
+      //    have the columns affinity needs (itemDimensions, genre,
+      //    vibes) before we sort. Trending/discovery skip this step.
+      // 2. Compute affinity per candidate. Store on the row.
+      // 3. Sort by final_score = qualityScore × personalAffinity desc
+      //    (id asc as stable tie-break).
+      // 4. Greedy distinct-source diversity pass over the now-sorted
+      //    list to pick the top PERSONALIZED_PRIMARY_SLOTS (5).
+      // 5. Serendipity slot: from the candidates NOT picked in (4),
+      //    take the one with the highest RAW qualityScore (NOT
+      //    final_score), preferring a source not already in the 5.
+      //    Mark it `isSerendipitySlot: true`. If the pool was already
+      //    < TARGET, no serendipity slot is synthesized.
+      // 6. chosen = [...top5, serendipity?] in deterministic order.
+
+      // (1) Pre-hydrate the personalized pool's rec items.
+      const poolRecIds = Array.from(new Set(
+        personalized.flatMap((c: any) =>
+          Array.isArray(c.recommendedItems) ? c.recommendedItems.map((r: any) => Number(r.item_id)) : [],
+        ),
+      ));
+      if (poolRecIds.length > 0) {
+        const poolRecRows = await prisma.item.findMany({
+          where: { id: { in: poolRecIds } },
+          select: {
+            id: true, title: true, type: true, cover: true, slug: true,
+            itemDimensions: true, genre: true, vibes: true,
+          },
+        });
+        for (const r of poolRecRows) recMap.set(r.id, r);
       }
-      chosen = [...firstPass, ...secondPass].slice(0, TARGET);
+
+      // (2) Compute affinity per candidate.
+      for (const c of personalized) {
+        const recsRaw = Array.isArray(c.recommendedItems) ? c.recommendedItems : [];
+        const recItems: AffinityRecItem[] = recsRaw
+          .map((r: any) => recMap.get(Number(r.item_id)))
+          .filter(Boolean)
+          .map((row: any) => ({
+            id: row.id as number,
+            itemDimensions: (row.itemDimensions as TasteDimensions | null) ?? null,
+            genre: (row.genre as string[]) ?? [],
+            vibes: (row.vibes as string[]) ?? [],
+          }));
+        const breakdown = computeConnectionAffinity({
+          user: {
+            tasteProfile,
+            highRatedTags: highRatedTagBag,
+            sourceRating: ratingByItemId.get(c.sourceItemId) ?? null,
+          },
+          connection: {
+            themeTags: (c.themeTags || c.theme_tags || []) as string[],
+            recommendedItems: recItems,
+          },
+        });
+        c.personalAffinity = breakdown.affinity;
+        c.__affBreakdown = breakdown; // private debug payload, stripped at output
+      }
+
+      // (3)–(5) Sort + diversity + serendipity pick — delegated to the
+      // pure helper so unit tests exercise the exact same code path.
+      // Map each candidate to the helper's expected shape, keeping a
+      // by-id lookup so we can reattach the full row's fields.
+      const candidateById = new Map<number, any>(personalized.map((c: any) => [c.id, c]));
+      const inputCandidates: (PersonalizedCandidate & { __row: any })[] =
+        personalized.map((c: any) => ({
+          id: c.id,
+          sourceItemId: c.sourceItemId,
+          qualityScore: Number(c.qualityScore),
+          personalAffinity: c.personalAffinity,
+          __row: c,
+        }));
+      const slate = selectPersonalizedSlate(inputCandidates, {
+        totalSlots: TARGET,
+        primarySlots: PERSONALIZED_PRIMARY_SLOTS,
+      });
+      chosen = slate.chosen.map((entry) => {
+        const row = candidateById.get(entry.id)!;
+        if (entry.isSerendipity) row.__isSerendipity = true;
+        return row;
+      });
+
+      // Build debug rows for dev console emission.
+      for (const c of chosen) {
+        const b = c.__affBreakdown;
+        affinityDebug.push({
+          id: c.id,
+          aff: c.personalAffinity,
+          finalScore: Number(c.qualityScore) * c.personalAffinity,
+          dim: b.components.dimMatch,
+          tag: b.components.tagMatch,
+          src: b.components.sourceAffinity,
+          dimSig: b.hasDimSignal,
+          serendipity: c.__isSerendipity === true,
+        });
+      }
     } else if (totalRatings === 0) {
       // Cold-start: brand-new signed-out or never-rated user.
       mode = "discovery";
@@ -191,7 +295,9 @@ export async function GET(req: NextRequest) {
       chosen = await fetchEditorialFill(TARGET, "top_quality", dismissedConnectionIds);
     }
 
-    // ── Hydrate recommended items with current cover + slug ─────────
+    // ── Hydrate any rec items not already in recMap ─────────────────
+    // Personalized mode already pre-hydrated the entire pool above;
+    // trending/discovery hits this fresh.
     const allRecIds = Array.from(
       new Set(
         chosen.flatMap((c: any) =>
@@ -199,20 +305,17 @@ export async function GET(req: NextRequest) {
         ),
       ),
     );
-    // Hydration now also pulls itemDimensions / genre / vibes used by
-    // the Stage 4a affinity computation. Trending/discovery candidates
-    // still hydrate them (cheap), but only personalized candidates
-    // actually feed them into the affinity helper.
-    const recRows = allRecIds.length > 0
-      ? await prisma.item.findMany({
-          where: { id: { in: allRecIds } },
-          select: {
-            id: true, title: true, type: true, cover: true, slug: true,
-            itemDimensions: true, genre: true, vibes: true,
-          },
-        })
-      : [];
-    const recMap = new Map(recRows.map((r) => [r.id, r]));
+    const missingRecIds = allRecIds.filter((id) => !recMap.has(id));
+    if (missingRecIds.length > 0) {
+      const moreRecRows = await prisma.item.findMany({
+        where: { id: { in: missingRecIds } },
+        select: {
+          id: true, title: true, type: true, cover: true, slug: true,
+          itemDimensions: true, genre: true, vibes: true,
+        },
+      });
+      for (const r of moreRecRows) recMap.set(r.id, r);
+    }
 
     // For fallback modes, sourceItem isn't on the row yet — fetch in bulk.
     const needSourceLookup = chosen.filter((c: any) => !c.sourceItem);
@@ -228,11 +331,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // ── Stage 4a: compute per-user affinity for personalized candidates ──
-    // The number rides along on the response shape but does NOT influence
-    // ordering yet. Stage 4b will multiply it onto qualityScore.
-    const affinityDebug: Array<{ id: number; affinity: number; dim: number; tag: number; src: number; dimSig: boolean }> = [];
-
     const out: ConnectionOut[] = chosen
       .filter((c: any) => c.sourceItem)
       .map((c: any) => {
@@ -241,43 +339,15 @@ export async function GET(req: NextRequest) {
           .map((r: any) => recMap.get(Number(r.item_id)))
           .filter(Boolean) as ItemThumb[];
 
-        // Affinity is only meaningful in personalized mode (where the
-        // user has rated the source and has a populated taste profile).
-        // Trending/discovery + signed-out users get the neutral 1.0.
-        let personalAffinity = AFFINITY_NEUTRAL;
-        if (mode === "personalized" && userId) {
-          const recItems: AffinityRecItem[] = recsRaw
-            .map((r: any) => recMap.get(Number(r.item_id)))
-            .filter(Boolean)
-            .map((row: any) => ({
-              id: row.id as number,
-              itemDimensions: (row.itemDimensions as TasteDimensions | null) ?? null,
-              genre: (row.genre as string[]) ?? [],
-              vibes: (row.vibes as string[]) ?? [],
-            }));
-          const breakdown = computeConnectionAffinity({
-            user: {
-              tasteProfile,
-              highRatedTags: highRatedTagBag,
-              sourceRating: ratingByItemId.get(c.sourceItemId) ?? null,
-            },
-            connection: {
-              themeTags: (c.themeTags || c.theme_tags || []) as string[],
-              recommendedItems: recItems,
-            },
-          });
-          personalAffinity = breakdown.affinity;
-          affinityDebug.push({
-            id: c.id,
-            affinity: breakdown.affinity,
-            dim: breakdown.components.dimMatch,
-            tag: breakdown.components.tagMatch,
-            src: breakdown.components.sourceAffinity,
-            dimSig: breakdown.hasDimSignal,
-          });
-        }
+        // Affinity was already computed during the personalized slate
+        // builder above. Trending/discovery + signed-out users get the
+        // neutral 1.0.
+        const personalAffinity: number =
+          mode === "personalized" && typeof c.personalAffinity === "number"
+            ? c.personalAffinity
+            : AFFINITY_NEUTRAL;
 
-        return {
+        const out: ConnectionOut = {
           id: c.id,
           sourceItem: c.sourceItem,
           recommendedItems: recs,
@@ -287,17 +357,20 @@ export async function GET(req: NextRequest) {
           userVote: (voteMap.get(c.id) ?? 0) as -1 | 0 | 1,
           personalAffinity,
         };
+        if (c.__isSerendipity === true) out.isSerendipitySlot = true;
+        return out;
       });
 
-    // Dev-only debug emission. Lets us watch the numbers as we navigate
-    // the live app during 4a's dark-launch window.
+    // Dev-only debug emission. Now includes final_score (qs × aff) and
+    // a serendipity marker so we can spot the slot-6 pick in logs.
     if (process.env.NODE_ENV !== "production" && affinityDebug.length > 0) {
       console.log(`[cross-connections affinity] mode=${mode} user=${userId} candidates=${affinityDebug.length}`);
       for (const d of affinityDebug) {
         console.log(
-          `  id=${String(d.id).padStart(3)} aff=${d.affinity.toFixed(3)} ` +
+          `  id=${String(d.id).padStart(3)} ` +
+          `final=${d.finalScore.toFixed(3)} aff=${d.aff.toFixed(3)} ` +
           `dim=${d.dim.toFixed(3)} tag=${d.tag.toFixed(3)} src=${d.src.toFixed(3)} ` +
-          `dimSig=${d.dimSig}`,
+          `dimSig=${d.dimSig}${d.serendipity ? " [SERENDIPITY]" : ""}`,
         );
       }
     }

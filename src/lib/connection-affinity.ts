@@ -229,3 +229,110 @@ export function buildHighRatedTagBag(
   }
   return out;
 }
+
+// ── Stage 4b: slate selection (sort + diversity + serendipity) ─────────
+
+/**
+ * Minimal candidate shape consumed by selectPersonalizedSlate. The full
+ * candidate row in the route carries more fields; we only need these.
+ */
+export interface PersonalizedCandidate {
+  id: number;
+  sourceItemId: number;
+  qualityScore: number;
+  personalAffinity: number;
+}
+
+export interface PersonalizedSlate<C extends PersonalizedCandidate> {
+  /** Final ordered output, ≤ totalSlots in length. */
+  chosen: C[];
+  /** IDs that ended up in slots 1 .. primarySlots. */
+  primaryIds: number[];
+  /** ID of the serendipity pick, or null if the pool was already small. */
+  serendipityId: number | null;
+}
+
+/**
+ * Stage 4b core: take the full personalized candidate pool (with
+ * per-candidate affinity already computed) and produce the ordered
+ * slate of up to `totalSlots` (default 6) connections.
+ *
+ *   1. Sort all candidates by final_score = quality × affinity, desc;
+ *      stable tie-break by id asc.
+ *   2. Greedy distinct-source pass picks the top `primarySlots` (default
+ *      5): first occurrence of each source first, then refill with
+ *      seconds.
+ *   3. Pick the serendipity slot (slot 6) from the remaining candidates
+ *      by RAW qualityScore desc (NOT final_score), preferring a source
+ *      not already in the primary 5. If no remaining candidates exist
+ *      (pool was already small), no serendipity is synthesized.
+ *
+ * Pure function — easy to unit-test against synthetic candidate arrays.
+ *
+ * Note: the function does NOT mutate inputs other than potentially
+ * adding `isSerendipity` to the returned shape. Use this from the
+ * route to keep candidate sorting logic identical to what tests
+ * exercise.
+ */
+export function selectPersonalizedSlate<C extends PersonalizedCandidate>(
+  candidates: C[],
+  opts: { totalSlots?: number; primarySlots?: number } = {},
+): PersonalizedSlate<C & { isSerendipity?: boolean }> {
+  const totalSlots = opts.totalSlots ?? 6;
+  const primarySlots = opts.primarySlots ?? 5;
+  if (primarySlots > totalSlots) {
+    throw new Error("primarySlots must be ≤ totalSlots");
+  }
+
+  // (1) Sort by final_score = quality × affinity, descending; id asc tiebreak.
+  const sorted = [...candidates].sort((a, b) => {
+    const fa = a.qualityScore * a.personalAffinity;
+    const fb = b.qualityScore * b.personalAffinity;
+    if (fb !== fa) return fb - fa;
+    return a.id - b.id;
+  });
+
+  // (2) Greedy distinct-source diversity pass for the primary slots.
+  const seenSources = new Set<number>();
+  const firstPass: C[] = [];
+  const secondPass: C[] = [];
+  for (const c of sorted) {
+    if (!seenSources.has(c.sourceItemId)) {
+      firstPass.push(c);
+      seenSources.add(c.sourceItemId);
+    } else {
+      secondPass.push(c);
+    }
+  }
+  const primary = [...firstPass, ...secondPass].slice(0, primarySlots);
+
+  // (3) Serendipity pick: highest RAW qualityScore from candidates not
+  // chosen for primary slots; prefer a source not already in primary.
+  const primaryIdSet = new Set<number>(primary.map((c) => c.id));
+  const primarySrcSet = new Set<number>(primary.map((c) => c.sourceItemId));
+  const remaining = sorted
+    .filter((c) => !primaryIdSet.has(c.id))
+    .sort((a, b) => {
+      const qd = b.qualityScore - a.qualityScore;
+      if (qd !== 0) return qd;
+      return a.id - b.id;
+    });
+
+  let serendipityRow: C | undefined =
+    remaining.find((c) => !primarySrcSet.has(c.sourceItemId)) ?? remaining[0];
+
+  if (primary.length + 1 > totalSlots) {
+    // Defensive: don't exceed the slot budget.
+    serendipityRow = undefined;
+  }
+
+  const chosen: (C & { isSerendipity?: boolean })[] = [...primary];
+  if (serendipityRow) {
+    chosen.push({ ...serendipityRow, isSerendipity: true });
+  }
+  return {
+    chosen,
+    primaryIds: primary.map((c) => c.id),
+    serendipityId: serendipityRow?.id ?? null,
+  };
+}

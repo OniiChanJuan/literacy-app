@@ -64,12 +64,19 @@ interface Connection {
   qualityScore: number;
   userVote: -1 | 0 | 1;
   /**
-   * Stage 4a: per-user affinity in [0.5, 1.5]. Optional on the client
-   * — the field is not rendered in this stage; ordering still follows
-   * qualityScore. Wiring the type now keeps the client + server in
-   * sync ahead of 4b.
+   * Per-user affinity in [0.5, 1.5]. Set on every card; for trending /
+   * discovery / signed-out it equals 1.0 (neutral). Not currently
+   * rendered in the UI but kept on the type to avoid client/server
+   * drift.
    */
   personalAffinity?: number;
+  /**
+   * Stage 4b serendipity slot (the 6th card in personalized mode).
+   * When true, the card was picked by raw qualityScore from candidates
+   * outside the top-5 affinity ranking — meaning the framing must NOT
+   * claim "because you rated X highly". Undefined / false otherwise.
+   */
+  isSerendipitySlot?: boolean;
 }
 
 export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) {
@@ -308,11 +315,33 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
           ×
         </button>
       )}
-      {/* Per-card framing. Personalized mode maps exactly to the API's
-          `ratings.score >= 4` filter, so "rated ... highly" is literal
-          truth. Trending/discovery cards never claim a user signal —
-          they're labeled "Editor's pick" to set honest expectations. */}
-      {mode === "personalized" ? (
+      {/* Per-card framing — four branches in priority order:
+            1. Serendipity slot (personalized mode, slot 6): the card
+               came from raw qualityScore not from per-user affinity,
+               so the source title may not be one the user rated highly
+               (or even rated at all). Cannot use "because you rated X"
+               copy — that would lie. Uses its own "Also loved across
+               CrossShelf" framing to be honest about the basis (broad
+               community signal, not personal taste).
+            2. Personalized mode (slots 1–5): "because you rated X
+               highly" maps exactly to the API's ratings.score ≥ 4
+               filter, so the copy is literal truth.
+            3. Trending mode: editorial top-quality, no user signal.
+            4. Discovery mode: random editorial, signed-out or new user.
+          Trending + discovery share the "Editor's pick" treatment. */}
+      {connection.isSerendipitySlot ? (
+        <div style={{
+          fontSize: 10,
+          color: "rgba(232,230,225,0.45)",
+          marginBottom: 12,
+          lineHeight: 1.3,
+          textTransform: "uppercase",
+          letterSpacing: 1,
+          fontWeight: 600,
+        }}>
+          Also loved across CrossShelf
+        </div>
+      ) : mode === "personalized" ? (
         <div style={{ fontSize: 12, color: "rgba(232,230,225,0.45)", marginBottom: 12, lineHeight: 1.3 }}>
           {"Because you rated "}
           <Link
