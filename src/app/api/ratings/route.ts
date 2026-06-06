@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { isValidScore, isValidRecTag, rateLimit } from "@/lib/validation";
 import { updateTasteProfile, neutralDimensions, type TasteDimensions } from "@/lib/taste-dimensions";
+import { creditDownstream } from "@/lib/connection-credit";
 
 export async function GET() {
   const claims = await getClaims();
@@ -58,7 +59,20 @@ export async function PUT(req: NextRequest) {
   // Score 0 = delete rating
   if (score === 0) {
     try {
+      const before = await prisma.rating.findUnique({
+        where: { userId_itemId: { userId, itemId } },
+      });
       await prisma.rating.deleteMany({ where: { userId, itemId } });
+      // Reverting any rating-tier downstream credit: pass score 0 + null
+      // rec tag → tier 0, which the credit engine treats as a downgrade
+      // and reverts the rating-tier portion of any prior positive credit.
+      if (before) {
+        creditDownstream({
+          userId,
+          itemId,
+          signal: { kind: "rating", score: 0, recommendTag: null },
+        }).catch(() => {});
+      }
       return NextResponse.json({ deleted: true });
     } catch {
       return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
@@ -89,6 +103,15 @@ export async function PUT(req: NextRequest) {
         data: { userId, itemId, status: "completed" },
       }).catch(() => {}); // Ignore if race condition
     }
+
+    // Fire downstream credit. The credit engine will look up which
+    // attributed connections (if any) recommended this item to this
+    // user and apply the appropriate tier delta.
+    creditDownstream({
+      userId,
+      itemId,
+      signal: { kind: "rating", score, recommendTag: recTag ?? null },
+    }).catch(() => {});
 
     // Update user taste profile based on this rating
     try {

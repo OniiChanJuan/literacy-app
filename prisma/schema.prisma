@@ -44,6 +44,8 @@ model User {
   tagSuggestions  UserTagSuggestion[]
   crossConnectionVotes CrossConnectionVote[]
   connectionDismissals ConnectionDismissal[]
+  connectionEvents     ConnectionEvent[]
+  connectionCredits    ConnectionCredit[]
 
   @@map("users")
 }
@@ -144,6 +146,8 @@ model Item {
   dismissedItems  DismissedItem[]
   tagSuggestions UserTagSuggestion[]
   crossConnections CrossConnection[]
+  connectionEvents ConnectionEvent[]
+  connectionCredits ConnectionCredit[]
 
   @@index([type])
   @@index([year])
@@ -498,6 +502,8 @@ model CrossConnection {
   sourceItem  Item                   @relation(fields: [sourceItemId], references: [id], onDelete: Cascade)
   votes       CrossConnectionVote[]
   dismissals  ConnectionDismissal[]
+  events      ConnectionEvent[]
+  credits     ConnectionCredit[]
 
   @@index([sourceItemId])
   @@index([qualityScore])
@@ -520,6 +526,55 @@ model ConnectionDismissal {
   @@id([userId, connectionId])
   @@index([connectionId])
   @@map("connection_dismissals")
+}
+
+/// Append-only log of user-facing connection events used for strict
+/// attribution of downstream signals. event_type:
+///   - "impression"  → card rendered for this user (batched per page)
+///   - "cover_click" → user clicked a recommended-item cover inside
+///                     the card (item_id identifies which rec)
+/// Pruned periodically (rows older than 30 days carry no attribution
+/// value — both windows are <= 30d). See src/lib/connection-credit.ts.
+model ConnectionEvent {
+  id           BigInt   @id @default(autoincrement())
+  userId       String   @db.Uuid @map("user_id")
+  connectionId Int      @map("connection_id")
+  eventType    String   @map("event_type") // 'impression' | 'cover_click'
+  itemId       Int?     @map("item_id")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  connection CrossConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  item       Item?           @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([userId, connectionId, eventType, createdAt(sort: Desc)])
+  @@index([connectionId, eventType, createdAt(sort: Desc)])
+  @@index([createdAt])
+  @@map("connection_events")
+}
+
+/// Per-(user, connection, item, signal_class) credit ledger. Records
+/// the highest tier of positive credit applied + the cumulative delta
+/// written to cross_connections.quality_score. Updated in-place when
+/// a higher tier fires; tier 0 + a negative delta_applied represents
+/// the "rating <= 2 / skip" negative-credit case. See SCORE_DELTAS
+/// in src/lib/connection-score.ts for tier definitions.
+model ConnectionCredit {
+  userId       String   @db.Uuid @map("user_id")
+  connectionId Int      @map("connection_id")
+  itemId       Int      @map("item_id")
+  signalClass  String   @map("signal_class") // currently only 'downstream'
+  tier         Int
+  deltaApplied Float    @map("delta_applied")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  connection CrossConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  item       Item            @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, connectionId, itemId, signalClass])
+  @@index([connectionId])
+  @@map("connection_credits")
 }
 
 /// One vote per user per connection. +1 upvote, -1 downvote.

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { isValidStatus, rateLimit } from "@/lib/validation";
+import { creditDownstream } from "@/lib/connection-credit";
+
+const COMPLETED_STATUSES = new Set(["completed", "caught_up"]);
 
 export async function GET() {
   const claims = await getClaims();
@@ -87,7 +90,14 @@ export async function PUT(req: NextRequest) {
   // null status = delete entry
   if (status === null) {
     try {
+      const before = await prisma.libraryEntry.findUnique({
+        where: { userId_itemId: { userId, itemId } },
+      });
       await prisma.libraryEntry.deleteMany({ where: { userId, itemId } });
+      // Reversal credit if the entry existed.
+      if (before) {
+        creditDownstream({ userId, itemId, signal: { kind: "library_deleted" } }).catch(() => {});
+      }
       return NextResponse.json({ deleted: true });
     } catch {
       return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
@@ -99,11 +109,25 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
+    const prevEntry = await prisma.libraryEntry.findUnique({
+      where: { userId_itemId: { userId, itemId } },
+    });
     const entry = await prisma.libraryEntry.upsert({
       where: { userId_itemId: { userId, itemId } },
       update: { status, progressCurrent: typeof progress === "number" ? Math.max(0, progress) : 0 },
       create: { userId, itemId, status, progressCurrent: typeof progress === "number" ? Math.max(0, progress) : 0 },
     });
+
+    // Downstream credits — fire the highest applicable signal.
+    // tier-3 (completed/caught_up) supersedes tier-2 (library_add) via
+    // the credit ladder, so we can fire library_add unconditionally on
+    // first-create and library_completed if the new status hits the set.
+    if (!prevEntry) {
+      creditDownstream({ userId, itemId, signal: { kind: "library_add" } }).catch(() => {});
+    }
+    if (COMPLETED_STATUSES.has(status) && (!prevEntry || !COMPLETED_STATUSES.has(prevEntry.status))) {
+      creditDownstream({ userId, itemId, signal: { kind: "library_completed" } }).catch(() => {});
+    }
 
     return NextResponse.json({ itemId: entry.itemId, status: entry.status });
   } catch {

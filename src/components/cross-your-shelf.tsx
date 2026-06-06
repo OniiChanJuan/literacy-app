@@ -77,6 +77,16 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
         if (cancelled) return;
         setMode(data.mode);
         setConnections(data.connections ?? []);
+        // Fire-and-forget impression batch — anchors downstream
+        // attribution for library-add / rating signals.
+        const ids = (data.connections ?? []).map((c) => c.id);
+        if (ids.length > 0) {
+          fetch("/api/cross-connections/impressions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ connectionIds: ids }),
+          }).catch(() => {});
+        }
       })
       .catch(() => { if (!cancelled) { setMode("discovery"); setConnections([]); }});
     return () => { cancelled = true; };
@@ -351,7 +361,23 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
                 →
               </span>
             )}
-            <ItemThumbnail item={it} />
+            <ItemThumbnail
+              item={it}
+              onClickTrack={
+                idx > 0
+                  ? () => {
+                      // Fire-and-forget cover_click for recommended items
+                      // (idx 0 is the source item; clicks on it are not
+                      // a downstream signal). Errors swallowed.
+                      fetch(`/api/cross-connections/${connection.id}/click`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ itemId: it.id }),
+                      }).catch(() => {});
+                    }
+                  : undefined
+              }
+            />
           </Fragment>
         ))}
       </div>
@@ -424,12 +450,13 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
 
 // ── Item thumbnail ─────────────────────────────────────────────────────────
 
-function ItemThumbnail({ item }: { item: ItemThumb }) {
+function ItemThumbnail({ item, onClickTrack }: { item: ItemThumb; onClickTrack?: () => void }) {
   const t = (TYPES as Record<string, { label: string; icon: string; color: string }>)[item.type] || { color: "#888", icon: "?", label: item.type };
   const href = getItemUrl(item as any);
   return (
     <Link
       href={href}
+      onClick={onClickTrack}
       className="cross-shelf-thumb"
       style={{
         // Flex column wrapping cover + title. Width is set via the title's
