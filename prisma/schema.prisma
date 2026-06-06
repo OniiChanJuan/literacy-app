@@ -46,6 +46,8 @@ model User {
   connectionDismissals ConnectionDismissal[]
   connectionEvents     ConnectionEvent[]
   connectionCredits    ConnectionCredit[]
+  franchiseRatings     FranchiseRating[]
+  franchiseFollows     FranchiseFollow[]
 
   @@map("users")
 }
@@ -134,7 +136,7 @@ model Item {
 
   createdAt       DateTime @default(now()) @map("created_at")
 
-  parentItem     Item?    @relation("ItemDLC", fields: [parentItemId], references: [id])
+  parentItem     Item?    @relation("ItemDLC", fields: [parentItemId], references: [id], onDelete: SetNull)
   dlcs           Item[]   @relation("ItemDLC")
 
   ratings        Rating[]
@@ -190,7 +192,7 @@ model Franchise {
   wikidataId       String?    @map("wikidata_id")
   createdAt        DateTime   @default(now()) @map("created_at")
 
-  parentFranchise  Franchise?  @relation("FranchiseHierarchy", fields: [parentFranchiseId], references: [id])
+  parentFranchise  Franchise?  @relation("FranchiseHierarchy", fields: [parentFranchiseId], references: [id], onDelete: SetNull)
   childFranchises  Franchise[] @relation("FranchiseHierarchy")
   items            FranchiseItem[]
   follows          FranchiseFollow[]
@@ -207,6 +209,7 @@ model FranchiseRating {
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   franchise Franchise @relation(fields: [franchiseId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, franchiseId])
   @@index([franchiseId])
@@ -220,6 +223,7 @@ model FranchiseFollow {
   createdAt   DateTime @default(now()) @map("created_at")
 
   franchise Franchise @relation(fields: [franchiseId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, franchiseId])
   @@index([userId])
@@ -295,7 +299,7 @@ model Review {
   @@index([itemId])
   @@index([userId])
   @@index([parentId])
-  @@index([itemId, voteScore, createdAt])
+  @@index([itemId, voteScore(sort: Desc), createdAt(sort: Desc)])
   @@index([itemId, createdAt])
   @@map("reviews")
 }
