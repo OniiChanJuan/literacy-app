@@ -112,19 +112,44 @@ export async function GET(req: NextRequest) {
       orderBy: [{ popularityScore: "desc" }],
     });
 
-    // Second: fuzzy matches using pg_trgm (catches typos)
+    // Second: fuzzy matches using pg_trgm (catches typos). Short
+    // queries are the noise hotspot — a 5-char query like "babel"
+    // had "Baby" / "Babe" / "Babes" trigram-cleared at the original
+    // 0.30 threshold, and even a length-scaled threshold leaves
+    // "Babe" (sim 0.57) and "Babes" (sim 0.50) leaking through
+    // because they genuinely share enough character overlap.
+    //
+    // Strategy:
+    //   - If the query is < 6 chars AND we already have at least one
+    //     exact substring match, skip fuzzy entirely. This is the
+    //     trade the user signed off on: short queries that resolve
+    //     cleanly via exact match don't need a fuzzy fallback that
+    //     mostly returns noise.
+    //   - If the query is < 6 chars but exact returned NOTHING, we
+    //     still fire fuzzy with a tight 0.45 threshold so typos like
+    //     "1984" → "1894" can still surface something.
+    //   - For 6+ char queries, use the length-scaled threshold
+    //     max(0.30, 0.50 - len * 0.02) — gentle tightening that
+    //     preserves the original behavior for long queries while
+    //     still helping medium ones (e.g. "hercules" → 0.34).
+    const shortQuery = q.length < 6;
+    const fuzzyThreshold = shortQuery
+      ? 0.45
+      : Math.max(0.30, 0.50 - q.length * 0.02);
+    const skipFuzzy = shortQuery && exact.length > 0;
     let fuzzyIds: number[] = [];
-    if (exact.length < 10) {
+    if (exact.length < 10 && !skipFuzzy) {
       try {
         const fuzzy: any[] = await prisma.$queryRawUnsafe(
           `SELECT id FROM items
            WHERE parent_item_id IS NULL
-           AND similarity(lower(title), lower($1)) > 0.3
+           AND similarity(lower(title), lower($1)) > $3
            AND id NOT IN (SELECT unnest($2::int[]))
            ORDER BY similarity(lower(title), lower($1)) DESC
            LIMIT 15`,
           q,
           exact.map((e) => e.id),
+          fuzzyThreshold,
         );
         fuzzyIds = fuzzy.map((f: any) => f.id);
       } catch {
