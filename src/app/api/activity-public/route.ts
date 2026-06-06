@@ -98,6 +98,14 @@ export async function GET(req: NextRequest) {
       };
     };
 
+    // Privacy gates. Anon public feed — owner-exception not applicable here
+    // because the route has no authed-caller distinction (any caller is "other").
+    // is_private=true hides rating + library events but NOT review events
+    // (reviews are an intentional public act). Reviews are gated below by
+    // showActivityPublicly in commit 4.
+    const isHiddenByPrivacy = (userId: string): boolean =>
+      profileMap.get(userId)?.isPrivate === true;
+
     const combined: FeedEntry[] = [
       ...reviews.map((r): FeedEntry => ({
         kind: "review",
@@ -106,20 +114,24 @@ export async function GET(req: NextRequest) {
         item: { ...r.item, genre: r.item.genre ?? [] },
         reviewSnippet: r.text?.slice(0, 80) ?? "",
       })),
-      ...ratings.map((r): FeedEntry => ({
-        kind: "rating",
-        createdAt: r.createdAt.toISOString(),
-        user: userOrFallback(r.userId),
-        item: { ...r.item, genre: r.item.genre ?? [] },
-        rating: r.score,
-      })),
-      ...library.map((l): FeedEntry => ({
-        kind: "library",
-        createdAt: (l.startedAt ?? new Date(0)).toISOString(),
-        user: userOrFallback(l.userId),
-        item: { ...l.item, genre: l.item.genre ?? [] },
-        libraryStatus: l.status,
-      })),
+      ...ratings
+        .filter((r) => !isHiddenByPrivacy(r.userId))
+        .map((r): FeedEntry => ({
+          kind: "rating",
+          createdAt: r.createdAt.toISOString(),
+          user: userOrFallback(r.userId),
+          item: { ...r.item, genre: r.item.genre ?? [] },
+          rating: r.score,
+        })),
+      ...library
+        .filter((l) => !isHiddenByPrivacy(l.userId))
+        .map((l): FeedEntry => ({
+          kind: "library",
+          createdAt: (l.startedAt ?? new Date(0)).toISOString(),
+          user: userOrFallback(l.userId),
+          item: { ...l.item, genre: l.item.genre ?? [] },
+          libraryStatus: l.status,
+        })),
     ];
 
     combined.sort((a, b) => b.createdAt.localeCompare(a.createdAt));

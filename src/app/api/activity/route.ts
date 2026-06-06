@@ -63,12 +63,22 @@ export async function GET(req: NextRequest) {
     : [];
   const profileMap = new Map(profiles.map((p) => [p.id, p]));
 
+  // Privacy gate: followee with is_private=true contributes reviews but
+  // NOT rating events to the feed (ratings are passive consumption, hidden
+  // by is_private per the product decision). Reviews are gated below by
+  // showActivityPublicly in commit 4. Owner (claims.sub) sees their own
+  // events regardless — note this feed only shows followed users' events,
+  // never the caller's own.
+  const isHiddenByPrivacy = (userId: string): boolean =>
+    profileMap.get(userId)?.isPrivate === true;
+
   // Build lookup map for ratings by userId+itemId (for reviews needing score)
   const ratingMap = new Map(allRatings.map((r) => [`${r.userId}-${r.itemId}`, r]));
 
-  // Rating-only: ratings with no corresponding review in our set
+  // Rating-only: ratings with no corresponding review in our set, AND
+  // not from a private user.
   const ratingOnlyItems = allRatings.filter(
-    (r) => !reviewedSet.has(`${r.userId}-${r.itemId}`)
+    (r) => !reviewedSet.has(`${r.userId}-${r.itemId}`) && !isHiddenByPrivacy(r.userId),
   );
 
   // Build unified activity list

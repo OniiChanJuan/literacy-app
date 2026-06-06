@@ -53,12 +53,20 @@ export async function GET(req: NextRequest) {
   }
 
   // Preserve the follow ordering (most-recently-followed first).
+  // Privacy gates:
+  //   - Profile + name + avatar + member number always shown (the user
+  //     accepted the follow — basic identity stays visible).
+  //   - is_private=true → hide rating-derived stats (topMediaTypes,
+  //     lastActiveAt, ratedCount) because ratings are passive consumption.
+  //     reviewCount stays visible (reviews are an intentional public act
+  //     per the privacy-toggles product decision).
   const users = follows
     .map((f) => {
       const p = profileMap.get(f.followedId);
       if (!p) return null;
       const c = countMap.get(f.followedId);
-      const userRatings = ratingsByUser.get(f.followedId) ?? [];
+      const isPrivate = p.isPrivate === true;
+      const userRatings = isPrivate ? [] : ratingsByUser.get(f.followedId) ?? [];
 
       const typeCounts: Record<string, number> = {};
       let lastActiveAt: string | null = null;
@@ -76,7 +84,7 @@ export async function GET(req: NextRequest) {
         name: p.name || "Anonymous",
         avatar: p.avatar || p.image || "",
         memberNumber: p.memberNumber,
-        ratedCount: c?.ratings ?? 0,
+        ratedCount: isPrivate ? 0 : (c?.ratings ?? 0),
         reviewCount: c?.reviews ?? 0,
         topMediaTypes,
         lastActiveAt,
