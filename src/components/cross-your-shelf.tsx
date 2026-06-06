@@ -63,6 +63,13 @@ interface Connection {
   themeTags: string[];
   qualityScore: number;
   userVote: -1 | 0 | 1;
+  /**
+   * Stage 4a: per-user affinity in [0.5, 1.5]. Optional on the client
+   * — the field is not rendered in this stage; ordering still follows
+   * qualityScore. Wiring the type now keeps the client + server in
+   * sync ahead of 4b.
+   */
+  personalAffinity?: number;
 }
 
 export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) {

@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import type { TasteDimensions } from "@/lib/taste-dimensions";
+import {
+  computeConnectionAffinity,
+  buildHighRatedTagBag,
+  AFFINITY_NEUTRAL,
+  type AffinityRecItem,
+} from "@/lib/connection-affinity";
 
 /**
  * GET /api/cross-connections
@@ -47,6 +54,13 @@ interface ConnectionOut {
   themeTags: string[];
   qualityScore: number;
   userVote: -1 | 0 | 1;
+  /**
+   * Stage 4a: per-user affinity in [0.5, 1.5]. Computed only for
+   * personalized-mode connections; AFFINITY_NEUTRAL (1.0) for
+   * trending/discovery and for signed-out users. NOT applied to
+   * ordering in this stage — exposed for telemetry + dev observation.
+   */
+  personalAffinity: number;
 }
 
 export async function GET(req: NextRequest) {
@@ -63,16 +77,38 @@ export async function GET(req: NextRequest) {
     const ratedIds = new Set<number>();
     let ratedHighlyIds: number[] = [];
     let totalRatings = 0;
+    // Stage 4a: also load taste_profile + the high-rated items' tag bag
+    // so we can compute per-user affinity for personalized candidates.
+    let tasteProfile: TasteDimensions | null = null;
+    let highRatedTagBag: Set<string> = new Set();
+    // (userId, itemId) → { score, recommendTag } for source-affinity lookup.
+    const ratingByItemId = new Map<number, { score: number; recommendTag: string | null }>();
     if (userId) {
-      const ratings = await prisma.rating.findMany({
-        where: { userId },
-        select: { itemId: true, score: true },
-      });
+      const [ratings, userRow] = await Promise.all([
+        prisma.rating.findMany({
+          where: { userId },
+          select: {
+            itemId: true,
+            score: true,
+            recommendTag: true,
+            item: { select: { genre: true, vibes: true } },
+          },
+        }),
+        prisma.user.findUnique({
+          where: { id: userId },
+          select: { tasteProfile: true },
+        }),
+      ]);
       totalRatings = ratings.length;
-      for (const r of ratings) ratedIds.add(r.itemId);
+      for (const r of ratings) {
+        ratedIds.add(r.itemId);
+        ratingByItemId.set(r.itemId, { score: r.score, recommendTag: r.recommendTag });
+      }
       ratedHighlyIds = ratings
         .filter((r) => r.score >= RATED_HIGHLY_MIN_SCORE)
         .map((r) => r.itemId);
+      tasteProfile = (userRow?.tasteProfile as TasteDimensions | null) ?? null;
+      highRatedTagBag = buildHighRatedTagBag(ratings);
     }
 
     const [userVotes, userDismissals] = await Promise.all([
@@ -163,10 +199,17 @@ export async function GET(req: NextRequest) {
         ),
       ),
     );
+    // Hydration now also pulls itemDimensions / genre / vibes used by
+    // the Stage 4a affinity computation. Trending/discovery candidates
+    // still hydrate them (cheap), but only personalized candidates
+    // actually feed them into the affinity helper.
     const recRows = allRecIds.length > 0
       ? await prisma.item.findMany({
           where: { id: { in: allRecIds } },
-          select: { id: true, title: true, type: true, cover: true, slug: true },
+          select: {
+            id: true, title: true, type: true, cover: true, slug: true,
+            itemDimensions: true, genre: true, vibes: true,
+          },
         })
       : [];
     const recMap = new Map(recRows.map((r) => [r.id, r]));
@@ -185,6 +228,11 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // ── Stage 4a: compute per-user affinity for personalized candidates ──
+    // The number rides along on the response shape but does NOT influence
+    // ordering yet. Stage 4b will multiply it onto qualityScore.
+    const affinityDebug: Array<{ id: number; affinity: number; dim: number; tag: number; src: number; dimSig: boolean }> = [];
+
     const out: ConnectionOut[] = chosen
       .filter((c: any) => c.sourceItem)
       .map((c: any) => {
@@ -192,6 +240,43 @@ export async function GET(req: NextRequest) {
         const recs: ItemThumb[] = recsRaw
           .map((r: any) => recMap.get(Number(r.item_id)))
           .filter(Boolean) as ItemThumb[];
+
+        // Affinity is only meaningful in personalized mode (where the
+        // user has rated the source and has a populated taste profile).
+        // Trending/discovery + signed-out users get the neutral 1.0.
+        let personalAffinity = AFFINITY_NEUTRAL;
+        if (mode === "personalized" && userId) {
+          const recItems: AffinityRecItem[] = recsRaw
+            .map((r: any) => recMap.get(Number(r.item_id)))
+            .filter(Boolean)
+            .map((row: any) => ({
+              id: row.id as number,
+              itemDimensions: (row.itemDimensions as TasteDimensions | null) ?? null,
+              genre: (row.genre as string[]) ?? [],
+              vibes: (row.vibes as string[]) ?? [],
+            }));
+          const breakdown = computeConnectionAffinity({
+            user: {
+              tasteProfile,
+              highRatedTags: highRatedTagBag,
+              sourceRating: ratingByItemId.get(c.sourceItemId) ?? null,
+            },
+            connection: {
+              themeTags: (c.themeTags || c.theme_tags || []) as string[],
+              recommendedItems: recItems,
+            },
+          });
+          personalAffinity = breakdown.affinity;
+          affinityDebug.push({
+            id: c.id,
+            affinity: breakdown.affinity,
+            dim: breakdown.components.dimMatch,
+            tag: breakdown.components.tagMatch,
+            src: breakdown.components.sourceAffinity,
+            dimSig: breakdown.hasDimSignal,
+          });
+        }
+
         return {
           id: c.id,
           sourceItem: c.sourceItem,
@@ -200,8 +285,22 @@ export async function GET(req: NextRequest) {
           themeTags: c.themeTags || c.theme_tags || [],
           qualityScore: Number(c.qualityScore ?? c.quality_score ?? 1),
           userVote: (voteMap.get(c.id) ?? 0) as -1 | 0 | 1,
+          personalAffinity,
         };
       });
+
+    // Dev-only debug emission. Lets us watch the numbers as we navigate
+    // the live app during 4a's dark-launch window.
+    if (process.env.NODE_ENV !== "production" && affinityDebug.length > 0) {
+      console.log(`[cross-connections affinity] mode=${mode} user=${userId} candidates=${affinityDebug.length}`);
+      for (const d of affinityDebug) {
+        console.log(
+          `  id=${String(d.id).padStart(3)} aff=${d.affinity.toFixed(3)} ` +
+          `dim=${d.dim.toFixed(3)} tag=${d.tag.toFixed(3)} src=${d.src.toFixed(3)} ` +
+          `dimSig=${d.dimSig}`,
+        );
+      }
+    }
 
     const res = NextResponse.json({ mode, connections: out });
     // Per-user state (userVote, dismissed filter) makes this response
