@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, useMemo, useEffect, type ReactNode } from "react";
+import { toast } from "sonner";
 import type { MediaType, Item } from "./data";
 
 export type LibraryStatus = "completed" | "in_progress" | "want_to" | "dropped";
@@ -63,8 +64,10 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setStatus = useCallback((id: number, status: LibraryStatus | null) => {
-    // Optimistic update
+    // Snapshot prev for rollback
+    let prevEntry: LibraryEntry | undefined;
     setEntries((prev) => {
+      prevEntry = prev[id];
       if (status === null) {
         const next = { ...prev };
         delete next[id];
@@ -74,30 +77,53 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       return { ...prev, [id]: { progress: existing?.progress ?? 0, status } };
     });
 
-    // Persist to database
+    // Persist to database. On failure, toast + revert.
     fetch("/api/library", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ itemId: id, status }),
-    }).catch((e) => console.error("Failed to save library status:", e));
+    })
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); })
+      .catch((e) => {
+        console.error("Failed to save library status:", e);
+        toast.error("Couldn't update your library. Please try again.");
+        setEntries((curr) => {
+          const next = { ...curr };
+          if (prevEntry === undefined) delete next[id];
+          else next[id] = prevEntry;
+          return next;
+        });
+      });
   }, []);
 
   const setProgress = useCallback((id: number, progress: number) => {
     const clamped = Math.max(0, progress);
 
-    // Optimistic update
+    // Snapshot prev progress for rollback
+    let prevProgress: number | undefined;
     setEntries((prev) => {
       const existing = prev[id];
       if (!existing) return prev;
+      prevProgress = existing.progress;
       return { ...prev, [id]: { ...existing, progress: clamped } };
     });
 
-    // Persist to database
+    // Persist to database. On failure, toast + revert.
     fetch("/api/library/progress", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ itemId: id, progress: clamped }),
-    }).catch((e) => console.error("Failed to save progress:", e));
+    })
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); })
+      .catch((e) => {
+        console.error("Failed to save progress:", e);
+        toast.error("Couldn't save your progress. Please try again.");
+        setEntries((curr) => {
+          const existing = curr[id];
+          if (!existing || prevProgress === undefined) return curr;
+          return { ...curr, [id]: { ...existing, progress: prevProgress } };
+        });
+      });
   }, []);
 
   const value = useMemo(
