@@ -40,6 +40,14 @@ const PERSONALIZED_PRIMARY_SLOTS = 5;          // 5 affinity-ranked + 1 serendip
 const MIN_PERSONALIZED_SOURCES = 3;
 const RATED_HIGHLY_MIN_SCORE = 4;
 
+// Admin gate for the debug surface — mirrors the ADMIN_EMAILS hardcode
+// pattern in /api/admin/reports/route.ts. Replace when the broader
+// admin auth audit (the DB role column) lands.
+const ADMIN_EMAILS = new Set<string>([
+  "admin@crossshelf.app",
+  "juanguajardo2014@gmail.com",  // member #1 — project owner
+]);
+
 type SectionMode = "personalized" | "trending" | "discovery";
 
 interface ItemThumb {
@@ -76,6 +84,26 @@ interface ConnectionOut {
    * and on every trending / discovery card.
    */
   isSerendipitySlot?: boolean;
+}
+
+/**
+ * Per-candidate row in the admin debug payload. Exposes every
+ * intermediate computation so future-Juan can answer "why did this
+ * card rank where it did?" without re-running the algorithm in
+ * their head.
+ */
+interface DebugRow {
+  id: number;
+  sourceItemId: number;
+  qualityScore: number;
+  personalAffinity: number;
+  finalScore: number;       // qualityScore × personalAffinity
+  dimMatch: number;
+  tagMatch: number;
+  sourceAffinity: number;
+  hasDimSignal: boolean;
+  isInPrimary: boolean;
+  isSerendipity: boolean;
 }
 
 export async function GET(req: NextRequest) {
@@ -178,9 +206,11 @@ export async function GET(req: NextRequest) {
     // Built during personalized mode; reused by output hydration so we
     // don't re-fetch the same rec items.
     const recMap = new Map<number, any>();
-    // Captured during personalized mode for dev-only telemetry.
-    type AffinityDebugRow = { id: number; aff: number; finalScore: number; dim: number; tag: number; src: number; dimSig: boolean; serendipity: boolean };
-    const affinityDebug: AffinityDebugRow[] = [];
+    // Populated during personalized mode. Includes EVERY candidate in
+    // the pool (not just chosen) so the admin debug surface can answer
+    // "why did this card NOT make it?" questions. Also feeds the
+    // structured-log telemetry below.
+    const debugRows: DebugRow[] = [];
 
     if (distinctSources >= MIN_PERSONALIZED_SOURCES) {
       mode = "personalized";
@@ -269,18 +299,25 @@ export async function GET(req: NextRequest) {
         return row;
       });
 
-      // Build debug rows for dev console emission.
-      for (const c of chosen) {
+      // Build debug rows for every candidate in the pool. The admin
+      // debug surface exposes these; telemetry derives rank-diff from
+      // them. Order is final_score desc (matches the sort the slate
+      // helper just ran).
+      const primaryIdSet = new Set<number>(slate.primaryIds);
+      for (const c of personalized) {
         const b = c.__affBreakdown;
-        affinityDebug.push({
+        debugRows.push({
           id: c.id,
-          aff: c.personalAffinity,
+          sourceItemId: c.sourceItemId,
+          qualityScore: Number(c.qualityScore),
+          personalAffinity: c.personalAffinity,
           finalScore: Number(c.qualityScore) * c.personalAffinity,
-          dim: b.components.dimMatch,
-          tag: b.components.tagMatch,
-          src: b.components.sourceAffinity,
-          dimSig: b.hasDimSignal,
-          serendipity: c.__isSerendipity === true,
+          dimMatch: b.components.dimMatch,
+          tagMatch: b.components.tagMatch,
+          sourceAffinity: b.components.sourceAffinity,
+          hasDimSignal: b.hasDimSignal,
+          isInPrimary: primaryIdSet.has(c.id),
+          isSerendipity: slate.serendipityId === c.id,
         });
       }
     } else if (totalRatings === 0) {
@@ -361,21 +398,61 @@ export async function GET(req: NextRequest) {
         return out;
       });
 
-    // Dev-only debug emission. Now includes final_score (qs × aff) and
-    // a serendipity marker so we can spot the slot-6 pick in logs.
-    if (process.env.NODE_ENV !== "production" && affinityDebug.length > 0) {
-      console.log(`[cross-connections affinity] mode=${mode} user=${userId} candidates=${affinityDebug.length}`);
-      for (const d of affinityDebug) {
-        console.log(
-          `  id=${String(d.id).padStart(3)} ` +
-          `final=${d.finalScore.toFixed(3)} aff=${d.aff.toFixed(3)} ` +
-          `dim=${d.dim.toFixed(3)} tag=${d.tag.toFixed(3)} src=${d.src.toFixed(3)} ` +
-          `dimSig=${d.dimSig}${d.serendipity ? " [SERENDIPITY]" : ""}`,
-        );
+    // ── Stage 4c telemetry ───────────────────────────────────────────
+    // One structured log line per personalized-mode request. Captures
+    // "is Stage 4 doing anything observable" at the aggregate, with
+    // ZERO per-user identifiers and no per-item details. In-memory
+    // only — no new tables, no rollups, no analytics warehouse. The
+    // payload is JSON-serializable so log aggregators ingest cleanly.
+    if (mode === "personalized" && debugRows.length > 0) {
+      // Rank under the pre-4b ordering: raw qualityScore desc, id asc.
+      const rawRank = new Map<number, number>();
+      [...debugRows]
+        .sort((a, b) => {
+          const qd = b.qualityScore - a.qualityScore;
+          if (qd !== 0) return qd;
+          return a.id - b.id;
+        })
+        .forEach((d, i) => rawRank.set(d.id, i));
+
+      // Rank under the new (4b) ordering: chosen array index.
+      const newRank = new Map<number, number>();
+      chosen.forEach((c: any, i: number) => newRank.set(c.id, i));
+
+      // Sum of |new_position − old_position| over the chosen connections.
+      // Simple "positions moved" metric per the design. 0 = no change.
+      let rankDiffMagnitude = 0;
+      let orderChangedVsRawQs = false;
+      for (const [id, np] of newRank) {
+        const op = rawRank.get(id);
+        if (op === undefined) continue;
+        const diff = Math.abs(np - op);
+        rankDiffMagnitude += diff;
+        if (diff > 0) orderChangedVsRawQs = true;
       }
+
+      console.log(JSON.stringify({
+        kind: "cross_connections.personalization",
+        mode,
+        candidatePoolSize: debugRows.length,
+        primarySlotCount: debugRows.filter((d) => d.isInPrimary).length,
+        serendipitySlotFilled: debugRows.some((d) => d.isSerendipity),
+        orderChangedVsRawQs,
+        rankDiffMagnitude,
+      }));
     }
 
-    const res = NextResponse.json({ mode, connections: out });
+    // ── Stage 4c admin debug surface ──────────────────────────────────
+    // Append the full per-candidate breakdown when (a) ?debug=1 is in
+    // the query AND (b) the caller is an admin per ADMIN_EMAILS. Strip
+    // for everyone else. Never leaks to non-admin sessions.
+    let debugPayload: { _debug?: DebugRow[] } = {};
+    const wantsDebug = req.nextUrl.searchParams.get("debug") === "1";
+    if (wantsDebug && claims?.email && ADMIN_EMAILS.has(claims.email.toLowerCase())) {
+      debugPayload = { _debug: debugRows };
+    }
+
+    const res = NextResponse.json({ mode, connections: out, ...debugPayload });
     // Per-user state (userVote, dismissed filter) makes this response
     // unsafe to cache even for 60s — a fresh vote or dismiss must be
     // reflected on the next render. Was previously max-age=60 which

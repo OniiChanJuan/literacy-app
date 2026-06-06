@@ -1,30 +1,182 @@
 /**
- * Per-user personal-affinity for a cross-shelf connection (Stage 4).
+ * Per-user personalization for Cross your shelf (Stage 4 of the
+ * cross-connection algorithm work).
  *
- * Computes a single number in [0.5, 1.5] expressing how well a
- * particular connection matches a particular user's taste, intended
- * to be multiplied onto the aggregate quality_score in Stage 4b.
+ * Design intent — see: Stage 4 design proposal, Phase 1.
  *
- * Stage 4a: helper is computed and emitted in the API response but
- * NOT applied to ordering yet.
+ * ─── What this file does ───────────────────────────────────────────────
  *
- * Formula (per the approved Phase 1 design):
+ * Two pure functions consumed by /api/cross-connections/route.ts:
  *
- *   affinity_raw  =  W_dim    * dim_match
- *                +  W_tag    * tag_match
- *                +  W_source * source_affinity
- *   affinity      =  0.5 + affinity_raw         ∈ [0.5, 1.5]
+ *   computeConnectionAffinity({ user, connection })
+ *     Returns a personal-affinity number in [0.5, 1.5] expressing how
+ *     well one specific connection matches one specific user's taste.
  *
- * Default weights: W_dim=0.50, W_tag=0.30, W_source=0.20.
+ *   selectPersonalizedSlate(candidates, opts)
+ *     Given the personalized-mode candidate pool with affinities
+ *     already computed, returns the ordered slate of up to TARGET
+ *     (default 6) connections: 5 ranked by final_score with
+ *     distinct-source diversity, plus a serendipity slot (slot 6)
+ *     picked by raw qualityScore from the remaining candidates.
  *
- * When dim_match cannot be computed (no rec item has populated
- * itemDimensions — common today since coverage is ~12%), W_dim's
- * weight is redistributed proportionally onto the other two
- * components: W_tag→0.60, W_source→0.40. This keeps affinity
- * meaningful even on the long tail of dim-less items.
+ * Plus two helpers exposed for the route: buildHighRatedTagBag
+ * (one-shot per-request user tag aggregation) and the typed shapes
+ * AffinityUser / AffinityConnection / PersonalizedCandidate.
  *
- * Pure function — no DB access. All inputs are pre-fetched by the
- * caller. Trivially unit-testable.
+ * ─── The three components and their weights ─────────────────────────────
+ *
+ *   dim_match       Mean tasteSimilarity(user.tasteProfile, rec.dims)
+ *                   over recommended items that have itemDimensions
+ *                   populated. Uses the strength-weighted Euclidean
+ *                   metric from src/lib/taste-dimensions.ts unchanged.
+ *                   Returns null when no rec items have dimensions;
+ *                   triggers the weight redistribution below.
+ *
+ *   tag_match       Jaccard overlap between two bags of lowercased,
+ *                   trimmed tags:
+ *                     conn bag = connection.theme_tags
+ *                              ∪ union of rec.genres
+ *                              ∪ union of rec.vibes
+ *                     user bag = union of (genre ∪ vibes) over items
+ *                                the user rated ≥ 4
+ *                   Bridge metric across media types — especially
+ *                   important given the catalog-wide dim-coverage
+ *                   ceiling (only ~12% of items have populated dims).
+ *                   Returns 0 when either bag is empty (treated as a
+ *                   zero component, NOT as missing signal).
+ *
+ *   source_affinity From the user's own rating on the connection's
+ *                   source item:
+ *                     recommendTag=recommend OR score=5 → 1.0
+ *                     score=4                            → 0.8
+ *                     score=3                            → 0.5
+ *                     recommendTag=skip OR score≤2       → 0.2
+ *                     no rating                          → 0.5
+ *                   In personalized mode the source is always rated
+ *                   ≥4 (the gating filter on /api/cross-connections),
+ *                   so the score=3/≤2/no-rating branches are dead
+ *                   paths for live personalized candidates today.
+ *
+ * Default weights: W_dim=0.50, W_tag=0.30, W_source=0.20. Chosen with
+ * the explicit understanding that dim coverage on the live catalog is
+ * low; the auto-renormalization (below) keeps the metric meaningful
+ * on the long tail of dim-less items.
+ *
+ * ─── Auto-renormalization when dim_match is absent ──────────────────────
+ *
+ * When no rec item in the connection has itemDimensions populated,
+ * computeDimMatch returns null and we redistribute W_dim's 0.50 weight
+ * proportionally onto the other two components, ratio 0.30:0.20:
+ *
+ *   W_dim → 0.00
+ *   W_tag → 0.60
+ *   W_source → 0.40
+ *
+ * Weights still sum to 1.0 so the [0.0, 1.0] raw-affinity range and the
+ * [0.5, 1.5] final-affinity range remain mathematically exact. The
+ * AffinityBreakdown.hasDimSignal flag tells callers (telemetry, admin
+ * debug) which weight regime fired.
+ *
+ * ─── The [0.5, 1.5] range and why ───────────────────────────────────────
+ *
+ *   affinity_raw  ∈  [0.0, 1.0]   (weighted average of [0,1] components)
+ *   affinity      =  0.5 + affinity_raw   ∈  [0.5, 1.5]
+ *
+ * Asymmetric around 1.0:
+ *   - affinity < 1.0 demotes (a user with strong opposite taste sees
+ *     the connection at half its global score)
+ *   - affinity > 1.0 promotes (matching taste up to a 1.5× boost)
+ *   - never zeroes out a high-quality connection
+ *
+ * Wider ranges (e.g., [0.2, 2.0]) would let personalization override
+ * quality dominance, which inverts the design goal of "personalization
+ * layered ON aggregate quality, not replacing it". The 0.3 quality
+ * floor on the route still applies as a hard global gate BEFORE
+ * personalization runs.
+ *
+ * ─── Multiplicative composition with quality_score ──────────────────────
+ *
+ * The route does:
+ *
+ *   final_score = qualityScore × personalAffinity
+ *
+ * Then sorts personalized candidates by final_score desc, runs the
+ * distinct-source diversity pass over that sorted list, takes the top
+ * PERSONALIZED_PRIMARY_SLOTS (default 5), and uses selectPersonalizedSlate
+ * to mint the slot-6 serendipity pick.
+ *
+ * Why multiplicative (not additive, not filter, not rerank-within-N):
+ *   - Additive would let personalization swing past [0, 2] caps and
+ *     dominate quality at the extremes.
+ *   - Filter (drop below affinity threshold) shrinks discovery for
+ *     users with weak signal; most users have weak signal for a long
+ *     time.
+ *   - Rerank-within-top-N is brittle when the candidate pool is small.
+ *   - Multiplicative composes the two scores in their natural
+ *     dimensions: quality is the "is this generally good" axis and
+ *     affinity is the "is this good for THIS user" axis; their
+ *     product is "is this good for this user, weighted by general
+ *     goodness".
+ *
+ * ─── The serendipity slot ───────────────────────────────────────────────
+ *
+ * Slot 6 in personalized mode is NOT personalized. selectPersonalizedSlate
+ * picks it from the candidates outside the top-5 final_score ranking by
+ * raw qualityScore desc (NOT final_score), preferring a source not
+ * already represented in the primary 5. This is a deliberate
+ * filter-bubble-prevention mechanism: even strongly-personalized users
+ * always see one card surfaced because it's broadly loved across
+ * CrossShelf, not because their taste profile said so. The client uses
+ * the isSerendipitySlot flag to render a distinct framing
+ * ("Also loved across CrossShelf" rather than "Because you rated X
+ * highly") so the basis stays honest.
+ *
+ * If the personalized candidate pool was already ≤ PERSONALIZED_PRIMARY_SLOTS,
+ * no serendipity slot is synthesized; the response just returns fewer
+ * cards. Per the design: "don't synthesize one — return what's there."
+ *
+ * ─── Cold-start behavior ────────────────────────────────────────────────
+ *
+ * The system degrades gracefully on rating count, without any explicit
+ * thresholds beyond what's already in /api/cross-connections/route.ts:
+ *
+ *   0 ratings → discovery mode (route fallback). Affinity never runs.
+ *   1–2 ratings, sparse source coverage → trending mode. Affinity
+ *                                          never runs; aff stays neutral
+ *                                          (=1.0) on the response.
+ *   3+ rated-highly source items → personalized mode kicks in.
+ *
+ * Inside personalized mode, the helper's behavior on a neutral
+ * tasteProfile (all dimensions ≈ 0.5, which is what newly-rated users
+ * have until updateTasteProfile has shifted them) produces affinity
+ * values clustered near 1.0 because the strength-weighting in
+ * tasteSimilarity means a neutral user has no preference axes to
+ * differentiate candidates. This is by design — cold-start users get
+ * essentially no-op reordering, falling back to the same aggregate-
+ * quality order they would have seen without Stage 4 at all.
+ *
+ * ─── What this file does NOT do ─────────────────────────────────────────
+ *
+ *   - DB access: every input is pre-fetched by the caller
+ *   - Cross-user signal: purely self-referential — no collaborative
+ *     filtering, no neighbor lookups. Sub-session B's privacy flags
+ *     don't apply because nothing here reads another user's data.
+ *   - Mutate inputs: selectPersonalizedSlate copies the input array
+ *     before sorting and does not modify candidate objects beyond
+ *     adding isSerendipity to the returned shape.
+ *   - Negative personalization (dismissal-pattern generalization): out
+ *     of scope per Phase 1, deferred to Stage 4.5+ when there's enough
+ *     dismissal data to train against. Per-connection dismissal
+ *     remains in /api/cross-connections/[id]/dismiss/route.ts unchanged.
+ *
+ * ─── Unit tests ─────────────────────────────────────────────────────────
+ *
+ * scripts/_test-connection-affinity.ts covers every public export with
+ * 50 assertions including weight-redistribution math, [0.5, 1.5]
+ * bounding, the diversity + serendipity selection rules, and the
+ * cold-start degradation behavior. Run with:
+ *
+ *   npx tsx scripts/_test-connection-affinity.ts
  */
 import { tasteSimilarity, type TasteDimensions } from "./taste-dimensions";
 
