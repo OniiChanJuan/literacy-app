@@ -41,3 +41,6 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# NYT bestseller ingestion resume file (runtime artifact; see scripts/populate-from-nyt-bestsellers.ts)
+.nyt-ingestion-progress.json
