@@ -369,6 +369,11 @@ async function main(): Promise<void> {
       if (EXCLUDE_LISTS.has(ln)) continue;
       if (!progress.perList[ln]) progress.perList[ln] = { ingested: 0, duplicates: 0 };
       for (const book of list.books) {
+        // Skip placeholder / untitled NYT entries (e.g. forthcoming "Untitled
+        // <series> Deluxe Edition" rows, or blank-title junk). Unusable as
+        // catalog books and a source of non-idempotent near-duplicates.
+        const t = (book.title || "").trim();
+        if (!t || /^untitled\b/i.test(t)) continue;
         const res = await handleBook(book, ln, weekYear);
         if (res.outcome === "new") {
           weekNew++;
