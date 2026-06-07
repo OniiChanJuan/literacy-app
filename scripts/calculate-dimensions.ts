@@ -2,13 +2,18 @@
  * Calculate taste dimensions for all items in the database.
  * Run: npx tsx scripts/calculate-dimensions.ts
  */
-import "dotenv/config";
+import * as dotenv from "dotenv";
+// Load .env.local first (current pooler DATABASE_URL); .env is a fallback.
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 import { PrismaClient, Prisma } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { calculateItemDimensions } from "../src/lib/taste-dimensions";
 
 async function main() {
-  const connUrl = process.env.DIRECT_URL || process.env.DATABASE_URL!;
+  // Prefer the pooler DATABASE_URL; the legacy DIRECT_URL host (db.<ref>.supabase.co)
+  // is deprecated and fails auth, so it must not take precedence.
+  const connUrl = process.env.DATABASE_URL || process.env.DIRECT_URL!;
   const adapter = new PrismaPg({ connectionString: connUrl });
   const prisma = new PrismaClient({ adapter });
 
