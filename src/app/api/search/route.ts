@@ -64,7 +64,12 @@ function computeSearchRank(item: any, query: string): number {
   // Quality from ext scores
   let qualityNorm = 0.5;
   if (item.ext && typeof item.ext === "object") {
-    const scores = Object.values(item.ext) as number[];
+    // Only numeric ext values are scores. Some ext keys hold structured
+    // metadata objects (e.g. ext.nyt = { peakRank, totalWeeks, lists }); a
+    // non-number here would make Math.max return NaN and corrupt the rank.
+    const scores = (Object.values(item.ext) as unknown[]).filter(
+      (v): v is number => typeof v === "number" && Number.isFinite(v)
+    );
     if (scores.length > 0) {
       const best = Math.max(...scores);
       qualityNorm = Math.min(best / 10, 1.0);
