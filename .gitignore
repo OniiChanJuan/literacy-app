@@ -44,3 +44,6 @@ next-env.d.ts
 
 # NYT bestseller ingestion resume file (runtime artifact; see scripts/populate-from-nyt-bestsellers.ts)
 .nyt-ingestion-progress.json
+
+# Orphan re-enrichment resume file (runtime artifact; see scripts/reenrich-orphan-books.ts)
+.reenrich-progress.json
