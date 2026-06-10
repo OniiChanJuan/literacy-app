@@ -22,7 +22,7 @@ export function normalizeScore(ext: Record<string, number>, type: string, voteCo
   };
 
   const maxScales: Record<string, number> = {
-    tmdb: 10, igdb: 100, igdb_critics: 100, google_books: 5,
+    tmdb: 10, igdb: 100, igdb_critics: 100, google_books: 10,
     spotify_popularity: 100,
     imdb: 10, rt_critics: 100, rt_audience: 100,
     metacritic: 100, mal: 10, anilist: 100,

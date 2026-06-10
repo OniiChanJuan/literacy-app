@@ -28,7 +28,7 @@ const SOURCE_META: Record<string, { displayName: string; suffix: string; max: nu
   tmdb:              { displayName: "TMDB",         suffix: "/10",  max: 10  },
   igdb:              { displayName: "IGDB",         suffix: "/100", max: 100 },
   igdb_critics:      { displayName: "IGDB Critics", suffix: "/100", max: 100 },
-  google_books:      { displayName: "Google Books", suffix: "/5",   max: 5   },
+  google_books:      { displayName: "Google Books", suffix: "/10",  max: 10  },
   spotify_popularity:{ displayName: "Spotify",      suffix: "/100", max: 100 },
   imdb:              { displayName: "IMDb",         suffix: "/10",  max: 10  },
   rt_critics:        { displayName: "RT Critics",   suffix: "%",    max: 100 },

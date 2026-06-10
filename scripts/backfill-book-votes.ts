@@ -89,9 +89,9 @@ async function main() {
         const ext = (book.ext as Record<string, number>) || {};
         const updateData: any = { voteCount: data.ratingsCount };
 
-        // Also update google_books score if missing
+        // Also update google_books score if missing (canonical 0-10 = stars × 2)
         if (data.averageRating && !ext.google_books && !ext.goodreads) {
-          updateData.ext = { ...ext, google_books: data.averageRating };
+          updateData.ext = { ...ext, google_books: Math.min(data.averageRating * 2, 10) };
         }
 
         await prisma.item.update({ where: { id: book.id }, data: updateData });

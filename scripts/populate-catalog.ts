@@ -646,7 +646,9 @@ function gBookToItem(vol: any, genreTag: string): CatalogItem | null {
     platforms: ["kindle", "audible"],
     totalEp: info.pageCount || 0,
     voteCount: info.ratingsCount || 0,
-    ext: gbScore > 0 ? { google_books: gbScore } : {},
+    // ext.google_books is canonically 0-10 (stars × 2); the external_scores
+    // row above stays 0-5 because it self-describes via maxScore.
+    ext: gbScore > 0 ? { google_books: Math.min(gbScore * 2, 10) } : {},
     scores,
     googleBooksId: vol.id,
   };
@@ -748,7 +750,8 @@ function olToItem(doc: any): CatalogItem | null {
     platforms: ["kindle"],
     totalEp: doc.number_of_pages_median || 0,
     voteCount: doc.ratings_count || doc.edition_count || 0,
-    ext: olScore > 0 ? { google_books: olScore } : {},
+    // Canonical 0-10 in ext (OpenLibrary ratings_average is 0-5, × 2)
+    ext: olScore > 0 ? { google_books: Math.min(olScore * 2, 10) } : {},
     scores,
   };
 }

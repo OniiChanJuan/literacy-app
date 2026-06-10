@@ -23,7 +23,7 @@ const SOURCE_META: Record<string, { displayName: string; icon: string; color: st
   igdb:               { displayName: "User Score",  icon: "G",  color: "#9147ff", suffix: "/100" },
   igdb_critics:       { displayName: "Critic Score",icon: "G",  color: "#9147ff", suffix: "/100" },
   ign:                { displayName: "IGN",         icon: "I",  color: "#bf1313", suffix: "/10"  },
-  google_books:       { displayName: "Google Books",icon: "📖", color: "#4285f4", suffix: "/5"   },
+  google_books:       { displayName: "Google Books",icon: "📖", color: "#4285f4", suffix: "/10"  },
   pitchfork:          { displayName: "Pitchfork",   icon: "🎵", color: "#df2020", suffix: "/10"  },
   steam:              { displayName: "Steam",       icon: "S",  color: "#1b2838", suffix: "%"    },
   spotify_popularity: { displayName: "Spotify",     icon: "S",  color: "#1db954", suffix: "/100" },
@@ -96,7 +96,7 @@ export function ExternalScoresPanel({
       .map(([source, value]) => {
         const maxScoreMap: Record<string, number> = {
           imdb: 10, tmdb: 10, metacritic: 100, mal: 10,
-          google_books: 5, pitchfork: 10, ign: 10,
+          google_books: 10, pitchfork: 10, ign: 10,
           steam: 100, igdb: 100, igdb_critics: 100,
           rt_critics: 100, spotify_popularity: 100,
         };

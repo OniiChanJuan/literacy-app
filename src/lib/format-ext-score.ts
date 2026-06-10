@@ -64,7 +64,7 @@ const SOURCE_META: Record<string, SourceMeta> = {
   imdb:               { label: "IMDb",        max: 10,  suffix: "/10"  },
   tmdb:               { label: "TMDB",        max: 10,  suffix: "/10"  },
   mal:                { label: "MAL",         max: 10,  suffix: "/10"  },
-  google_books:       { label: "Books",       max: 5,   suffix: "/5"   },
+  google_books:       { label: "Books",       max: 10,  suffix: "/10"  },
   rt_critics:         { label: "RT",          max: 100, suffix: "%"    },
   metacritic:         { label: "Metacritic",  max: 100, suffix: ""     },
   pitchfork:          { label: "Pitchfork",   max: 10,  suffix: "/10"  },

@@ -337,15 +337,16 @@ export async function GET(req: NextRequest) {
         }
 
         if (t === "book") {
-          // Require vc >= 50 and score < 5.0 to exclude inflated academic/self-published ratings
+          // Require vc >= 50 and score < 10.0 to exclude inflated academic/self-published ratings
+          // (ext.google_books is canonical 0-10; bounds were 3.0/5.0 on the old 0-5 scale)
           const bookIds = await prisma.$queryRawUnsafe<{ id: unknown }[]>(`
             SELECT id FROM items
             WHERE type = 'book'
             AND is_upcoming = false AND parent_item_id IS NULL
             AND vote_count >= 50 AND vote_count < 5000
             AND (ext->>'google_books') IS NOT NULL
-            AND (ext->>'google_books')::float >= 3.0
-            AND (ext->>'google_books')::float < 5.0
+            AND (ext->>'google_books')::float >= 6.0
+            AND (ext->>'google_books')::float < 10.0
             ${excludeClause}
             ORDER BY (ext->>'google_books')::float / log(greatest(vote_count::float, 10)) DESC
             LIMIT ${quota * 20}

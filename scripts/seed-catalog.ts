@@ -342,8 +342,8 @@ async function searchBooks(query: string, maxResults: number): Promise<SeedItem[
           people: people.slice(0, 3),
           awards: [],
           platforms: ["kindle", "audible"],
-          // google_books key: 0-5 scale (Google Books averageRating, NOT Goodreads)
-          ext: info.averageRating ? { google_books: info.averageRating } : {},
+          // google_books key: canonical 0-10 scale (Google's 0-5 averageRating × 2)
+          ext: info.averageRating ? { google_books: Math.min(info.averageRating * 2, 10) } : {},
           totalEp: info.pageCount || 0,
           // Store Google Books ratingsCount so books pass the quality floor
           voteCount: info.ratingsCount || 0,

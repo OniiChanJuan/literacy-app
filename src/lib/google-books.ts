@@ -100,24 +100,18 @@ export interface GoogleBookSearchResult extends Item {
  *
  *   voteCount         = ratingsCount     (Google Books user-rating count)
  *   popularityScore   = ratingsCount     (highest-volume books rank up)
- *   ext.google_books  = averageRating × 2 (rescaled to the 0-10 convention
- *                                          computeSearchRank assumes)
  *
- * If averageRating is missing, leave ext.google_books at whatever the
- * shared mapper produced (typically absent) — don't write garbage.
+ * ext.google_books needs no override here: mapVolumeToItem already writes it
+ * on the canonical 0-10 scale (averageRating × 2).
  */
 function enrichSearchResult(v: GoogleBookVolume): GoogleBookSearchResult {
   const item = mapVolumeToItem(v);
   const ratingsCount = v.volumeInfo.ratingsCount ?? 0;
-  const avgRating = v.volumeInfo.averageRating;
   return {
     ...item,
     volumeId: v.id,
     voteCount: ratingsCount,
     popularityScore: ratingsCount,
-    ext: typeof avgRating === "number" && avgRating > 0
-      ? { ...item.ext, google_books: Math.min(avgRating * 2, 10) }
-      : item.ext,
   };
 }
 
@@ -253,7 +247,8 @@ function mapVolumeToItem(v: GoogleBookVolume): Item {
   // External scores
   const ext: Partial<Record<ExternalSource, number>> = {};
   if (info.averageRating) {
-    ext.google_books = info.averageRating; // 0–5 scale; key must match ranking.ts priorities
+    // Canonical 0-10 scale (Google's 0-5 stars × 2); key must match ranking.ts priorities
+    ext.google_books = Math.min(info.averageRating * 2, 10);
   }
 
   // Page count as totalEp
