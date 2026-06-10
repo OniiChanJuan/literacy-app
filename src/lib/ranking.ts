@@ -2,6 +2,7 @@
  * Quality ranking system for items across all views.
  * Handles scoring, filtering, deduplication, and diversity.
  */
+import { scorePassesThreshold } from "./score-thresholds";
 
 // ── Normalized score ────────────────────────────────────────────────────
 /**
@@ -31,14 +32,6 @@ export function normalizeScore(ext: Record<string, number>, type: string, voteCo
     letterboxd: 5, storygraph: 5,
   };
 
-  // Minimum vote counts for community-aggregated sources.
-  // Editorial sources (imdb, rt_*, metacritic, pitchfork, spotify_popularity) have no minimum.
-  const rankThresholds: Record<string, number> = {
-    tmdb: 20, mal: 50, igdb: 20, igdb_critics: 5,
-    google_books: 10, steam: 50, anilist: 20,
-    opencritic: 5, aoty: 5, rym: 5, letterboxd: 10,
-  };
-
   const order = priorities[type] || Object.keys(ext);
 
   // If rt_critics and rt_audience have big gap, average them
@@ -52,9 +45,13 @@ export function normalizeScore(ext: Record<string, number>, type: string, voteCo
 
   for (const key of order) {
     if (ext[key] === undefined) continue;
-    // Skip community sources that don't meet the minimum vote threshold
-    const threshold = rankThresholds[key];
-    if (threshold !== undefined && voteCount < threshold) continue;
+    // Skip community sources that don't meet the minimum vote threshold.
+    // SCORE_THRESHOLDS (score-thresholds.ts) is the single canonical table —
+    // this file used to carry its own near-duplicate copy, which had drifted
+    // (steam 50 here vs 0 there; 0 is correct since the Steam sync already
+    // enforces ≥50 reviews before storing). IGDB counts are read from
+    // ext.igdb_count / ext.igdb_critics_count rather than voteCount.
+    if (!scorePassesThreshold(key, ext, voteCount)) continue;
     const scale = maxScales[key] || 10;
     return ext[key] / scale;
   }
