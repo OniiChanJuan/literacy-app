@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Mobile For You (Signed In)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: #1a1a22;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    color: #e8e6e1;
+  }
+  .doc-header {
+    max-width: 400px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .doc-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    color: #e8e6e1;
+  }
+  .doc-header p {
+    font-size: 13px;
+    color: rgba(232, 230, 225, 0.55);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .doc-meta {
+    font-size: 11px;
+    color: rgba(232, 230, 225, 0.32);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+  .phone {
+    width: 380px;
+    background: #0a0a0f;
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .phone-content {
+    max-height: 1500px;
+    overflow-y: auto;
+  }
+  .decisions-card {
+    max-width: 380px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(232, 230, 225, 0.75);
+  }
+  .decisions-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    margin: 0 0 12px 0;
+    color: #2EC4B6;
+    font-weight: 500;
+  }
+  .decisions-card ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .decisions-card li {
+    margin-bottom: 6px;
+  }
+
+  /* Phone internal styles */
+  .header {
+    padding: 16px 14px 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: #e8e6e1;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .logo-tagline {
+    font-size: 8px;
+    color: rgba(232,230,225,0.32);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .header-right {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .header-icon {
+    font-size: 18px;
+    color: rgba(232,230,225,0.55);
+  }
+  .tracked-count {
+    font-size: 11px;
+    color: #2EC4B6;
+    text-align: center;
+  }
+  .tracked-count-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .tracked-count-label {
+    font-size: 7px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(232,230,225,0.55);
+  }
+  .avatar-with-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2EC4B6, #E84855);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: white;
+    font-weight: 600;
+    position: relative;
+  }
+  .member-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    background: #0a0a0f;
+    padding: 1px 4px;
+    border-radius: 8px;
+    font-size: 8px;
+    color: #DAA520;
+    border: 1px solid rgba(218,165,32,0.4);
+  }
+  .identity-strip {
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.015);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .identity-top-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .identity-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2EC4B6, #E84855);
+    flex-shrink: 0;
+  }
+  .identity-name-block {
+    flex: 1;
+    min-width: 0;
+  }
+  .identity-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: #e8e6e1;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .identity-meta {
+    font-size: 9px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 1px;
+  }
+  .identity-stats {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: #2EC4B6;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 7px;
+    color: rgba(232,230,225,0.45);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .vibe-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    overflow: hidden;
+  }
+  .vibe-pill {
+    font-size: 9px;
+    color: rgba(232,196,182,0.85);
+    padding: 2px 6px;
+    background: rgba(232,72,85,0.08);
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .view-profile {
+    margin-left: auto;
+    font-size: 10px;
+    color: #2EC4B6;
+    flex-shrink: 0;
+  }
+  .filter-collapsed {
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.012);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    font-size: 11px;
+    color: rgba(232,230,225,0.55);
+  }
+  .filter-pill i {
+    font-size: 12px;
+  }
+  .section {
+    padding: 24px 14px 0 14px;
+  }
+  .section-first {
+    padding-top: 20px;
+  }
+  .section-header {
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .section-header-inline {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .section-title-italic {
+    font-style: italic;
+  }
+  .section-meta {
+    font-size: 10px;
+    color: rgba(232,230,225,0.32);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .section-subtitle {
+    font-size: 10px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 3px;
+  }
+  .cross-row {
+    margin-bottom: 18px;
+  }
+  .cross-row-source {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: rgba(232,230,225,0.65);
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+  .cross-row-source-name {
+    color: #2EC4B6;
+    font-style: normal;
+    font-weight: 500;
+  }
+  .cross-row-why {
+    font-size: 11px;
+    color: rgba(232,230,225,0.45);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .h-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin: 0 -14px;
+    padding: 0 14px 8px 14px;
+  }
+  .cross-card {
+    flex-shrink: 0;
+    width: 105px;
+  }
+  .cross-poster {
+    width: 105px;
+    height: 158px;
+    border-radius: 5px;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .cross-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: #e8e6e1;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-top: 6px;
+  }
+  .cs-score-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-top: 3px;
+  }
+  .cs-mark {
+    font-size: 7px;
+    color: #2EC4B6;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .cs-num-sm {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .cross-card-faded {
+    opacity: 0.5;
+  }
+  .more-sources {
+    text-align: center;
+    padding: 4px 0 8px 0;
+  }
+  .more-sources-label {
+    font-size: 11px;
+    color: rgba(232,230,225,0.45);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .serendipity {
+    margin-top: 8px;
+    padding: 12px 10px;
+    background: rgba(255,255,255,0.025);
+    border-left: 2px solid rgba(218,165,32,0.5);
+    border-radius: 0 4px 4px 0;
+  }
+  .serendipity-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(218,165,32,0.85);
+    margin-bottom: 6px;
+  }
+  .serendipity-inner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .serendipity-cover {
+    width: 44px;
+    height: 66px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    padding: 5px 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .serendipity-cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 9px;
+    color: #d4af7a;
+    font-weight: 600;
+  }
+  .serendipity-text {
+    flex: 1;
+  }
+  .serendipity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .serendipity-meta {
+    font-size: 9px;
+    color: rgba(232,230,225,0.32);
+    margin-top: 2px;
+  }
+  .compact-card {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(255,255,255,0.025);
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+  .compact-cover {
+    width: 60px;
+    height: 90px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .compact-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .compact-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: #e8e6e1;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .compact-creator {
+    font-size: 10px;
+    color: rgba(232,230,225,0.55);
+    margin-top: 2px;
+  }
+  .compact-score-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .compact-score-block {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .compact-score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .score-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    position: relative;
+  }
+  .score-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #2EC4B6;
+    border-radius: 2px;
+  }
+  .status-pill {
+    font-size: 9px;
+    color: rgba(232,230,225,0.55);
+    padding: 2px 5px;
+    border: 1px solid rgba(46,196,182,0.3);
+    border-radius: 3px;
+    background: rgba(46,196,182,0.08);
+    flex-shrink: 0;
+  }
+  .status-pill-neutral {
+    border-color: rgba(232,230,225,0.15);
+    background: transparent;
+  }
+  .show-more {
+    text-align: center;
+    padding: 10px 0 4px 0;
+  }
+  .show-more-text {
+    font-size: 11px;
+    color: rgba(232,230,225,0.55);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .activity-row {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+  .activity-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .activity-text-block {
+    flex: 1;
+    min-width: 0;
+  }
+  .activity-text {
+    font-size: 11px;
+    color: #e8e6e1;
+    line-height: 1.3;
+  }
+  .activity-username {
+    font-weight: 500;
+  }
+  .activity-action {
+    color: rgba(232,230,225,0.55);
+  }
+  .activity-target {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+  }
+  .activity-stars {
+    color: #DAA520;
+  }
+  .activity-time {
+    font-size: 9px;
+    color: rgba(232,230,225,0.32);
+    margin-top: 1px;
+  }
+  .small-row {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    margin: 0 -14px;
+    padding: 0 14px 4px 14px;
+  }
+  .small-card {
+    flex-shrink: 0;
+    width: 88px;
+  }
+  .small-poster {
+    width: 88px;
+    height: 132px;
+    border-radius: 5px;
+    padding: 10px 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+  .small-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: #e8e6e1;
+    font-weight: 500;
+    margin-top: 6px;
+  }
+  .small-card-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: #e8e6e1;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .see-all-row {
+    text-align: right;
+    margin-top: 4px;
+  }
+  .see-all {
+    font-size: 10px;
+    color: #2EC4B6;
+    letter-spacing: 1px;
+  }
+  .date-badge {
+    position: absolute;
+    bottom: 6px;
+    font-size: 8px;
+    color: #DAA520;
+    letter-spacing: 1px;
+  }
+  .upcoming-meta {
+    font-size: 9px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 2px;
+  }
+  .bottom-tabs {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    padding: 10px 0 14px 0;
+    margin-top: 24px;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+  }
+  .tab-icon {
+    font-size: 18px;
+    color: rgba(232,230,225,0.45);
+  }
+  .tab-icon-active {
+    color: #2EC4B6;
+  }
+  .tab-label {
+    font-size: 9px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+  .tab-label-active {
+    color: #2EC4B6;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>CrossShelf Mobile — For You</h1>
+  <p>Signed-in state, full page mockup with all settled design decisions</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<!-- TOP HEADER -->
+<div class="header">
+<div class="header-top">
+<div>
+<div class="logo-name">CrossShelf</div>
+<div class="logo-tagline">Fluent in every medium</div>
+</div>
+<div class="header-right">
+<i class="ti ti-search header-icon" aria-hidden="true"></i>
+<div class="tracked-count">
+<div class="tracked-count-num">24</div>
+<div class="tracked-count-label">tracked</div>
+</div>
+<div class="avatar-with-badge">J<div class="member-badge">★1</div></div>
+</div>
+</div>
+</div>
+
+<!-- IDENTITY STRIP -->
+<div class="identity-strip">
+<div class="identity-top-row">
+<div class="identity-avatar"></div>
+<div class="identity-name-block">
+<div class="identity-name">Juan Guajardo</div>
+<div class="identity-meta">Member #1 · Joined Mar 2026</div>
+</div>
+<div class="identity-stats">
+<div class="stat">
+<div class="stat-num">17</div>
+<div class="stat-label">Rated</div>
+</div>
+<div class="stat">
+<div class="stat-num">5</div>
+<div class="stat-label">Types</div>
+</div>
+<div class="stat">
+<div class="stat-num">4.9</div>
+<div class="stat-label">Avg</div>
+</div>
+</div>
+</div>
+<div class="vibe-row">
+<div class="vibe-pill">Deep world-building</div>
+<div class="vibe-pill">Dark &amp; intense</div>
+<div class="vibe-pill">+3</div>
+<div class="view-profile">View profile →</div>
+</div>
+</div>
+
+<!-- COLLAPSIBLE FILTER PILL -->
+<div class="filter-collapsed">
+<div class="filter-pill">
+<i class="ti ti-filter" aria-hidden="true"></i>
+<span>Filter by type &amp; genre</span>
+</div>
+<div style="font-size: 10px; color: rgba(232,230,225,0.32);">Showing all</div>
+</div>
+
+<!-- CROSS YOUR SHELF -->
+<div class="section">
+<div class="section-header section-header-inline">
+<div class="section-title section-title-italic">Cross your shelf</div>
+<div class="section-meta">— 3 sources</div>
+</div>
+
+<!-- Row: Vagabond -->
+<div class="cross-row">
+<div class="cross-row-source">Because you rated <span class="cross-row-source-name">Vagabond</span> highly</div>
+<div class="cross-row-why">Meditative, gorgeously-drawn journeys of mastery and self-doubt</div>
+<div class="h-scroll">
+<div class="cross-card">
+<div class="cross-poster" style="background: #2c1a3a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 15px; color: #e8e6e1; font-weight: 600; font-style: italic;">Berserk</div>
+<div style="font-size: 6px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">KENTARO MIURA</div>
+</div>
+<div class="cross-card-title">Berserk</div>
+<div class="cs-score-line">
+<div class="cs-mark">CrossShelf</div>
+<div class="cs-num-sm">9.2</div>
+</div>
+</div>
+<div class="cross-card">
+<div class="cross-poster" style="background: #1f2c1a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 12px; color: #c9d4a7; font-weight: 500; line-height: 1.1;">SHŌGUN</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">FX · 2024</div>
+</div>
+<div class="cross-card-title">Shōgun</div>
+<div class="cs-score-line">
+<div class="cs-mark">CrossShelf</div>
+<div class="cs-num-sm">9.1</div>
+</div>
+</div>
+<div class="cross-card cross-card-faded">
+<div class="cross-poster" style="background: #2a1a1a;"></div>
+</div>
+</div>
+</div>
+
+<!-- Row: The Mandalorian -->
+<div class="cross-row">
+<div class="cross-row-source">Because you rated <span class="cross-row-source-name">The Mandalorian</span> highly</div>
+<div class="cross-row-why">Western-inflected adventures with a quiet protagonist and a wider universe to explore</div>
+<div class="h-scroll">
+<div class="cross-card">
+<div class="cross-poster" style="background: #2a1f12; padding: 12px 6px;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4a76a; font-weight: 600; line-height: 1.1;">RED DEAD<br>REDEMPTION 2</div>
+</div>
+<div class="cross-card-title">Red Dead Redemption 2</div>
+<div class="cs-score-line">
+<div class="cs-mark">CrossShelf</div>
+<div class="cs-num-sm">9.4</div>
+</div>
+</div>
+<div class="cross-card">
+<div class="cross-poster" style="background: #1a1f2c;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #93b3c4; font-weight: 600; line-height: 1.1;">DUNE</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">VILLENEUVE</div>
+</div>
+<div class="cross-card-title">Dune: Part Two</div>
+<div class="cs-score-line">
+<div class="cs-mark">CrossShelf</div>
+<div class="cs-num-sm">8.7</div>
+</div>
+</div>
+<div class="cross-card cross-card-faded">
+<div class="cross-poster" style="background: #1a1825;"></div>
+</div>
+</div>
+</div>
+
+<div class="more-sources">
+<div class="more-sources-label">+ 1 more source</div>
+</div>
+
+<!-- Serendipity -->
+<div class="serendipity">
+<div class="serendipity-label">Also loved across CrossShelf</div>
+<div class="serendipity-inner">
+<div class="serendipity-cover" style="background: #1a2a2c;">
+<div class="serendipity-cover-title">Hades</div>
+</div>
+<div class="serendipity-text">
+<div class="serendipity-title">Hades</div>
+<div class="cs-score-line">
+<div class="cs-mark">CrossShelf</div>
+<div class="cs-num-sm">9.0</div>
+</div>
+<div class="serendipity-meta">Game · Supergiant · 2020</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- PICKED FOR YOU -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">Picked for you</div>
+<div class="section-subtitle">Based on Deep World-Building, Dark &amp; Intense, Gritty &amp; Intense</div>
+</div>
+
+<div class="compact-card">
+<div class="compact-cover" style="background: #2a1810;">
+<div style="font-family: 'Playfair Display', serif; font-size: 7px; color: #c9a961; font-weight: 600; line-height: 1.1;">THE LORD<br>OF THE RINGS</div>
+<div style="font-size: 5px; color: #c9a961; margin-top: 4px; letter-spacing: 1px;">RETURN<br>OF THE KING</div>
+</div>
+<div class="compact-body">
+<div>
+<div class="compact-title">The Lord of the Rings: The Return of the King</div>
+<div class="compact-creator">Peter Jackson · 2003</div>
+</div>
+<div class="compact-score-row">
+<div class="compact-score-block">
+<div class="cs-mark">CrossShelf</div>
+<div class="compact-score-num">8.7</div>
+</div>
+<div class="score-bar">
+<div class="score-bar-fill" style="width: 87%;"></div>
+</div>
+<div class="status-pill">✓</div>
+</div>
+</div>
+</div>
+
+<div class="compact-card">
+<div class="compact-cover" style="background: #1a1f2e; padding: 8px 4px;">
+<div style="font-family: 'Playfair Display', serif; font-size: 13px; color: #d4af7a; font-weight: 600; font-style: italic;">Babel</div>
+<div style="font-size: 5px; color: #d4af7a; margin-top: 6px; letter-spacing: 1px; opacity: 0.7;">R.F. KUANG</div>
+</div>
+<div class="compact-body">
+<div>
+<div class="compact-title">Babel</div>
+<div class="compact-creator">R.F. Kuang · 2022</div>
+</div>
+<div class="compact-score-row">
+<div class="compact-score-block">
+<div class="cs-mark">CrossShelf</div>
+<div class="compact-score-num">8.4</div>
+</div>
+<div class="score-bar">
+<div class="score-bar-fill" style="width: 84%;"></div>
+</div>
+<div class="status-pill status-pill-neutral"><i class="ti ti-bookmark" style="font-size: 9px;" aria-hidden="true"></i></div>
+</div>
+</div>
+</div>
+
+<div class="show-more">
+<div class="show-more-text">Show 6 more →</div>
+</div>
+</div>
+
+<!-- WHAT'S HAPPENING -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">What's happening</div>
+<div class="section-subtitle">Recent activity from people with similar taste</div>
+</div>
+
+<div class="activity-row">
+<div class="activity-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="activity-text-block">
+<div class="activity-text"><span class="activity-username">claudoro27</span> <span class="activity-action">rated</span> <span class="activity-target">Shōgun</span> <span class="activity-stars">★★★★★</span></div>
+<div class="activity-time">2 hours ago</div>
+</div>
+</div>
+
+<div class="activity-row">
+<div class="activity-avatar" style="background: linear-gradient(135deg, #E84855, #DAA520);"></div>
+<div class="activity-text-block">
+<div class="activity-text"><span class="activity-username">readerly</span> <span class="activity-action">added</span> <span class="activity-target">Babel</span> <span class="activity-action">to Want to read</span></div>
+<div class="activity-time">5 hours ago</div>
+</div>
+</div>
+
+<div class="activity-row">
+<div class="activity-avatar" style="background: linear-gradient(135deg, #2EC4B6, #9B5DE5);"></div>
+<div class="activity-text-block">
+<div class="activity-text"><span class="activity-username">cinemath</span> <span class="activity-action">completed</span> <span class="activity-target">The Pitt</span></div>
+<div class="activity-time">yesterday</div>
+</div>
+</div>
+</div>
+
+<!-- CRITICALLY ACCLAIMED -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">Critically acclaimed</div>
+<div class="section-subtitle">Highest rated across all media</div>
+</div>
+
+<div class="small-row">
+<div class="small-card">
+<div class="small-poster" style="background: #1a2a35;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #93b3c4; font-weight: 600;">SEVERANCE</div>
+</div>
+<div class="small-card-title">Severance</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 9.3</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #2a1a15;">
+<div style="font-family: 'Playfair Display', serif; font-size: 13px; color: #d44848; font-weight: 600; line-height: 1;">TÁR</div>
+</div>
+<div class="small-card-title">Tár</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 9.1</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #1f1a25;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #c9a3d4; font-weight: 500;">PACHINKO</div>
+</div>
+<div class="small-card-title">Pachinko</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 8.9</div>
+</div>
+<div class="small-card cross-card-faded">
+<div class="small-poster" style="background: #1a1820;"></div>
+</div>
+</div>
+
+<div class="see-all-row">
+<div class="see-all">See all →</div>
+</div>
+</div>
+
+<!-- POPULAR RIGHT NOW -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">Popular right now</div>
+<div class="section-subtitle">Recent releases making waves</div>
+</div>
+
+<div class="small-row">
+<div class="small-card">
+<div class="small-poster" style="background: #1a2520;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #a7d4af; font-weight: 500;">FOURTH WING</div>
+</div>
+<div class="small-card-title">Fourth Wing</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 8.6</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #2a1f1a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4a373; font-weight: 600;">DUNE</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 6px;">PART TWO</div>
+</div>
+<div class="small-card-title">Dune: Part Two</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 8.7</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #2c1a1f;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4858f; font-weight: 500;">THE PITT</div>
+</div>
+<div class="small-card-title">The Pitt</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 8.5</div>
+</div>
+<div class="small-card cross-card-faded">
+<div class="small-poster" style="background: #1a1820;"></div>
+</div>
+</div>
+
+<div class="see-all-row">
+<div class="see-all">See all →</div>
+</div>
+</div>
+
+<!-- HIDDEN GEMS -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">Hidden gems</div>
+<div class="section-subtitle">High scores, low radar</div>
+</div>
+
+<div class="small-row">
+<div class="small-card">
+<div class="small-poster" style="background: #251a2a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 9px; color: #c9a3d4; font-weight: 600; line-height: 1.1;">DISCO<br>ELYSIUM</div>
+</div>
+<div class="small-card-title">Disco Elysium</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 9.0</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #1a252a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #93c4d4; font-weight: 500;">PACHINKO</div>
+</div>
+<div class="small-card-title">Pachinko</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 8.9</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #2a251a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #d4c993; font-weight: 500;">PRIMER</div>
+</div>
+<div class="small-card-title">Primer</div>
+<div class="small-card-score"><span class="cs-mark">CrossShelf</span> 8.8</div>
+</div>
+<div class="small-card cross-card-faded">
+<div class="small-poster" style="background: #1f1a25;"></div>
+</div>
+</div>
+
+<div class="see-all-row">
+<div class="see-all">See all →</div>
+</div>
+</div>
+
+<!-- COMING SOON -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">Coming soon</div>
+</div>
+
+<div class="small-row">
+<div class="small-card">
+<div class="small-poster" style="background: #25201a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #d4c093; font-weight: 600;">THE WITCHER 4</div>
+<div class="date-badge">Q4 2026</div>
+</div>
+<div class="small-card-title">The Witcher 4</div>
+<div class="upcoming-meta">Upcoming · Game</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #251a1a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4a3a3; font-weight: 500; font-style: italic;">Onyx Storm</div>
+<div class="date-badge">Jan 2026</div>
+</div>
+<div class="small-card-title">Onyx Storm</div>
+<div class="upcoming-meta">Upcoming · Book</div>
+</div>
+<div class="small-card">
+<div class="small-poster" style="background: #1a2225;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #93c4d4; font-weight: 500;">SEASON 2</div>
+<div class="date-badge">Spring 2026</div>
+</div>
+<div class="small-card-title">Severance S2</div>
+<div class="upcoming-meta">Upcoming · TV</div>
+</div>
+</div>
+</div>
+
+<!-- BOTTOM TABS -->
+<div class="bottom-tabs">
+<div class="tab">
+<i class="ti ti-sparkles tab-icon tab-icon-active" aria-hidden="true"></i>
+<div class="tab-label tab-label-active">For You</div>
+</div>
+<div class="tab">
+<i class="ti ti-compass tab-icon" aria-hidden="true"></i>
+<div class="tab-label">Explore</div>
+</div>
+<div class="tab">
+<i class="ti ti-books tab-icon" aria-hidden="true"></i>
+<div class="tab-label">Library</div>
+</div>
+<div class="tab">
+<i class="ti ti-users tab-icon" aria-hidden="true"></i>
+<div class="tab-label">People</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="decisions-card">
+<h3>Design decisions baked in</h3>
+<ul>
+<li>Score scale 0-10 with small teal "CrossShelf" wordmark above the number</li>
+<li>Horizontal fill bar on Picked for you cards (proportional to score/10)</li>
+<li>Identity strip compact, full identity behind "View profile →" tap</li>
+<li>Filter row collapsed into "Filter by type &amp; genre" pill (expands on tap)</li>
+<li>Cross-shelf gets multi-source rows, each with brief italic "why" description</li>
+<li>Picked for you cards stay clean (no per-card "why")</li>
+<li>Editorial section headers — no emojis</li>
+<li>Small curated rows fit 3 full cards per scroll position (~85-90px wide)</li>
+<li>Bottom tab navigation: For You / Explore / Library / People</li>
+<li>"See all →" affordance on smaller rows, right-aligned</li>
+<li>Serendipity slot uses muted gold border-left, distinct from personalized rows</li>
+<li>Per-type discovery rows moved from For You to Explore tab</li>
+</ul>
+</div>
+
+</body>
+</html>

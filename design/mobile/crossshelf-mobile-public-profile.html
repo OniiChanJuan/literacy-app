@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Mobile Public Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body { margin: 0; padding: 40px 20px; background: #1a1a22; font-family: 'DM Sans', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 32px; color: #e8e6e1; }
+  .phones-row { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; }
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .phone-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: rgba(232,230,225,0.45); text-align: center; max-width: 380px; }
+  .phone-label-strong { color: #2EC4B6; }
+  .phone-label-private { color: #DAA520; }
+  .doc-header { max-width: 600px; text-align: center; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; margin: 0 0 8px 0; }
+  .doc-header p { font-size: 13px; color: rgba(232, 230, 225, 0.55); margin: 0; line-height: 1.5; }
+  .doc-meta { font-size: 11px; color: rgba(232, 230, 225, 0.32); letter-spacing: 1px; text-transform: uppercase; margin-top: 12px; }
+  .phone { width: 380px; background: #0a0a0f; border-radius: 32px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .phone-content { max-height: 1400px; overflow-y: auto; padding-bottom: 70px; }
+  .notes-card { max-width: 800px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px 24px; font-size: 13px; line-height: 1.6; color: rgba(232,230,225,0.75); }
+  .notes-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; margin: 0 0 12px 0; color: #2EC4B6; font-weight: 500; }
+  .notes-card ul { margin: 0; padding-left: 20px; }
+  .notes-card li { margin-bottom: 8px; }
+  .notes-card strong { color: #e8e6e1; font-weight: 500; }
+
+  /* TOP HEADER (back nav for arriving from People) */
+  .top-header { padding: 14px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 12px; position: sticky; top: 0; background: rgba(10,10,15,0.95); z-index: 10; }
+  .header-back { font-size: 22px; color: rgba(232,230,225,0.85); }
+  .header-title { flex: 1; font-family: 'Playfair Display', serif; font-size: 14px; color: rgba(232,230,225,0.65); }
+  .header-share { font-size: 18px; color: rgba(232,230,225,0.55); }
+
+  /* IDENTITY HEADER */
+  .identity-block { padding: 20px 14px 14px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .identity-top { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+  .identity-avatar { width: 70px; height: 70px; border-radius: 50%; flex-shrink: 0; }
+  .identity-name-block { flex: 1; min-width: 0; }
+  .identity-name { font-family: 'Playfair Display', serif; font-size: 22px; color: #e8e6e1; font-weight: 500; line-height: 1.1; margin-bottom: 4px; }
+  .identity-joined { font-size: 11px; color: rgba(232,230,225,0.45); margin-bottom: 6px; }
+  .member-rank { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #DAA520; font-weight: 500; }
+  .member-rank i { font-size: 12px; }
+  .follow-btn { padding: 8px 16px; background: rgba(46,196,182,0.12); border: 1px solid rgba(46,196,182,0.4); border-radius: 6px; font-size: 11px; color: #2EC4B6; letter-spacing: 0.5px; font-weight: 500; flex-shrink: 0; }
+  .follow-btn-following { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.15); color: rgba(232,230,225,0.65); }
+
+  /* TYPE MIX BAR (taste fingerprint) */
+  .taste-row { padding: 10px 0 0 0; }
+  .taste-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(232,230,225,0.45); margin-bottom: 6px; }
+  .type-mix-bar { display: flex; height: 4px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,0.06); }
+  .type-mix-seg { height: 100%; }
+  .type-mix-movie { background: #d44848; }
+  .type-mix-tv { background: #4ad4a3; }
+  .type-mix-anime { background: #d44a8b; }
+  .type-mix-book { background: #4a8bd4; }
+  .type-mix-manga { background: #4ad4c9; }
+  .type-mix-comic { background: #d4854a; }
+  .type-mix-game { background: #d4c44a; }
+  .type-mix-music { background: #c94ad4; }
+  .type-mix-podcast { background: #a374d4; }
+  .taste-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .taste-legend-item { display: flex; align-items: center; gap: 4px; font-size: 9px; color: rgba(232,230,225,0.55); }
+  .taste-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* STATS ROW */
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); padding: 12px 14px; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .stat-cell { text-align: center; padding: 4px 0; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 500; line-height: 1; }
+  .stat-label { font-size: 8px; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(232,230,225,0.45); margin-top: 4px; }
+  .stat-rated .stat-num { color: #2EC4B6; }
+  .stat-reviewed .stat-num { color: #DAA520; }
+  .stat-tracked .stat-num { color: #93b3c4; }
+  .stat-followers .stat-num { color: #c9a3d4; }
+  .stat-following .stat-num { color: #d4a76a; }
+
+  /* STATUS PILLS */
+  .status-row { padding: 12px 14px 10px 14px; display: flex; gap: 5px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .status-pill { flex: 1; padding: 8px 4px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+  .status-pill-active { background: rgba(46,196,182,0.12); border-color: rgba(46,196,182,0.4); }
+  .status-pill-label { font-size: 8px; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(232,230,225,0.55); display: flex; align-items: center; justify-content: center; gap: 3px; line-height: 1; margin-bottom: 4px; }
+  .status-pill-label i { font-size: 10px; }
+  .status-pill-num { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; line-height: 1; }
+  .status-pill-completed .status-pill-label { color: #2EC4B6; }
+  .status-pill-completed .status-pill-num { color: #2EC4B6; }
+  .status-pill-progress .status-pill-label { color: #93b3c4; }
+  .status-pill-progress .status-pill-num { color: #93b3c4; }
+  .status-pill-want .status-pill-label { color: #c9a3d4; }
+  .status-pill-want .status-pill-num { color: #c9a3d4; }
+  .status-pill-dropped .status-pill-label { color: #d44848; }
+  .status-pill-dropped .status-pill-num { color: #d44848; }
+  .status-pill-all .status-pill-label { color: rgba(232,230,225,0.75); }
+  .status-pill-all .status-pill-num { color: #e8e6e1; }
+  .status-dropped-icon { color: #d44848; }
+
+  /* FILTER ROW */
+  .filter-bar { padding: 10px 14px; background: rgba(255,255,255,0.012); border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 6px; }
+  .type-pill { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; font-size: 13px; color: rgba(232,230,225,0.55); flex-shrink: 0; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .type-pill i { font-size: 14px; }
+  .sort-btn { margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 6px 10px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 4px; font-size: 10px; color: rgba(46,196,182,0.85); letter-spacing: 0.5px; line-height: 1; flex-shrink: 0; }
+  .sort-btn i { font-size: 12px; }
+
+  /* TOP RATED SECTION */
+  .top-rated-section { padding: 22px 14px 0 14px; }
+  .section-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .section-header i { font-size: 14px; color: #DAA520; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 17px; color: #e8e6e1; font-weight: 500; }
+  .section-count { font-size: 11px; color: rgba(232,230,225,0.45); }
+
+  /* CARD GRID */
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lib-card { background: rgba(255,255,255,0.025); border-radius: 8px; overflow: hidden; position: relative; }
+  .lib-poster { width: 100%; aspect-ratio: 2/3; position: relative; padding: 10px 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .lib-poster-text { font-family: 'Playfair Display', serif; font-weight: 600; line-height: 1.1; }
+  .lib-type-badge-corner { position: absolute; top: 6px; left: 6px; font-size: 7px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 5px; border-radius: 3px; font-weight: 700; }
+  .lib-rating-corner { position: absolute; top: 6px; right: 6px; background: rgba(10,10,15,0.9); border: 1px solid rgba(218,165,32,0.4); border-radius: 3px; padding: 2px 5px; font-size: 9px; color: #DAA520; font-weight: 600; display: flex; align-items: center; gap: 2px; }
+  .lib-rating-corner i { font-size: 8px; }
+  .lib-info { padding: 8px 10px 10px 10px; }
+  .lib-info-title { font-family: 'Playfair Display', serif; font-size: 12px; color: #e8e6e1; font-weight: 500; line-height: 1.2; margin-bottom: 4px; }
+  .lib-info-score-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .lib-info-score { font-family: 'Playfair Display', serif; font-size: 13px; color: #e8e6e1; font-weight: 500; }
+  .lib-info-bar { flex: 1; height: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; position: relative; }
+  .lib-info-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: #2EC4B6; border-radius: 1px; }
+  .lib-info-pct { font-size: 9px; color: rgba(232,230,225,0.45); }
+  .lib-info-meta { font-size: 9px; color: rgba(232,230,225,0.45); margin-bottom: 4px; }
+  .lib-info-stars { color: #DAA520; font-size: 9px; letter-spacing: 1px; }
+
+  .badge-movie { color: #ffffff; background: #d44848; }
+  .badge-game { color: #1a1a22; background: #d4c44a; }
+  .badge-manga { color: #ffffff; background: #4ad4c9; }
+  .badge-book { color: #ffffff; background: #4a8bd4; }
+  .badge-anime { color: #ffffff; background: #d44a8b; }
+  .badge-tv { color: #ffffff; background: #4ad4a3; }
+  .badge-podcast { color: #ffffff; background: #c94ad4; }
+  .badge-comic { color: #ffffff; background: #d4854a; }
+
+  /* STATUS SECTIONS */
+  .status-section { padding: 24px 14px 0 14px; }
+  .status-section-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .status-section-icon { font-size: 13px; }
+  .status-completed-icon { color: #2EC4B6; }
+  .status-progress-icon { color: #93b3c4; }
+  .status-want-icon { color: #c9a3d4; }
+
+  /* REVIEWS SECTION */
+  .reviews-section { padding: 24px 14px 0 14px; }
+  .review-card { padding: 12px; background: rgba(255,255,255,0.025); border-radius: 8px; margin-bottom: 8px; }
+  .review-header { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+  .review-cover-mini { width: 36px; height: 54px; border-radius: 3px; flex-shrink: 0; padding: 4px 2px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .review-cover-mini-text { font-family: 'Playfair Display', serif; font-size: 7px; font-weight: 600; line-height: 1; }
+  .review-item-block { flex: 1; min-width: 0; }
+  .review-item-title { font-family: 'Playfair Display', serif; font-size: 12px; color: #2EC4B6; font-weight: 500; line-height: 1.2; }
+  .review-item-meta { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; }
+  .review-stars { color: #DAA520; font-size: 11px; letter-spacing: 1px; align-self: flex-start; }
+  .review-text { font-size: 12px; color: rgba(232,230,225,0.85); line-height: 1.5; margin: 8px 0 8px 0; }
+  .review-controls { display: flex; gap: 14px; align-items: center; }
+  .review-control { display: flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(232,230,225,0.45); }
+  .review-control i { font-size: 11px; }
+
+  .show-more-row { text-align: center; padding: 14px 0 4px 0; }
+  .show-more-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase; }
+  .show-more-btn i { font-size: 12px; }
+
+  .bottom-tabs { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 14px 0; }
+  .tab { flex: 1; text-align: center; }
+  .tab-icon { font-size: 18px; color: rgba(232,230,225,0.45); }
+  .tab-icon-active { color: #2EC4B6; }
+  .tab-label { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; letter-spacing: 0.5px; }
+  .tab-label-active { color: #2EC4B6; }
+
+  /* PRIVATE LIBRARY INDICATOR */
+  .private-indicator { margin: 24px 14px; padding: 24px 16px; background: rgba(218,165,32,0.06); border: 1px dashed rgba(218,165,32,0.25); border-radius: 8px; text-align: center; }
+  .private-indicator i { font-size: 32px; color: rgba(218,165,32,0.65); margin-bottom: 10px; display: block; }
+  .private-indicator-title { font-family: 'Playfair Display', serif; font-size: 16px; color: rgba(232,230,225,0.85); margin-bottom: 6px; font-weight: 500; }
+  .private-indicator-text { font-size: 12px; color: rgba(232,230,225,0.55); line-height: 1.5; max-width: 280px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>CrossShelf Mobile — Public Profile</h1>
+  <p>Two states side by side: a fully-public profile (Claudoro27) and the same profile with "Private Library" toggle enabled. Single toggle, hides everything except identity + bio.</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phones-row">
+
+<!-- PHONE 1: PUBLIC STATE -->
+<div class="phone-wrap">
+<div class="phone-label">
+<span class="phone-label-strong">Fully public</span><br>
+Default state — visitors see everything
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<!-- TOP HEADER -->
+<div class="top-header">
+<i class="ti ti-arrow-left header-back" aria-hidden="true"></i>
+<div class="header-title">@Claudoro27</div>
+<i class="ti ti-share header-share" aria-hidden="true"></i>
+</div>
+
+<!-- IDENTITY BLOCK -->
+<div class="identity-block">
+<div class="identity-top">
+<div class="identity-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="identity-name-block">
+<div class="identity-name">Claudoro27</div>
+<div class="identity-joined">Joined March 2026</div>
+<div class="member-rank"><i class="ti ti-star-filled" aria-hidden="true"></i>Member #2</div>
+</div>
+<div class="follow-btn">FOLLOW</div>
+</div>
+
+<!-- BIO (shown only if non-empty) -->
+<div style="padding: 6px 0 4px 0; border-left: 2px solid rgba(46,196,182,0.2); padding-left: 10px; margin-top: 8px;">
+<div style="font-size: 12px; color: rgba(232,230,225,0.75); line-height: 1.5; font-style: italic;">"Movie nerd, slow-reader, lifetime fan of underrated A24 films. Always looking for the next great character study."</div>
+</div>
+
+<!-- TASTE FINGERPRINT -->
+<div class="taste-row">
+<div class="taste-label">Reviews across</div>
+<div class="type-mix-bar">
+<div class="type-mix-seg type-mix-movie" style="width: 40%;"></div>
+<div class="type-mix-seg type-mix-tv" style="width: 40%;"></div>
+<div class="type-mix-seg type-mix-book" style="width: 20%;"></div>
+</div>
+<div class="taste-legend">
+<div class="taste-legend-item"><div class="taste-legend-dot" style="background: #d44848;"></div>Movies</div>
+<div class="taste-legend-item"><div class="taste-legend-dot" style="background: #4ad4a3;"></div>TV</div>
+<div class="taste-legend-item"><div class="taste-legend-dot" style="background: #4a8bd4;"></div>Books</div>
+</div>
+</div>
+</div>
+
+<!-- STATS ROW -->
+<div class="stats-row">
+<div class="stat-cell stat-rated">
+<div class="stat-num">5</div>
+<div class="stat-label">Rated</div>
+</div>
+<div class="stat-cell stat-reviewed">
+<div class="stat-num">5</div>
+<div class="stat-label">Reviewed</div>
+</div>
+<div class="stat-cell stat-tracked">
+<div class="stat-num">8</div>
+<div class="stat-label">Tracked</div>
+</div>
+<div class="stat-cell stat-followers">
+<div class="stat-num">1</div>
+<div class="stat-label">Followers</div>
+</div>
+<div class="stat-cell stat-following">
+<div class="stat-num">0</div>
+<div class="stat-label">Following</div>
+</div>
+</div>
+
+<!-- STATUS PILLS (4 not 5, no dropped) -->
+<div class="status-row">
+<div class="status-pill status-pill-all status-pill-active">
+<div class="status-pill-label">All</div>
+<div class="status-pill-num">10</div>
+</div>
+<div class="status-pill status-pill-completed">
+<div class="status-pill-label"><i class="ti ti-check" aria-hidden="true"></i>Done</div>
+<div class="status-pill-num">5</div>
+</div>
+<div class="status-pill status-pill-progress">
+<div class="status-pill-label"><i class="ti ti-player-play" aria-hidden="true"></i>Going</div>
+<div class="status-pill-num">2</div>
+</div>
+<div class="status-pill status-pill-want">
+<div class="status-pill-label"><i class="ti ti-bookmark" aria-hidden="true"></i>Want</div>
+<div class="status-pill-num">1</div>
+</div>
+<div class="status-pill status-pill-dropped">
+<div class="status-pill-label"><i class="ti ti-x" aria-hidden="true"></i>Drop</div>
+<div class="status-pill-num">2</div>
+</div>
+</div>
+
+<!-- FILTER ROW (no search since this isn't your own library) -->
+<div class="filter-bar">
+<div class="type-pill" title="Movies"><i class="ti ti-movie" aria-hidden="true"></i></div>
+<div class="type-pill" title="TV"><i class="ti ti-device-tv" aria-hidden="true"></i></div>
+<div class="type-pill" title="Books"><i class="ti ti-book" aria-hidden="true"></i></div>
+<div class="sort-btn"><i class="ti ti-arrows-sort" aria-hidden="true"></i>RECENT</div>
+</div>
+
+<!-- TOP RATED SECTION -->
+<div class="top-rated-section">
+<div class="section-header">
+<i class="ti ti-star-filled" aria-hidden="true"></i>
+<div class="section-title">Top Rated</div>
+<div class="section-count">5</div>
+</div>
+
+<div class="card-grid">
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #d44848;">
+<div class="lib-type-badge-corner badge-movie">MOVIE</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5</div>
+<div class="lib-poster-text" style="color: #ffffff; font-size: 13px;">THE PITT</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">The Pitt</div>
+<div class="lib-info-score-row">
+<div class="lib-info-score">8.5</div>
+<div class="lib-info-bar"><div class="lib-info-bar-fill" style="width: 85%;"></div></div>
+<div class="lib-info-pct">85%</div>
+</div>
+<div class="lib-info-meta">Medical drama · 2025</div>
+<div class="lib-info-stars">★★★★★</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #1a1a22;">
+<div class="lib-type-badge-corner badge-book">BOOK</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5</div>
+<div class="lib-poster-text" style="color: #d4af7a; font-size: 11px;">THE LITTLE<br>PRINCE</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">The Little Prince</div>
+<div class="lib-info-score-row">
+<div class="lib-info-score">9.0</div>
+<div class="lib-info-bar"><div class="lib-info-bar-fill" style="width: 90%;"></div></div>
+<div class="lib-info-pct">90%</div>
+</div>
+<div class="lib-info-meta">Saint-Exupéry · 1943</div>
+<div class="lib-info-stars">★★★★★</div>
+</div>
+</div>
+
+</div>
+
+<div class="show-more-row">
+<div class="show-more-btn"><i class="ti ti-chevron-down" aria-hidden="true"></i>Show 3 more</div>
+</div>
+</div>
+
+<!-- COMPLETED SECTION -->
+<div class="status-section">
+<div class="status-section-header">
+<i class="ti ti-check status-section-icon status-completed-icon" aria-hidden="true"></i>
+<div class="section-title">Completed</div>
+<div class="section-count">5</div>
+</div>
+
+<div class="card-grid">
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #1a2535;">
+<div class="lib-type-badge-corner badge-tv">TV SHOW</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4</div>
+<div class="lib-poster-text" style="color: #93b3c4; font-size: 11px;">THE TRUMAN<br>SHOW</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">The Truman Show</div>
+<div class="lib-info-meta">Peter Weir · 1998</div>
+<div class="lib-info-stars">★★★★☆</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #2a0f10;">
+<div class="lib-type-badge-corner badge-movie">MOVIE</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4</div>
+<div class="lib-poster-text" style="color: #d44848; font-size: 13px;">JOKER</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Joker</div>
+<div class="lib-info-meta">Todd Phillips · 2019</div>
+<div class="lib-info-stars">★★★★☆</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #1a2535;">
+<div class="lib-type-badge-corner badge-tv">TV SHOW</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>3</div>
+<div class="lib-poster-text" style="color: #93b3c4; font-size: 11px;">THE<br>COMEBACK</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">The Comeback</div>
+<div class="lib-info-meta">HBO · 2005</div>
+<div class="lib-info-stars">★★★☆☆</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #1a1a22;">
+<div class="lib-type-badge-corner badge-book">BOOK</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5</div>
+<div class="lib-poster-text" style="color: #d4af7a; font-size: 11px;">THE LITTLE<br>PRINCE</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">The Little Prince</div>
+<div class="lib-info-meta">Saint-Exupéry · 1943</div>
+<div class="lib-info-stars">★★★★★</div>
+</div>
+</div>
+
+</div>
+
+<div class="show-more-row">
+<div class="show-more-btn"><i class="ti ti-chevron-down" aria-hidden="true"></i>Show 1 more</div>
+</div>
+</div>
+
+<!-- DROPPED SECTION -->
+<div class="status-section">
+<div class="status-section-header">
+<i class="ti ti-x status-section-icon status-dropped-icon" aria-hidden="true"></i>
+<div class="section-title">Dropped</div>
+<div class="section-count">2</div>
+</div>
+
+<div class="card-grid">
+
+<div class="lib-card" style="opacity: 0.7;">
+<div class="lib-poster" style="background: #1a2025;">
+<div class="lib-type-badge-corner badge-tv">TV SHOW</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>2</div>
+<div class="lib-poster-text" style="color: rgba(232,230,225,0.65); font-size: 11px;">SHOW<br>EXAMPLE</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Show Example</div>
+<div class="lib-info-meta">Dropped 2 months ago</div>
+<div class="lib-info-stars">★★☆☆☆</div>
+</div>
+</div>
+
+<div class="lib-card" style="opacity: 0.7;">
+<div class="lib-poster" style="background: #1a2025;">
+<div class="lib-type-badge-corner badge-book">BOOK</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>1</div>
+<div class="lib-poster-text" style="color: rgba(232,230,225,0.65); font-size: 11px;">BOOK<br>EXAMPLE</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Book Example</div>
+<div class="lib-info-meta">Dropped 3 months ago</div>
+<div class="lib-info-stars">★☆☆☆☆</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- REVIEWS SECTION -->
+<div class="reviews-section">
+<div class="section-header">
+<i class="ti ti-message-2" style="color: #2EC4B6;" aria-hidden="true"></i>
+<div class="section-title">Reviews</div>
+<div class="section-count">5</div>
+</div>
+
+<div class="review-card">
+<div class="review-header">
+<div class="review-cover-mini" style="background: #1a1a22;">
+<div class="review-cover-mini-text" style="color: #d4af7a;">LITTLE<br>PRINCE</div>
+</div>
+<div class="review-item-block">
+<div class="review-item-title">The Little Prince</div>
+<div class="review-item-meta">Book · 1943 · 7d ago</div>
+</div>
+<div class="review-stars">★★★★★</div>
+</div>
+<div class="review-text">I can not believe I only read this book when I was 29. It is the cutest and reading how the different people respond to the little prince ♥</div>
+<div class="review-controls">
+<div class="review-control"><i class="ti ti-arrow-up" aria-hidden="true"></i>3</div>
+<div class="review-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="review-control" style="color: #2EC4B6;"><i class="ti ti-message" aria-hidden="true"></i>2 replies</div>
+</div>
+</div>
+
+<div class="review-card">
+<div class="review-header">
+<div class="review-cover-mini" style="background: #1a2535;">
+<div class="review-cover-mini-text" style="color: #93b3c4;">COME<br>BACK</div>
+</div>
+<div class="review-item-block">
+<div class="review-item-title">The Comeback</div>
+<div class="review-item-meta">TV · HBO · 7d ago</div>
+</div>
+<div class="review-stars">★★★☆☆</div>
+</div>
+<div class="review-text">I'm on season 1, really good script sometimes a little bit slow. But I heard great things about it so excited to see season 2 and 3</div>
+<div class="review-controls">
+<div class="review-control"><i class="ti ti-arrow-up" aria-hidden="true"></i>0</div>
+<div class="review-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="review-control"><i class="ti ti-message" aria-hidden="true"></i>Reply</div>
+</div>
+</div>
+
+<div class="show-more-row">
+<div class="show-more-btn"><i class="ti ti-chevron-down" aria-hidden="true"></i>Show 3 more</div>
+</div>
+</div>
+
+</div>
+
+<div class="bottom-tabs">
+<div class="tab"><i class="ti ti-sparkles tab-icon" aria-hidden="true"></i><div class="tab-label">For You</div></div>
+<div class="tab"><i class="ti ti-compass tab-icon" aria-hidden="true"></i><div class="tab-label">Explore</div></div>
+<div class="tab"><i class="ti ti-books tab-icon" aria-hidden="true"></i><div class="tab-label">Library</div></div>
+<div class="tab"><i class="ti ti-users tab-icon tab-icon-active" aria-hidden="true"></i><div class="tab-label tab-label-active">People</div></div>
+</div>
+
+</div>
+</div>
+
+<!-- PHONE 2: PRIVATE LIBRARY STATE -->
+<div class="phone-wrap">
+<div class="phone-label">
+<span class="phone-label-private">Library is private</span><br>
+Visitor sees only identity + bio
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<div class="top-header">
+<i class="ti ti-arrow-left header-back" aria-hidden="true"></i>
+<div class="header-title">@Claudoro27</div>
+<i class="ti ti-share header-share" aria-hidden="true"></i>
+</div>
+
+<!-- IDENTITY BLOCK (stays visible) -->
+<div class="identity-block">
+<div class="identity-top">
+<div class="identity-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="identity-name-block">
+<div class="identity-name">Claudoro27</div>
+<div class="identity-joined">Joined March 2026</div>
+<div class="member-rank"><i class="ti ti-star-filled" aria-hidden="true"></i>Member #2</div>
+</div>
+<div class="follow-btn">FOLLOW</div>
+</div>
+
+<!-- BIO stays visible -->
+<div style="padding: 6px 0 4px 0; border-left: 2px solid rgba(46,196,182,0.2); padding-left: 10px; margin-top: 8px;">
+<div style="font-size: 12px; color: rgba(232,230,225,0.75); line-height: 1.5; font-style: italic;">"Movie nerd, slow-reader, lifetime fan of underrated A24 films. Always looking for the next great character study."</div>
+</div>
+</div>
+
+<!-- PRIVATE INDICATOR -->
+<div class="private-indicator">
+<i class="ti ti-lock" aria-hidden="true"></i>
+<div class="private-indicator-title">Library is private</div>
+<div class="private-indicator-text">Claudoro27 has chosen to keep their library private. You can follow them to see their activity in the People feed.</div>
+</div>
+
+</div>
+
+<div class="bottom-tabs">
+<div class="tab"><i class="ti ti-sparkles tab-icon" aria-hidden="true"></i><div class="tab-label">For You</div></div>
+<div class="tab"><i class="ti ti-compass tab-icon" aria-hidden="true"></i><div class="tab-label">Explore</div></div>
+<div class="tab"><i class="ti ti-books tab-icon" aria-hidden="true"></i><div class="tab-label">Library</div></div>
+<div class="tab"><i class="ti ti-users tab-icon tab-icon-active" aria-hidden="true"></i><div class="tab-label tab-label-active">People</div></div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="notes-card">
+<h3>Public profile design — reduces overlap with Library</h3>
+<ul>
+<li><strong>This IS a Library shape</strong> with an identity header layered on top. Looking at your desktop, you were right that the two pages duplicate each other heavily. The architectural model: <em>"viewing your own collection (Library) vs viewing someone else's collection (Public Profile)."</em> Same shape, different ownership and affordances.</li>
+<li><strong>Identity block</strong> — large avatar, name, joined date, member rank badge (gold star + "#2" for Claudoro27). For founding members (member #1 through some early threshold) a "FOUNDING MEMBER" pill would appear below the rank. For later members, just the rank number.</li>
+<li><strong>Bio field</strong> below the identity block when filled in. Quote-styled with subtle teal left border, italic text. Shown only when the user has written a bio — empty bios get hidden entirely. Edit Profile lets the user write it as a multi-line text area.</li>
+<li><strong>Follow button</strong> top-right of the identity block. Primary action when viewing someone else. When viewing your own profile, this is replaced with "EDIT PROFILE" in muted styling.</li>
+<li><strong>Taste fingerprint section</strong> right under the identity block. Same type-mix bar from the People page (40% Movies / 40% TV / 20% Books for Claudoro27) but at full width with a small color legend below since this is the showcase placement of the feature. Visual answer to "what does this person review?"</li>
+<li><strong>Stats row</strong> — 5 stats laid out evenly (Rated / Reviewed / Tracked / Followers / Following) with color-coded numbers matching the platform color language. Compact, scannable, gives you the shape of someone's CrossShelf presence at a glance.</li>
+<li><strong>Status pills identical to Library</strong> — All / Done / Going / Want / Drop. Tap to filter sections below. Dropped section IS shown on public profile per user decision — letting users own their drops is part of being a reviewer ("I'm not afraid to drop bad shows").</li>
+<li><strong>Filter row simpler than Library</strong> — type pills + sort button, but NO search pill. Reasoning: searching within another user's library is unusual behavior; their library is smaller and scrolling is fine. Could add later if users request it.</li>
+<li><strong>"Top Rated" section</strong> — items the user gave 5 stars to, regardless of status. This is the "best of" section your desktop has. Shows their highest opinions. Important for "who is this reviewer" framing.</li>
+<li><strong>Per-status sections below</strong> exactly like Library — Completed / In Progress / Want To. Same card design, same color language, same progressive expansion. The only difference: no edit affordances (you can't change Claudoro27's status of an item).</li>
+<li><strong>Reviews section at the bottom</strong> — their actual review text with item context. Each card shows a small cover thumbnail + item title (tappable to item detail) + media type + date + their star rating + review text + upvote/downvote/reply with thread counts. This is where the "reviewer identity" really lives — what they think, not just what they watched.</li>
+<li><strong>Top header with back button + @username</strong> for arriving from People page. Share icon on the right lets users share a profile link.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">What's different when viewing YOUR OWN profile</h3>
+<ul>
+<li><strong>FOLLOW button replaced with EDIT PROFILE</strong> button in muted (non-teal) styling — secondary action.</li>
+<li><strong>"FOUNDING MEMBER" pill appears</strong> for early-rank members (Member #1 through some threshold). For Juan as #1, this would show prominently.</li>
+<li><strong>Could surface management affordances</strong> like "Add review" or "Share to friend" but the natural path is: edits happen in Library, viewing happens here. Profile stays read-mostly even when it's yours.</li>
+<li><strong>Search pill could optionally appear</strong> on your own profile since searching your own library is a useful behavior.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">What's different from Library</h3>
+<ul>
+<li><strong>Identity block + bio + stats + taste fingerprint</strong> added at top.</li>
+<li><strong>"Top Rated" section</strong> added above status sections.</li>
+<li><strong>Reviews section</strong> added at bottom.</li>
+<li><strong>All status sections shown including Dropped</strong> (subject to user's Private Library toggle).</li>
+<li><strong>No search pill, no import button, no Following franchises section.</strong> These are management affordances that only matter when it's your own data. (Following franchises could optionally appear with a "Tracks" label — but typically users want their franchises private.)</li>
+<li><strong>No edit affordances on cards.</strong> Tapping a card still goes to item detail, but you can't change the status of items in someone else's library.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">Privacy model (locked — Option B)</h3>
+<ul>
+<li><strong>Single "Private Library" toggle on Edit Profile.</strong> Matches the existing desktop pattern.</li>
+<li><strong>When enabled, hides everything except identity block + bio.</strong> Top Rated section hides, all status sections (Completed/In Progress/Want/Dropped) hide, Reviews hide, taste fingerprint hides, stats row hides. Only identity block + bio remain.</li>
+<li><strong>Clear "Library is private" indicator card</strong> replaces the hidden content. Lock icon + brief explanation + suggestion to follow them for activity feed. Honest with visitors about why the page looks sparse.</li>
+<li><strong>Reviews hide too</strong> (decided as Option B). Even though reviews are intentional public publication, users who hide their library probably want consistency — they don't want strangers reading their opinions if they didn't even want strangers seeing what they collected. Single toggle is simpler than separate toggles for different content types.</li>
+<li><strong>Follow button stays active</strong> on private profiles. Users can still follow each other based on identity/bio alone, and following gives them access to that user's activity in the People feed (a softer disclosure).</li>
+<li><strong>CRITICAL pre-launch verification:</strong> The privacy toggle must enforce privacy at the API/database level, not just hide UI. If someone queries /u/[username] or any library/review/stats endpoint, the backend must check the toggle and return nothing if private. UI-only privacy would be a real violation.</li>
+<li><strong>Per-section privacy</strong> could be a future feature if users ask for it (hide reviews but show library, or vice versa). Not implementing now — single toggle is simpler and matches user mental model of "all in or all out."</li>
+</ul>
+</div>
+
+</body>
+</html>

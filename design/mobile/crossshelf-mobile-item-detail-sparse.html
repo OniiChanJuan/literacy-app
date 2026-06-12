@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Sparse Item Detail</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body { margin: 0; padding: 40px 20px; background: #1a1a22; font-family: 'DM Sans', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 32px; color: #e8e6e1; }
+  .doc-header { max-width: 400px; text-align: center; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; margin: 0 0 8px 0; }
+  .doc-header p { font-size: 13px; color: rgba(232, 230, 225, 0.55); margin: 0; line-height: 1.5; }
+  .doc-meta { font-size: 11px; color: rgba(232, 230, 225, 0.32); letter-spacing: 1px; text-transform: uppercase; margin-top: 12px; }
+  .phone { width: 380px; background: #0a0a0f; border-radius: 32px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .phone-content { max-height: 1100px; overflow-y: auto; padding-bottom: 100px; }
+  .notes-card { max-width: 380px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px 24px; font-size: 13px; line-height: 1.6; color: rgba(232,230,225,0.75); }
+  .notes-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; margin: 0 0 12px 0; color: #2EC4B6; font-weight: 500; }
+  .notes-card ul { margin: 0; padding-left: 20px; }
+  .notes-card li { margin-bottom: 6px; }
+  .notes-card strong { color: #e8e6e1; font-weight: 500; }
+  .header { padding: 14px 14px; background: rgba(10,10,15,0.95); border-bottom: 1px solid rgba(255,255,255,0.04); position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; }
+  .header-title { flex: 1; font-family: 'Playfair Display', serif; font-size: 14px; color: rgba(232,230,225,0.85); }
+  .hero { padding: 20px 16px 16px 16px; display: flex; gap: 16px; }
+  .hero-cover { width: 120px; height: 180px; border-radius: 6px; background: #1a1f2e; flex-shrink: 0; padding: 18px 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .hero-meta { flex: 1; min-width: 0; }
+  .media-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; margin-bottom: 8px; color: #d4af7a; background: rgba(212,175,122,0.12); }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #e8e6e1; line-height: 1.15; font-weight: 500; margin-bottom: 6px; }
+  .hero-creator { font-size: 12px; color: rgba(232,230,225,0.65); margin-bottom: 6px; }
+  .hero-meta-info { font-size: 11px; color: rgba(232,230,225,0.45); line-height: 1.5; }
+  .score-row { margin: 4px 16px 0 16px; padding: 14px 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(232,230,225,0.08); border-radius: 8px; display: flex; align-items: center; gap: 16px; }
+  .score-mark { font-size: 10px; color: #2EC4B6; letter-spacing: 1.5px; text-transform: uppercase; line-height: 1; }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 36px; color: #e8e6e1; font-weight: 500; line-height: 1; margin-top: 4px; }
+  .score-out-of { font-family: 'Playfair Display', serif; font-size: 16px; color: rgba(232,230,225,0.45); }
+  .score-row-right { flex: 1; }
+  .score-bar-detail { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; position: relative; margin-bottom: 6px; }
+  .score-bar-detail-fill { position: absolute; left: 0; top: 0; height: 100%; background: #2EC4B6; border-radius: 3px; }
+  .score-context { font-size: 10px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; font-style: italic; }
+  .contributing-row { padding: 12px 16px 0 16px; }
+  .contributing-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(232,230,225,0.45); margin-bottom: 8px; }
+  .contributing-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .contrib-pill { padding: 4px 8px; background: rgba(255,255,255,0.04); border-radius: 4px; font-size: 11px; }
+  .contrib-source { color: rgba(232,230,225,0.45); margin-right: 4px; font-size: 10px; }
+  .contrib-value { color: #e8e6e1; font-weight: 500; }
+  .rate-prompt { margin: 18px 16px 0 16px; padding: 14px; background: rgba(46,196,182,0.06); border: 1px dashed rgba(46,196,182,0.25); border-radius: 8px; text-align: center; }
+  .rate-prompt-text { font-size: 13px; color: rgba(232,230,225,0.85); }
+  .rate-prompt-action { font-size: 11px; color: #2EC4B6; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; font-weight: 500; }
+  .section { padding: 24px 16px 0 16px; }
+  .section-header { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 17px; color: #e8e6e1; font-weight: 500; }
+  .section-subtitle { font-size: 10px; color: rgba(232,230,225,0.45); margin-top: 3px; }
+  .description-text { font-size: 13px; color: rgba(232,230,225,0.85); line-height: 1.6; }
+  .people-row { display: flex; gap: 12px; }
+  .person-card { flex-shrink: 0; width: 72px; text-align: center; }
+  .person-avatar { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 6px auto; background: rgba(212,175,122,0.15); color: #d4af7a; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 500; }
+  .person-name { font-size: 11px; color: #e8e6e1; font-weight: 500; line-height: 1.2; }
+  .person-role { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 1px; }
+  .cross-why { font-size: 11px; color: rgba(232,230,225,0.55); font-style: italic; margin-bottom: 10px; line-height: 1.4; }
+  .h-scroll { display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px 8px 16px; }
+  .cross-card { flex-shrink: 0; width: 105px; }
+  .cross-poster { width: 105px; height: 158px; border-radius: 5px; padding: 12px 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .cross-card-title { font-family: 'Playfair Display', serif; font-size: 11px; color: #e8e6e1; font-weight: 500; line-height: 1.1; margin-top: 6px; }
+  .cs-score-line { display: flex; align-items: baseline; gap: 4px; margin-top: 3px; }
+  .cs-mark { font-size: 7px; color: #2EC4B6; letter-spacing: 1px; text-transform: uppercase; }
+  .cs-num-sm { font-family: 'Playfair Display', serif; font-size: 12px; color: #e8e6e1; font-weight: 500; }
+  .cross-card-faded { opacity: 0.5; }
+  .action-bar { position: absolute; bottom: 60px; left: 0; right: 0; background: rgba(10,10,15,0.97); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; }
+  .action-stars { display: flex; gap: 6px; justify-content: center; margin-bottom: 10px; }
+  .action-star { font-size: 24px; color: rgba(232,230,225,0.25); }
+  .action-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+  .action-btn { padding: 8px 4px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; font-size: 10px; color: rgba(232,230,225,0.75); text-align: center; }
+  .action-btn-icon { display: block; font-size: 14px; margin-bottom: 2px; }
+  .bottom-tabs { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 14px 0; }
+  .tab { flex: 1; text-align: center; }
+  .tab-icon { font-size: 18px; color: rgba(232,230,225,0.45); }
+  .tab-label { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; letter-spacing: 0.5px; }
+  .hidden-section { margin: 16px; padding: 10px 14px; background: rgba(232,72,85,0.04); border: 1px dashed rgba(232,72,85,0.2); border-radius: 6px; font-size: 11px; color: rgba(232,72,85,0.65); text-align: center; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>Sparse-data item detail</h1>
+  <p>New NYT bestseller book with thin metadata and no community ratings — shows which sections appear or disappear based on what data exists</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<div class="header">
+<i class="ti ti-arrow-left" style="font-size: 22px; color: rgba(232,230,225,0.85);" aria-hidden="true"></i>
+<div class="header-title">Babel</div>
+<i class="ti ti-share" style="font-size: 18px; color: rgba(232,230,225,0.55);" aria-hidden="true"></i>
+</div>
+
+<div class="hero">
+<div class="hero-cover">
+<div style="font-family: 'Playfair Display', serif; font-size: 24px; color: #d4af7a; font-weight: 600; font-style: italic;">Babel</div>
+<div style="font-size: 7px; color: #d4af7a; margin-top: 12px; letter-spacing: 1px; opacity: 0.7;">R.F. KUANG</div>
+</div>
+<div class="hero-meta">
+<div class="media-badge">Book</div>
+<div class="hero-title">Babel</div>
+<div class="hero-creator">R.F. Kuang</div>
+<div class="hero-meta-info">2022 · 545 pages<br>Fantasy · Historical</div>
+</div>
+</div>
+
+<div class="score-row">
+<div>
+<div class="score-mark">CrossShelf</div>
+<div><span class="score-num">8.4</span><span class="score-out-of">/10</span></div>
+</div>
+<div class="score-row-right">
+<div class="score-bar-detail"><div class="score-bar-detail-fill" style="width: 84%;"></div></div>
+<div class="score-context">Based on Goodreads — community ratings coming as users review</div>
+</div>
+</div>
+
+<div class="contributing-row">
+<div class="contributing-label">What goes into this</div>
+<div class="contributing-grid">
+<div class="contrib-pill"><span class="contrib-source">Goodreads</span><span class="contrib-value">4.2</span></div>
+</div>
+</div>
+
+<div class="hidden-section">↓ Rating distribution hidden — fewer than 10 community ratings ↓</div>
+
+<div class="rate-prompt">
+<div class="rate-prompt-text">Read this? Help others discover it.</div>
+<div class="rate-prompt-action">Rate now →</div>
+</div>
+
+<div class="section">
+<div class="section-header"><div class="section-title">About</div></div>
+<div class="description-text">Traduttore, traditore: an act of translation is always an act of betrayal. 1828. Robin Swift, orphaned by cholera in Canton, is brought to London by the mysterious Professor Lovell. There, he trains for years in Latin, Ancient Greek, and Chinese, all in preparation for the day he'll enroll in Oxford University's prestigious Royal Institute of Translation — also known as Babel.</div>
+</div>
+
+<div class="hidden-section">↓ Where to watch hidden — books don't have streaming data ↓</div>
+
+<div class="section">
+<div class="section-header"><div class="section-title">People</div></div>
+<div class="people-row">
+<div class="person-card">
+<div class="person-avatar">RK</div>
+<div class="person-name">R.F. Kuang</div>
+<div class="person-role">Author</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header">
+<div class="section-title" style="font-style: italic;">Cross your shelf</div>
+<div class="section-subtitle">Other things you might love because you loved this</div>
+</div>
+<div class="cross-why">Literary fantasy with dense world-building and themes of language, identity, and power</div>
+<div class="h-scroll">
+<div class="cross-card">
+<div class="cross-poster" style="background: #1f1a2c; padding: 12px 6px;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #d4af7a; font-weight: 500; line-height: 1.1;">JONATHAN<br>STRANGE &amp;<br>MR NORRELL</div>
+</div>
+<div class="cross-card-title">Jonathan Strange &amp; Mr Norrell</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.6</div></div>
+</div>
+<div class="cross-card">
+<div class="cross-poster" style="background: #2a2218;">
+<div style="font-family: 'Playfair Display', serif; font-size: 12px; color: #d4af7a; font-weight: 600; font-style: italic; line-height: 1;">The Name of the Wind</div>
+</div>
+<div class="cross-card-title">Name of the Wind</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.8</div></div>
+</div>
+<div class="cross-card cross-card-faded">
+<div class="cross-poster" style="background: #1a1a25;"></div>
+</div>
+</div>
+</div>
+
+<div class="hidden-section">↓ Reviews hidden — no community reviews yet ↓</div>
+
+<div class="hidden-section">↓ More like this hidden — no related items in catalog yet ↓</div>
+
+</div>
+
+<div class="action-bar">
+<div class="action-stars">
+<i class="ti ti-star action-star" aria-hidden="true"></i>
+<i class="ti ti-star action-star" aria-hidden="true"></i>
+<i class="ti ti-star action-star" aria-hidden="true"></i>
+<i class="ti ti-star action-star" aria-hidden="true"></i>
+<i class="ti ti-star action-star" aria-hidden="true"></i>
+</div>
+<div class="action-buttons">
+<div class="action-btn"><i class="ti ti-bookmark action-btn-icon" aria-hidden="true"></i>Want to</div>
+<div class="action-btn"><i class="ti ti-player-play action-btn-icon" aria-hidden="true"></i>In progress</div>
+<div class="action-btn"><i class="ti ti-check action-btn-icon" aria-hidden="true"></i>Completed</div>
+<div class="action-btn"><i class="ti ti-x action-btn-icon" aria-hidden="true"></i>Dropped</div>
+</div>
+</div>
+
+<div class="bottom-tabs">
+<div class="tab"><i class="ti ti-sparkles tab-icon" aria-hidden="true"></i><div class="tab-label">For You</div></div>
+<div class="tab"><i class="ti ti-compass tab-icon" aria-hidden="true"></i><div class="tab-label">Explore</div></div>
+<div class="tab"><i class="ti ti-books tab-icon" aria-hidden="true"></i><div class="tab-label">Library</div></div>
+<div class="tab"><i class="ti ti-users tab-icon" aria-hidden="true"></i><div class="tab-label">People</div></div>
+</div>
+
+</div>
+
+<div class="notes-card">
+<h3>What's different in this state</h3>
+<ul>
+<li><strong>Red-dashed "hidden section" markers</strong> are diagnostic only — they show what's missing and why. They wouldn't appear on the production site. The user would just see the page flowing past sections that don't exist.</li>
+<li><strong>Score row uses neutral border</strong> instead of teal-tinted. Subtle signal: the score is from a single source (Goodreads), not a robust blend. The sub-label spells it out: "Based on Goodreads — community ratings coming as users review."</li>
+<li><strong>Contributing pills</strong> shows only Goodreads — that's the only score data we have. No fake Community pill or Recommend pill below threshold.</li>
+<li><strong>Rate prompt</strong> replaces Your activity since the user hasn't engaged. Dashed border + teal accent. Different visual treatment from the populated gold-bordered Your activity card.</li>
+<li><strong>Where to watch</strong> hidden — books don't have streaming platforms.</li>
+<li><strong>People</strong> shows just R.F. Kuang as Author. Row collapses naturally — no padding to fake fullness.</li>
+<li><strong>Cross your shelf still appears</strong> because the 133 hand-curated connections include Babel. Reuses cross-shelf data from Stage 4.</li>
+<li><strong>Franchise/series strip also hidden</strong> — Babel is a standalone book, not part of any series. The strip only appears when an item has a franchise/series association. For items that are part of one (MCU movies, LOTR trilogy, Stormlight Archive books, long-running manga, etc.) it appears between the score row and contributing pills.</li>
+<li><strong>Reviews and More like this hidden</strong> — no reviews yet, no related books cataloged yet.</li>
+<li><strong>Net effect:</strong> page is dramatically shorter than the LOTR detail page. Honest reflection of what's actually known about the item. As community ratings, reviews, and catalog expansion arrive, sections appear automatically.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">Empty-state thresholds to bake in</h3>
+<ul>
+<li>Rating distribution: requires ≥10 community ratings</li>
+<li>Community contributing pill: requires ≥10 ratings</li>
+<li>Recommend % pill: requires ≥5 recommend tags</li>
+<li>Reviews section: requires ≥1 review</li>
+<li>Where to watch: shown only when streaming data exists for the item</li>
+<li>Cross your shelf: hidden if zero connections</li>
+<li>More like this: hidden if zero related items</li>
+<li>Your activity card: hidden if user hasn't rated; replaced with Rate prompt</li>
+<li>Score row treatment: teal-tinted (robust blend) vs neutral-bordered (thin inputs) based on number of contributing sources + community threshold</li>
+</ul>
+</div>
+
+</body>
+</html>

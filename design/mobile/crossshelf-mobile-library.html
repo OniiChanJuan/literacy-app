@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Mobile Library v2</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body { margin: 0; padding: 40px 20px; background: #1a1a22; font-family: 'DM Sans', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 32px; color: #e8e6e1; }
+  .doc-header { max-width: 400px; text-align: center; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; margin: 0 0 8px 0; }
+  .doc-header p { font-size: 13px; color: rgba(232, 230, 225, 0.55); margin: 0; line-height: 1.5; }
+  .doc-meta { font-size: 11px; color: rgba(232, 230, 225, 0.32); letter-spacing: 1px; text-transform: uppercase; margin-top: 12px; }
+  .phone { width: 380px; background: #0a0a0f; border-radius: 32px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .phone-content { max-height: 1400px; overflow-y: auto; padding-bottom: 70px; }
+  .notes-card { max-width: 380px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px 24px; font-size: 13px; line-height: 1.6; color: rgba(232,230,225,0.75); }
+  .notes-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; margin: 0 0 12px 0; color: #2EC4B6; font-weight: 500; }
+  .notes-card ul { margin: 0; padding-left: 20px; }
+  .notes-card li { margin-bottom: 8px; }
+  .notes-card strong { color: #e8e6e1; font-weight: 500; }
+
+  .top-header { padding: 16px 14px 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; justify-content: space-between; align-items: center; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #e8e6e1; font-weight: 500; }
+  .import-btn { display: flex; align-items: center; gap: 5px; padding: 6px 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; font-size: 10px; color: rgba(232,230,225,0.75); letter-spacing: 0.5px; }
+  .import-btn i { font-size: 12px; }
+  .status-row { padding: 12px 14px 10px 14px; display: flex; gap: 5px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .status-pill { flex: 1; padding: 8px 4px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+  .status-pill-active { background: rgba(46,196,182,0.12); border-color: rgba(46,196,182,0.4); }
+  .status-pill-label { font-size: 8px; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(232,230,225,0.55); display: flex; align-items: center; justify-content: center; gap: 3px; line-height: 1; margin-bottom: 4px; }
+  .status-pill-label i { font-size: 10px; }
+  .status-pill-num { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; line-height: 1; }
+  .status-pill-completed .status-pill-label { color: #2EC4B6; }
+  .status-pill-completed .status-pill-num { color: #2EC4B6; }
+  .status-pill-progress .status-pill-label { color: #93b3c4; }
+  .status-pill-progress .status-pill-num { color: #93b3c4; }
+  .status-pill-want .status-pill-label { color: #c9a3d4; }
+  .status-pill-want .status-pill-num { color: #c9a3d4; }
+  .status-pill-dropped .status-pill-label { color: #d44848; }
+  .status-pill-dropped .status-pill-num { color: #d44848; }
+  .status-pill-all .status-pill-label { color: rgba(232,230,225,0.75); }
+  .status-pill-all .status-pill-num { color: #e8e6e1; }
+  .filter-bar { padding: 10px 14px; background: rgba(255,255,255,0.012); border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 6px; }
+  .type-pill { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; font-size: 13px; color: rgba(232,230,225,0.55); flex-shrink: 0; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .type-pill i { font-size: 14px; }
+  .search-pill { padding: 6px 10px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 4px; font-size: 13px; color: rgba(46,196,182,0.85); flex-shrink: 0; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .search-pill i { font-size: 14px; }
+  .sort-btn { margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 6px 10px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 4px; font-size: 10px; color: rgba(46,196,182,0.85); letter-spacing: 0.5px; line-height: 1; flex-shrink: 0; }
+  .sort-btn i { font-size: 12px; }
+  .following-section { padding: 20px 14px 0 14px; }
+  .section-header-inline { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .section-header-inline i { font-size: 14px; color: #E84855; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 17px; color: #e8e6e1; font-weight: 500; }
+  .section-count { font-size: 11px; color: rgba(232,230,225,0.45); }
+  .follow-row { display: flex; gap: 8px; overflow-x: auto; margin: 0 -14px; padding: 0 14px 8px 14px; }
+  .follow-card { flex-shrink: 0; width: 160px; padding: 10px; background: rgba(255,255,255,0.025); border-radius: 8px; }
+  .follow-thumbs { display: flex; gap: 3px; margin-bottom: 8px; }
+  .follow-thumb { flex: 1; height: 60px; border-radius: 3px; padding: 4px 2px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .follow-thumb-text { font-family: 'Playfair Display', serif; font-size: 6px; font-weight: 600; line-height: 1; }
+  .follow-title-row { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; }
+  .follow-title { font-family: 'Playfair Display', serif; font-size: 12px; color: #e8e6e1; font-weight: 500; line-height: 1.1; flex: 1; }
+  .follow-title-row i { font-size: 11px; color: rgba(232,230,225,0.45); }
+  .follow-type-badges { display: flex; gap: 4px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+  .follow-type-badge { display: flex; align-items: center; gap: 3px; font-size: 8px; color: rgba(232,230,225,0.55); padding: 1px 4px; background: rgba(255,255,255,0.03); border-radius: 3px; }
+  .follow-type-badge i { font-size: 9px; }
+  .follow-progress { font-size: 9px; color: rgba(232,230,225,0.45); text-transform: uppercase; letter-spacing: 0.5px; }
+  .follow-progress-bar { height: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; margin-top: 3px; }
+  .follow-progress-fill { height: 100%; background: #E84855; border-radius: 1px; }
+  .status-section { padding: 24px 14px 0 14px; }
+  .status-section-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .status-section-icon { font-size: 13px; }
+  .status-completed-icon { color: #2EC4B6; }
+  .status-progress-icon { color: #93b3c4; }
+  .status-want-icon { color: #c9a3d4; }
+  .status-dropped-icon { color: #d44848; }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .lib-card { background: rgba(255,255,255,0.025); border-radius: 8px; overflow: hidden; position: relative; }
+  .lib-poster { width: 100%; aspect-ratio: 2/3; position: relative; padding: 10px 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .lib-poster-text { font-family: 'Playfair Display', serif; font-weight: 600; line-height: 1.1; }
+  .lib-type-badge-corner { position: absolute; top: 6px; left: 6px; font-size: 7px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 5px; border-radius: 3px; font-weight: 700; }
+  .lib-rating-corner { position: absolute; top: 6px; right: 6px; background: rgba(10,10,15,0.9); border: 1px solid rgba(218,165,32,0.4); border-radius: 3px; padding: 2px 5px; font-size: 9px; color: #DAA520; font-weight: 600; display: flex; align-items: center; gap: 2px; }
+  .lib-rating-corner i { font-size: 8px; }
+  .lib-info { padding: 8px 10px 10px 10px; }
+  .lib-info-title { font-family: 'Playfair Display', serif; font-size: 12px; color: #e8e6e1; font-weight: 500; line-height: 1.2; margin-bottom: 4px; }
+  .lib-info-score-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .lib-info-score { font-family: 'Playfair Display', serif; font-size: 13px; color: #e8e6e1; font-weight: 500; }
+  .lib-info-bar { flex: 1; height: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; position: relative; }
+  .lib-info-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: #2EC4B6; border-radius: 1px; }
+  .lib-info-pct { font-size: 9px; color: rgba(232,230,225,0.45); }
+  .lib-info-meta { font-size: 9px; color: rgba(232,230,225,0.45); margin-bottom: 4px; }
+  .lib-info-stars { color: #DAA520; font-size: 9px; letter-spacing: 1px; }
+  .badge-movie { color: #ffffff; background: #d44848; }
+  .badge-game { color: #1a1a22; background: #d4c44a; }
+  .badge-manga { color: #ffffff; background: #4ad4c9; }
+  .badge-book { color: #ffffff; background: #4a8bd4; }
+  .badge-anime { color: #ffffff; background: #d44a8b; }
+  .badge-tv { color: #ffffff; background: #4ad4a3; }
+  .badge-podcast { color: #ffffff; background: #c94ad4; }
+  .badge-comic { color: #ffffff; background: #d4854a; }
+  .bottom-tabs { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 14px 0; }
+  .tab { flex: 1; text-align: center; }
+  .tab-icon { font-size: 18px; color: rgba(232,230,225,0.45); }
+  .tab-icon-active { color: #2EC4B6; }
+  .tab-label { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; letter-spacing: 0.5px; }
+  .tab-label-active { color: #2EC4B6; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>CrossShelf Mobile — Library v2</h1>
+  <p>Matches desktop architecture: Following section + per-status sections, colored type badges, inline search</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<div class="top-header">
+<div class="page-title">Library</div>
+<div class="import-btn"><i class="ti ti-download" aria-hidden="true"></i>IMPORT</div>
+</div>
+
+<div class="status-row">
+<div class="status-pill status-pill-all status-pill-active">
+<div class="status-pill-label">All</div>
+<div class="status-pill-num">24</div>
+</div>
+<div class="status-pill status-pill-completed">
+<div class="status-pill-label"><i class="ti ti-check" aria-hidden="true"></i>Done</div>
+<div class="status-pill-num">15</div>
+</div>
+<div class="status-pill status-pill-progress">
+<div class="status-pill-label"><i class="ti ti-player-play" aria-hidden="true"></i>Going</div>
+<div class="status-pill-num">4</div>
+</div>
+<div class="status-pill status-pill-want">
+<div class="status-pill-label"><i class="ti ti-bookmark" aria-hidden="true"></i>Want</div>
+<div class="status-pill-num">4</div>
+</div>
+<div class="status-pill status-pill-dropped">
+<div class="status-pill-label"><i class="ti ti-x" aria-hidden="true"></i>Drop</div>
+<div class="status-pill-num">1</div>
+</div>
+</div>
+
+<div class="filter-bar">
+<div class="search-pill" title="Search within library"><i class="ti ti-search" aria-hidden="true"></i></div>
+<div class="type-pill" title="Movies"><i class="ti ti-movie" aria-hidden="true"></i></div>
+<div class="type-pill" title="TV"><i class="ti ti-device-tv" aria-hidden="true"></i></div>
+<div class="type-pill" title="Books"><i class="ti ti-book" aria-hidden="true"></i></div>
+<div class="type-pill" title="Games"><i class="ti ti-device-gamepad-2" aria-hidden="true"></i></div>
+<div class="type-pill" title="Manga"><i class="ti ti-news" aria-hidden="true"></i></div>
+<div class="sort-btn"><i class="ti ti-arrows-sort" aria-hidden="true"></i>RECENT</div>
+</div>
+
+<div class="following-section">
+<div class="section-header-inline">
+<i class="ti ti-heart-filled" aria-hidden="true"></i>
+<div class="section-title">Following</div>
+<div class="section-count">2</div>
+</div>
+
+<div class="follow-row">
+
+<div class="follow-card">
+<div class="follow-thumbs">
+<div class="follow-thumb" style="background: #1f1a2c;"><div class="follow-thumb-text" style="color: #d4af7a;">SANDERSON<br>WoK</div></div>
+<div class="follow-thumb" style="background: #1f1a2c;"><div class="follow-thumb-text" style="color: #d4af7a;">SANDERSON<br>WoR</div></div>
+<div class="follow-thumb" style="background: #1f1a2c;"><div class="follow-thumb-text" style="color: #d4af7a;">SANDERSON<br>Oath</div></div>
+<div class="follow-thumb" style="background: #1f1a2c;"><div class="follow-thumb-text" style="color: #d4af7a;">SANDERSON<br>Rhythm</div></div>
+</div>
+<div class="follow-title-row">
+<i class="ti ti-link" aria-hidden="true"></i>
+<div class="follow-title">The Stormlight Archive</div>
+</div>
+<div class="follow-type-badges">
+<div class="follow-type-badge"><i class="ti ti-book" aria-hidden="true"></i>7</div>
+</div>
+<div class="follow-progress">Rated 2 / 7</div>
+<div class="follow-progress-bar"><div class="follow-progress-fill" style="width: 28%;"></div></div>
+</div>
+
+<div class="follow-card">
+<div class="follow-thumbs">
+<div class="follow-thumb" style="background: #2a1f12;"><div class="follow-thumb-text" style="color: #d4a76a;">WITCHER<br>1</div></div>
+<div class="follow-thumb" style="background: #2a1f12;"><div class="follow-thumb-text" style="color: #d4a76a;">WITCHER<br>2</div></div>
+<div class="follow-thumb" style="background: #2a1f12;"><div class="follow-thumb-text" style="color: #d4a76a;">WITCHER<br>3</div></div>
+<div class="follow-thumb" style="background: #2a1f12;"><div class="follow-thumb-text" style="color: #d4a76a;">WITCHER<br>S1</div></div>
+</div>
+<div class="follow-title-row">
+<i class="ti ti-device-gamepad-2" aria-hidden="true"></i>
+<div class="follow-title">The Witcher</div>
+</div>
+<div class="follow-type-badges">
+<div class="follow-type-badge"><i class="ti ti-book" aria-hidden="true"></i>9</div>
+<div class="follow-type-badge"><i class="ti ti-device-gamepad-2" aria-hidden="true"></i>8</div>
+<div class="follow-type-badge"><i class="ti ti-device-tv" aria-hidden="true"></i>3</div>
+<div class="follow-type-badge"><i class="ti ti-movie" aria-hidden="true"></i>1</div>
+</div>
+<div class="follow-progress">Rated 1 / 21</div>
+<div class="follow-progress-bar"><div class="follow-progress-fill" style="width: 5%;"></div></div>
+</div>
+
+</div>
+</div>
+
+<div class="status-section">
+<div class="status-section-header">
+<i class="ti ti-check status-section-icon status-completed-icon" aria-hidden="true"></i>
+<div class="section-title">Completed</div>
+<div class="section-count">15</div>
+</div>
+
+<div class="card-grid">
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #1a1f2c;">
+<div class="lib-type-badge-corner badge-movie">MOVIE</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5</div>
+<div class="lib-poster-text" style="color: #d44848; font-size: 16px;">BLADE<br>RUNNER<br>2049</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Blade Runner 2049</div>
+<div class="lib-info-score-row">
+<div class="lib-info-score">4.4</div>
+<div class="lib-info-bar"><div class="lib-info-bar-fill" style="width: 84%;"></div></div>
+<div class="lib-info-pct">84%</div>
+</div>
+<div class="lib-info-meta">Sci-Fi · Drama</div>
+<div class="lib-info-stars">★★★★★</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #d4c44a;">
+<div class="lib-type-badge-corner badge-game">GAME</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5</div>
+<div class="lib-poster-text" style="color: #1a1a22; font-size: 14px;">CYBER<br>PUNK</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Cyberpunk 2077</div>
+<div class="lib-info-score-row">
+<div class="lib-info-score">5.0</div>
+<div class="lib-info-bar"><div class="lib-info-bar-fill" style="width: 97%;"></div></div>
+<div class="lib-info-pct">97%</div>
+</div>
+<div class="lib-info-meta">Sci-Fi · Action</div>
+<div class="lib-info-stars">★★★★★</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #2a1f12;">
+<div class="lib-type-badge-corner badge-game">GAME</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5</div>
+<div class="lib-poster-text" style="color: #d4a76a; font-size: 12px;">THE<br>WITCHER 3<br>WILD HUNT</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">The Witcher 3: Wild Hunt</div>
+<div class="lib-info-score-row">
+<div class="lib-info-score">5.0</div>
+<div class="lib-info-bar"><div class="lib-info-bar-fill" style="width: 99%;"></div></div>
+<div class="lib-info-pct">99%</div>
+</div>
+<div class="lib-info-meta">Fantasy · Adventure</div>
+<div class="lib-info-stars">★★★★★</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #2c1a3a;">
+<div class="lib-type-badge-corner badge-manga">MANGA</div>
+<div class="lib-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5</div>
+<div class="lib-poster-text" style="color: #e8e6e1; font-size: 18px; font-style: italic;">Berserk</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Berserk</div>
+<div class="lib-info-meta">1989</div>
+<div class="lib-info-meta">Fantasy · Action</div>
+<div class="lib-info-stars">★★★★★</div>
+</div>
+</div>
+
+</div>
+
+<div style="text-align: center; padding: 14px 0 4px 0;">
+<div style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase;"><i class="ti ti-chevron-down" aria-hidden="true"></i>Show 4 more · 11 remaining</div>
+</div>
+</div>
+
+<div class="status-section">
+<div class="status-section-header">
+<i class="ti ti-player-play status-section-icon status-progress-icon" aria-hidden="true"></i>
+<div class="section-title">In Progress</div>
+<div class="section-count">4</div>
+</div>
+
+<div class="card-grid">
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #2a0f10;">
+<div class="lib-type-badge-corner badge-tv">TV SHOW</div>
+<div class="lib-poster-text" style="color: #e8e6e1; font-size: 12px;">THE</div>
+<div class="lib-poster-text" style="color: #d44848; font-size: 22px;">PITT</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">The Pitt</div>
+<div class="lib-info-meta">Ep 8 / 15 · Max</div>
+<div class="lib-info-meta">Medical drama · 2025</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #1a1f2e;">
+<div class="lib-type-badge-corner badge-book">BOOK</div>
+<div class="lib-poster-text" style="color: #d4af7a; font-size: 18px; font-style: italic;">Babel</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Babel</div>
+<div class="lib-info-meta">p. 145 / 545 · R.F. Kuang</div>
+<div class="lib-info-meta">Fantasy · Historical</div>
+</div>
+</div>
+
+</div>
+
+<div style="text-align: center; padding: 14px 0 4px 0;">
+<div style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase;"><i class="ti ti-chevron-down" aria-hidden="true"></i>Show 2 more</div>
+</div>
+</div>
+
+<div class="status-section">
+<div class="status-section-header">
+<i class="ti ti-bookmark status-section-icon status-want-icon" aria-hidden="true"></i>
+<div class="section-title">Want To</div>
+<div class="section-count">4</div>
+</div>
+
+<div class="card-grid">
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #1a2535;">
+<div class="lib-type-badge-corner badge-tv">TV SHOW</div>
+<div class="lib-poster-text" style="color: #93b3c4; font-size: 13px;">SEVERANCE</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Severance</div>
+<div class="lib-info-meta">Added 1 week ago</div>
+<div class="lib-info-meta">Apple TV+ · 2022</div>
+</div>
+</div>
+
+<div class="lib-card">
+<div class="lib-poster" style="background: #251a2a;">
+<div class="lib-type-badge-corner badge-game">GAME</div>
+<div class="lib-poster-text" style="color: #c9a3d4; font-size: 11px;">DISCO<br>ELYSIUM</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Disco Elysium</div>
+<div class="lib-info-meta">Added 2 weeks ago</div>
+<div class="lib-info-meta">ZA/UM · 2019</div>
+</div>
+</div>
+
+</div>
+
+<div style="text-align: center; padding: 14px 0 4px 0;">
+<div style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase;"><i class="ti ti-chevron-down" aria-hidden="true"></i>Show 2 more</div>
+</div>
+</div>
+
+<div class="status-section">
+<div class="status-section-header">
+<i class="ti ti-x status-section-icon status-dropped-icon" aria-hidden="true"></i>
+<div class="section-title">Dropped</div>
+<div class="section-count">1</div>
+</div>
+
+<div class="card-grid">
+
+<div class="lib-card" style="opacity: 0.7;">
+<div class="lib-poster" style="background: #1a2025;">
+<div class="lib-type-badge-corner badge-game">GAME</div>
+<div class="lib-poster-text" style="color: rgba(232,230,225,0.65); font-size: 11px;">GAME<br>EXAMPLE</div>
+</div>
+<div class="lib-info">
+<div class="lib-info-title">Game Example</div>
+<div class="lib-info-meta">Dropped 1 month ago</div>
+<div class="lib-info-meta">Action · 2023</div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="bottom-tabs">
+<div class="tab"><i class="ti ti-sparkles tab-icon" aria-hidden="true"></i><div class="tab-label">For You</div></div>
+<div class="tab"><i class="ti ti-compass tab-icon" aria-hidden="true"></i><div class="tab-label">Explore</div></div>
+<div class="tab"><i class="ti ti-books tab-icon tab-icon-active" aria-hidden="true"></i><div class="tab-label tab-label-active">Library</div></div>
+<div class="tab"><i class="ti ti-users tab-icon" aria-hidden="true"></i><div class="tab-label">People</div></div>
+</div>
+
+</div>
+
+<div class="notes-card">
+<h3>What's different in v2 (matches desktop architecture)</h3>
+<ul>
+<li><strong>Per-status sections stacked vertically</strong> — Completed / In Progress / Want To / Dropped each get their own section with their own header and count, matching desktop layout. Default view shows all sections. Tapping a status pill at the top filters to just that section.</li>
+<li><strong>Status pills colored per status</strong> (teal/blue/purple/red) matching desktop's colored buttons. Each shows a count. "All" pill on the far left for the default view.</li>
+<li><strong>Following section at the top</strong> showing franchise/series the user is tracking. Horizontal scrolling cards with multi-thumb collages (matches your desktop layout), franchise title, type breakdown badges, "Rated X / Y" progress with thin red bar. Highlights cross-media tracking — a real differentiator.</li>
+<li><strong>Search pill styled distinctly from filter pills.</strong> Matches the sort button (4px square corners, teal-tinted background and border) instead of the round filter pills (14px). Visually groups search + sort as "tools" — the round pills in the middle are filters. Tap to expand into a search input that searches within library only.</li>
+<li><strong>Each section shows 4 cards by default.</strong> The "Show 4 more" button at the bottom of each section expands the visible set progressively — tap once to see 4 more (total 8), tap again for 4 more (total 12), keep tapping until you've seen everything. The remaining count is shown next to the action ("Show 4 more · 11 remaining") so the user knows how much is left.</li>
+<li><strong>Show-more button is a real button, not text.</strong> Styled like a tappable pill with chevron icon, teal-tinted. Reads as an action affordance. Different from the discreet "+ N more →" text I had before — the prior version felt more like a status indicator than something interactive.</li>
+<li><strong>Sort button visually distinctive</strong> — different shape (4px corner radius vs 14px pills), teal-tinted background/border. Same treatment now applied to search pill so search and sort visually group as "tools."</li>
+<li><strong>Cards match desktop style</strong> — bright colored type badge in top-left, gold rating badge in top-right with star + number, title below, score number + percentage bar + percentage, year + genres, your gold star rating at the bottom. Poster-tall aspect ratio (2/3) gives covers real visual weight.</li>
+<li><strong>Type badge color language locked:</strong> red Movies, yellow Games, teal Manga, blue Books, pink Anime, green TV, purple Podcasts, orange Comics — matches your desktop badges exactly.</li>
+<li><strong>Two-column grid</strong> for item cards on mobile. Three would be too cramped at 380px, one would feel like a list when these are visual posters.</li>
+<li><strong>"+ N more [status] →" affordance at the bottom of each section</strong> keeps the initial page scrollable, lets users dig in to a specific section if they want more.</li>
+<li><strong>Status pill labels shortened</strong> — "Done / Going / Want / Drop" instead of the full words to fit on one row without scroll. Section headers below still use full labels.</li>
+<li><strong>In Progress + Want To + Dropped cards show different info</strong> — In Progress shows progress ("Ep 8 / 15", "p. 145 / 545"). Want To shows when added. Dropped shown at 0.7 opacity for visual hierarchy.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">Interaction patterns</h3>
+<ul>
+<li><strong>Tap status pill</strong> → filters to show only that status section. Tap "All" or active pill to deselect.</li>
+<li><strong>Tap type pill</strong> → filters within current status. Multiple types can be active.</li>
+<li><strong>Tap search pill</strong> → expands to input for searching within library only.</li>
+<li><strong>Tap sort button</strong> → cycles through Recent / Highest rated / A-Z / Recently added.</li>
+<li><strong>Tap card</strong> → opens item detail page.</li>
+<li><strong>Tap "+ N more"</strong> → expands that section inline.</li>
+<li><strong>Tap Following card</strong> → opens the franchise page (/franchise/[slug]).</li>
+<li><strong>Tap Import</strong> → opens import flow.</li>
+</ul>
+</div>
+
+</body>
+</html>

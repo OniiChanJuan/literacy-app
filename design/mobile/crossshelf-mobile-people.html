@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Mobile People</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body { margin: 0; padding: 40px 20px; background: #1a1a22; font-family: 'DM Sans', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 32px; color: #e8e6e1; }
+  .doc-header { max-width: 400px; text-align: center; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; margin: 0 0 8px 0; }
+  .doc-header p { font-size: 13px; color: rgba(232, 230, 225, 0.55); margin: 0; line-height: 1.5; }
+  .doc-meta { font-size: 11px; color: rgba(232, 230, 225, 0.32); letter-spacing: 1px; text-transform: uppercase; margin-top: 12px; }
+  .phone { width: 380px; background: #0a0a0f; border-radius: 32px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .phone-content { max-height: 1400px; overflow-y: auto; padding-bottom: 70px; }
+  .notes-card { max-width: 380px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px 24px; font-size: 13px; line-height: 1.6; color: rgba(232,230,225,0.75); }
+  .notes-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; margin: 0 0 12px 0; color: #2EC4B6; font-weight: 500; }
+  .notes-card ul { margin: 0; padding-left: 20px; }
+  .notes-card li { margin-bottom: 8px; }
+  .notes-card strong { color: #e8e6e1; font-weight: 500; }
+
+  .top-header { padding: 16px 14px 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #e8e6e1; font-weight: 500; }
+  .header-icons { display: flex; gap: 14px; align-items: center; }
+  .header-icon { font-size: 18px; color: rgba(232,230,225,0.55); }
+
+  /* SECTION HEADER */
+  .section { padding: 18px 14px 0 14px; }
+  .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .section-title-block { display: flex; align-items: baseline; gap: 8px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 18px; color: #e8e6e1; font-weight: 500; }
+  .section-subtitle { font-size: 10px; color: rgba(232,230,225,0.45); }
+
+  /* FEED TOGGLE */
+  .feed-toggle { display: flex; gap: 0; padding: 3px; background: rgba(255,255,255,0.025); border-radius: 14px; }
+  .feed-toggle-pill { padding: 4px 12px; font-size: 10px; color: rgba(232,230,225,0.55); border-radius: 12px; letter-spacing: 0.5px; }
+  .feed-toggle-pill-active { background: rgba(46,196,182,0.15); color: #2EC4B6; font-weight: 500; }
+
+  /* ACTIVITY ENTRY */
+  .activity-entry { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .activity-entry:last-child { border-bottom: none; }
+  .activity-top { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .activity-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+  .activity-user-block { flex: 1; min-width: 0; }
+  .activity-username { font-size: 12px; font-weight: 500; color: #e8e6e1; line-height: 1.1; }
+  .activity-meta { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; }
+  .activity-rating { color: #DAA520; font-size: 11px; letter-spacing: 1px; flex-shrink: 0; }
+  .activity-action-line { font-size: 11px; color: rgba(232,230,225,0.65); margin-bottom: 6px; line-height: 1.4; }
+  .activity-action-verb { color: rgba(232,230,225,0.45); }
+  .activity-item-link { color: #2EC4B6; font-weight: 500; }
+  .activity-review-text { font-size: 12px; color: rgba(232,230,225,0.85); line-height: 1.5; margin-bottom: 8px; }
+  .activity-controls { display: flex; gap: 16px; align-items: center; }
+  .activity-control { display: flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(232,230,225,0.45); }
+  .activity-control i { font-size: 12px; }
+  .activity-control-count { font-weight: 500; }
+  .activity-control-expand { color: #2EC4B6; font-weight: 500; }
+
+  /* THREADED REPLIES */
+  .reply-thread { margin-top: 12px; margin-left: 16px; padding-left: 12px; border-left: 2px solid rgba(46,196,182,0.15); }
+  .reply-entry { padding: 8px 0; }
+  .reply-entry + .reply-entry { border-top: 1px solid rgba(255,255,255,0.04); }
+  .reply-top { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+  .reply-avatar { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+  .reply-username { font-size: 11px; font-weight: 500; color: #e8e6e1; }
+  .reply-meta { font-size: 9px; color: rgba(232,230,225,0.45); }
+  .reply-text { font-size: 11px; color: rgba(232,230,225,0.75); line-height: 1.5; margin-bottom: 6px; }
+  .reply-controls { display: flex; gap: 14px; }
+  .reply-control { display: flex; align-items: center; gap: 3px; font-size: 9px; color: rgba(232,230,225,0.4); }
+  .reply-control i { font-size: 10px; }
+  .reply-collapse { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 12px; font-size: 9px; color: rgba(46,196,182,0.85); letter-spacing: 0.5px; text-transform: uppercase; margin-top: 8px; }
+  .reply-collapse i { font-size: 10px; }
+
+  /* SEARCH BAR (for reviewers) */
+  .search-bar { padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .search-bar i { font-size: 16px; color: rgba(232,230,225,0.45); }
+  .search-bar-placeholder { font-size: 12px; color: rgba(232,230,225,0.4); }
+
+  /* REVIEWER CARD (horizontal scroll) */
+  .reviewer-row { display: flex; gap: 8px; overflow-x: auto; margin: 12px -14px 0 -14px; padding: 0 14px 8px 14px; }
+  .reviewer-card { flex-shrink: 0; width: 105px; padding: 12px 8px; background: rgba(255,255,255,0.025); border-radius: 8px; text-align: center; }
+  .reviewer-card-avatar { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 8px auto; }
+  .reviewer-card-name { font-family: 'Playfair Display', serif; font-size: 12px; color: #e8e6e1; font-weight: 500; line-height: 1.1; margin-bottom: 4px; }
+  .reviewer-card-rank { font-size: 9px; color: #DAA520; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .reviewer-card-stats { font-size: 9px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; }
+  .reviewer-card-similarity { font-size: 9px; color: #2EC4B6; font-weight: 500; margin-top: 4px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.06); }
+
+  /* TYPE MIX BAR — visual fingerprint of a user's review type distribution */
+  .type-mix-bar { display: flex; height: 3px; border-radius: 2px; overflow: hidden; margin-top: 8px; background: rgba(255,255,255,0.06); }
+  .type-mix-seg { height: 100%; }
+  .type-mix-movie { background: #d44848; }
+  .type-mix-tv { background: #4ad4a3; }
+  .type-mix-anime { background: #d44a8b; }
+  .type-mix-book { background: #4a8bd4; }
+  .type-mix-manga { background: #4ad4c9; }
+  .type-mix-comic { background: #d4854a; }
+  .type-mix-game { background: #d4c44a; }
+  .type-mix-music { background: #c94ad4; }
+  .type-mix-podcast { background: #a374d4; }
+
+  .empty-similar { padding: 20px 14px; text-align: center; background: rgba(255,255,255,0.015); border: 1px dashed rgba(255,255,255,0.08); border-radius: 8px; margin-top: 12px; }
+  .empty-similar-text { font-size: 12px; color: rgba(232,230,225,0.45); line-height: 1.5; }
+
+  .show-more-row { text-align: center; padding: 14px 0 4px 0; }
+  .show-more-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase; }
+  .show-more-btn i { font-size: 12px; }
+
+  .bottom-tabs { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 14px 0; }
+  .tab { flex: 1; text-align: center; }
+  .tab-icon { font-size: 18px; color: rgba(232,230,225,0.45); }
+  .tab-icon-active { color: #2EC4B6; }
+  .tab-label { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; letter-spacing: 0.5px; }
+  .tab-label-active { color: #2EC4B6; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>CrossShelf Mobile — People</h1>
+  <p>Discover other reviewers, follow people with similar taste, see their activity. Activity-feed-first for mobile.</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<div class="top-header">
+<div class="page-title">People</div>
+</div>
+
+<!-- ACTIVITY SECTION (first on mobile) -->
+<div class="section">
+<div class="section-header">
+<div class="section-title-block">
+<div class="section-title">Activity</div>
+<div class="section-subtitle">From people you follow</div>
+</div>
+<div class="feed-toggle">
+<div class="feed-toggle-pill feed-toggle-pill-active">Recent</div>
+<div class="feed-toggle-pill">Top</div>
+</div>
+</div>
+
+<div class="activity-entry">
+<div class="activity-top">
+<div class="activity-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="activity-user-block">
+<div class="activity-username">Claudoro27</div>
+<div class="activity-meta">7d ago</div>
+</div>
+<div class="activity-rating">★★★★★</div>
+</div>
+<div class="activity-action-line">
+<span class="activity-action-verb">reviewed</span>
+<span class="activity-item-link">The Little Prince</span>
+</div>
+<div class="activity-review-text">I can not believe I only read this book when I was 29. It is the cutest and reading how the different people respond to the little prince ♥</div>
+<div class="activity-controls">
+<div class="activity-control"><i class="ti ti-arrow-up" aria-hidden="true"></i><span class="activity-control-count">3</span></div>
+<div class="activity-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="activity-control activity-control-expand"><i class="ti ti-message" aria-hidden="true"></i>2 replies</div>
+</div>
+
+<!-- Expanded thread -->
+<div class="reply-thread">
+<div class="reply-entry">
+<div class="reply-top">
+<div class="reply-avatar" style="background: linear-gradient(135deg, #2EC4B6, #E84855);"></div>
+<div class="reply-username">Juan</div>
+<div class="reply-meta">· 6d ago</div>
+</div>
+<div class="reply-text">Same — I picked it up expecting children's-book simplicity and got the whole existential reset. The fox's "you become responsible for what you've tamed" line hit hard.</div>
+<div class="reply-controls">
+<div class="reply-control"><i class="ti ti-arrow-up" aria-hidden="true"></i>2</div>
+<div class="reply-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="reply-control"><i class="ti ti-message" aria-hidden="true"></i>Reply</div>
+</div>
+
+<!-- Nested reply (second level) -->
+<div class="reply-thread" style="margin-top: 10px;">
+<div class="reply-entry">
+<div class="reply-top">
+<div class="reply-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="reply-username">Claudoro27</div>
+<div class="reply-meta">· 6d ago</div>
+</div>
+<div class="reply-text">Yes!! That whole chapter is what made me put the book down and just sit for a while.</div>
+<div class="reply-controls">
+<div class="reply-control"><i class="ti ti-arrow-up" aria-hidden="true"></i>1</div>
+<div class="reply-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="reply-control"><i class="ti ti-message" aria-hidden="true"></i>Reply</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="reply-collapse"><i class="ti ti-chevron-up" aria-hidden="true"></i>Collapse thread</div>
+</div>
+</div>
+
+<div class="activity-entry">
+<div class="activity-top">
+<div class="activity-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="activity-user-block">
+<div class="activity-username">Claudoro27</div>
+<div class="activity-meta">7d ago</div>
+</div>
+<div class="activity-rating">★★★☆☆</div>
+</div>
+<div class="activity-action-line">
+<span class="activity-action-verb">reviewed</span>
+<span class="activity-item-link">The Comeback</span>
+</div>
+<div class="activity-review-text">I'm on season 1, really good script sometimes a little bit slow. But I heard great things about it so excited to see season 2 and 3</div>
+<div class="activity-controls">
+<div class="activity-control"><i class="ti ti-arrow-up" aria-hidden="true"></i><span class="activity-control-count">0</span></div>
+<div class="activity-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="activity-control"><i class="ti ti-message" aria-hidden="true"></i>Reply</div>
+</div>
+</div>
+
+<div class="activity-entry">
+<div class="activity-top">
+<div class="activity-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="activity-user-block">
+<div class="activity-username">Claudoro27</div>
+<div class="activity-meta">7d ago</div>
+</div>
+<div class="activity-rating">★★★★☆</div>
+</div>
+<div class="activity-action-line">
+<span class="activity-action-verb">reviewed</span>
+<span class="activity-item-link">Joker</span>
+</div>
+<div class="activity-review-text">Can't believe the second one was so ugly</div>
+<div class="activity-controls">
+<div class="activity-control"><i class="ti ti-arrow-up" aria-hidden="true"></i><span class="activity-control-count">5</span></div>
+<div class="activity-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="activity-control activity-control-expand"><i class="ti ti-message" aria-hidden="true"></i>4 replies</div>
+</div>
+</div>
+
+<div class="activity-entry">
+<div class="activity-top">
+<div class="activity-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="activity-user-block">
+<div class="activity-username">Claudoro27</div>
+<div class="activity-meta">7d ago</div>
+</div>
+<div class="activity-rating">★★★★☆</div>
+</div>
+<div class="activity-action-line">
+<span class="activity-action-verb">reviewed</span>
+<span class="activity-item-link">The Truman Show</span>
+</div>
+<div class="activity-review-text">Mind changing movie, I saw it growing up and it affected my personality</div>
+<div class="activity-controls">
+<div class="activity-control"><i class="ti ti-arrow-up" aria-hidden="true"></i><span class="activity-control-count">0</span></div>
+<div class="activity-control"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>
+<div class="activity-control"><i class="ti ti-message" aria-hidden="true"></i>Reply</div>
+</div>
+</div>
+
+<div class="show-more-row">
+<div class="show-more-btn"><i class="ti ti-chevron-down" aria-hidden="true"></i>Show 4 more</div>
+</div>
+</div>
+
+<!-- FIND REVIEWERS SECTION -->
+<div class="section">
+<div class="section-header">
+<div class="section-title-block">
+<div class="section-title">Find reviewers</div>
+<div class="section-subtitle">Search by name or username</div>
+</div>
+</div>
+
+<div class="search-bar">
+<i class="ti ti-search" aria-hidden="true"></i>
+<div class="search-bar-placeholder">Search by username…</div>
+</div>
+</div>
+
+<!-- REVIEWERS WITH SIMILAR TASTE (currently empty for sole user) -->
+<div class="section">
+<div class="section-header">
+<div class="section-title-block">
+<div class="section-title">Similar taste</div>
+<div class="section-subtitle">Reviewers who scored items like you</div>
+</div>
+</div>
+
+<div class="empty-similar">
+<div class="empty-similar-text">Rate more items to find people with similar taste.</div>
+</div>
+</div>
+
+<!-- YOUR FOLLOWING SECTION -->
+<div class="section">
+<div class="section-header">
+<div class="section-title-block">
+<div class="section-title">Following</div>
+<div class="section-subtitle">1 person</div>
+</div>
+</div>
+
+<div class="reviewer-row">
+
+<div class="reviewer-card">
+<div class="reviewer-card-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div class="reviewer-card-name">Claudoro27</div>
+<div class="reviewer-card-rank">★ #2</div>
+<div class="reviewer-card-stats">5 rated</div>
+<div class="type-mix-bar">
+<div class="type-mix-seg type-mix-movie" style="width: 40%;"></div>
+<div class="type-mix-seg type-mix-tv" style="width: 40%;"></div>
+<div class="type-mix-seg type-mix-book" style="width: 20%;"></div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="bottom-tabs">
+<div class="tab"><i class="ti ti-sparkles tab-icon" aria-hidden="true"></i><div class="tab-label">For You</div></div>
+<div class="tab"><i class="ti ti-compass tab-icon" aria-hidden="true"></i><div class="tab-label">Explore</div></div>
+<div class="tab"><i class="ti ti-books tab-icon" aria-hidden="true"></i><div class="tab-label">Library</div></div>
+<div class="tab"><i class="ti ti-users tab-icon tab-icon-active" aria-hidden="true"></i><div class="tab-label tab-label-active">People</div></div>
+</div>
+
+</div>
+
+<div class="notes-card">
+<h3>People page design</h3>
+<ul>
+<li><strong>Activity feed first.</strong> Big deliberate departure from desktop's left/right two-column layout. On mobile, what users want most when tapping into People is "what are my friends doing?" Activity comes first as scrollable feed. Find reviewers / Similar taste / Following come below as sections.</li>
+<li><strong>Activity entries compressed for mobile</strong> but keep the essentials — avatar + username + timestamp + star rating on one row, "reviewed [item]" on the next, review text below, upvote/downvote/reply controls at the bottom. Single tap on item title goes to item detail; single tap on username goes to that user's profile.</li>
+<li><strong>Threaded replies (Reddit-style).</strong> Tapping the "N replies" affordance expands a thread inline beneath the review. Replies are left-indented with a thin teal border, nested with deeper indentation per reply level. Each reply has its own avatar + username + timestamp + upvote/downvote/reply. A "Collapse thread" pill at the bottom hides the thread. The first review in this mockup shows a 2-level expanded thread (Juan replies to Claudoro27, Claudoro27 replies back); the third review shows a collapsed "4 replies" affordance.</li>
+<li><strong>Reply count is shown when replies exist</strong> (teal "2 replies" / "4 replies"). When zero replies, just shows "Reply" affordance. Subtle but readable difference.</li>
+<li><strong>Recent / Top toggle</strong> kept from desktop as a small pill toggle in the section header. Compact but clear which filter is applied.</li>
+<li><strong>"Show 4 more" progressive expansion</strong> matches the Library pattern — feed shows 4 entries by default, tap to expand to 8, etc.</li>
+<li><strong>Find reviewers as its own search section.</strong> Same search-bar styling as Explore. Tap to expand into a full search input.</li>
+<li><strong>Similar taste section</strong> shown with empty state ONLY when user has <10 ratings. Short and direct copy ("Rate more items to find people with similar taste"). When populated, this becomes a horizontal-scroll row of reviewer cards with a similarity percentage.</li>
+<li><strong>Following section</strong> shows your tracked reviewers as compact cards — avatar + name + member rank + ratings count + type-mix bar.</li>
+<li><strong>Type-mix bar on reviewer cards.</strong> A thin (3px) horizontal bar at the bottom of each follower card, divided into colored segments showing the proportion of their reviews per media type. Visual fingerprint of taste profile. Claudoro27's bar shows 40% red (Movies) / 40% green (TV) / 20% blue (Books) reflecting their 5 reviews: Joker + Truman Show (movies), The Comeback + The Pitt (TV), The Little Prince (book). Reuses the platform's locked type-color language.</li>
+<li><strong>Reviewer cards on the Following row</strong> are clean — no follow/unfollow button visible by default. Tap card to go to profile where follow/unfollow is the primary action.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">Empty state rules</h3>
+<ul>
+<li><strong>Activity feed empty</strong> (user follows zero people) — shows a prompt "Follow reviewers to see their reviews here" with a button that scrolls down to Find reviewers section.</li>
+<li><strong>Similar taste empty</strong> — short copy ("Rate more items to find people with similar taste"). Section hidden entirely once populated, replaced with real reviewer cards.</li>
+<li><strong>Following empty</strong> (user follows zero people) — section hides entirely. The prompt in the activity-feed-empty state covers this.</li>
+<li><strong>Search returns no results</strong> — "No reviewers found matching '[query]'. Try a different username."</li>
+</ul>
+
+<h3 style="margin-top: 20px;">What this page is NOT</h3>
+<ul>
+<li><strong>Not a feed of all CrossShelf activity.</strong> Activity here is from people you follow, not platform-wide. Platform-wide activity could be a future feature (probably on Explore's What's Happening section, not here).</li>
+<li><strong>Not a friend graph in the social media sense.</strong> CrossShelf isn't trying to be a chat app — reviewers, not friends. Following is one-way like Twitter, not bidirectional like Facebook.</li>
+<li><strong>Not focused on user-to-user messaging.</strong> Reply on a review is the only communication primitive. No DMs, no notifications about who followed you (probably — though that's a notifications inbox question).</li>
+</ul>
+</div>
+
+</body>
+</html>

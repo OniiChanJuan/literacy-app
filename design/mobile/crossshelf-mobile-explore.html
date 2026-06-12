@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Mobile Explore</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body { margin: 0; padding: 40px 20px; background: #1a1a22; font-family: 'DM Sans', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 32px; color: #e8e6e1; }
+  .doc-header { max-width: 400px; text-align: center; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; margin: 0 0 8px 0; }
+  .doc-header p { font-size: 13px; color: rgba(232, 230, 225, 0.55); margin: 0; line-height: 1.5; }
+  .doc-meta { font-size: 11px; color: rgba(232, 230, 225, 0.32); letter-spacing: 1px; text-transform: uppercase; margin-top: 12px; }
+  .phone { width: 380px; background: #0a0a0f; border-radius: 32px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .phone-content { max-height: 1400px; overflow-y: auto; padding-bottom: 70px; }
+  .notes-card { max-width: 380px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px 24px; font-size: 13px; line-height: 1.6; color: rgba(232,230,225,0.75); }
+  .notes-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; margin: 0 0 12px 0; color: #2EC4B6; font-weight: 500; }
+  .notes-card ul { margin: 0; padding-left: 20px; }
+  .notes-card li { margin-bottom: 8px; }
+  .notes-card strong { color: #e8e6e1; font-weight: 500; }
+
+  .top-header { padding: 16px 14px 12px 14px; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #e8e6e1; font-weight: 500; }
+
+  /* SEARCH BAR */
+  .search-bar { margin: 0 14px 12px 14px; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; }
+  .search-bar i { font-size: 18px; color: rgba(232,230,225,0.45); }
+  .search-bar-placeholder { font-size: 13px; color: rgba(232,230,225,0.4); }
+
+  /* TYPE FILTER ROW */
+  .type-row { display: flex; gap: 4px; padding: 0 14px 12px 14px; margin: 0; flex-wrap: nowrap; }
+  .type-chip { flex: 1; padding: 6px 4px; border-radius: 12px; font-size: 9px; font-weight: 600; letter-spacing: 0.3px; display: flex; flex-direction: column; align-items: center; gap: 2px; border: 1px solid; line-height: 1; text-align: center; min-width: 0; }
+  .type-chip-count { font-size: 8px; opacity: 0.7; font-weight: 400; line-height: 1; }
+  .type-chip-building { position: relative; }
+  .type-chip-building::after { content: ''; position: absolute; top: 3px; right: 3px; width: 5px; height: 5px; background: #DAA520; border-radius: 50%; opacity: 0.6; }
+  .chip-movies { color: #d44848; background: rgba(212,72,72,0.08); border-color: rgba(212,72,72,0.3); }
+  .chip-tv { color: #4ad4a3; background: rgba(74,212,163,0.08); border-color: rgba(74,212,163,0.3); }
+  .chip-anime { color: #d44a8b; background: rgba(212,74,139,0.08); border-color: rgba(212,74,139,0.3); }
+  .chip-books { color: #4a8bd4; background: rgba(74,139,212,0.08); border-color: rgba(74,139,212,0.3); }
+  .chip-manga { color: #4ad4c9; background: rgba(74,212,201,0.08); border-color: rgba(74,212,201,0.3); }
+  .chip-comics { color: #d4854a; background: rgba(212,133,74,0.08); border-color: rgba(212,133,74,0.3); }
+  .chip-games { color: #d4c44a; background: rgba(212,196,74,0.08); border-color: rgba(212,196,74,0.3); }
+  .chip-music { color: #c94ad4; background: rgba(201,74,212,0.08); border-color: rgba(201,74,212,0.3); }
+  .chip-podcasts { color: #a374d4; background: rgba(163,116,212,0.08); border-color: rgba(163,116,212,0.3); }
+  .type-chip i { font-size: 12px; }
+
+  /* FILTERS BUTTON */
+  .filter-summary-bar { padding: 10px 14px 14px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .filter-button { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(46,196,182,0.06); border: 1px solid rgba(46,196,182,0.25); border-radius: 6px; font-size: 11px; color: #2EC4B6; letter-spacing: 0.5px; line-height: 1; }
+  .filter-button i { font-size: 14px; }
+  .filter-applied-text { font-size: 11px; color: rgba(232,230,225,0.45); flex: 1; }
+  .filter-applied-text strong { color: rgba(232,230,225,0.75); font-weight: 500; }
+  .filter-sort { font-size: 10px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; }
+
+  /* TYPE SECTIONS */
+  .type-section { padding: 22px 0 0 0; }
+  .type-section-header { padding: 0 14px; display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); margin: 0 14px 12px 14px; }
+  .type-section-title-block { display: flex; align-items: baseline; gap: 8px; }
+  .type-section-title { font-family: 'Playfair Display', serif; font-size: 18px; color: #e8e6e1; font-weight: 500; }
+  .type-section-count { font-size: 10px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; }
+  .see-all { font-size: 10px; color: #2EC4B6; letter-spacing: 1px; }
+
+  .card-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 14px 8px 14px; }
+  .exp-card { flex-shrink: 0; width: 110px; background: rgba(255,255,255,0.025); border-radius: 6px; overflow: hidden; position: relative; }
+  .exp-poster { width: 100%; aspect-ratio: 2/3; position: relative; padding: 10px 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .exp-poster-text { font-family: 'Playfair Display', serif; font-weight: 600; line-height: 1.1; }
+  .exp-type-badge { position: absolute; top: 5px; left: 5px; font-size: 6px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 4px; border-radius: 2px; font-weight: 700; }
+  .exp-type-badge-secondary { position: absolute; top: 5px; left: 38px; font-size: 6px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 4px; border-radius: 2px; font-weight: 700; }
+  .exp-rating-corner { position: absolute; top: 5px; right: 5px; background: rgba(10,10,15,0.85); border: 1px solid rgba(218,165,32,0.4); border-radius: 2px; padding: 1px 4px; font-size: 8px; color: #DAA520; font-weight: 600; display: flex; align-items: center; gap: 2px; }
+  .exp-rating-corner i { font-size: 7px; }
+  .exp-info { padding: 6px 8px 8px 8px; }
+  .exp-info-title { font-family: 'Playfair Display', serif; font-size: 11px; color: #e8e6e1; font-weight: 500; line-height: 1.2; margin-bottom: 3px; }
+  .exp-score-row { display: flex; align-items: center; gap: 4px; }
+  .exp-score-num { font-family: 'Playfair Display', serif; font-size: 11px; color: #e8e6e1; font-weight: 500; }
+  .exp-score-bar { flex: 1; height: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; position: relative; }
+  .exp-score-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: #2EC4B6; border-radius: 1px; }
+  .exp-info-meta { font-size: 8px; color: rgba(232,230,225,0.45); margin-top: 2px; }
+
+  .badge-movie { color: #ffffff; background: #d44848; }
+  .badge-game { color: #1a1a22; background: #d4c44a; }
+  .badge-manga { color: #ffffff; background: #4ad4c9; }
+  .badge-book { color: #ffffff; background: #4a8bd4; }
+  .badge-anime { color: #ffffff; background: #d44a8b; }
+  .badge-tv { color: #ffffff; background: #4ad4a3; }
+  .badge-podcast { color: #ffffff; background: #c94ad4; }
+  .badge-comic { color: #ffffff; background: #d4854a; }
+
+  .bottom-tabs { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 14px 0; }
+  .tab { flex: 1; text-align: center; }
+  .tab-icon { font-size: 18px; color: rgba(232,230,225,0.45); }
+  .tab-icon-active { color: #2EC4B6; }
+  .tab-label { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; letter-spacing: 0.5px; }
+  .tab-label-active { color: #2EC4B6; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>CrossShelf Mobile — Explore</h1>
+  <p>Catalog browsing surface. Search-first, type-filterable, with per-type horizontal rows. Filters surfaced via a bottom sheet to preserve mobile real estate.</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<!-- TOP HEADER -->
+<div class="top-header">
+<div class="page-title">Explore</div>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="search-bar">
+<i class="ti ti-search" aria-hidden="true"></i>
+<div class="search-bar-placeholder">Search titles, genres, vibes, people…</div>
+</div>
+
+<!-- TYPE FILTER CHIPS (compact, all 9 fit without scroll) -->
+<div class="type-row">
+<div class="type-chip chip-movies">Movies<span class="type-chip-count">5,968</span></div>
+<div class="type-chip chip-tv">TV<span class="type-chip-count">4,805</span></div>
+<div class="type-chip chip-anime">Anime<span class="type-chip-count">1,684</span></div>
+<div class="type-chip chip-books">Books<span class="type-chip-count">12,524</span></div>
+<div class="type-chip chip-manga">Manga<span class="type-chip-count">1,919</span></div>
+<div class="type-chip chip-comics">Comics<span class="type-chip-count">238</span></div>
+<div class="type-chip chip-games">Games<span class="type-chip-count">3,430</span></div>
+<div class="type-chip chip-music type-chip-building">Music<span class="type-chip-count">200</span></div>
+<div class="type-chip chip-podcasts type-chip-building">Pods<span class="type-chip-count">475</span></div>
+</div>
+
+<!-- FILTERS + SORT -->
+<div class="filter-summary-bar">
+<div class="filter-button"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>FILTERS</div>
+<div class="filter-applied-text">Showing <strong>all</strong></div>
+<div class="filter-sort">↓ POPULAR</div>
+</div>
+
+<!-- MOVIES SECTION -->
+<div class="type-section">
+<div class="type-section-header">
+<div class="type-section-title-block">
+<div class="type-section-title">Movies</div>
+<div class="type-section-count">5,968 titles</div>
+</div>
+<div class="see-all">See all →</div>
+</div>
+
+<div class="card-row">
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a1a22;">
+<div class="exp-type-badge badge-movie">MOVIE</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4.6</div>
+<div class="exp-poster-text" style="color: #d4c093; font-size: 13px;">THE<br>PROFESSIONAL</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Léon: The Professional</div>
+<div class="exp-score-row"><div class="exp-score-num">4.6</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 87%;"></div></div></div>
+<div class="exp-info-meta">Crime · Drama</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a1f2c;">
+<div class="exp-type-badge badge-movie">MOVIE</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4.4</div>
+<div class="exp-poster-text" style="color: #d44848; font-size: 13px;">AVENGERS</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">The Avengers</div>
+<div class="exp-score-row"><div class="exp-score-num">4.4</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 84%;"></div></div></div>
+<div class="exp-info-meta">Sci-Fi · Action</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #4a8bd4;">
+<div class="exp-type-badge badge-movie">MOVIE</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4.5</div>
+<div class="exp-poster-text" style="color: #ffffff; font-size: 18px;">SOUL</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Soul</div>
+<div class="exp-score-row"><div class="exp-score-num">4.5</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 85%;"></div></div></div>
+<div class="exp-info-meta">Animation · Family</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2a1f12;">
+<div class="exp-type-badge badge-movie">MOVIE</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4.5</div>
+<div class="exp-poster-text" style="color: #d4a76a; font-size: 11px;">BATMAN<br>BEGINS</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Batman Begins</div>
+<div class="exp-score-row"><div class="exp-score-num">4.5</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 86%;"></div></div></div>
+<div class="exp-info-meta">Drama · Crime</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- TV SHOWS SECTION -->
+<div class="type-section">
+<div class="type-section-header">
+<div class="type-section-title-block">
+<div class="type-section-title">TV Shows</div>
+<div class="type-section-count">4,805 titles</div>
+</div>
+<div class="see-all">See all →</div>
+</div>
+
+<div class="card-row">
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a2a25;">
+<div class="exp-type-badge badge-tv">TV</div>
+<div class="exp-type-badge-secondary badge-anime">ANIME</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5.0</div>
+<div class="exp-poster-text" style="color: #a7d4af; font-size: 11px;">HUNTER<br>x HUNTER</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Hunter x Hunter</div>
+<div class="exp-score-row"><div class="exp-score-num">5.0</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 95%;"></div></div></div>
+<div class="exp-info-meta">Animation · Action</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2a1820;">
+<div class="exp-type-badge badge-tv">TV</div>
+<div class="exp-type-badge-secondary badge-anime">ANIME</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4.6</div>
+<div class="exp-poster-text" style="color: #d44848; font-size: 11px;">KATANA<br>GATARI</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Katanagatari</div>
+<div class="exp-score-row"><div class="exp-score-num">4.6</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 87%;"></div></div></div>
+<div class="exp-info-meta">Anime · Action</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2a1f12;">
+<div class="exp-type-badge badge-tv">TV</div>
+<div class="exp-type-badge-secondary badge-anime">ANIME</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5.0</div>
+<div class="exp-poster-text" style="color: #d4a76a; font-size: 10px;">FULLMETAL<br>ALCHEMIST</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Fullmetal Alchemist: B…</div>
+<div class="exp-score-row"><div class="exp-score-num">5.0</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 96%;"></div></div></div>
+<div class="exp-info-meta">Animation · Action</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2a1f12;">
+<div class="exp-type-badge badge-tv">TV</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>4.7</div>
+<div class="exp-poster-text" style="color: #d4a76a; font-size: 11px;">THE<br>MANDALORIAN</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">The Mandalorian</div>
+<div class="exp-score-row"><div class="exp-score-num">4.7</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 90%;"></div></div></div>
+<div class="exp-info-meta">Sci-Fi · Action</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- BOOKS SECTION -->
+<div class="type-section">
+<div class="type-section-header">
+<div class="type-section-title-block">
+<div class="type-section-title">Books</div>
+<div class="type-section-count">12,524 titles</div>
+</div>
+<div class="see-all">See all →</div>
+</div>
+
+<div class="card-row">
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a1f2e;">
+<div class="exp-type-badge badge-book">BOOK</div>
+<div class="exp-poster-text" style="color: #d4af7a; font-size: 14px; font-style: italic;">Babel</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Babel</div>
+<div class="exp-score-row"><div class="exp-score-num">8.4</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 84%;"></div></div></div>
+<div class="exp-info-meta">Fantasy · Historical</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a1a22;">
+<div class="exp-type-badge badge-book">BOOK</div>
+<div class="exp-poster-text" style="color: #a7d4d4; font-size: 11px;">WUTHERING<br>HEIGHTS</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Wuthering Heights</div>
+<div class="exp-score-row"><div class="exp-score-num">8.2</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 82%;"></div></div></div>
+<div class="exp-info-meta">Classic · Romance</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1f1a25;">
+<div class="exp-type-badge badge-book">BOOK</div>
+<div class="exp-poster-text" style="color: #d4af7a; font-size: 9px;">1984</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Nineteen Eighty-Four</div>
+<div class="exp-score-row"><div class="exp-score-num">8.6</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 86%;"></div></div></div>
+<div class="exp-info-meta">Dystopian · Classic</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #251a1a;">
+<div class="exp-type-badge badge-book">BOOK</div>
+<div class="exp-poster-text" style="color: #d4858f; font-size: 11px;">CAN<br>TRANSFORM<br>YOU</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">One Choice Can Transform You</div>
+<div class="exp-score-row"><div class="exp-score-num">7.8</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 78%;"></div></div></div>
+<div class="exp-info-meta">Self-help · Psychology</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- GAMES SECTION -->
+<div class="type-section">
+<div class="type-section-header">
+<div class="type-section-title-block">
+<div class="type-section-title">Games</div>
+<div class="type-section-count">3,430 titles</div>
+</div>
+<div class="see-all">See all →</div>
+</div>
+
+<div class="card-row">
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #d4c44a;">
+<div class="exp-type-badge badge-game">GAME</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5.0</div>
+<div class="exp-poster-text" style="color: #1a1a22; font-size: 14px;">CYBER<br>PUNK</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Cyberpunk 2077</div>
+<div class="exp-score-row"><div class="exp-score-num">5.0</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 97%;"></div></div></div>
+<div class="exp-info-meta">Sci-Fi · Action</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a2a25;">
+<div class="exp-type-badge badge-game">GAME</div>
+<div class="exp-poster-text" style="color: #a7d4af; font-size: 11px;">HOLLOW<br>KNIGHT</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Hollow Knight</div>
+<div class="exp-score-row"><div class="exp-score-num">4.9</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 91%;"></div></div></div>
+<div class="exp-info-meta">Metroidvania</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2a1f12;">
+<div class="exp-type-badge badge-game">GAME</div>
+<div class="exp-poster-text" style="color: #d4a76a; font-size: 11px;">RED DEAD<br>REDEMPTION</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Red Dead Redemption 2</div>
+<div class="exp-score-row"><div class="exp-score-num">9.4</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 94%;"></div></div></div>
+<div class="exp-info-meta">Action · Adventure</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #251a2a;">
+<div class="exp-type-badge badge-game">GAME</div>
+<div class="exp-poster-text" style="color: #c9a3d4; font-size: 10px;">DISCO<br>ELYSIUM</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Disco Elysium</div>
+<div class="exp-score-row"><div class="exp-score-num">9.0</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 90%;"></div></div></div>
+<div class="exp-info-meta">RPG · Mystery</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- MANGA SECTION -->
+<div class="type-section">
+<div class="type-section-header">
+<div class="type-section-title-block">
+<div class="type-section-title">Manga</div>
+<div class="type-section-count">1,919 titles</div>
+</div>
+<div class="see-all">See all →</div>
+</div>
+
+<div class="card-row">
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2c1a3a;">
+<div class="exp-type-badge badge-manga">MANGA</div>
+<div class="exp-rating-corner"><i class="ti ti-star-filled" aria-hidden="true"></i>5.0</div>
+<div class="exp-poster-text" style="color: #e8e6e1; font-size: 16px; font-style: italic;">Berserk</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Berserk</div>
+<div class="exp-score-row"><div class="exp-score-num">9.2</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 92%;"></div></div></div>
+<div class="exp-info-meta">Fantasy · Action</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2c1a3a;">
+<div class="exp-type-badge badge-manga">MANGA</div>
+<div class="exp-poster-text" style="color: #e8e6e1; font-size: 12px;">VAGABOND</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Vagabond</div>
+<div class="exp-score-row"><div class="exp-score-num">9.5</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 95%;"></div></div></div>
+<div class="exp-info-meta">Historical · Action</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2a1a15;">
+<div class="exp-type-badge badge-manga">MANGA</div>
+<div class="exp-poster-text" style="color: #d44848; font-size: 11px;">進撃の巨人</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Attack on Titan</div>
+<div class="exp-score-row"><div class="exp-score-num">9.0</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 90%;"></div></div></div>
+<div class="exp-info-meta">Action · Fantasy</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- MUSIC SECTION (building catalog) -->
+<div class="type-section">
+<div class="type-section-header">
+<div class="type-section-title-block">
+<div class="type-section-title">Music</div>
+<div class="type-section-count">200 titles</div>
+<div style="font-size: 9px; color: rgba(218,165,32,0.85); letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; background: rgba(218,165,32,0.1); border-radius: 3px; margin-left: 4px;">Building</div>
+</div>
+<div class="see-all">See all →</div>
+</div>
+
+<div class="card-row">
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a1a22;">
+<div class="exp-type-badge badge-podcast" style="background: #c94ad4;">MUSIC</div>
+<div class="exp-poster-text" style="color: #d4af7a; font-size: 11px;">DARK SIDE<br>OF THE MOON</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">The Dark Side of the Moon</div>
+<div class="exp-score-row"><div class="exp-score-num">9.6</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 96%;"></div></div></div>
+<div class="exp-info-meta">Pink Floyd · 1973</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a2030;">
+<div class="exp-type-badge badge-podcast" style="background: #c94ad4;">MUSIC</div>
+<div class="exp-poster-text" style="color: #93b3c4; font-size: 11px;">IN RAINBOWS</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">In Rainbows</div>
+<div class="exp-score-row"><div class="exp-score-num">9.2</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 92%;"></div></div></div>
+<div class="exp-info-meta">Radiohead · 2007</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #25201a;">
+<div class="exp-type-badge badge-podcast" style="background: #c94ad4;">MUSIC</div>
+<div class="exp-poster-text" style="color: #d4c093; font-size: 10px;">RUMOURS</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Rumours</div>
+<div class="exp-score-row"><div class="exp-score-num">9.0</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 90%;"></div></div></div>
+<div class="exp-info-meta">Fleetwood Mac · 1977</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- PODCASTS SECTION (building catalog) -->
+<div class="type-section">
+<div class="type-section-header">
+<div class="type-section-title-block">
+<div class="type-section-title">Podcasts</div>
+<div class="type-section-count">475 titles</div>
+<div style="font-size: 9px; color: rgba(218,165,32,0.85); letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; background: rgba(218,165,32,0.1); border-radius: 3px; margin-left: 4px;">Building</div>
+</div>
+<div class="see-all">See all →</div>
+</div>
+
+<div class="card-row">
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #2a1820;">
+<div class="exp-type-badge badge-podcast">PODCAST</div>
+<div class="exp-poster-text" style="color: #c9a3d4; font-size: 10px;">STORY<br>BEHIND</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">The Story Behind</div>
+<div class="exp-score-row"><div class="exp-score-num">8.4</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 84%;"></div></div></div>
+<div class="exp-info-meta">History · Documentary</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #1a2535;">
+<div class="exp-type-badge badge-podcast">PODCAST</div>
+<div class="exp-poster-text" style="color: #93b3c4; font-size: 10px;">RADIOLAB</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Radiolab</div>
+<div class="exp-score-row"><div class="exp-score-num">8.9</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 89%;"></div></div></div>
+<div class="exp-info-meta">Science · Stories</div>
+</div>
+</div>
+
+<div class="exp-card">
+<div class="exp-poster" style="background: #251a2a;">
+<div class="exp-type-badge badge-podcast">PODCAST</div>
+<div class="exp-poster-text" style="color: #c9a3d4; font-size: 10px;">HARDCORE<br>HISTORY</div>
+</div>
+<div class="exp-info">
+<div class="exp-info-title">Hardcore History</div>
+<div class="exp-score-row"><div class="exp-score-num">9.4</div><div class="exp-score-bar"><div class="exp-score-bar-fill" style="width: 94%;"></div></div></div>
+<div class="exp-info-meta">History · Long-form</div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<!-- BOTTOM TABS -->
+<div class="bottom-tabs">
+<div class="tab"><i class="ti ti-sparkles tab-icon" aria-hidden="true"></i><div class="tab-label">For You</div></div>
+<div class="tab"><i class="ti ti-compass tab-icon tab-icon-active" aria-hidden="true"></i><div class="tab-label tab-label-active">Explore</div></div>
+<div class="tab"><i class="ti ti-books tab-icon" aria-hidden="true"></i><div class="tab-label">Library</div></div>
+<div class="tab"><i class="ti ti-users tab-icon" aria-hidden="true"></i><div class="tab-label">People</div></div>
+</div>
+
+</div>
+
+<div class="notes-card">
+<h3>Explore page design</h3>
+<ul>
+<li><strong>Search bar is the primary action</strong> — large, prominently placed below the page title. Placeholder communicates scope ("titles, genres, vibes, people…") so users know it searches multiple dimensions. Tapping opens a full-screen search experience (not designed yet — would be a separate small mockup).</li>
+<li><strong>Type filter chips with counts</strong> — single non-scrolling row, all 9 types visible at once. Each chip color-coded to match the type's identity. Compact vertical layout (label on top, count below) lets all 9 fit at 380px without horizontal scroll. Numbers tell users what's actually in the catalog. Tap a chip to filter; tap again to deselect.</li>
+<li><strong>"Building" catalog indicator</strong> on Music and Podcasts chips — small muted gold dot in the top-right corner of those chips. Honest signal that those catalogs are smaller / actively growing. The catalog IS real (200 albums, 475 podcasts) so the chips aren't dimmed or hidden, just marked. On their per-type section headers, a small "BUILDING" pill in muted gold spells out the framing more explicitly.</li>
+<li><strong>Filters button + applied state + sort</strong> on a single row. The "FILTERS" button is teal-tinted (matches the sort/search styling from Library). When filters are applied, the inline text updates: "Showing all" → "Filters: Dark, Sci-Fi" so users know what's active without opening the sheet. Sort label on the right shows current sort.</li>
+<li><strong>Filter sheet (not shown but spec'd)</strong> — Tapping FILTERS opens a bottom sheet with three filter dimensions from desktop: Genre, Vibe, Tag. Each with multi-select chips. Apply button closes the sheet and updates the page.</li>
+<li><strong>Per-type sections</strong> follow the For You pattern — section header with type name + count + "See all →", then horizontal-scrolling card row. Familiar layout from For You.</li>
+<li><strong>Cards are smaller than For You's cross-shelf cards</strong> (110px wide) so 3 full cards fit per scroll position. Visual density matches the Library card style but tighter.</li>
+<li><strong>Multi-type badges shown when applicable.</strong> Hunter x Hunter and Fullmetal Alchemist show both "TV" + "ANIME" badges, matching desktop's pattern. Items can belong to multiple types.</li>
+<li><strong>"See all →"</strong> on each row goes to a dedicated type-browse page (e.g. /explore/movies) with grid layout and full filter set.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">Where this differs from desktop deliberately</h3>
+<ul>
+<li><strong>Three filter rows compressed into one filter button.</strong> Desktop's "Genre / Vibe / Tag" three-row layout would consume most of mobile's vertical real estate. Bottom sheet preserves the same filter dimensions while leaving the main page for content.</li>
+<li><strong>Type pills compressed into a non-scrolling row of 9</strong> — all visible at once instead of horizontal-scroll, by going text-only with stacked counts. Loses the icons from desktop, but keeping all 9 types visible without scroll is the bigger win for discoverability.</li>
+<li><strong>Type sections start immediately</strong> instead of after a deeper filter UI. Default state shows content. Users can drill in if they want.</li>
+<li><strong>Search prominence increased.</strong> On desktop it's one of many controls. On mobile, search is the obvious primary action since browsing is harder than searching.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">When a type is selected</h3>
+<ul>
+<li>Tapping "Movies" chip filters to only show the Movies section, expanded — instead of horizontal scroll, the section becomes a 2-column vertical grid of all movies. Other type sections hidden. The filters button still works for narrowing by genre/vibe/tag within Movies.</li>
+<li>Tapping the active Movies chip again returns to default (all types shown in horizontal rows).</li>
+</ul>
+
+<h3 style="margin-top: 20px;">Interactions to design later</h3>
+<ul>
+<li><strong>Search results page</strong> — what tapping the search bar opens. Could be its own mini-mockup.</li>
+<li><strong>Filter sheet UI</strong> — the bottom sheet with Genre/Vibe/Tag selection. Could be its own mini-mockup.</li>
+<li><strong>Per-type browse page</strong> — what "See all →" leads to. Probably a grid layout matching Library's card style.</li>
+</ul>
+</div>
+
+</body>
+</html>

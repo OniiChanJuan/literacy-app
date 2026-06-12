@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Cross your shelf page</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body { margin: 0; padding: 40px 20px; background: #1a1a22; font-family: 'DM Sans', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 32px; color: #e8e6e1; }
+  .doc-header { max-width: 400px; text-align: center; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; margin: 0 0 8px 0; }
+  .doc-header p { font-size: 13px; color: rgba(232, 230, 225, 0.55); margin: 0; line-height: 1.5; }
+  .doc-meta { font-size: 11px; color: rgba(232, 230, 225, 0.32); letter-spacing: 1px; text-transform: uppercase; margin-top: 12px; }
+  .phone { width: 380px; background: #0a0a0f; border-radius: 32px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .phone-content { max-height: 1400px; overflow-y: auto; padding-bottom: 70px; }
+  .notes-card { max-width: 380px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px 24px; font-size: 13px; line-height: 1.6; color: rgba(232,230,225,0.75); }
+  .notes-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; margin: 0 0 12px 0; color: #2EC4B6; font-weight: 500; }
+  .notes-card ul { margin: 0; padding-left: 20px; }
+  .notes-card li { margin-bottom: 8px; }
+  .notes-card strong { color: #e8e6e1; font-weight: 500; }
+
+  .header { padding: 14px 14px; background: rgba(10,10,15,0.95); border-bottom: 1px solid rgba(255,255,255,0.04); position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; }
+  .header-back { font-size: 22px; color: rgba(232,230,225,0.85); }
+  .header-title { flex: 1; font-family: 'Playfair Display', serif; font-size: 16px; color: rgba(232,230,225,0.95); font-style: italic; }
+
+  .intro { padding: 14px 16px 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .intro-line { font-family: 'Playfair Display', serif; font-size: 13px; color: rgba(232,230,225,0.85); line-height: 1.4; margin-bottom: 4px; }
+  .intro-meta { font-size: 11px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; }
+  .intro-meta-num { color: #2EC4B6; font-weight: 500; }
+
+  .filter-strip { padding: 10px 14px; background: rgba(255,255,255,0.012); border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 6px; }
+  .filter-pill { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; font-size: 13px; color: rgba(232,230,225,0.55); flex-shrink: 0; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .filter-pill-active { background: rgba(46,196,182,0.12); border-color: rgba(46,196,182,0.4); color: #2EC4B6; }
+  .filter-pill i { font-size: 14px; }
+  .refresh-btn { margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 6px 10px; background: rgba(46,196,182,0.06); border: 1px solid rgba(46,196,182,0.25); border-radius: 14px; font-size: 10px; color: #2EC4B6; letter-spacing: 0.5px; line-height: 1; flex-shrink: 0; cursor: pointer; }
+  .refresh-btn i { font-size: 12px; }
+
+  .source-section { padding: 22px 14px 0 14px; }
+  .source-header { display: flex; gap: 10px; align-items: flex-start; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .source-thumb { width: 44px; height: 66px; flex-shrink: 0; border-radius: 4px; padding: 5px 3px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .source-thumb-title { font-family: 'Playfair Display', serif; font-size: 9px; font-weight: 600; line-height: 1.1; }
+  .source-meta-block { flex: 1; min-width: 0; }
+  .source-because { font-family: 'Playfair Display', serif; font-size: 12px; color: rgba(232,230,225,0.55); font-style: italic; line-height: 1; }
+  .source-name { font-family: 'Playfair Display', serif; font-size: 17px; color: #e8e6e1; font-weight: 500; margin-top: 4px; line-height: 1.2; }
+  .source-your-rating { font-size: 10px; color: #DAA520; margin-top: 4px; }
+  .source-why { font-size: 12px; color: rgba(232,230,225,0.65); font-style: italic; line-height: 1.5; margin-bottom: 12px; }
+
+  .h-scroll { display: flex; gap: 8px; overflow-x: auto; margin: 0 -14px; padding: 0 14px 8px 14px; }
+  .conn-card { flex-shrink: 0; width: 110px; }
+  .conn-poster { width: 110px; height: 165px; border-radius: 5px; padding: 12px 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+  .conn-card-title { font-family: 'Playfair Display', serif; font-size: 11px; color: #e8e6e1; font-weight: 500; line-height: 1.1; margin-top: 6px; }
+  .conn-card-meta { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; }
+  .cs-score-line { display: flex; align-items: baseline; gap: 4px; margin-top: 4px; }
+  .cs-mark { font-size: 7px; color: #2EC4B6; letter-spacing: 1px; text-transform: uppercase; }
+  .cs-num-sm { font-family: 'Playfair Display', serif; font-size: 12px; color: #e8e6e1; font-weight: 500; }
+  .conn-status-dot { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; color: white; background: rgba(46,196,182,0.85); }
+  .conn-card-faded { opacity: 0.5; }
+
+  .show-more-link { text-align: center; padding: 14px 0 4px 0; }
+  .show-more-text { font-size: 11px; color: #2EC4B6; letter-spacing: 1px; text-transform: uppercase; }
+
+  .serendipity-section { padding: 28px 14px 16px 14px; }
+  .serendipity-header { padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .serendipity-h-title { font-family: 'Playfair Display', serif; font-size: 14px; color: rgba(218,165,32,0.85); letter-spacing: 0.5px; }
+  .serendipity-h-sub { font-size: 10px; color: rgba(232,230,225,0.45); margin-top: 3px; }
+
+  .bottom-tabs { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,15,0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 14px 0; }
+  .tab { flex: 1; text-align: center; }
+  .tab-icon { font-size: 18px; color: rgba(232,230,225,0.45); }
+  .tab-icon-active { color: #2EC4B6; }
+  .tab-label { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; letter-spacing: 0.5px; }
+  .tab-label-active { color: #2EC4B6; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>CrossShelf Mobile — Cross your shelf</h1>
+  <p>Dedicated page reached by tapping the section header from For You. Shows all source rows, filtering, and the full cross-media graph.</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<!-- HEADER -->
+<div class="header">
+<i class="ti ti-arrow-left header-back" aria-hidden="true"></i>
+<div class="header-title">Cross your shelf</div>
+<i class="ti ti-info-circle" style="font-size: 18px; color: rgba(232,230,225,0.45);" aria-hidden="true"></i>
+</div>
+
+<!-- INTRO -->
+<div class="intro">
+<div class="intro-line">All the connections between what you love.</div>
+<div class="intro-meta">
+<span class="intro-meta-num">47</span> connections from
+<span class="intro-meta-num">9</span> items you rated highly
+</div>
+</div>
+
+<!-- FILTER STRIP -->
+<div class="filter-strip">
+<div class="filter-pill" title="Movies"><i class="ti ti-movie" aria-hidden="true"></i></div>
+<div class="filter-pill" title="TV"><i class="ti ti-device-tv" aria-hidden="true"></i></div>
+<div class="filter-pill" title="Books"><i class="ti ti-book" aria-hidden="true"></i></div>
+<div class="filter-pill" title="Games"><i class="ti ti-device-gamepad-2" aria-hidden="true"></i></div>
+<div class="filter-pill" title="Manga"><i class="ti ti-news" aria-hidden="true"></i></div>
+<div class="refresh-btn"><i class="ti ti-refresh" aria-hidden="true"></i>REFRESH TITLES</div>
+</div>
+
+<!-- SOURCE ROW: Vagabond -->
+<div class="source-section">
+<div class="source-header">
+<div class="source-thumb" style="background: #2c1a3a;">
+<div class="source-thumb-title" style="color: #e8e6e1;">VAGABOND</div>
+</div>
+<div class="source-meta-block">
+<div class="source-because">Because you rated</div>
+<div class="source-name">Vagabond</div>
+<div class="source-your-rating">★★★★★ You rated 5.0</div>
+</div>
+</div>
+
+<div class="source-why">Meditative, gorgeously-drawn journeys of mastery and self-doubt</div>
+
+<div class="h-scroll">
+<div class="conn-card">
+<div class="conn-poster" style="background: #2c1a3a;">
+<div class="conn-status-dot" title="Completed"><i class="ti ti-eye" style="font-size: 10px;" aria-hidden="true"></i></div>
+<div style="font-family: 'Playfair Display', serif; font-size: 16px; color: #e8e6e1; font-weight: 600; font-style: italic;">Berserk</div>
+<div style="font-size: 6px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">KENTARO MIURA</div>
+</div>
+<div class="conn-card-title">Berserk</div>
+<div class="conn-card-meta">Manga · Kentaro Miura</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.2</div></div>
+</div>
+
+<div class="conn-card">
+<div class="conn-poster" style="background: #1f2c1a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 13px; color: #c9d4a7; font-weight: 500; line-height: 1.1;">SHŌGUN</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">FX · 2024</div>
+</div>
+<div class="conn-card-title">Shōgun</div>
+<div class="conn-card-meta">TV · FX · 2024</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.1</div></div>
+</div>
+
+<div class="conn-card">
+<div class="conn-poster" style="background: #1f1a25;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4af7a; font-weight: 500; line-height: 1; font-style: italic;">The Way of Kings</div>
+</div>
+<div class="conn-card-title">The Way of Kings</div>
+<div class="conn-card-meta">Book · Sanderson · 2010</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.9</div></div>
+</div>
+
+<div class="conn-card conn-card-faded">
+<div class="conn-poster" style="background: #1a1825;"></div>
+</div>
+</div>
+
+<div class="show-more-link"><div class="show-more-text">See all 6 connections →</div></div>
+</div>
+
+<!-- SOURCE ROW: The Mandalorian -->
+<div class="source-section">
+<div class="source-header">
+<div class="source-thumb" style="background: #2a1f12;">
+<div class="source-thumb-title" style="color: #d4a76a;">MANDO</div>
+</div>
+<div class="source-meta-block">
+<div class="source-because">Because you rated</div>
+<div class="source-name">The Mandalorian</div>
+<div class="source-your-rating">★★★★★ You rated 5.0</div>
+</div>
+</div>
+
+<div class="source-why">Western-inflected adventures with a quiet protagonist and a wider universe to explore</div>
+
+<div class="h-scroll">
+<div class="conn-card">
+<div class="conn-poster" style="background: #2a1f12; padding: 12px 6px;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4a76a; font-weight: 600; line-height: 1.1;">RED DEAD<br>REDEMPTION 2</div>
+</div>
+<div class="conn-card-title">Red Dead Redemption 2</div>
+<div class="conn-card-meta">Game · Rockstar · 2018</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.4</div></div>
+</div>
+
+<div class="conn-card">
+<div class="conn-poster" style="background: #1a1f2c;">
+<div style="font-family: 'Playfair Display', serif; font-size: 12px; color: #93b3c4; font-weight: 600; line-height: 1.1;">DUNE</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">VILLENEUVE</div>
+</div>
+<div class="conn-card-title">Dune: Part Two</div>
+<div class="conn-card-meta">Movie · 2024</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.7</div></div>
+</div>
+
+<div class="conn-card">
+<div class="conn-poster" style="background: #1a2a25;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #a7d4c5; font-weight: 500; line-height: 1.1;">THE LAST<br>OF US</div>
+</div>
+<div class="conn-card-title">The Last of Us</div>
+<div class="conn-card-meta">Game · Naughty Dog</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.3</div></div>
+</div>
+
+<div class="conn-card conn-card-faded">
+<div class="conn-poster" style="background: #1a1825;"></div>
+</div>
+</div>
+
+<div class="show-more-link"><div class="show-more-text">See all 5 connections →</div></div>
+</div>
+
+<!-- SOURCE ROW: Indiana Jones -->
+<div class="source-section">
+<div class="source-header">
+<div class="source-thumb" style="background: #25201a;">
+<div class="source-thumb-title" style="color: #d4c093;">INDY</div>
+</div>
+<div class="source-meta-block">
+<div class="source-because">Because you rated</div>
+<div class="source-name">Indiana Jones and the Last Crusade</div>
+<div class="source-your-rating">★★★★★ You rated 4.8</div>
+</div>
+</div>
+
+<div class="source-why">Globe-trotting adventures with archaeology, mystery, and heroic charisma</div>
+
+<div class="h-scroll">
+<div class="conn-card">
+<div class="conn-poster" style="background: #2a1a1a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4858f; font-weight: 600; line-height: 1.1;">UNCHARTED</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">NAUGHTY DOG</div>
+</div>
+<div class="conn-card-title">Uncharted 4</div>
+<div class="conn-card-meta">Game · Naughty Dog</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.6</div></div>
+</div>
+
+<div class="conn-card">
+<div class="conn-poster" style="background: #2a1f12;">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #d4a76a; font-weight: 600; line-height: 1.1;">THE MUMMY</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 8px;">1999</div>
+</div>
+<div class="conn-card-title">The Mummy</div>
+<div class="conn-card-meta">Movie · 1999</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">7.8</div></div>
+</div>
+
+<div class="conn-card conn-card-faded">
+<div class="conn-poster" style="background: #1a1825;"></div>
+</div>
+</div>
+
+<div class="show-more-link"><div class="show-more-text">See all 4 connections →</div></div>
+</div>
+
+<!-- COLLAPSED SOURCE ROWS - hint -->
+<div class="source-section" style="padding-bottom: 8px;">
+<div style="text-align: center; padding: 12px 0; font-size: 11px; color: rgba(232,230,225,0.45); letter-spacing: 1px; text-transform: uppercase;">+ 6 more source items
+</div>
+</div>
+
+<!-- SERENDIPITY SECTION -->
+<div class="serendipity-section">
+<div class="serendipity-header">
+<div class="serendipity-h-title">Also loved across CrossShelf</div>
+<div class="serendipity-h-sub">Items beloved by the broader community, not tied to your specific source items</div>
+</div>
+
+<div class="h-scroll">
+<div class="conn-card">
+<div class="conn-poster" style="background: #1a2a2c; border-left: 2px solid rgba(218,165,32,0.5);">
+<div style="font-family: 'Playfair Display', serif; font-size: 15px; color: #d4af7a; font-weight: 600;">Hades</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 6px; letter-spacing: 1.5px;">SUPERGIANT · 2020</div>
+</div>
+<div class="conn-card-title">Hades</div>
+<div class="conn-card-meta">Game · Supergiant</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.0</div></div>
+</div>
+
+<div class="conn-card">
+<div class="conn-poster" style="background: #1a2535; border-left: 2px solid rgba(218,165,32,0.5);">
+<div style="font-family: 'Playfair Display', serif; font-size: 10px; color: #93b3c4; font-weight: 600;">SEVERANCE</div>
+</div>
+<div class="conn-card-title">Severance</div>
+<div class="conn-card-meta">TV · Apple TV+</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.3</div></div>
+</div>
+
+<div class="conn-card conn-card-faded">
+<div class="conn-poster" style="background: #1a1825;"></div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- BOTTOM TABS -->
+<div class="bottom-tabs">
+<div class="tab"><i class="ti ti-sparkles tab-icon tab-icon-active" aria-hidden="true"></i><div class="tab-label tab-label-active">For You</div></div>
+<div class="tab"><i class="ti ti-compass tab-icon" aria-hidden="true"></i><div class="tab-label">Explore</div></div>
+<div class="tab"><i class="ti ti-books tab-icon" aria-hidden="true"></i><div class="tab-label">Library</div></div>
+<div class="tab"><i class="ti ti-users tab-icon" aria-hidden="true"></i><div class="tab-label">People</div></div>
+</div>
+
+</div>
+
+<div class="notes-card">
+<h3>What this page does</h3>
+<ul>
+<li><strong>Reached by tapping</strong> the "Cross your shelf" section header from For You, or via a dedicated card on Explore.</li>
+<li><strong>Italic page title</strong> reinforces the platform's signature feature — same italic Playfair treatment used for the section in For You.</li>
+<li><strong>Intro line</strong> ("All the connections between what you love") gives editorial voice. Subline gives the actual numbers — "47 connections from 9 items you rated highly." Anchors the user in their personal data.</li>
+<li><strong>Filter strip with icon-only pills + Refresh button.</strong> All 5 media-type pills (Movies, TV, Books, Games, Manga) fit without horizontal scrolling. Tap an icon to filter; tap again to deselect. No "All" pill needed — deselected state = all. The Refresh recommendations button lives on the right of the same strip, styled distinctly (teal background) so it reads as an action, not a filter. Compact intro section above makes room.</li>
+<li><strong>Refresh button placement matches what we discussed.</strong> Top of the page where it's reachable, but visually grouped with filters since both are "shape the recommendations" controls. Rate-limited per the caching investigation (5/day per user).</li>
+<li><strong>Each source row shows full context:</strong> source item thumbnail, "Because you rated" framing, source title in larger serif, your rating in gold stars. Visual hierarchy makes clear THIS source generated THESE connections.</li>
+<li><strong>Why descriptions</strong> stay the same as For You — one italic line characterizing what the connections share.</li>
+<li><strong>Connection cards larger here</strong> (110px wide) than in For You (105px) to give room for the extra meta line — media type + creator/year — since this page is the "deeper dive" view.</li>
+<li><strong>Library status indicator on connection cards.</strong> Small eye icon in a teal circle, top-right corner of the cover. Means "you've completed/seen this." Eye icon works metaphorically across all media types — you've seen the movie, read the book, played the game. Distinct from the bookmark icon used elsewhere for "want to" status. Cards you haven't engaged with show no indicator (discovery-worth).</li>
+<li><strong>"See all N connections →" per row</strong> opens a deeper view of just that source's connections (could be its own page or an expanded inline view).</li>
+<li><strong>"+ N more source items" loads progressively as user scrolls.</strong> No tap required — additional source rows fade in as the user reaches the bottom of the visible set. Less friction than a tap-to-expand, more controlled than dumping everything at once. The indicator visually shows there's more below the fold.</li>
+<li><strong>Serendipity section at bottom</strong> uses the muted gold border-left treatment we established. "Items beloved by the broader community, not tied to your specific source items" — honest framing.</li>
+</ul>
+
+<h3 style="margin-top: 20px;">What this page is NOT</h3>
+<ul>
+<li><strong>Not a replacement for For You.</strong> This is the deep-dive into one specific section. For You stays the home.</li>
+<li><strong>Not Explore.</strong> Explore is for broad catalog browsing. This is for your personalized cross-media graph.</li>
+<li><strong>Not for items you haven't rated.</strong> Source items always come from items you've rated highly. If a user has zero highly-rated items, this page shows an onboarding state (rate 5 items to unlock cross-shelf).</li>
+</ul>
+
+<h3 style="margin-top: 20px;">Empty/onboarding state needed</h3>
+<ul>
+<li>User has zero highly-rated items → onboarding CTA ("Rate 5 items to start building your cross-shelf")</li>
+<li>User has 1-4 highly-rated items → shows what's available + encouragement to rate more</li>
+<li>User has filtered to a type with zero connections → "No book connections from your current ratings. Try rating more books, or remove the filter."</li>
+</ul>
+</div>
+
+</body>
+</html>

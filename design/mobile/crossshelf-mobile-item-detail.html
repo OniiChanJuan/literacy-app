@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf — Mobile Item Detail</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: #1a1a22;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    color: #e8e6e1;
+  }
+  .doc-header {
+    max-width: 400px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .doc-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    color: #e8e6e1;
+  }
+  .doc-header p {
+    font-size: 13px;
+    color: rgba(232, 230, 225, 0.55);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .doc-meta {
+    font-size: 11px;
+    color: rgba(232, 230, 225, 0.32);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+  .phone {
+    width: 380px;
+    background: #0a0a0f;
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+  }
+  .phone-content {
+    max-height: 1600px;
+    overflow-y: auto;
+    padding-bottom: 100px;
+  }
+  .notes-card {
+    max-width: 380px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(232, 230, 225, 0.75);
+  }
+  .notes-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    margin: 0 0 12px 0;
+    color: #2EC4B6;
+    font-weight: 500;
+  }
+  .notes-card ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .notes-card li {
+    margin-bottom: 8px;
+  }
+  .notes-card strong {
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 14px 14px;
+    background: rgba(10,10,15,0.95);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-back {
+    font-size: 22px;
+    color: rgba(232,230,225,0.85);
+    cursor: pointer;
+  }
+  .header-title {
+    flex: 1;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: rgba(232,230,225,0.85);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .header-share {
+    font-size: 18px;
+    color: rgba(232,230,225,0.55);
+  }
+
+  /* HERO */
+  .hero {
+    padding: 20px 16px 16px 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .hero-cover {
+    width: 120px;
+    height: 180px;
+    border-radius: 6px;
+    background: #2a1810;
+    flex-shrink: 0;
+    padding: 14px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .media-badge {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #d44848;
+    padding: 2px 6px;
+    background: rgba(212,72,72,0.12);
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: #e8e6e1;
+    line-height: 1.15;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .hero-creator {
+    font-size: 12px;
+    color: rgba(232,230,225,0.65);
+    margin-bottom: 6px;
+  }
+  .hero-meta-info {
+    font-size: 11px;
+    color: rgba(232,230,225,0.45);
+    line-height: 1.5;
+  }
+
+  /* CROSSSHELF SCORE HEADLINE */
+  .score-row {
+    margin: 4px 16px 0 16px;
+    padding: 14px 16px;
+    background: rgba(46,196,182,0.05);
+    border: 1px solid rgba(46,196,182,0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .score-row-left {
+    display: flex;
+    flex-direction: column;
+  }
+  .score-mark {
+    font-size: 10px;
+    color: #2EC4B6;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: #e8e6e1;
+    font-weight: 500;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .score-out-of {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: rgba(232,230,225,0.45);
+  }
+  .score-row-right {
+    flex: 1;
+  }
+  .score-bar-detail {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    position: relative;
+    margin-bottom: 6px;
+  }
+  .score-bar-detail-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #2EC4B6;
+    border-radius: 3px;
+  }
+  .score-context {
+    font-size: 10px;
+    color: rgba(232,230,225,0.55);
+    letter-spacing: 0.5px;
+  }
+
+  /* CONTRIBUTING SCORES */
+  .contributing-row {
+    padding: 12px 16px 0 16px;
+  }
+  .contributing-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(232,230,225,0.45);
+    margin-bottom: 8px;
+  }
+  .contributing-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .contrib-pill {
+    padding: 4px 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 4px;
+    font-size: 11px;
+    color: rgba(232,230,225,0.75);
+  }
+  .contrib-source {
+    color: rgba(232,230,225,0.45);
+    margin-right: 4px;
+    font-size: 10px;
+  }
+  .contrib-value {
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+
+  /* RATING DISTRIBUTION */
+  .distribution {
+    padding: 20px 16px 0 16px;
+  }
+  .distribution-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .distribution-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .distribution-count {
+    font-size: 10px;
+    color: rgba(232,230,225,0.45);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .distribution-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .dist-stars {
+    width: 36px;
+    font-size: 10px;
+    color: rgba(232,230,225,0.55);
+  }
+  .dist-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    position: relative;
+  }
+  .dist-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: rgba(46,196,182,0.6);
+    border-radius: 3px;
+  }
+  .dist-pct {
+    width: 32px;
+    text-align: right;
+    font-size: 10px;
+    color: rgba(232,230,225,0.55);
+  }
+
+  /* YOUR ACTIVITY */
+  .your-activity {
+    margin: 18px 16px 0 16px;
+    padding: 12px 14px;
+    background: rgba(218,165,32,0.06);
+    border-left: 2px solid rgba(218,165,32,0.4);
+    border-radius: 0 6px 6px 0;
+  }
+  .your-activity-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(218,165,32,0.85);
+    margin-bottom: 4px;
+  }
+  .your-activity-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #e8e6e1;
+  }
+  .your-stars {
+    color: #DAA520;
+    font-size: 13px;
+  }
+  .your-activity-meta {
+    font-size: 10px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 2px;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 24px 16px 0 16px;
+  }
+  .section-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .section-subtitle {
+    font-size: 10px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 3px;
+  }
+  .description-text {
+    font-size: 13px;
+    color: rgba(232,230,225,0.85);
+    line-height: 1.6;
+  }
+
+  /* WHERE TO WATCH */
+  .where-grid {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .where-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.02);
+    text-decoration: none;
+  }
+  .where-pill-name {
+    font-size: 12px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .where-pill-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+  }
+  .where-arrow {
+    font-size: 10px;
+    color: rgba(232,230,225,0.45);
+  }
+
+  /* PEOPLE */
+  .people-row {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    margin: 0 -16px;
+    padding: 0 16px 8px 16px;
+  }
+  .person-card {
+    flex-shrink: 0;
+    width: 72px;
+    text-align: center;
+  }
+  .person-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 6px auto;
+    background: rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: rgba(232,230,225,0.55);
+    font-weight: 500;
+  }
+  .person-name {
+    font-size: 11px;
+    color: #e8e6e1;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .person-role {
+    font-size: 9px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 1px;
+  }
+
+  /* CROSS SHELF */
+  .cross-card {
+    flex-shrink: 0;
+    width: 105px;
+  }
+  .cross-poster {
+    width: 105px;
+    height: 158px;
+    border-radius: 5px;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .cross-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: #e8e6e1;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-top: 6px;
+  }
+  .cs-score-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-top: 3px;
+  }
+  .cs-mark {
+    font-size: 7px;
+    color: #2EC4B6;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .cs-num-sm {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    color: #e8e6e1;
+    font-weight: 500;
+  }
+  .h-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin: 0 -16px;
+    padding: 0 16px 8px 16px;
+  }
+  .cross-card-faded {
+    opacity: 0.5;
+  }
+  .cross-why {
+    font-size: 11px;
+    color: rgba(232,230,225,0.55);
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  /* REVIEWS */
+  .review {
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .review-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .review-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .review-username {
+    font-size: 12px;
+    font-weight: 500;
+    color: #e8e6e1;
+  }
+  .review-stars {
+    color: #DAA520;
+    font-size: 11px;
+    margin-left: auto;
+  }
+  .review-date {
+    font-size: 9px;
+    color: rgba(232,230,225,0.45);
+  }
+  .review-text {
+    font-size: 12px;
+    color: rgba(232,230,225,0.85);
+    line-height: 1.5;
+  }
+
+  /* RELATED */
+  .related-card {
+    flex-shrink: 0;
+    width: 95px;
+  }
+  .related-poster {
+    width: 95px;
+    height: 142px;
+    border-radius: 5px;
+    padding: 10px 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* STICKY ACTION BAR */
+  .action-bar {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    background: rgba(10,10,15,0.97);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 14px;
+  }
+  .action-stars {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .action-star {
+    font-size: 24px;
+    color: rgba(232,230,225,0.25);
+  }
+  .action-star-filled {
+    color: #DAA520;
+  }
+  .action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .action-btn {
+    padding: 8px 4px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    font-size: 10px;
+    color: rgba(232,230,225,0.75);
+    text-align: center;
+    cursor: pointer;
+  }
+  .action-btn-active {
+    background: rgba(46,196,182,0.12);
+    border-color: rgba(46,196,182,0.4);
+    color: #2EC4B6;
+  }
+  .action-btn-icon {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  /* BOTTOM TABS */
+  .bottom-tabs {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    padding: 10px 0 14px 0;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+  }
+  .tab-icon {
+    font-size: 18px;
+    color: rgba(232,230,225,0.45);
+  }
+  .tab-label {
+    font-size: 9px;
+    color: rgba(232,230,225,0.45);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>CrossShelf Mobile — Item Detail</h1>
+  <p>The Lord of the Rings: The Return of the King · same item as desktop screenshot for comparison</p>
+  <div class="doc-meta">Reference mockup · June 2026</div>
+</div>
+
+<div class="phone">
+<div class="phone-content">
+
+<!-- TOP HEADER -->
+<div class="header">
+<i class="ti ti-arrow-left header-back" aria-hidden="true"></i>
+<div class="header-title">The Lord of the Rings: The Return of the King</div>
+<i class="ti ti-share header-share" aria-hidden="true"></i>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+<div class="hero-cover">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #c9a961; font-weight: 600; line-height: 1.1;">THE LORD<br>OF THE RINGS</div>
+<div style="font-size: 7px; color: #c9a961; margin-top: 10px; letter-spacing: 1.5px;">RETURN OF<br>THE KING</div>
+</div>
+<div class="hero-meta">
+<div class="media-badge">Movie</div>
+<div class="hero-title">The Lord of the Rings: The Return of the King</div>
+<div class="hero-creator">Peter Jackson</div>
+<div class="hero-meta-info">
+2003 · 201 min<br>
+Adventure · Fantasy · Action
+</div>
+</div>
+</div>
+
+<!-- CROSSSHELF SCORE HEADLINE -->
+<div class="score-row">
+<div class="score-row-left">
+<div class="score-mark">CrossShelf</div>
+<div>
+<span class="score-num">8.7</span><span class="score-out-of">/10</span>
+</div>
+</div>
+<div class="score-row-right">
+<div class="score-bar-detail">
+<div class="score-bar-detail-fill" style="width: 87%;"></div>
+</div>
+<div class="score-context">Blended from 3 sources + community</div>
+</div>
+</div>
+
+<!-- FRANCHISE / SERIES STRIP -->
+<div style="margin: 14px 16px 0 16px; padding: 10px 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; display: flex; align-items: center; gap: 10px;">
+<div style="width: 32px; height: 48px; background: #2a1810; border-radius: 3px; flex-shrink: 0; padding: 4px 2px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+<div style="font-family: 'Playfair Display', serif; font-size: 5px; color: #c9a961; font-weight: 600; line-height: 1;">THE LORD<br>OF THE RINGS</div>
+</div>
+<div style="flex: 1; min-width: 0;">
+<div style="font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(232,230,225,0.45); margin-bottom: 2px;">Part of</div>
+<div style="font-family: 'Playfair Display', serif; font-size: 14px; color: #e8e6e1; font-weight: 500; line-height: 1.2;">The Lord of the Rings Trilogy</div>
+<div style="font-size: 10px; color: rgba(232,230,225,0.45); margin-top: 2px;">Film 3 of 3 · 2003</div>
+</div>
+<i class="ti ti-chevron-right" style="font-size: 16px; color: rgba(232,230,225,0.45);" aria-hidden="true"></i>
+</div>
+
+<!-- CONTRIBUTING SCORES -->
+<div class="contributing-row">
+<div class="contributing-label">What goes into this</div>
+<div class="contributing-grid">
+<div class="contrib-pill"><span class="contrib-source">IMDB</span><span class="contrib-value">8.5</span></div>
+<div class="contrib-pill"><span class="contrib-source">RT</span><span class="contrib-value">92%</span></div>
+<div class="contrib-pill"><span class="contrib-source">Community</span><span class="contrib-value">4.6</span></div>
+<div class="contrib-pill" style="background: rgba(46,196,182,0.08); color: #2EC4B6; border: 1px solid rgba(46,196,182,0.2);">+ 2 more</div>
+</div>
+</div>
+
+<!-- RATING DISTRIBUTION -->
+<div class="distribution">
+<div class="distribution-header">
+<div class="distribution-title">How others rated it</div>
+<div class="distribution-count">47 ratings</div>
+</div>
+<div class="distribution-row">
+<div class="dist-stars">★★★★★</div>
+<div class="dist-bar"><div class="dist-bar-fill" style="width: 68%;"></div></div>
+<div class="dist-pct">68%</div>
+</div>
+<div class="distribution-row">
+<div class="dist-stars">★★★★</div>
+<div class="dist-bar"><div class="dist-bar-fill" style="width: 21%;"></div></div>
+<div class="dist-pct">21%</div>
+</div>
+<div class="distribution-row">
+<div class="dist-stars">★★★</div>
+<div class="dist-bar"><div class="dist-bar-fill" style="width: 9%;"></div></div>
+<div class="dist-pct">9%</div>
+</div>
+<div class="distribution-row">
+<div class="dist-stars">★★</div>
+<div class="dist-bar"><div class="dist-bar-fill" style="width: 2%;"></div></div>
+<div class="dist-pct">2%</div>
+</div>
+<div class="distribution-row">
+<div class="dist-stars">★</div>
+<div class="dist-bar"><div class="dist-bar-fill" style="width: 0%;"></div></div>
+<div class="dist-pct">0%</div>
+</div>
+</div>
+
+<!-- YOUR ACTIVITY -->
+<div class="your-activity">
+<div class="your-activity-label">Your activity</div>
+<div class="your-activity-content">
+<span>You rated this</span>
+<span class="your-stars">★★★★★</span>
+<span>·</span>
+<span>Completed</span>
+</div>
+<div class="your-activity-meta">Logged March 14, 2026</div>
+</div>
+
+<!-- DESCRIPTION -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">About</div>
+</div>
+<div class="description-text">
+As armies mass for a final battle that will decide the fate of the world — and powerful, ancient forces of Light and Dark compete to determine the outcome — one member of the Fellowship of the Ring is revealed as the noble heir to the throne of the Kings of Men. Yet, the sole hope for triumph over evil lies with a brave hobbit, Frodo, who, accompanied by his loyal friend Sam and the hideous, wretched Gollum, ventures deep into the very dark heart of Mordor on his seemingly impossible quest to destroy the Ring of Power.
+</div>
+</div>
+
+<!-- WHERE TO WATCH -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">Where to watch</div>
+</div>
+<div class="where-grid">
+<div class="where-pill">
+<div class="where-pill-icon" style="background: #6A1B9A;">M</div>
+<div class="where-pill-name">Max</div>
+<i class="ti ti-external-link where-arrow" aria-hidden="true"></i>
+</div>
+<div class="where-pill">
+<div class="where-pill-icon" style="background: #00A8E1;">P</div>
+<div class="where-pill-name">Prime</div>
+<i class="ti ti-external-link where-arrow" aria-hidden="true"></i>
+</div>
+</div>
+</div>
+
+<!-- PEOPLE -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">People</div>
+</div>
+<div class="people-row">
+<div class="person-card">
+<div class="person-avatar" style="background: rgba(212,175,122,0.15); color: #d4af7a;">PJ</div>
+<div class="person-name">Peter Jackson</div>
+<div class="person-role">Director</div>
+</div>
+<div class="person-card">
+<div class="person-avatar" style="background: rgba(147,179,196,0.15); color: #93b3c4;">EW</div>
+<div class="person-name">Elijah Wood</div>
+<div class="person-role">Frodo</div>
+</div>
+<div class="person-card">
+<div class="person-avatar" style="background: rgba(167,212,175,0.15); color: #a7d4af;">VM</div>
+<div class="person-name">Viggo Mortensen</div>
+<div class="person-role">Aragorn</div>
+</div>
+<div class="person-card">
+<div class="person-avatar" style="background: rgba(212,134,72,0.15); color: #d48648;">IM</div>
+<div class="person-name">Ian McKellen</div>
+<div class="person-role">Gandalf</div>
+</div>
+<div class="person-card">
+<div class="person-avatar" style="background: rgba(201,163,212,0.15); color: #c9a3d4;">SA</div>
+<div class="person-name">Sean Astin</div>
+<div class="person-role">Sam</div>
+</div>
+</div>
+</div>
+
+<!-- CROSS YOUR SHELF -->
+<div class="section">
+<div class="section-header">
+<div class="section-title" style="font-style: italic;">Cross your shelf</div>
+<div class="section-subtitle">Other things you might love because you loved this</div>
+</div>
+<div class="cross-why">Epic fantasy with heroic journeys, ensemble casts, and deep mythology</div>
+<div class="h-scroll">
+<div class="cross-card">
+<div class="cross-poster" style="background: #1a1f2c;">
+<div style="font-family: 'Playfair Display', serif; font-size: 13px; color: #d4af7a; font-weight: 600; font-style: italic;">Babel</div>
+<div style="font-size: 5px; color: #d4af7a; margin-top: 8px; letter-spacing: 1px;">R.F. KUANG</div>
+</div>
+<div class="cross-card-title">Babel</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.4</div></div>
+</div>
+<div class="cross-card">
+<div class="cross-poster" style="background: #2a1f12; padding: 12px 6px;">
+<div style="font-family: 'Playfair Display', serif; font-size: 11px; color: #d4a76a; font-weight: 600; line-height: 1.1;">SHŌGUN</div>
+<div style="font-size: 7px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">FX · 2024</div>
+</div>
+<div class="cross-card-title">Shōgun</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.1</div></div>
+</div>
+<div class="cross-card">
+<div class="cross-poster" style="background: #2c1a3a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 15px; color: #e8e6e1; font-weight: 600; font-style: italic;">Berserk</div>
+<div style="font-size: 6px; color: rgba(232,230,225,0.55); margin-top: 8px; letter-spacing: 1.5px;">KENTARO MIURA</div>
+</div>
+<div class="cross-card-title">Berserk</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">9.2</div></div>
+</div>
+<div class="cross-card cross-card-faded">
+<div class="cross-poster" style="background: #1a1a25;"></div>
+</div>
+</div>
+</div>
+
+<!-- COMMUNITY REVIEWS -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">Reviews</div>
+<div class="section-subtitle">From the CrossShelf community</div>
+</div>
+<div class="review">
+<div class="review-header">
+<div class="review-avatar" style="background: linear-gradient(135deg, #9B5DE5, #2EC4B6);"></div>
+<div>
+<div class="review-username">claudoro27</div>
+<div class="review-date">March 18, 2026</div>
+</div>
+<div class="review-stars">★★★★★</div>
+</div>
+<div class="review-text">The pinnacle of cinematic fantasy. Twenty years on and the emotional beats still land harder than almost anything in the genre. The Howard Shore score alone earns the 5 stars.</div>
+</div>
+<div class="review">
+<div class="review-header">
+<div class="review-avatar" style="background: linear-gradient(135deg, #E84855, #DAA520);"></div>
+<div>
+<div class="review-username">cinemath</div>
+<div class="review-date">February 4, 2026</div>
+</div>
+<div class="review-stars">★★★★</div>
+</div>
+<div class="review-text">A monumental finale, though the ending sequences could've been tightened. Still — the lighting of the beacons remains one of the great scenes of modern film.</div>
+</div>
+<div style="text-align: center; padding: 8px 0;">
+<div style="font-size: 11px; color: #2EC4B6; letter-spacing: 1px;">Read all 18 reviews →</div>
+</div>
+</div>
+
+<!-- RELATED -->
+<div class="section">
+<div class="section-header">
+<div class="section-title">More like this</div>
+<div class="section-subtitle">By the same director or in the franchise</div>
+</div>
+<div class="h-scroll">
+<div class="related-card">
+<div class="related-poster" style="background: #2a1810;">
+<div style="font-family: 'Playfair Display', serif; font-size: 9px; color: #c9a961; font-weight: 600; line-height: 1.1;">THE FELLOWSHIP<br>OF THE RING</div>
+</div>
+<div class="cross-card-title">The Fellowship of the Ring</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.8</div></div>
+</div>
+<div class="related-card">
+<div class="related-poster" style="background: #2a1810;">
+<div style="font-family: 'Playfair Display', serif; font-size: 9px; color: #c9a961; font-weight: 600; line-height: 1.1;">THE TWO<br>TOWERS</div>
+</div>
+<div class="cross-card-title">The Two Towers</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">8.7</div></div>
+</div>
+<div class="related-card">
+<div class="related-poster" style="background: #1a2a1a;">
+<div style="font-family: 'Playfair Display', serif; font-size: 9px; color: #a7d4af; font-weight: 500;">THE HOBBIT</div>
+</div>
+<div class="cross-card-title">The Hobbit Trilogy</div>
+<div class="cs-score-line"><div class="cs-mark">CrossShelf</div><div class="cs-num-sm">7.4</div></div>
+</div>
+<div class="related-card cross-card-faded">
+<div class="related-poster" style="background: #1a1a25;"></div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- STICKY ACTION BAR (shown on scroll up) -->
+<div class="action-bar">
+<div class="action-stars">
+<i class="ti ti-star-filled action-star action-star-filled" aria-hidden="true"></i>
+<i class="ti ti-star-filled action-star action-star-filled" aria-hidden="true"></i>
+<i class="ti ti-star-filled action-star action-star-filled" aria-hidden="true"></i>
+<i class="ti ti-star-filled action-star action-star-filled" aria-hidden="true"></i>
+<i class="ti ti-star-filled action-star action-star-filled" aria-hidden="true"></i>
+</div>
+<div class="action-buttons">
+<div class="action-btn">
+<i class="ti ti-bookmark action-btn-icon" aria-hidden="true"></i>
+Want to
+</div>
+<div class="action-btn">
+<i class="ti ti-player-play action-btn-icon" aria-hidden="true"></i>
+In progress
+</div>
+<div class="action-btn action-btn-active">
+<i class="ti ti-check action-btn-icon" aria-hidden="true"></i>
+Completed
+</div>
+<div class="action-btn">
+<i class="ti ti-x action-btn-icon" aria-hidden="true"></i>
+Dropped
+</div>
+</div>
+</div>
+
+<!-- BOTTOM TABS -->
+<div class="bottom-tabs">
+<div class="tab">
+<i class="ti ti-sparkles tab-icon" aria-hidden="true"></i>
+<div class="tab-label">For You</div>
+</div>
+<div class="tab">
+<i class="ti ti-compass tab-icon" aria-hidden="true"></i>
+<div class="tab-label">Explore</div>
+</div>
+<div class="tab">
+<i class="ti ti-books tab-icon" aria-hidden="true"></i>
+<div class="tab-label">Library</div>
+</div>
+<div class="tab">
+<i class="ti ti-users tab-icon" aria-hidden="true"></i>
+<div class="tab-label">People</div>
+</div>
+</div>
+
+</div>
+
+<div class="notes-card">
+<h3>Notes for this mockup</h3>
+<ul>
+<li><strong>Smart-hide action bar.</strong> Shows when scrolling up, hides when scrolling down. Implementation will use JS scroll-direction detection. This is the "partially sticky" pattern you wanted.</li>
+<li><strong>Bottom tab nav stays visible.</strong> When the action bar shows, both action bar and tab nav are on screen (top of action bar above tab nav). When user scrolls down, both hide together.</li>
+<li><strong>CrossShelf Score gets a teal-tinted card treatment.</strong> Visually distinguishes from contributing scores below. The headline status.</li>
+<li><strong>Franchise/series strip</strong> below the score, before contributing pills. Shows "Part of: [Franchise Name] · Position in series · Year." Small franchise thumbnail on the left, chevron on the right hints at tap-to-franchise-page. Hidden entirely if the item isn't part of any franchise (Babel is standalone — no strip). Works for movies (MCU, LOTR), books (Stormlight Archive, Discworld), games (Mass Effect trilogy), manga (long-running series), etc.</li>
+<li><strong>"Blended from 3 sources + community"</strong> sub-label tells the user the score isn't fabricated — it's transparent about composition.</li>
+<li><strong>Contributing scores capped at 3 with "+ N more" pill.</strong> The pill itself is styled distinctly (teal tint, border) so it reads as an action, not a value. Tap to expand the full list.</li>
+<li><strong>Rating distribution shows the 47 community ratings.</strong> Resurrected aggregate-score.tsx UI per the design decisions. Hidden entirely when an item has fewer than 10 ratings — empty bars would be misleading.</li>
+<li><strong>Your activity</strong> uses the same muted gold treatment as the serendipity slot on For You — consistent visual language for "this is about you specifically." Hidden when the user hasn't engaged; replaced by a Rate prompt card.</li>
+<li><strong>People row, where-to-watch, cross-shelf, reviews, related</strong> all follow established editorial patterns from For You. Each is hidden entirely if the item lacks data for that section — no empty CTAs.</li>
+<li><strong>"Cross your shelf" on detail page</strong> is the inverse: instead of "because you rated X highly," this is "if you love this, also try these." Same connections, different framing.</li>
+<li><strong>Empty-state rules:</strong> Rating distribution requires ≥10 ratings. Community pill requires ≥10 ratings. Recommend % pill requires ≥5 tags. Reviews require ≥1. Where to watch shown only when streaming data exists. Cross-shelf and Related hidden if no connections/related exist. Sparse items see a much shorter page reflecting what's actually known.</li>
+</ul>
+</div>
+
+</body>
+</html>
