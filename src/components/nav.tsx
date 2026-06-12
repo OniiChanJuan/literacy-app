@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/lib/supabase/use-session";
@@ -14,9 +14,6 @@ export default function Nav() {
   const { data: session } = useSession();
   const { entries } = useLibrary();
   const trackedCount = Object.keys(entries).length;
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const initial = session?.user?.name?.[0]?.toUpperCase() || "?";
 
   return (
     <header style={{
@@ -29,13 +26,15 @@ export default function Nav() {
       <style>{`
         .nav-logo-text { font-size: 30px; }
         .nav-tabs { display: flex; }
-        .nav-hamburger { display: none; }
-        .nav-tab-link { min-height: auto; }
+        /* Mobile header (mockup: design/mobile/crossshelf-mobile-for-you-signed-in.html):
+           compact 18px Playfair logo, 8px tagline, teal Playfair tracked count.
+           Primary tabs live in the fixed BottomNav below 640px. */
         @media (max-width: 640px) {
-          .nav-logo-text { font-size: 24px !important; }
+          .nav-logo-text { font-size: 18px !important; font-weight: 500 !important; }
+          .nav-tagline { font-size: 8px !important; }
           .nav-tabs { display: none !important; }
-          .nav-hamburger { display: flex !important; }
-          .nav-tab-link { min-height: 44px; }
+          .nav-tracked { font-size: 7px !important; letter-spacing: 1px; text-transform: uppercase; color: rgba(232,230,225,0.55) !important; }
+          .nav-tracked-num { color: #2EC4B6 !important; font-family: var(--font-serif) !important; font-size: 14px !important; font-weight: 500 !important; }
         }
       `}</style>
 
@@ -59,7 +58,7 @@ export default function Nav() {
           }}>
             CrossShelf
           </h1>
-          <div style={{
+          <div className="nav-tagline" style={{
             fontSize: 10,
             color: "rgba(255,255,255,0.3)",
             marginTop: 2,
@@ -75,8 +74,8 @@ export default function Nav() {
           <Suspense fallback={null}><GlobalSearch /></Suspense>
           {session?.user ? (
             <>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", textAlign: "right", lineHeight: 1.4 }}>
-                <span style={{ color: "#E84855", fontWeight: 700, fontSize: 17 }}>{trackedCount}</span>
+              <div className="nav-tracked" style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", textAlign: "right", lineHeight: 1.4 }}>
+                <span className="nav-tracked-num" style={{ color: "#E84855", fontWeight: 700, fontSize: 17 }}>{trackedCount}</span>
                 <br />tracked
               </div>
               <UserMenu />
@@ -97,24 +96,6 @@ export default function Nav() {
               Sign In
             </Link>
           )}
-          {/* Hamburger button — visible only on mobile */}
-          <button
-            className="nav-hamburger"
-            onClick={() => setMobileMenuOpen(true)}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#fff",
-              fontSize: 24,
-              cursor: "pointer",
-              padding: 4,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            aria-label="Open navigation menu"
-          >
-            ☰
-          </button>
         </div>
       </div>
 
@@ -155,89 +136,6 @@ export default function Nav() {
         })}
       </div>
 
-      {/* Mobile slide-out panel */}
-      {mobileMenuOpen && (
-        <>
-          {/* Backdrop overlay */}
-          <div
-            onClick={() => setMobileMenuOpen(false)}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "rgba(0,0,0,0.5)",
-              zIndex: 199,
-            }}
-          />
-          {/* Slide-out panel */}
-          <nav
-            className="nav-mobile-panel"
-            style={{
-              position: "fixed",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: 260,
-              background: "#141419",
-              borderLeft: "1px solid rgba(255,255,255,0.08)",
-              zIndex: 200,
-              display: "flex",
-              flexDirection: "column",
-              paddingTop: 56,
-            }}
-          >
-            {/* Close button */}
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                position: "absolute",
-                top: 16,
-                right: 16,
-                background: "none",
-                border: "none",
-                color: "#fff",
-                fontSize: 22,
-                cursor: "pointer",
-                padding: 4,
-              }}
-              aria-label="Close navigation menu"
-            >
-              ✕
-            </button>
-            {tabs.map((t) => {
-              const active = pathname === t.href;
-              return (
-                <Link
-                  key={t.id}
-                  href={t.href}
-                  onClick={(e) => {
-                    setMobileMenuOpen(false);
-                    if (active && t.href === "/") { e.preventDefault(); dispatchForYouRefresh(); }
-                    if (active && t.href === "/explore") { e.preventDefault(); dispatchExploreRefresh(); }
-                  }}
-                  style={{
-                    padding: "16px 24px",
-                    fontSize: 15,
-                    fontWeight: active ? 700 : 500,
-                    color: active ? "#fff" : "rgba(255,255,255,0.5)",
-                    borderBottom: "1px solid rgba(255,255,255,0.06)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    textDecoration: "none",
-                    transition: "color 0.15s",
-                  }}
-                >
-                  <span style={{ fontSize: 16 }}>{t.icon}</span>
-                  {t.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </>
-      )}
     </header>
   );
 }
