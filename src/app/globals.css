@@ -45,6 +45,12 @@
   /* ── Fonts ────────────────────────────────────────────── */
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-sans:  'DM Sans', system-ui, sans-serif;
+
+  /* ── Device safe areas (requires viewport-fit=cover, layout.tsx) ──
+     Use these on fixed bottom/top bars so iOS home-indicator and notch
+     areas don't overlap content. 0px everywhere else.                */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 body {

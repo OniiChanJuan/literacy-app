@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Nav from "@/components/nav";
 import Footer from "@/components/footer";
@@ -31,6 +31,18 @@ const dmSans = DM_Sans({
   display: "swap",
   variable: "--font-sans",
 });
+
+/**
+ * viewport-fit=cover lets the page extend under iOS notch / home-indicator
+ * areas so fixed bars (bottom nav, action bars) can pad with the
+ * --safe-top / --safe-bottom variables (env(safe-area-inset-*), globals.css)
+ * instead of being overlapped by the gesture area.
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
