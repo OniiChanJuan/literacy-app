@@ -77,7 +77,7 @@ export default function WhatsHappening({ refreshKey }: { refreshKey?: number }) 
         /* Laptop-and-smaller: hide the trending sidebar entirely, activity
            feed takes full width. Mobile doesn't need a denser discovery UI
            — the feed is enough. */
-        @media (max-width: 1023px) {
+        @media (max-width: 1024px) {
           .whats-happening-grid {
             grid-template-columns: 1fr !important;
           }
@@ -86,13 +86,13 @@ export default function WhatsHappening({ refreshKey }: { refreshKey?: number }) 
           }
         }
         /* Mobile: cap activity feed at 3 items. */
-        @media (max-width: 639px) {
+        @media (max-width: 640px) {
           .activity-feed-list > *:nth-child(n+4) {
             display: none !important;
           }
         }
         /* Tablet / small laptop: cap activity feed at 4 items. */
-        @media (min-width: 640px) and (max-width: 1439px) {
+        @media (min-width: 641px) and (max-width: 1439px) {
           .activity-feed-list > *:nth-child(n+5) {
             display: none !important;
           }

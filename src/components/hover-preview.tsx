@@ -26,7 +26,7 @@ export default function HoverPreview({ item, children, fill = false }: HoverPrev
     // Mobile viewports don't have real hover — skip the preview entirely.
     // Uses width check (not `:hover` media query) because some iPads report
     // `:hover: hover` while still being touch-primary devices.
-    if (typeof window !== "undefined" && window.innerWidth < 640) return;
+    if (typeof window !== "undefined" && window.innerWidth <= 640) return;
     timerRef.current = setTimeout(() => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();

@@ -151,7 +151,7 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
           }
         }
         /* Tablet / large mobile */
-        @media (max-width: 1023px) {
+        @media (max-width: 1024px) {
           .cross-shelf-grid {
             grid-template-columns: repeat(2, 1fr) !important;
           }
@@ -161,7 +161,7 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
           }
         }
         /* Mobile */
-        @media (max-width: 639px) {
+        @media (max-width: 640px) {
           .cross-shelf-grid {
             grid-template-columns: 1fr !important;
           }
@@ -418,7 +418,7 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         ))}
       </div>
       <style>{`
-        @media (max-width: 639px) {
+        @media (max-width: 640px) {
           .cross-shelf-chain {
             flex-direction: column !important;
             align-items: flex-start !important;

@@ -107,6 +107,20 @@ body {
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
+/* ── Responsive breakpoints (canonical) ─────────────────────────
+   The app uses three breakpoints, written as INCLUSIVE max-width
+   queries. Paired min-width bands start one pixel above.
+
+     mobile   @media (max-width: 640px)    bottom nav, single column
+     compact  @media (max-width: 768px)    tighter padding, stacked heroes
+     tablet   @media (max-width: 1024px)   sidebars collapse
+
+   Bands: (min-width: 641px), (min-width: 769px), (min-width: 1025px).
+   480px appears only as a legacy fine-tune for very small screens
+   (nav label hiding below) — do not add new rules at 480.
+   Do NOT introduce 639/767/1023-style boundaries; that off-by-one
+   drift is what this block exists to prevent.                       */
+
 /* ── Mobile Responsive ──────────────────────────────────────── */
 
 /* Nav mobile: hide labels on very small screens */

@@ -276,14 +276,14 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
       <style>{`
         /* Hide the Across Media chart on laptop-and-smaller. It's a
            discovery-browsing feature, not essential. */
-        @media (max-width: 1023px) {
+        @media (max-width: 1024px) {
           .taste-identity-chart-row {
             display: none !important;
           }
         }
-        /* Tablet / large mobile (640-1023px): keep stats visible next to
+        /* Tablet / large mobile (641-1024px): keep stats visible next to
            identity but let the block wrap if needed. */
-        @media (max-width: 1023px) {
+        @media (max-width: 1024px) {
           .taste-identity-card {
             padding: 20px !important;
             gap: 14px !important;
@@ -292,9 +292,9 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
             flex-wrap: wrap !important;
           }
         }
-        /* Mobile (< 640px) compressed strip: avatar shrinks, stats and
+        /* Mobile (<= 640px) compressed strip: avatar shrinks, stats and
            subtitle row hide, only identity + taste tags remain. */
-        @media (max-width: 639px) {
+        @media (max-width: 640px) {
           .taste-identity-card {
             padding: 14px 16px !important;
             margin: 16px 0 24px !important;

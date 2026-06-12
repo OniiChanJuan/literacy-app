@@ -190,7 +190,7 @@ export default function PickedForYouGrid({
             height: 360px;
           }
         }
-        @media (max-width: 639px) {
+        @media (max-width: 640px) {
           .picked-grid-wrap-desktop { display: none !important; }
           .picked-mobile-stack {
             display: flex !important;
