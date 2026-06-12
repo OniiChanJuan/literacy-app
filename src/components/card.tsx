@@ -48,8 +48,10 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
     <Link
       href={href}
       style={{
-        flex: "0 0 150px",
-        width: 150,
+        // Sized by the shared layout tokens (globals.css) so every surface,
+        // and the matching SkeletonCard, resize together. 150/210 today.
+        flex: "0 0 var(--card-w)",
+        width: "var(--card-w)",
         borderRadius: 8,
         overflow: "hidden",
         cursor: "pointer",
@@ -70,9 +72,9 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
         e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.2)";
       }}
     >
-      {/* Cover — fixed 210px height */}
+      {/* Cover — height from --card-cover-h (210px today) */}
       <div style={{
-        height: 210,
+        height: "var(--card-cover-h)",
         position: "relative",
         ...(hasImage && !imgError
           ? { background: "#1a1a2e" }
