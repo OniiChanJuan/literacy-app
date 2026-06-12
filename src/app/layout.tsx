@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Nav from "@/components/nav";
+import BottomNav from "@/components/bottom-nav";
 import Footer from "@/components/footer";
 import CookieBanner from "@/components/cookie-banner";
 import ScrollToTop from "@/components/scroll-to-top";
@@ -130,6 +131,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <BottomNav />
           <CookieBanner />
           <ScrollToTop />
         </Providers>

@@ -92,6 +92,15 @@ body {
   }
 }
 
+/* Mobile: clear the fixed bottom tab bar (components/bottom-nav.tsx) so
+   page content and the footer are never hidden behind it.
+   !important because layout.tsx sets inline padding: 0 on <body>. */
+@media (max-width: 640px) {
+  body {
+    padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom)) !important;
+  }
+}
+
 /* ── Accessibility: focus-visible outlines for keyboard nav ─ */
 *:focus-visible {
   outline: 2px solid rgba(49, 133, 252, 0.5);

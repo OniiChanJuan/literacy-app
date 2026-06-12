@@ -7,21 +7,7 @@ import { useSession } from "@/lib/supabase/use-session";
 import { useLibrary } from "@/lib/library-context";
 import UserMenu from "./user-menu";
 import GlobalSearch from "./global-search";
-
-function dispatchForYouRefresh() {
-  window.dispatchEvent(new CustomEvent("literacy:refresh-foryou"));
-}
-
-function dispatchExploreRefresh() {
-  window.dispatchEvent(new CustomEvent("literacy:refresh-explore"));
-}
-
-const tabs = [
-  { id: "foryou",  label: "For You",  icon: "✦", href: "/" },
-  { id: "explore", label: "Explore",  icon: "◎", href: "/explore" },
-  { id: "library", label: "Library",  icon: "▤", href: "/library" },
-  { id: "people",  label: "People",   icon: "◉", href: "/people" },
-];
+import { NAV_TABS as tabs, dispatchForYouRefresh, dispatchExploreRefresh } from "@/lib/nav-tabs";
 
 export default function Nav() {
   const pathname = usePathname();
