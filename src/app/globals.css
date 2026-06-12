@@ -51,6 +51,17 @@
      areas don't overlap content. 0px everywhere else.                */
   --safe-top:    env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* ── Mobile layout tokens (additive — Phase 0 of the mobile work) ──
+     Components still hardcode these values today; Phase 1 wires Card
+     (and its skeletons) to the card tokens. Keep the pairs in a 1:1.4
+     cover ratio. Change here once → every consumer follows.          */
+  --card-w:        150px;  /* item card width, desktop */
+  --card-cover-h:  210px;  /* item card cover height, desktop */
+  --card-w-sm:     130px;  /* item card width, mobile (<=640px) */
+  --card-cover-h-sm: 182px;/* item card cover height, mobile */
+  --bottom-nav-h:  56px;   /* fixed bottom tab bar height (excl. safe area) */
+  --touch-target:  44px;   /* minimum interactive size on touch devices */
 }
 
 body {
