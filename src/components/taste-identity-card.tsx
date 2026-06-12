@@ -150,18 +150,21 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
           <div className="taste-identity-subtitle" style={{ fontSize: 11, color: "rgba(232,230,225,0.3)", marginTop: 3 }}>
             {stats.memberNumber != null ? `Member #${stats.memberNumber} · ` : ""}
             {formatJoined(stats.joinedAt)}
-            {" · "}
-            <Link href={`/user/${stats.userId}`} style={{ color: "#2EC4B6", textDecoration: "none" }}>
-              View profile →
-            </Link>
+            <span className="taste-identity-profile-inline">
+              {" · "}
+              <Link href={`/user/${stats.userId}`} style={{ color: "#2EC4B6", textDecoration: "none" }}>
+                View profile →
+              </Link>
+            </span>
           </div>
 
           {tasteTags.length > 0 && (
-            <div className="taste-identity-tags-row" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
-              {tasteTags.map((tag) => (
+            <div className="taste-identity-tags-row" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10, alignItems: "center" }}>
+              {tasteTags.map((tag, i) => (
                 <span
                   key={tag}
-                  className="taste-identity-tag"
+                  // Mobile shows only the first two pills + a "+N" overflow pill
+                  className={`taste-identity-tag${i >= 2 ? " taste-identity-tag-overflow" : ""}`}
                   style={{
                     fontSize: 11,
                     padding: "3px 10px",
@@ -174,6 +177,29 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
                   {tag}
                 </span>
               ))}
+              {tasteTags.length > 2 && (
+                <span className="taste-identity-tag taste-identity-tag-more" style={{
+                  display: "none",
+                  fontSize: 11,
+                  padding: "3px 10px",
+                  borderRadius: 16,
+                  border: "1px solid rgba(232,72,85,0.18)",
+                  color: "rgba(232,72,85,0.75)",
+                  whiteSpace: "nowrap",
+                }}>
+                  +{tasteTags.length - 2}
+                </span>
+              )}
+              <Link href={`/user/${stats.userId}`} className="taste-identity-profile-mobile" style={{
+                display: "none",
+                marginLeft: "auto",
+                fontSize: 10,
+                color: "#2EC4B6",
+                textDecoration: "none",
+                flexShrink: 0,
+              }}>
+                View profile →
+              </Link>
             </div>
           )}
         </div>
@@ -292,38 +318,64 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
             flex-wrap: wrap !important;
           }
         }
-        /* Mobile (<= 640px) compressed strip: avatar shrinks, stats and
-           subtitle row hide, only identity + taste tags remain. */
+        /* Mobile (<= 640px) identity strip, per the For You mockup:
+           full-bleed flat strip; 32px avatar; Playfair name; member/joined
+           meta visible; three inline teal stats; first two vibe pills +
+           "+N" overflow; "View profile →" right-aligned in the pill row. */
         @media (max-width: 640px) {
           .taste-identity-card {
-            padding: 14px 16px !important;
-            margin: 16px 0 24px !important;
+            padding: 12px 16px !important;
+            margin: 8px -16px 0 !important;
+            border-radius: 0 !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-top: none !important;
+            border-color: rgba(255,255,255,0.04) !important;
+            background: rgba(255,255,255,0.015) !important;
+            gap: 8px !important;
           }
+          .taste-identity-top { gap: 10px !important; }
           .taste-identity-avatar {
-            width: 44px !important;
-            height: 44px !important;
+            width: 32px !important;
+            height: 32px !important;
           }
-          .taste-identity-avatar-text {
-            font-size: 18px !important;
-          }
-          .taste-identity-subtitle {
-            display: none !important;
-          }
-          .taste-identity-stats {
-            display: none !important;
-          }
+          .taste-identity-avatar-text { font-size: 14px !important; }
           .taste-identity-name {
-            font-size: 15px !important;
+            font-family: var(--font-serif) !important;
+            font-size: 14px !important;
+          }
+          .taste-identity-subtitle { font-size: 9px !important; margin-top: 1px !important; }
+          .taste-identity-profile-inline { display: none !important; }
+          .taste-identity-stats {
+            gap: 12px !important;
+            padding-left: 12px !important;
+          }
+          .taste-stat-num {
+            font-family: var(--font-serif) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+          }
+          .taste-stat-label {
+            font-size: 7px !important;
+            letter-spacing: 1px !important;
+            margin-top: 2px !important;
           }
           .taste-identity-tags-row {
-            margin-top: 6px !important;
-            max-height: 26px;
+            margin-top: 0 !important;
+            flex-wrap: nowrap !important;
             overflow: hidden;
           }
           .taste-identity-tag {
-            font-size: 10px !important;
-            padding: 2px 8px !important;
+            font-size: 9px !important;
+            padding: 2px 6px !important;
+            border-radius: 3px !important;
+            border: none !important;
+            background: rgba(232,72,85,0.08) !important;
+            color: rgba(232,196,182,0.85) !important;
           }
+          .taste-identity-tag-overflow { display: none !important; }
+          .taste-identity-tag-more { display: inline-block !important; }
+          .taste-identity-profile-mobile { display: block !important; }
         }
       `}</style>
     </div>
@@ -333,8 +385,8 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ textAlign: "center" }}>
-      <div style={{ fontSize: 22, fontWeight: 700, color: "#2EC4B6", lineHeight: 1 }}>{value}</div>
-      <div style={{
+      <div className="taste-stat-num" style={{ fontSize: 22, fontWeight: 700, color: "#2EC4B6", lineHeight: 1 }}>{value}</div>
+      <div className="taste-stat-label" style={{
         fontSize: 10,
         textTransform: "uppercase",
         letterSpacing: 1.2,
