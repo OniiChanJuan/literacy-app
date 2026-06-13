@@ -35,8 +35,8 @@ function FollowingSection() {
         <span style={{ fontSize: 12, color: "var(--text-faint)" }}>{franchises.length}</span>
       </div>
 
-      {/* Franchise cards */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+      {/* Franchise cards — wrap on desktop, horizontal scroll on mobile */}
+      <div className="lib-follow-row" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
         {franchises.map((f) => (
           <FranchiseCard key={f.id} franchise={f} />
         ))}
@@ -51,6 +51,7 @@ function FranchiseCard({ franchise: f }: { franchise: FollowedFranchise }) {
   return (
     <Link
       href={`/franchise/${f.id}`}
+      className="lib-follow-card"
       style={{
         width: 200, borderRadius: 12, overflow: "hidden", textDecoration: "none",
         background: "#141419", border: "0.5px solid rgba(255,255,255,0.07)",
@@ -360,6 +361,29 @@ export default function LibraryPage() {
           letter-spacing: 1px; text-transform: uppercase;
           font-family: inherit; cursor: pointer;
           -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (max-width: 640px) {
+          /* Two-column poster grid. Cards fill their cell via the shared
+             card tokens scoped to this page only ("Card is the blast radius"
+             — never edit Card or set a global override). */
+          .library-root { --card-w: 100%; --card-cover-h: 220px; }
+          .library-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px !important;
+          }
+          /* Following becomes a horizontal scroller of non-shrinking cards. */
+          .lib-follow-row {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            gap: 8px !important;
+            margin: 0 -14px; padding: 0 14px 8px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .lib-follow-row::-webkit-scrollbar { display: none; }
+          .lib-follow-card { width: 160px !important; flex-shrink: 0; }
         }
       `}</style>
       {/* Header row: status pills + Import shortcut */}
