@@ -162,6 +162,7 @@ export default function LibraryPage() {
   const { entries, items: dbItems } = useLibrary();
   const router = useRouter();
   const [globalFilter, setGlobalFilter] = useState<MediaType | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<LibraryStatus | "all">("all");
 
   // Merge static items with DB items — DB items take priority
   const resolvedItems = useMemo(() => {
@@ -256,30 +257,83 @@ export default function LibraryPage() {
   }
 
   return (
-    <div className="content-width">
+    <div className="content-width library-root">
+      <style>{`
+        /* Status pills — desktop look preserved; mobile compacts to a single
+           5-across row of stacked (label-over-count) pills per the mockup. */
+        .lib-status-pill {
+          display: flex; align-items: center; gap: 7px;
+          padding: 8px 14px; border-radius: 10px;
+          font-family: inherit; line-height: 1.1;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .lib-status-pill:disabled { cursor: default; }
+        .lib-status-pill-icon { font-size: 13px; }
+        .lib-status-pill-num { font-size: 18px; font-weight: 700; }
+        .lib-status-pill-label { font-size: 10px; color: var(--text-muted); }
+        @media (max-width: 640px) {
+          .lib-status-row { flex-wrap: nowrap !important; gap: 5px !important; }
+          .lib-status-pill {
+            flex: 1; min-width: 0;
+            flex-wrap: wrap; justify-content: center; gap: 3px;
+            padding: 8px 3px; border-radius: 8px; text-align: center;
+          }
+          .lib-status-pill-icon { order: 1; font-size: 10px; }
+          .lib-status-pill-label {
+            order: 2; font-size: 8px; text-transform: uppercase;
+            letter-spacing: 0.3px; color: var(--pill-color); white-space: nowrap;
+          }
+          .lib-status-pill-num { order: 3; flex-basis: 100%; font-size: 16px; margin-top: 2px; }
+        }
+      `}</style>
       {/* Header row: status pills + Import shortcut */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-        {STATUSES.map((s) => {
-          const count = grouped[s.key].length;
+      <div className="lib-status-row" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        {/* "All" pill — neutral, resets the status filter to the default view */}
+        {(() => {
+          const active = statusFilter === "all";
           return (
-            <div
-              key={s.key}
+            <button
+              type="button"
+              onClick={() => setStatusFilter("all")}
+              aria-pressed={active}
+              className="lib-status-pill lib-status-pill-all"
               style={{
-                background: count > 0 ? s.color + "15" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${count > 0 ? s.color + "40" : "rgba(255,255,255,0.06)"}`,
-                borderRadius: 10,
-                padding: "8px 14px",
-                display: "flex",
-                alignItems: "center",
-                gap: 7,
-                opacity: count > 0 ? 1 : 0.4,
+                ["--pill-color" as string]: "#fff",
+                background: active ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${active ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.06)"}`,
               }}
             >
-              <span style={{ fontSize: 13, color: s.color }}>{s.icon}</span>
-              <span style={{ fontSize: 18, fontWeight: 700, color: s.color }}>{count}</span>
-              <span style={{ fontSize: 10, color: "var(--text-muted)" }}>{s.label}</span>
-            </div>
+              <span className="lib-status-pill-num" style={{ color: "#fff" }}>{totalTracked}</span>
+              <span className="lib-status-pill-label">All</span>
+            </button>
+          );
+        })()}
+        {STATUSES.map((s) => {
+          const count = grouped[s.key].length;
+          const active = statusFilter === s.key;
+          const empty = count === 0;
+          return (
+            <button
+              type="button"
+              key={s.key}
+              // Tapping the active pill toggles back to "all"; empty sections aren't selectable
+              onClick={() => { if (!empty) setStatusFilter(active ? "all" : s.key); }}
+              disabled={empty}
+              aria-pressed={active}
+              className="lib-status-pill"
+              style={{
+                ["--pill-color" as string]: s.color,
+                background: active ? s.color + "28" : count > 0 ? s.color + "15" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${active ? s.color + "70" : count > 0 ? s.color + "40" : "rgba(255,255,255,0.06)"}`,
+                opacity: empty ? 0.4 : 1,
+                cursor: empty ? "default" : "pointer",
+              }}
+            >
+              <span className="lib-status-pill-icon" style={{ color: s.color }}>{s.icon}</span>
+              <span className="lib-status-pill-num" style={{ color: s.color }}>{count}</span>
+              <span className="lib-status-pill-label">{s.label}</span>
+            </button>
           );
         })}
       </div>
@@ -366,6 +420,9 @@ export default function LibraryPage() {
 
       {/* Status sections */}
       {STATUSES.map((s) => {
+        // Status-pill filter: when a status is selected, show only that section
+        if (statusFilter !== "all" && s.key !== statusFilter) return null;
+
         const items = grouped[s.key];
         if (items.length === 0) return null;
 
