@@ -62,11 +62,13 @@ export default function BottomNav() {
                 justifyContent: "center",
                 gap: 3,
                 textDecoration: "none",
-                color: active ? "#fff" : "var(--text-faint)",
+                // Teal active state — the primary CrossShelf accent (matches
+                // the mockup's teal tab), not the red --accent.
+                color: active ? "#2EC4B6" : "var(--text-faint)",
                 transition: "color 0.15s",
               }}
             >
-              <span style={{ fontSize: 18, lineHeight: 1, color: active ? "var(--accent)" : "inherit" }}>
+              <span style={{ fontSize: 18, lineHeight: 1, color: "inherit" }}>
                 {t.icon}
               </span>
               <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, letterSpacing: 0.2 }}>
