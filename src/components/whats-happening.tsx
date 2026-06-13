@@ -152,6 +152,28 @@ function ActivityFeed({ entries }: { entries: ActivityEntry[] | null }) {
       {entries.map((e, idx) => (
         <ActivityRow key={`${e.kind}-${e.user.id}-${e.item.id}-${idx}`} entry={e} />
       ))}
+      {/* Mobile (mockup): single-line borderless entries — flat row, the
+          thumbnail collapses to a 24px round avatar, type/genre meta and the
+          review snippet hide, leaving "name verb target ★★★★★" + time. */}
+      <style>{`
+        @media (max-width: 640px) {
+          .activity-feed-list { gap: 2px !important; }
+          .wh-activity-row {
+            background: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 8px 0 !important;
+            gap: 10px !important;
+          }
+          .wh-activity-cover {
+            width: 24px !important;
+            height: 24px !important;
+            border-radius: 50% !important;
+          }
+          .wh-activity-typegenre { display: none !important; }
+          .wh-activity-snippet { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -181,6 +203,7 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
 
   return (
     <div
+      className="wh-activity-row"
       style={{
         display: "flex",
         gap: 12,
@@ -191,9 +214,10 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
         alignItems: "center",
       }}
     >
-      {/* Cover thumbnail */}
+      {/* Cover thumbnail (shrinks to a 24px round avatar on mobile) */}
       <Link
         href={href}
+        className="wh-activity-cover"
         style={{
           position: "relative",
           width: 40,
@@ -242,12 +266,15 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
           overflow: "hidden",
           textOverflow: "ellipsis",
         }}>
-          {t.label.replace(/s$/, "")}
-          {entry.item.genre?.[0] ? ` · ${entry.item.genre[0]}` : ""}
-          {" · "}{timeAgo(entry.createdAt)}
+          <span className="wh-activity-typegenre">
+            {t.label.replace(/s$/, "")}
+            {entry.item.genre?.[0] ? ` · ${entry.item.genre[0]}` : ""}
+            {" · "}
+          </span>
+          {timeAgo(entry.createdAt)}
         </div>
         {entry.kind === "review" && entry.reviewSnippet && (
-          <div style={{
+          <div className="wh-activity-snippet" style={{
             fontSize: 12,
             color: "rgba(232,230,225,0.35)",
             fontStyle: "italic",
