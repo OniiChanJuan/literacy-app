@@ -19,11 +19,20 @@
  *
  * Sections are added per-commit (Phase 3b): this commit ships header + hero.
  */
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TYPES, hexToRgba, type Item, type Person } from "@/lib/data";
 import { useIsMobile } from "@/lib/use-is-mobile";
+import { getBestExtScore } from "@/lib/format-ext-score";
 import ShareButton from "./share-button";
+
+interface AggregateData {
+  avg: string;
+  count: number;
+  dist: [number, number, number, number, number];
+  recPct: number;
+  recCount?: number;
+}
 
 const CREATOR_ROLES = ["Director", "Author", "Creator", "Developer", "Artist", "Musician", "Host"];
 
@@ -49,6 +58,21 @@ function lengthLabel(item: Item): string | null {
 export default function MobileItemTop({ item }: { item: Item }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const [agg, setAgg] = useState<AggregateData | null>(null);
+
+  // Mobile-only fetch. The component renders null on desktop, but its hooks
+  // still execute there — so guard the effect on isMobile so the aggregate is
+  // fetched exactly once (ItemSubBanner skips its fetch on mobile in turn).
+  useEffect(() => {
+    if (!isMobile || typeof item.id !== "number") return;
+    let cancelled = false;
+    fetch(`/api/items/${item.id}/aggregate`)
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setAgg(d); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [isMobile, item.id]);
+
   if (!isMobile) return null;
 
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
@@ -57,6 +81,20 @@ export default function MobileItemTop({ item }: { item: Item }) {
   const len = lengthLabel(item);
   const metaLine1 = [item.year || null, len].filter(Boolean).join(" · ");
   const genres = (item.genre || []).slice(0, 3).join(" · ");
+
+  // ── CrossShelf score (deferred contents: current 0-5 number, NO wordmark,
+  // NO /10, NO "blended from N" text — those land in the CrossShelf Score
+  // session). Number derives from the best external score (same as cards),
+  // falling back to the community average. Treatment is teal when the blend
+  // is robust (>=10 community ratings AND >=1 external score), else neutral. */
+  const best = getBestExtScore(item.ext, item.voteCount ?? 0);
+  const extNorm10 = best && best.kind === "numeric" ? (best.value / best.max) * 10 : null;
+  const hasExternal = extNorm10 != null;
+  const ratingCount = agg?.count ?? 0;
+  const score05 = hasExternal
+    ? Math.min(5, extNorm10! * 0.55)
+    : (ratingCount > 0 ? parseFloat(agg!.avg) : null);
+  const robust = ratingCount >= 10 && hasExternal;
 
   return (
     <div className="mobile-item-top">
@@ -88,6 +126,23 @@ export default function MobileItemTop({ item }: { item: Item }) {
           </div>
         </div>
       </div>
+
+      {/* CrossShelf score row — teal-tinted (robust) vs neutral (thin) */}
+      {score05 != null && (
+        <div
+          className="mid-score"
+          style={robust
+            ? { background: "rgba(46,196,182,0.05)", border: "1px solid rgba(46,196,182,0.15)" }
+            : { background: "rgba(255,255,255,0.02)", border: "1px solid rgba(232,230,225,0.08)" }}
+        >
+          <div className="mid-score-num">{score05.toFixed(1)}</div>
+          <div className="mid-score-right">
+            <div className="mid-score-bar">
+              <div className="mid-score-bar-fill" style={{ width: `${Math.min(100, Math.max(0, (score05 / 5) * 100))}%` }} />
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         /* This whole cluster is mobile-only; the component already returns
@@ -135,6 +190,24 @@ export default function MobileItemTop({ item }: { item: Item }) {
           }
           .mid-creator { font-size: 12px; color: rgba(232,230,225,0.65); margin-bottom: 6px; }
           .mid-meta-info { font-size: 11px; color: rgba(232,230,225,0.45); line-height: 1.5; }
+
+          .mid-score {
+            margin: 4px 16px 0; padding: 14px 16px; border-radius: 8px;
+            display: flex; align-items: center; gap: 16px;
+          }
+          .mid-score-num {
+            font-family: var(--font-serif); font-size: 36px; font-weight: 500;
+            color: #e8e6e1; line-height: 1; flex-shrink: 0;
+          }
+          .mid-score-right { flex: 1; }
+          .mid-score-bar {
+            height: 6px; background: rgba(255,255,255,0.08);
+            border-radius: 3px; position: relative;
+          }
+          .mid-score-bar-fill {
+            position: absolute; left: 0; top: 0; height: 100%;
+            background: #2EC4B6; border-radius: 3px;
+          }
         }
       `}</style>
     </div>

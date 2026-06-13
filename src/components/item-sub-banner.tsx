@@ -7,6 +7,7 @@ import type { Item, RecTag as RecTagType } from "@/lib/data";
 import { scorePassesThreshold } from "@/lib/score-thresholds";
 import { useRatings } from "@/lib/ratings-context";
 import { useLibrary, isOngoing, type LibraryStatus } from "@/lib/library-context";
+import { useIsMobile } from "@/lib/use-is-mobile";
 import Stars from "./stars";
 
 interface ScoreData {
@@ -86,6 +87,11 @@ interface SubBannerProps {
 }
 
 export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerProps) {
+  // Desktop-only: on mobile (<=640px) the MobileItemTop cluster renders the
+  // score row / contributing pills / distribution / rating + status, so this
+  // bundled banner is gated out — and crucially its aggregate/scores fetch is
+  // skipped (below) so /api/items/[id]/aggregate is fetched exactly once.
+  const isMobile = useIsMobile();
   const { data: session } = useSession();
   const { ratings, recTags, rate, setRecTag } = useRatings();
   const { entries, setStatus } = useLibrary();
@@ -102,17 +108,27 @@ export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerP
   const rgb = hexToRgb(heroColor || typeColor);
 
   useEffect(() => {
-    // Fetch external scores and community aggregate in parallel
-    Promise.all([
-      fetch(`/api/scores?itemId=${item.id}`).then((r) => r.json()).catch(() => []),
-      fetch(`/api/items/${item.id}/aggregate`).then((r) => r.json()).catch(() => null),
-    ]).then(([scoreData, aggData]) => {
-      const dbScores = Array.isArray(scoreData) ? scoreData.filter((s: ScoreData) => !HIDDEN_SOURCES.has(s.source)) : [];
-      setScores(dbScores);
-      setAgg(aggData?.count > 0 ? aggData : null);
-      setLoaded(true);
-    });
-  }, [item.id]);
+    if (isMobile) return; // MobileItemTop owns the fetch on mobile
+    // Defer one macrotask so useIsMobile's post-hydration correction lands
+    // first: on mobile the SSR default (false) would otherwise fire a stray
+    // fetch before the store settles to true. The cleanup cancels that stray
+    // timer when isMobile flips, so the aggregate is fetched exactly once.
+    const timer = setTimeout(() => {
+      Promise.all([
+        fetch(`/api/scores?itemId=${item.id}`).then((r) => r.json()).catch(() => []),
+        fetch(`/api/items/${item.id}/aggregate`).then((r) => r.json()).catch(() => null),
+      ]).then(([scoreData, aggData]) => {
+        const dbScores = Array.isArray(scoreData) ? scoreData.filter((s: ScoreData) => !HIDDEN_SOURCES.has(s.source)) : [];
+        setScores(dbScores);
+        setAgg(aggData?.count > 0 ? aggData : null);
+        setLoaded(true);
+      });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [item.id, isMobile]);
+
+  // Gate the whole banner out on mobile (after hooks, per rules of hooks).
+  if (isMobile) return null;
 
   const voteCount = item.voteCount ?? 0;
   const ext = (item.ext || {}) as Record<string, any>;
