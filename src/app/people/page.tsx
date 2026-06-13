@@ -5,6 +5,8 @@ import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import { MemberBadge, getMemberTier, type MemberTier } from "@/components/member-badge";
 import { TYPES } from "@/lib/data";
+import { useRatings } from "@/lib/ratings-context";
+import TypeMixBar from "@/components/type-mix-bar";
 
 interface UserResult {
   id: string;
@@ -26,6 +28,7 @@ interface FollowingUser {
   ratedCount: number;
   reviewCount: number;
   topMediaTypes: string[];
+  typeCounts?: Record<string, number>;
   lastActiveAt: string | null;
 }
 
@@ -72,6 +75,10 @@ function avatarStyle(memberNumber: number | null): { bg: string; border: string;
 
 export default function PeoplePage() {
   const { data: session } = useSession();
+  const { ratings } = useRatings();
+  // My rating count drives the Similar-taste <10 empty-state threshold (Q4) —
+  // read from context, no extra fetch.
+  const myRatingCount = Object.keys(ratings).length;
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<UserResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -259,6 +266,62 @@ export default function PeoplePage() {
             </div>
           )}
         </div>
+
+        {/* SIMILAR TASTE — empty copy only under the <10-ratings threshold (Q4);
+            real cards when populated; hidden when >=10 ratings but no matches. */}
+        {isLoggedIn && (myRatingCount < 10 || similarUsers.length > 0) && (
+          <div className="pm-section">
+            <div className="pm-section-header">
+              <div className="pm-section-title-block">
+                <div className="pm-section-title">Similar taste</div>
+                <div className="pm-section-sub">Reviewers who scored items like you</div>
+              </div>
+            </div>
+            {similarUsers.length > 0 ? (
+              <div className="pm-reviewer-row">
+                {similarUsers.map((u) => (
+                  <MobileReviewerCard
+                    key={u.id}
+                    id={u.id}
+                    name={u.name}
+                    avatar={u.avatar}
+                    memberNumber={u.memberNumber}
+                    statsLine={`${u.sharedRatings ?? 0} shared`}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="pm-empty-dashed">
+                <div className="pm-empty-text">Rate more items to find people with similar taste.</div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* FOLLOWING — hidden entirely when the user follows no one. */}
+        {isLoggedIn && followingUsers.length > 0 && (
+          <div className="pm-section">
+            <div className="pm-section-header">
+              <div className="pm-section-title-block">
+                <div className="pm-section-title">Following</div>
+                <div className="pm-section-sub">{followingUsers.length} {followingUsers.length === 1 ? "person" : "people"}</div>
+              </div>
+            </div>
+            <div className="pm-reviewer-row">
+              {followingUsers.map((u) => (
+                <MobileReviewerCard
+                  key={u.id}
+                  id={u.id}
+                  name={u.name}
+                  avatar={u.avatar}
+                  memberNumber={u.memberNumber}
+                  statsLine={`${u.ratedCount} rated`}
+                  typeCounts={u.typeCounts}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── DESKTOP (>640px) — existing two-column layout, unchanged ───── */}
@@ -510,6 +573,47 @@ function MobileActivityEntry({ item }: { item: ActivityItem }) {
   );
 }
 
+/** Compact reviewer card for the mobile Similar-taste / Following rows
+ *  (horizontal scroll). Shared shape; the type-mix bar shows only when
+ *  typeCounts are supplied (Following has them, Similar doesn't). */
+function MobileReviewerCard({
+  id, name, avatar, memberNumber, statsLine, typeCounts,
+}: {
+  id: string;
+  name: string;
+  avatar: string;
+  memberNumber: number | null;
+  statsLine: string;
+  typeCounts?: Record<string, number>;
+}) {
+  const av = avatarStyle(memberNumber);
+  const initial = name[0]?.toUpperCase() || "?";
+  const tier = memberNumber ? getMemberTier(memberNumber) : null;
+  const rank = memberNumber
+    ? (tier === "founding" || tier === "early" ? `★ #${memberNumber}` : `#${memberNumber}`)
+    : null;
+
+  return (
+    <Link href={`/user/${id}`} className="pm-reviewer-card">
+      <div
+        className="pm-reviewer-avatar"
+        style={{
+          background: avatar ? `url(${avatar}) center/cover` : av.bg,
+          border: `1.5px solid ${av.border}`, color: av.color,
+        }}
+      >
+        {!avatar && initial}
+      </div>
+      <div className="pm-reviewer-name">{name}</div>
+      {rank && <div className="pm-reviewer-rank">{rank}</div>}
+      <div className="pm-reviewer-stats">{statsLine}</div>
+      {typeCounts && Object.keys(typeCounts).length > 0 && (
+        <div style={{ marginTop: 8 }}><TypeMixBar counts={typeCounts} /></div>
+      )}
+    </Link>
+  );
+}
+
 /** Mobile People stylesheet — the .people-mobile/.people-desktop toggle plus
  *  all .pm-* classes. CSS media query swap (no JS gate, no hydration flash). */
 function PeopleMobileStyles() {
@@ -563,6 +667,17 @@ function PeopleMobileStyles() {
       .pm-search { padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; gap: 10px; margin-top: 10px; }
       .pm-search-input { background: none; border: none; outline: none; color: #fff; font-size: 13px; flex: 1; min-width: 0; font-family: inherit; }
       .pm-results { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+
+      .pm-empty-dashed { padding: 20px 14px; text-align: center; background: rgba(255,255,255,0.015); border: 1px dashed rgba(255,255,255,0.08); border-radius: 8px; margin-top: 12px; }
+      .pm-empty-dashed .pm-empty-text { margin-bottom: 0; font-size: 12px; color: rgba(232,230,225,0.45); }
+
+      .pm-reviewer-row { display: flex; gap: 8px; overflow-x: auto; margin: 12px -14px 0; padding: 0 14px 8px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .pm-reviewer-row::-webkit-scrollbar { display: none; }
+      .pm-reviewer-card { flex-shrink: 0; width: 105px; padding: 12px 8px; background: rgba(255,255,255,0.025); border-radius: 8px; text-align: center; text-decoration: none; display: block; }
+      .pm-reviewer-avatar { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+      .pm-reviewer-name { font-family: var(--font-serif); font-size: 12px; color: #e8e6e1; font-weight: 500; line-height: 1.1; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .pm-reviewer-rank { font-size: 9px; color: #DAA520; letter-spacing: 0.5px; margin-bottom: 6px; }
+      .pm-reviewer-stats { font-size: 9px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; }
     `}</style>
   );
 }
