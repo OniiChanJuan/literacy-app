@@ -5,7 +5,24 @@ import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import { TYPES, type Item } from "@/lib/data";
 import Card from "@/components/card";
-import { MemberBadgeBlock } from "@/components/member-badge";
+import { MemberBadgeBlock, getMemberTier } from "@/components/member-badge";
+import TypeMixBar from "@/components/type-mix-bar";
+
+interface ProfileReview {
+  id: number;
+  itemId: number;
+  itemTitle: string;
+  itemType: string;
+  itemCover: string;
+  itemYear: number;
+  itemSlug: string | null;
+  score: number | null;
+  text: string;
+  helpfulCount: number;
+  replyCount: number;
+  myVote: "up" | "down" | null;
+  createdAt: string;
+}
 
 interface ProfileData {
   user: {
@@ -25,6 +42,8 @@ interface ProfileData {
   };
   topRatings: { itemId: number; score: number; recommendTag: string | null; item?: any }[];
   library: { itemId: number; status: string; progressCurrent: number; item?: any }[] | null;
+  typeCounts: Record<string, number> | null;
+  reviews: ProfileReview[];
   isOwn: boolean;
 }
 
@@ -138,9 +157,16 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     );
   }
 
-  const { user, topRatings, library, isOwn } = profile;
+  const { user, topRatings, library, typeCounts, reviews, isOwn } = profile;
   const initial = user.name?.[0]?.toUpperCase() || "?";
   const joinDate = new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  // Private to a visitor (the API already withheld the data; this just drives
+  // the mobile Option-B view: identity + bio + "Library is private" only).
+  const isPrivateView = user.isPrivate && !isOwn;
+  const memberTier = user.memberNumber ? getMemberTier(user.memberNumber) : null;
+  const rankLabel = user.memberNumber
+    ? (memberTier === "founding" || memberTier === "early" ? `★ Member #${user.memberNumber}` : `Member #${user.memberNumber}`)
+    : null;
 
   // Resolve items from API response (includes DB item data)
   function toItem(raw: any): Item | null {
@@ -167,8 +193,128 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     }
   }
 
+  const shareProfile = () => {
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    if (typeof navigator !== "undefined" && (navigator as any).share) {
+      (navigator as any).share({ title: user.name || "Profile", url }).catch(() => {});
+    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(url).catch(() => {});
+    }
+  };
+
   return (
-    <div className="content-width">
+    <>
+      {/* ── MOBILE (<=640px) — identity-first; full Option-B private state ─ */}
+      <div className="content-width profile-mobile">
+        <ProfileMobileStyles />
+
+        <div className="pf-topheader">
+          <button className="pf-back" onClick={() => history.back()} aria-label="Back">‹</button>
+          <div className="pf-header-title">@{user.name || "user"}</div>
+          <button className="pf-share" onClick={shareProfile} aria-label="Share profile">⤴</button>
+        </div>
+
+        <div className="pf-identity">
+          <div className="pf-identity-top">
+            <div
+              className="pf-avatar"
+              style={{
+                background: user.avatar ? `url(${user.avatar}) center/cover` : "linear-gradient(135deg, #9B5DE5, #2EC4B6)",
+              }}
+            >
+              {!user.avatar && initial}
+            </div>
+            <div className="pf-name-block">
+              <div className="pf-name">{user.name || "Anonymous"}</div>
+              <div className="pf-joined">Joined {joinDate}</div>
+              {rankLabel && <div className="pf-rank">{rankLabel}</div>}
+            </div>
+            {isOwn ? (
+              <button className="pf-edit-btn" onClick={() => setEditing(!editing)}>
+                {editing ? "Cancel" : "Edit"}
+              </button>
+            ) : session?.user ? (
+              <button
+                className={`pf-follow-btn ${isFollowing ? "pf-follow-btn-following" : ""}`}
+                onClick={handleFollow}
+                disabled={followLoading}
+              >
+                {isFollowing ? "Following" : "Follow"}
+              </button>
+            ) : null}
+          </div>
+
+          {memberTier === "founding" && <div className="pf-founding">Founding Member</div>}
+          {user.bio && <div className="pf-bio">{user.bio}</div>}
+
+          {/* Taste fingerprint — only when ratings (and thus typeCounts) are visible */}
+          {!isPrivateView && typeCounts && Object.keys(typeCounts).length > 0 && (
+            <div className="pf-taste">
+              <div className="pf-taste-label">Reviews across</div>
+              <TypeMixBar counts={typeCounts} height={4} />
+              <div className="pf-taste-legend">
+                {Object.keys(typeCounts)
+                  .filter((t) => typeCounts[t] > 0)
+                  .map((t) => {
+                    const info = TYPES[t as keyof typeof TYPES];
+                    if (!info) return null;
+                    return (
+                      <div key={t} className="pf-legend-item">
+                        <span className="pf-legend-dot" style={{ background: info.color }} />
+                        {info.label}
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Own-profile edit form (shared component) */}
+        {editing && isOwn && (
+          <div style={{ padding: "0 14px" }}>
+            <ProfileEditForm
+              name={editName} setName={setEditName}
+              bio={editBio} setBio={setEditBio}
+              priv={editPrivate} setPriv={setEditPrivate}
+              saving={saving} onSave={handleSave}
+            />
+          </div>
+        )}
+
+        {isPrivateView ? (
+          <div className="pf-private">
+            <div className="pf-private-icon">🔒</div>
+            <div className="pf-private-title">Library is private</div>
+            <div className="pf-private-text">
+              {user.name || "This user"} has chosen to keep their library private. You can follow
+              them to see their activity in the People feed.
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Stats */}
+            <div className="pf-stats">
+              {[
+                { label: "Rated", value: user.ratingsCount, cls: "pf-stat-rated" },
+                { label: "Reviewed", value: user.reviewsCount, cls: "pf-stat-reviewed" },
+                { label: "Tracked", value: user.trackedCount, cls: "pf-stat-tracked" },
+                { label: "Followers", value: followerCount, cls: "pf-stat-followers" },
+                { label: "Following", value: followingCount, cls: "pf-stat-following" },
+              ].map((s) => (
+                <div key={s.label} className={`pf-stat ${s.cls}`}>
+                  <div className="pf-stat-num">{s.value}</div>
+                  <div className="pf-stat-label">{s.label}</div>
+                </div>
+              ))}
+            </div>
+            {/* Status pills, filter, Top Rated, status sections, Reviews — next commits */}
+          </>
+        )}
+      </div>
+
+      {/* ── DESKTOP (>640px) — existing layout, unchanged ──────────────── */}
+      <div className="content-width profile-desktop">
       {/* Profile header */}
       <div style={{
         display: "flex",
@@ -303,126 +449,14 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         )}
       </div>
 
-      {/* Edit form */}
+      {/* Edit form (own profile) — shared with the mobile branch */}
       {editing && isOwn && (
-        <div style={{
-          background: "var(--surface-1)",
-          border: "1px solid var(--border)",
-          borderRadius: 16,
-          padding: 24,
-          marginBottom: 32,
-        }}>
-          <div style={{ fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 20 }}>
-            Edit Profile
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
-              Name
-            </label>
-            <input
-              type="text"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                borderRadius: 10,
-                border: "1px solid var(--border)",
-                background: "rgba(255,255,255,0.04)",
-                color: "#fff",
-                fontSize: 14,
-                outline: "none",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
-              Bio
-            </label>
-            <textarea
-              value={editBio}
-              onChange={(e) => setEditBio(e.target.value)}
-              rows={3}
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                borderRadius: 10,
-                border: "1px solid var(--border)",
-                background: "rgba(255,255,255,0.04)",
-                color: "#fff",
-                fontSize: 14,
-                outline: "none",
-                resize: "vertical",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-
-          {/* Privacy toggle */}
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "14px 16px",
-            background: "rgba(255,255,255,0.03)",
-            borderRadius: 12,
-            border: "1px solid var(--border)",
-            marginBottom: 20,
-          }}>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Private Library</div>
-              <div style={{ fontSize: 11, color: "var(--text-faint)", marginTop: 2 }}>
-                When enabled, others can see your profile but not your library
-              </div>
-            </div>
-            <button
-              onClick={() => setEditPrivate(!editPrivate)}
-              style={{
-                width: 44,
-                height: 24,
-                borderRadius: 12,
-                border: "none",
-                background: editPrivate ? "#E84855" : "rgba(255,255,255,0.15)",
-                cursor: "pointer",
-                position: "relative",
-                transition: "background 0.2s",
-                flexShrink: 0,
-              }}
-            >
-              <div style={{
-                width: 18,
-                height: 18,
-                borderRadius: "50%",
-                background: "#fff",
-                position: "absolute",
-                top: 3,
-                left: editPrivate ? 23 : 3,
-                transition: "left 0.2s",
-              }} />
-            </button>
-          </div>
-
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            style={{
-              padding: "10px 24px",
-              borderRadius: 10,
-              border: "none",
-              background: "#E84855",
-              color: "#fff",
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: saving ? "not-allowed" : "pointer",
-              opacity: saving ? 0.6 : 1,
-            }}
-          >
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
-        </div>
+        <ProfileEditForm
+          name={editName} setName={setEditName}
+          bio={editBio} setBio={setEditBio}
+          priv={editPrivate} setPriv={setEditPrivate}
+          saving={saving} onSave={handleSave}
+        />
       )}
 
       {/* Stats */}
@@ -539,6 +573,161 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           <Link href="/explore" style={{ fontSize: 11, color: "#E84855", textDecoration: "none" }}>Start exploring →</Link>
         </div>
       )}
+      </div>
+    </>
+  );
+}
+
+// ── Sub-components ─────────────────────────────────────────────────────────
+
+/** Own-profile edit form (name + bio + Private Library toggle). Shared between
+ *  the desktop and mobile branches so there's one source of truth. */
+function ProfileEditForm({
+  name, setName, bio, setBio, priv, setPriv, saving, onSave,
+}: {
+  name: string; setName: (v: string) => void;
+  bio: string; setBio: (v: string) => void;
+  priv: boolean; setPriv: (v: boolean) => void;
+  saving: boolean; onSave: () => void;
+}) {
+  return (
+    <div style={{
+      background: "var(--surface-1)",
+      border: "1px solid var(--border)",
+      borderRadius: 16,
+      padding: 24,
+      marginBottom: 32,
+    }}>
+      <div style={{ fontFamily: "var(--font-serif)", fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 20 }}>
+        Edit Profile
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+          Name
+        </label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{
+            width: "100%", padding: "10px 14px", borderRadius: 10,
+            border: "1px solid var(--border)", background: "rgba(255,255,255,0.04)",
+            color: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box",
+          }}
+        />
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ display: "block", fontSize: 12, color: "var(--text-muted)", marginBottom: 6, fontWeight: 600 }}>
+          Bio
+        </label>
+        <textarea
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          rows={3}
+          style={{
+            width: "100%", padding: "10px 14px", borderRadius: 10,
+            border: "1px solid var(--border)", background: "rgba(255,255,255,0.04)",
+            color: "#fff", fontSize: 14, outline: "none", resize: "vertical", boxSizing: "border-box",
+          }}
+        />
+      </div>
+
+      {/* Privacy toggle */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "14px 16px", background: "rgba(255,255,255,0.03)",
+        borderRadius: 12, border: "1px solid var(--border)", marginBottom: 20,
+      }}>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Private Library</div>
+          <div style={{ fontSize: 11, color: "var(--text-faint)", marginTop: 2 }}>
+            When enabled, others can see your profile but not your library
+          </div>
+        </div>
+        <button
+          onClick={() => setPriv(!priv)}
+          style={{
+            width: 44, height: 24, borderRadius: 12, border: "none",
+            background: priv ? "#E84855" : "rgba(255,255,255,0.15)",
+            cursor: "pointer", position: "relative", transition: "background 0.2s", flexShrink: 0,
+          }}
+        >
+          <div style={{
+            width: 18, height: 18, borderRadius: "50%", background: "#fff",
+            position: "absolute", top: 3, left: priv ? 23 : 3, transition: "left 0.2s",
+          }} />
+        </button>
+      </div>
+
+      <button
+        onClick={onSave}
+        disabled={saving}
+        style={{
+          padding: "10px 24px", borderRadius: 10, border: "none",
+          background: "#E84855", color: "#fff", fontSize: 13, fontWeight: 700,
+          cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.6 : 1,
+        }}
+      >
+        {saving ? "Saving..." : "Save Changes"}
+      </button>
     </div>
+  );
+}
+
+/** Mobile Public Profile stylesheet — the .profile-mobile/.profile-desktop
+ *  toggle plus all .pf-* classes. CSS media query swap, no JS gate. */
+function ProfileMobileStyles() {
+  return (
+    <style>{`
+      .profile-mobile { display: none; }
+      .profile-desktop { display: block; }
+      @media (max-width: 640px) {
+        .profile-desktop { display: none; }
+        .profile-mobile { display: block; }
+        /* the page wrapper adds horizontal padding; the mobile design is edge-to-edge */
+        .content-width.profile-mobile { padding-left: 0; padding-right: 0; }
+      }
+
+      .pf-topheader { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; padding: 14px; background: rgba(10,10,15,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .pf-back { background: none; border: none; font-size: 24px; line-height: 1; color: rgba(232,230,225,0.85); cursor: pointer; padding: 0; min-width: 28px; text-align: left; }
+      .pf-header-title { flex: 1; min-width: 0; font-family: var(--font-serif); font-size: 14px; color: rgba(232,230,225,0.65); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .pf-share { background: none; border: none; font-size: 18px; color: rgba(232,230,225,0.55); cursor: pointer; padding: 0; }
+
+      .pf-identity { padding: 20px 14px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .pf-identity-top { display: flex; gap: 14px; align-items: flex-start; }
+      .pf-avatar { width: 70px; height: 70px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff; }
+      .pf-name-block { flex: 1; min-width: 0; }
+      .pf-name { font-family: var(--font-serif); font-size: 22px; color: #e8e6e1; font-weight: 500; line-height: 1.1; margin-bottom: 4px; }
+      .pf-joined { font-size: 11px; color: rgba(232,230,225,0.45); margin-bottom: 6px; }
+      .pf-rank { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #DAA520; font-weight: 500; }
+      .pf-edit-btn { flex-shrink: 0; padding: 8px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; font-size: 11px; color: rgba(232,230,225,0.65); letter-spacing: 0.5px; font-weight: 500; font-family: inherit; cursor: pointer; }
+      .pf-follow-btn { flex-shrink: 0; padding: 8px 16px; background: rgba(46,196,182,0.12); border: 1px solid rgba(46,196,182,0.4); border-radius: 6px; font-size: 11px; color: #2EC4B6; letter-spacing: 0.5px; font-weight: 500; font-family: inherit; cursor: pointer; }
+      .pf-follow-btn-following { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.15); color: rgba(232,230,225,0.65); }
+      .pf-founding { display: inline-block; margin-top: 10px; padding: 3px 10px; background: rgba(218,165,32,0.12); border: 1px solid rgba(218,165,32,0.35); border-radius: 6px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #DAA520; font-weight: 600; }
+      .pf-bio { padding: 6px 0 4px; border-left: 2px solid rgba(46,196,182,0.2); padding-left: 10px; margin-top: 10px; font-size: 12px; color: rgba(232,230,225,0.75); line-height: 1.5; font-style: italic; }
+
+      .pf-taste { padding-top: 12px; }
+      .pf-taste-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(232,230,225,0.45); margin-bottom: 6px; }
+      .pf-taste-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+      .pf-legend-item { display: flex; align-items: center; gap: 4px; font-size: 9px; color: rgba(232,230,225,0.55); }
+      .pf-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+      .pf-stats { display: grid; grid-template-columns: repeat(5, 1fr); padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .pf-stat { text-align: center; padding: 4px 0; }
+      .pf-stat-num { font-family: var(--font-serif); font-size: 17px; font-weight: 500; line-height: 1; }
+      .pf-stat-label { font-size: 8px; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(232,230,225,0.45); margin-top: 4px; }
+      .pf-stat-rated .pf-stat-num { color: #2EC4B6; }
+      .pf-stat-reviewed .pf-stat-num { color: #DAA520; }
+      .pf-stat-tracked .pf-stat-num { color: #93b3c4; }
+      .pf-stat-followers .pf-stat-num { color: #c9a3d4; }
+      .pf-stat-following .pf-stat-num { color: #d4a76a; }
+
+      .pf-private { margin: 24px 14px; padding: 24px 16px; background: rgba(218,165,32,0.06); border: 1px dashed rgba(218,165,32,0.25); border-radius: 8px; text-align: center; }
+      .pf-private-icon { font-size: 30px; margin-bottom: 10px; }
+      .pf-private-title { font-family: var(--font-serif); font-size: 16px; color: rgba(232,230,225,0.85); margin-bottom: 6px; font-weight: 500; }
+      .pf-private-text { font-size: 12px; color: rgba(232,230,225,0.55); line-height: 1.5; max-width: 280px; margin: 0 auto; }
+    `}</style>
   );
 }
