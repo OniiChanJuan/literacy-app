@@ -7,6 +7,7 @@ import { MemberBadge, getMemberTier, type MemberTier } from "@/components/member
 import { TYPES } from "@/lib/data";
 import { useRatings } from "@/lib/ratings-context";
 import TypeMixBar from "@/components/type-mix-bar";
+import { useReviewVote, reviewIdOf } from "@/lib/use-review-vote";
 
 interface UserResult {
   id: string;
@@ -546,46 +547,6 @@ export default function PeoplePage() {
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────
-
-/** Numeric review id from an activity entry id ("review-<n>"); null for ratings. */
-function reviewIdOf(activityId: string): number | null {
-  return activityId.startsWith("review-") ? (Number(activityId.slice(7)) || null) : null;
-}
-
-/** Shared persisted-vote logic for activity-feed review controls (Q3). The
- *  SAME hook drives desktop and mobile so vote behaviour can't diverge. The
- *  displayed number is the up-vote count (helpfulCount); persists via
- *  /api/reviews/helpful, with optimistic update + revert on failure. */
-function useReviewVote(reviewId: number | null, initialCount: number, initialMyVote: "up" | "down" | null) {
-  const [myVote, setMyVote] = useState<"up" | "down" | null>(initialMyVote);
-  const [count, setCount] = useState(initialCount);
-
-  const vote = useCallback((dir: "up" | "down") => {
-    if (!reviewId) return;
-    const prevVote = myVote, prevCount = count;
-    let nextVote: "up" | "down" | null;
-    let nextCount = count;
-    if (myVote === dir) {
-      nextVote = null;
-      if (dir === "up") nextCount = count - 1;
-    } else {
-      nextVote = dir;
-      if (dir === "up") nextCount = count + 1;
-      else if (myVote === "up") nextCount = count - 1; // switching up→down drops the up
-    }
-    setMyVote(nextVote);
-    setCount(nextCount);
-    fetch("/api/reviews/helpful", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reviewId, voteType: dir }),
-    })
-      .then((r) => { if (!r.ok) throw new Error(); })
-      .catch(() => { setMyVote(prevVote); setCount(prevCount); });
-  }, [reviewId, myVote, count]);
-
-  return { myVote, count, vote };
-}
 
 /** Gold star rating as text (mockup style). score is 1–5. */
 function StarsText({ score }: { score: number }) {
