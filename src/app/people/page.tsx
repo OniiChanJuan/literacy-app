@@ -53,6 +53,42 @@ interface ActivityItem {
   createdAt: string;
 }
 
+// A node in a review thread (subset of /api/reviews shape) — reused to render
+// the lazy-loaded mobile reply thread (Q1→B).
+interface ReplyData {
+  id: number;
+  userId: string;
+  parentId: number | null;
+  depth: number;
+  userName: string;
+  userAvatar: string;
+  memberNumber: number | null;
+  text: string;
+  helpfulCount: number;
+  myVote: "up" | "down" | null;
+  createdAt: string;
+  replies: ReplyData[];
+}
+
+/** Depth-first search for a review node by id within a thread tree. */
+function findReplyNode(nodes: ReplyData[], id: number): ReplyData | null {
+  for (const n of nodes) {
+    if (n.id === id) return n;
+    const found = findReplyNode(n.replies ?? [], id);
+    if (found) return found;
+  }
+  return null;
+}
+
+/** Immutably append a reply under its parent anywhere in the tree. */
+function insertReply(nodes: ReplyData[], parentId: number, reply: ReplyData): ReplyData[] {
+  return nodes.map((n) =>
+    n.id === parentId
+      ? { ...n, replies: [...n.replies, reply] }
+      : { ...n, replies: insertReply(n.replies ?? [], parentId, reply) }
+  );
+}
+
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
@@ -557,15 +593,152 @@ function StarsText({ score }: { score: number }) {
   return <span>{"★".repeat(s)}{"☆".repeat(5 - s)}</span>;
 }
 
-/** Compact mobile activity entry (mockup layout). Vote/reply controls are
- *  display-only here; interactivity (persisted votes + lazy-loaded threads)
- *  lands in the threads/votes commit. */
+/** Inline reply composer (posts via POST /api/reviews). */
+function ReplyComposer({ onCancel, onSubmit }: { onCancel: () => void; onSubmit: (text: string) => Promise<void> }) {
+  const [text, setText] = useState("");
+  const [posting, setPosting] = useState(false);
+  const submit = async () => {
+    if (!text.trim() || posting) return;
+    setPosting(true);
+    try { await onSubmit(text.trim()); setText(""); } finally { setPosting(false); }
+  };
+  return (
+    <div className="pm-composer">
+      <textarea
+        className="pm-composer-input"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Write a reply…"
+        rows={2}
+      />
+      <div className="pm-composer-actions">
+        <button className="pm-composer-cancel" onClick={onCancel}>Cancel</button>
+        <button className="pm-composer-post" onClick={submit} disabled={posting || !text.trim()}>
+          {posting ? "Posting…" : "Reply"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** One reply node + its nested replies (Reddit-style). Recursive; reuses the
+ *  shared vote hook and the existing reply endpoint. depth caps at 3 (API). */
+function MobileReplyNode({
+  reply, itemId, onReplyPosted,
+}: {
+  reply: ReplyData;
+  itemId: number;
+  onReplyPosted: (parentId: number, text: string) => Promise<void>;
+}) {
+  const { myVote, count, vote } = useReviewVote(reply.id, reply.helpfulCount, reply.myVote);
+  const [composing, setComposing] = useState(false);
+  const av = avatarStyle(reply.memberNumber);
+  const initial = reply.userName[0]?.toUpperCase() || "?";
+
+  return (
+    <div className="pm-reply">
+      <div className="pm-reply-top">
+        <Link
+          href={`/user/${reply.userId}`}
+          className="pm-reply-avatar"
+          style={{
+            background: reply.userAvatar ? `url(${reply.userAvatar}) center/cover` : av.bg,
+            border: `1.5px solid ${av.border}`, color: av.color,
+          }}
+        >
+          {!reply.userAvatar && initial}
+        </Link>
+        <Link href={`/user/${reply.userId}`} className="pm-reply-username">{reply.userName}</Link>
+        <span className="pm-reply-meta">· {timeAgo(reply.createdAt)}</span>
+      </div>
+      <div className="pm-reply-text">{reply.text}</div>
+      <div className="pm-reply-controls">
+        <button className={`pm-ctrl ${myVote === "up" ? "pm-ctrl-accent" : ""}`} onClick={() => vote("up")}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 10l5-5 5 5" /></svg>
+          {count > 0 && <span>{count}</span>}
+        </button>
+        <button className={`pm-ctrl ${myVote === "down" ? "pm-ctrl-down" : ""}`} onClick={() => vote("down")}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 14l5 5 5-5" /></svg>
+        </button>
+        {reply.depth < 3 && (
+          <button className="pm-ctrl" onClick={() => setComposing((c) => !c)}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+            Reply
+          </button>
+        )}
+      </div>
+      {composing && (
+        <ReplyComposer
+          onCancel={() => setComposing(false)}
+          onSubmit={async (t) => { await onReplyPosted(reply.id, t); setComposing(false); }}
+        />
+      )}
+      {reply.replies.length > 0 && (
+        <div className="pm-reply-thread">
+          {reply.replies.map((r) => (
+            <MobileReplyNode key={r.id} reply={r} itemId={itemId} onReplyPosted={onReplyPosted} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Compact mobile activity entry (mockup layout) with persisted votes and a
+ *  lazy-loaded, collapsible reply thread (Q1→B). */
 function MobileActivityEntry({ item }: { item: ActivityItem }) {
   const av = avatarStyle(item.userMemberNumber);
   const initial = item.userName[0]?.toUpperCase() || "?";
   const itemHref = item.itemSlug ? `/${item.itemType}/${item.itemSlug}` : `/item/${item.itemId}`;
   const hasReview = !!item.text && item.text.trim().length > 0;
-  const { myVote, count, vote } = useReviewVote(reviewIdOf(item.id), item.helpfulCount, item.myVote);
+  const reviewId = reviewIdOf(item.id);
+  const { myVote, count, vote } = useReviewVote(reviewId, item.helpfulCount, item.myVote);
+
+  // Lazy-loaded reply thread (Q1→B): fetched on first expand via /api/reviews.
+  const [expanded, setExpanded] = useState(false);
+  const [thread, setThread] = useState<ReplyData[] | null>(null);
+  const [loadingThread, setLoadingThread] = useState(false);
+  const [topComposing, setTopComposing] = useState(false);
+
+  const replyCountNow = thread ? thread.length : item.replyCount;
+
+  // Insert a newly-posted reply into the local tree (top level when the parent
+  // is this review, otherwise nested under its parent) and keep the thread open.
+  const postReply = useCallback(async (parentId: number, text: string) => {
+    const r = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId: item.itemId, text, parentId }),
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    const newReply: ReplyData = { ...data, replies: [] };
+    setThread((prev) => {
+      const base = prev ?? [];
+      return parentId === reviewId ? [...base, newReply] : insertReply(base, parentId, newReply);
+    });
+    setExpanded(true);
+  }, [item.itemId, reviewId]);
+
+  const onReplyTap = async () => {
+    if (expanded) { setExpanded(false); return; }
+    if (thread === null) {
+      if (item.replyCount > 0) {
+        setLoadingThread(true);
+        try {
+          const r = await fetch(`/api/reviews?itemId=${item.itemId}&limit=50`);
+          const d = await r.json();
+          const node = reviewId ? findReplyNode(d.reviews || [], reviewId) : null;
+          setThread(node?.replies ?? []);
+        } catch { setThread([]); }
+        finally { setLoadingThread(false); }
+      } else {
+        setThread([]);          // no replies yet → open straight into the composer
+        setTopComposing(true);
+      }
+    }
+    setExpanded(true);
+  };
 
   return (
     <div className="pm-entry">
@@ -605,10 +778,38 @@ function MobileActivityEntry({ item }: { item: ActivityItem }) {
           <button className={`pm-ctrl ${myVote === "down" ? "pm-ctrl-down" : ""}`} onClick={() => vote("down")}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 14l5 5 5-5" /></svg>
           </button>
-          <span className={`pm-ctrl ${item.replyCount > 0 ? "pm-ctrl-accent" : ""}`}>
+          <button className={`pm-ctrl ${replyCountNow > 0 ? "pm-ctrl-accent" : ""}`} onClick={onReplyTap}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
-            {item.replyCount > 0 ? `${item.replyCount} ${item.replyCount === 1 ? "reply" : "replies"}` : "Reply"}
-          </span>
+            {replyCountNow > 0 ? `${replyCountNow} ${replyCountNow === 1 ? "reply" : "replies"}` : "Reply"}
+          </button>
+        </div>
+      )}
+
+      {hasReview && expanded && (
+        <div className="pm-thread">
+          {loadingThread && <div className="pm-muted">Loading replies…</div>}
+          {!loadingThread && thread && thread.length > 0 && (
+            <div className="pm-reply-thread">
+              {thread.map((r) => (
+                <MobileReplyNode key={r.id} reply={r} itemId={item.itemId} onReplyPosted={postReply} />
+              ))}
+            </div>
+          )}
+          {topComposing && reviewId && (
+            <ReplyComposer
+              onCancel={() => setTopComposing(false)}
+              onSubmit={async (t) => { await postReply(reviewId, t); setTopComposing(false); }}
+            />
+          )}
+          <div className="pm-thread-footer">
+            {!topComposing && reviewId && (
+              <button className="pm-thread-reply" onClick={() => setTopComposing(true)}>Reply</button>
+            )}
+            <button className="pm-collapse" onClick={() => setExpanded(false)}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 15l-6-6-6 6" /></svg>
+              Collapse thread
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -721,6 +922,29 @@ function PeopleMobileStyles() {
       .pm-reviewer-name { font-family: var(--font-serif); font-size: 12px; color: #e8e6e1; font-weight: 500; line-height: 1.1; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .pm-reviewer-rank { font-size: 9px; color: #DAA520; letter-spacing: 0.5px; margin-bottom: 6px; }
       .pm-reviewer-stats { font-size: 9px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; }
+
+      /* Threaded replies (Reddit-style) */
+      .pm-thread { margin-top: 4px; }
+      .pm-reply-thread { margin-top: 12px; margin-left: 16px; padding-left: 12px; border-left: 2px solid rgba(46,196,182,0.15); }
+      .pm-reply { padding: 8px 0; }
+      .pm-reply + .pm-reply { border-top: 1px solid rgba(255,255,255,0.04); }
+      .pm-reply-top { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+      .pm-reply-avatar { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; text-decoration: none; }
+      .pm-reply-username { font-size: 11px; font-weight: 500; color: #e8e6e1; text-decoration: none; }
+      .pm-reply-meta { font-size: 9px; color: rgba(232,230,225,0.45); }
+      .pm-reply-text { font-size: 11px; color: rgba(232,230,225,0.75); line-height: 1.5; margin-bottom: 6px; }
+      .pm-reply-controls { display: flex; gap: 14px; }
+      .pm-thread-footer { display: flex; gap: 12px; align-items: center; margin-top: 10px; }
+      .pm-thread-reply { background: none; border: none; color: rgba(46,196,182,0.85); font-size: 10px; font-family: inherit; cursor: pointer; padding: 0; }
+      .pm-collapse { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 12px; font-size: 9px; color: rgba(46,196,182,0.85); letter-spacing: 0.5px; text-transform: uppercase; font-family: inherit; cursor: pointer; }
+
+      /* Reply composer */
+      .pm-composer { margin-top: 8px; }
+      .pm-composer-input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: #fff; font-family: inherit; resize: vertical; outline: none; }
+      .pm-composer-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+      .pm-composer-cancel { background: none; border: none; color: rgba(232,230,225,0.45); font-size: 11px; font-family: inherit; cursor: pointer; }
+      .pm-composer-post { background: rgba(46,196,182,0.15); border: 1px solid rgba(46,196,182,0.35); color: #2EC4B6; font-size: 11px; padding: 5px 14px; border-radius: 6px; font-family: inherit; cursor: pointer; }
+      .pm-composer-post:disabled { opacity: 0.5; cursor: default; }
     `}</style>
   );
 }
