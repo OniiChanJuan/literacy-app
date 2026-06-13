@@ -36,6 +36,10 @@ export async function GET(req: NextRequest) {
     include: {
       item: { select: { id: true, title: true, type: true, cover: true, year: true, slug: true } },
       _count: { select: { helpfulVotes: true, replies: true } },
+      // The viewer's own vote on each review, so the feed renders correct
+      // vote state and optimistic toggles don't diverge for already-voted
+      // reviews (Q3). Same pattern as /api/reviews.
+      helpfulVotes: { where: { userId: claims.sub }, select: { voteType: true } },
     },
     orderBy: sort === "top" ? { helpfulVotes: { _count: "desc" } } : { createdAt: "desc" },
     take: 80,
@@ -113,6 +117,7 @@ export async function GET(req: NextRequest) {
     text: string;      // empty string = rating only
     helpfulCount: number;
     replyCount: number; // direct replies to this review (0 for rating-only)
+    myVote: "up" | "down" | null; // viewer's vote on this review
     createdAt: string;
   };
 
@@ -143,6 +148,7 @@ export async function GET(req: NextRequest) {
       text: r.text,
       helpfulCount: r._count.helpfulVotes,
       replyCount: r._count.replies,
+      myVote: (r.helpfulVotes[0]?.voteType as "up" | "down" | undefined) ?? null,
       createdAt: r.createdAt.toISOString(),
     };
   });
@@ -166,6 +172,7 @@ export async function GET(req: NextRequest) {
     text: "",
     helpfulCount: 0,
     replyCount: 0,
+    myVote: null,
     createdAt: r.createdAt.toISOString(),
     };
   });

@@ -49,6 +49,7 @@ interface ActivityItem {
   text: string;
   helpfulCount: number;
   replyCount: number;
+  myVote: "up" | "down" | null;
   createdAt: string;
 }
 
@@ -510,6 +511,46 @@ export default function PeoplePage() {
 
 // ── Sub-components ─────────────────────────────────────────────────────────
 
+/** Numeric review id from an activity entry id ("review-<n>"); null for ratings. */
+function reviewIdOf(activityId: string): number | null {
+  return activityId.startsWith("review-") ? (Number(activityId.slice(7)) || null) : null;
+}
+
+/** Shared persisted-vote logic for activity-feed review controls (Q3). The
+ *  SAME hook drives desktop and mobile so vote behaviour can't diverge. The
+ *  displayed number is the up-vote count (helpfulCount); persists via
+ *  /api/reviews/helpful, with optimistic update + revert on failure. */
+function useReviewVote(reviewId: number | null, initialCount: number, initialMyVote: "up" | "down" | null) {
+  const [myVote, setMyVote] = useState<"up" | "down" | null>(initialMyVote);
+  const [count, setCount] = useState(initialCount);
+
+  const vote = useCallback((dir: "up" | "down") => {
+    if (!reviewId) return;
+    const prevVote = myVote, prevCount = count;
+    let nextVote: "up" | "down" | null;
+    let nextCount = count;
+    if (myVote === dir) {
+      nextVote = null;
+      if (dir === "up") nextCount = count - 1;
+    } else {
+      nextVote = dir;
+      if (dir === "up") nextCount = count + 1;
+      else if (myVote === "up") nextCount = count - 1; // switching up→down drops the up
+    }
+    setMyVote(nextVote);
+    setCount(nextCount);
+    fetch("/api/reviews/helpful", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reviewId, voteType: dir }),
+    })
+      .then((r) => { if (!r.ok) throw new Error(); })
+      .catch(() => { setMyVote(prevVote); setCount(prevCount); });
+  }, [reviewId, myVote, count]);
+
+  return { myVote, count, vote };
+}
+
 /** Gold star rating as text (mockup style). score is 1–5. */
 function StarsText({ score }: { score: number }) {
   const s = Math.max(0, Math.min(5, Math.round(score)));
@@ -524,6 +565,7 @@ function MobileActivityEntry({ item }: { item: ActivityItem }) {
   const initial = item.userName[0]?.toUpperCase() || "?";
   const itemHref = item.itemSlug ? `/${item.itemType}/${item.itemSlug}` : `/item/${item.itemId}`;
   const hasReview = !!item.text && item.text.trim().length > 0;
+  const { myVote, count, vote } = useReviewVote(reviewIdOf(item.id), item.helpfulCount, item.myVote);
 
   return (
     <div className="pm-entry">
@@ -556,13 +598,13 @@ function MobileActivityEntry({ item }: { item: ActivityItem }) {
 
       {hasReview && (
         <div className="pm-entry-controls">
-          <span className="pm-ctrl">
+          <button className={`pm-ctrl ${myVote === "up" ? "pm-ctrl-accent" : ""}`} onClick={() => vote("up")}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 10l5-5 5 5" /></svg>
-            {item.helpfulCount > 0 && <span>{item.helpfulCount}</span>}
-          </span>
-          <span className="pm-ctrl">
+            {count > 0 && <span>{count}</span>}
+          </button>
+          <button className={`pm-ctrl ${myVote === "down" ? "pm-ctrl-down" : ""}`} onClick={() => vote("down")}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 14l5 5 5-5" /></svg>
-          </span>
+          </button>
           <span className={`pm-ctrl ${item.replyCount > 0 ? "pm-ctrl-accent" : ""}`}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
             {item.replyCount > 0 ? `${item.replyCount} ${item.replyCount === 1 ? "reply" : "replies"}` : "Reply"}
@@ -660,6 +702,7 @@ function PeopleMobileStyles() {
       .pm-entry-controls { display: flex; gap: 16px; align-items: center; }
       .pm-ctrl { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(232,230,225,0.45); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
       .pm-ctrl-accent { color: #2EC4B6; font-weight: 500; }
+      .pm-ctrl-down { color: #E84855; }
 
       .pm-showmore-row { text-align: center; padding: 14px 0 4px; }
       .pm-showmore { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase; font-family: inherit; cursor: pointer; }
@@ -844,7 +887,7 @@ function ActivityCard({ item }: { item: ActivityItem }) {
       {/* Bottom: vote buttons + reply (only for reviews) */}
       {hasReview && (
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 38, marginTop: 6 }}>
-          <VoteButtons helpfulCount={item.helpfulCount} />
+          <VoteButtons reviewId={reviewIdOf(item.id)} helpfulCount={item.helpfulCount} myVote={item.myVote} />
           <span style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", cursor: "pointer" }}>Reply</span>
         </div>
       )}
@@ -852,27 +895,27 @@ function ActivityCard({ item }: { item: ActivityItem }) {
   );
 }
 
-function VoteButtons({ helpfulCount }: { helpfulCount: number }) {
-  const [vote, setVote] = useState<"up" | "down" | null>(null);
-  const score = helpfulCount + (vote === "up" ? 1 : vote === "down" ? -1 : 0);
+function VoteButtons({ reviewId, helpfulCount, myVote: initialMyVote }: { reviewId: number | null; helpfulCount: number; myVote: "up" | "down" | null }) {
+  // Persisted via the shared hook (same logic as the mobile feed controls).
+  const { myVote, count, vote } = useReviewVote(reviewId, helpfulCount, initialMyVote);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
       <button
-        onClick={() => setVote(vote === "up" ? null : "up")}
+        onClick={() => vote("up")}
         style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}
       >
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={vote === "up" ? "#2EC4B6" : "rgba(255,255,255,0.2)"} strokeWidth="2">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={myVote === "up" ? "#2EC4B6" : "rgba(255,255,255,0.2)"} strokeWidth="2">
           <path d="M7 10l5-5 5 5"/>
         </svg>
       </button>
-      <span style={{ fontSize: 11, color: vote === "up" ? "#2EC4B6" : "rgba(255,255,255,0.2)", minWidth: 12, textAlign: "center" }}>
-        {score}
+      <span style={{ fontSize: 11, color: myVote === "up" ? "#2EC4B6" : myVote === "down" ? "#E84855" : "rgba(255,255,255,0.2)", minWidth: 12, textAlign: "center" }}>
+        {count}
       </span>
       <button
-        onClick={() => setVote(vote === "down" ? null : "down")}
+        onClick={() => vote("down")}
         style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}
       >
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={vote === "down" ? "#E84855" : "rgba(255,255,255,0.2)"} strokeWidth="2">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={myVote === "down" ? "#E84855" : "rgba(255,255,255,0.2)"} strokeWidth="2">
           <path d="M7 14l5 5 5-5"/>
         </svg>
       </button>
