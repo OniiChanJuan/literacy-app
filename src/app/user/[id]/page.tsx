@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
-import { TYPES, type Item } from "@/lib/data";
+import { TYPES, TYPE_ORDER, type Item, type MediaType } from "@/lib/data";
 import Card from "@/components/card";
 import { MemberBadgeBlock, getMemberTier } from "@/components/member-badge";
 import TypeMixBar from "@/components/type-mix-bar";
@@ -69,6 +69,12 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const [followingCount, setFollowingCount] = useState(0);
   const [followHover, setFollowHover] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  // Mobile collection controls (mirrors Library): status filter, type filter,
+  // A–Z sort toggle, and per-section progressive reveal.
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [sortAlpha, setSortAlpha] = useState(false);
+  const [pfExpanded, setPfExpanded] = useState<Record<string, number>>({});
 
   useEffect(() => {
     fetch(`/api/users/${id}`)
@@ -193,6 +199,28 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     }
   }
 
+  // ── Mobile collection derivations ──────────────────────────────────────
+  const PROFILE_PAGE = 4;
+  const topRatedItems = topRatings.map((r) => toItem(r.item)).filter(Boolean) as Item[];
+  // Status pill counts (library only; Top Rated is a separate "best of").
+  const statusCounts: Record<string, number> = {};
+  let libTotal = 0;
+  for (const meta of Object.keys(STATUS_META)) {
+    const n = libraryByStatus[meta]?.length ?? 0;
+    statusCounts[meta] = n;
+    libTotal += n;
+  }
+  // Media types present across the collection — drives the type-filter pills.
+  const pfTypes = new Set<string>();
+  for (const it of [...topRatedItems, ...Object.values(libraryByStatus).flat()]) pfTypes.add(it.type);
+  // Type filter + A–Z sort (Rating sort + owner stars would need owner-score
+  // per entry from the library API — flagged follow-up, not in this phase).
+  const refineItems = (items: Item[]): Item[] => {
+    let r = typeFilter === "all" ? items : items.filter((i) => i.type === typeFilter);
+    if (sortAlpha) r = [...r].sort((a, b) => a.title.localeCompare(b.title));
+    return r;
+  };
+
   const shareProfile = () => {
     const url = typeof window !== "undefined" ? window.location.href : "";
     if (typeof navigator !== "undefined" && (navigator as any).share) {
@@ -308,7 +336,118 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                 </div>
               ))}
             </div>
-            {/* Status pills, filter, Top Rated, status sections, Reviews — next commits */}
+            {/* Status pills — tap to filter the sections below */}
+            <div className="pf-status-row">
+              <button
+                className={`pf-status-pill pf-status-all ${statusFilter === "all" ? "pf-status-active" : ""}`}
+                onClick={() => setStatusFilter("all")}
+              >
+                <span className="pf-status-num" style={{ color: "#e8e6e1" }}>{libTotal}</span>
+                <span className="pf-status-label">All</span>
+              </button>
+              {Object.entries(STATUS_META).map(([status, meta]) => {
+                const n = statusCounts[status];
+                const active = statusFilter === status;
+                const short = status === "completed" ? "Done" : status === "in_progress" ? "Going" : status === "want_to" ? "Want" : "Drop";
+                return (
+                  <button
+                    key={status}
+                    className={`pf-status-pill ${active ? "pf-status-active" : ""}`}
+                    style={{ ["--pf-pill-color" as string]: meta.color, opacity: n === 0 ? 0.4 : 1 }}
+                    disabled={n === 0}
+                    onClick={() => { if (n > 0) setStatusFilter(active ? "all" : status); }}
+                  >
+                    <span className="pf-status-icon" style={{ color: meta.color }}>{meta.icon}</span>
+                    <span className="pf-status-num" style={{ color: meta.color }}>{n}</span>
+                    <span className="pf-status-label">{short}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Type filter + sort (no search on someone else's library) */}
+            {pfTypes.size > 1 && (
+              <div className="pf-filter-row">
+                {TYPE_ORDER.filter((t) => pfTypes.has(t)).map((t) => {
+                  const info = TYPES[t as MediaType];
+                  const active = typeFilter === t;
+                  return (
+                    <button
+                      key={t}
+                      className="pf-type-pill"
+                      title={info.label}
+                      style={{
+                        background: active ? info.color + "25" : "rgba(255,255,255,0.05)",
+                        color: active ? info.color : "rgba(232,230,225,0.55)",
+                        border: active ? `1px solid ${info.color}55` : "1px solid rgba(255,255,255,0.08)",
+                      }}
+                      onClick={() => setTypeFilter(active ? "all" : t)}
+                    >
+                      {info.icon}
+                    </button>
+                  );
+                })}
+                <button className="pf-sort-btn" onClick={() => setSortAlpha((s) => !s)}>
+                  ↕ {sortAlpha ? "A–Z" : "DEFAULT"}
+                </button>
+              </div>
+            )}
+
+            {/* Top Rated — best-of, shown in the default (All) view */}
+            {statusFilter === "all" && (() => {
+              const filtered = refineItems(topRatedItems);
+              if (filtered.length === 0) return null;
+              const cap = pfExpanded.__top ?? PROFILE_PAGE;
+              const visible = filtered.slice(0, cap);
+              const remaining = filtered.length - visible.length;
+              return (
+                <div className="pf-section">
+                  <div className="pf-section-header">
+                    <span style={{ color: "#DAA520", fontSize: 14 }}>★</span>
+                    <span className="pf-section-title">Top Rated</span>
+                    <span className="pf-section-count">{filtered.length}</span>
+                  </div>
+                  <div className="pf-card-grid">{visible.map((it) => <Card key={it.id} item={it} />)}</div>
+                  {remaining > 0 && (
+                    <div className="pf-showmore-row">
+                      <button className="pf-showmore" onClick={() => setPfExpanded((e) => ({ ...e, __top: cap + PROFILE_PAGE }))}>
+                        ▾ Show {Math.min(PROFILE_PAGE, remaining)} more
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Per-status sections */}
+            {Object.entries(STATUS_META).map(([status, meta]) => {
+              if (statusFilter !== "all" && statusFilter !== status) return null;
+              const all = libraryByStatus[status] || [];
+              if (all.length === 0) return null;
+              const filtered = refineItems(all);
+              if (filtered.length === 0) return null;
+              const cap = pfExpanded[status] ?? PROFILE_PAGE;
+              const visible = filtered.slice(0, cap);
+              const remaining = filtered.length - visible.length;
+              return (
+                <div key={status} className="pf-section">
+                  <div className="pf-section-header">
+                    <span style={{ color: meta.color, fontSize: 13 }}>{meta.icon}</span>
+                    <span className="pf-section-title">{meta.label}</span>
+                    <span className="pf-section-count">{filtered.length}</span>
+                  </div>
+                  <div className="pf-card-grid">{visible.map((it) => <Card key={it.id} item={it} />)}</div>
+                  {remaining > 0 && (
+                    <div className="pf-showmore-row">
+                      <button className="pf-showmore" onClick={() => setPfExpanded((e) => ({ ...e, [status]: cap + PROFILE_PAGE }))}>
+                        ▾ Show {Math.min(PROFILE_PAGE, remaining)} more
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {/* Reviews — next commit */}
           </>
         )}
       </div>
@@ -728,6 +867,40 @@ function ProfileMobileStyles() {
       .pf-private-icon { font-size: 30px; margin-bottom: 10px; }
       .pf-private-title { font-family: var(--font-serif); font-size: 16px; color: rgba(232,230,225,0.85); margin-bottom: 6px; font-weight: 500; }
       .pf-private-text { font-size: 12px; color: rgba(232,230,225,0.55); line-height: 1.5; max-width: 280px; margin: 0 auto; }
+
+      /* Status pills — same 5-across language as Library */
+      .pf-status-row { display: flex; gap: 5px; padding: 12px 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .pf-status-pill { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 3px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); font-family: inherit; cursor: pointer; }
+      .pf-status-pill:disabled { cursor: default; }
+      .pf-status-pill.pf-status-active { background: rgba(255,255,255,0.06); border-color: var(--pf-pill-color, rgba(255,255,255,0.25)); }
+      .pf-status-icon { font-size: 10px; }
+      .pf-status-num { font-family: var(--font-serif); font-size: 16px; font-weight: 500; line-height: 1; }
+      .pf-status-label { font-size: 8px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--pf-pill-color, rgba(232,230,225,0.55)); }
+
+      /* Type filter + sort (no search) */
+      .pf-filter-row { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); flex-wrap: wrap; }
+      .pf-type-pill { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; border-radius: 14px; font-size: 14px; line-height: 1; font-family: inherit; cursor: pointer; flex-shrink: 0; }
+      .pf-sort-btn { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 4px; font-size: 10px; color: rgba(46,196,182,0.85); letter-spacing: 0.5px; line-height: 1; font-family: inherit; cursor: pointer; flex-shrink: 0; }
+
+      /* Sections + card grid */
+      .pf-section { padding: 22px 14px 0; }
+      .pf-section-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .pf-section-title { font-family: var(--font-serif); font-size: 17px; color: #e8e6e1; font-weight: 500; }
+      .pf-section-count { font-size: 11px; color: rgba(232,230,225,0.45); }
+      .pf-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .pf-showmore-row { text-align: center; padding: 14px 0 4px; }
+      .pf-showmore { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase; font-family: inherit; cursor: pointer; }
+
+      @media (max-width: 640px) {
+        /* Two-column poster cards via the shared tokens, scoped to the profile.
+           Same overflow containment as Library: the Card's HoverPreview wrapper
+           is width:fit-content, so force the chain to fill the cell, cap images,
+           and clip as a backstop (iOS Safari intrinsic-width quirk). */
+        .profile-mobile { --card-w: 100%; --card-cover-h: 220px; overflow-x: clip; }
+        .pf-card-grid > * { min-width: 0; width: 100% !important; }
+        .pf-card-grid a { max-width: 100%; }
+        .pf-card-grid img { max-width: 100%; }
+      }
     `}</style>
   );
 }
