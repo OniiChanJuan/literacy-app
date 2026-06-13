@@ -20,10 +20,12 @@
  * Sections are added per-commit (Phase 3b): this commit ships header + hero.
  */
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TYPES, hexToRgba, type Item, type Person } from "@/lib/data";
 import { useIsMobile } from "@/lib/use-is-mobile";
 import { getBestExtScore } from "@/lib/format-ext-score";
+import { getFranchiseForItem } from "@/lib/franchises";
 import ShareButton from "./share-button";
 
 interface AggregateData {
@@ -55,7 +57,7 @@ function lengthLabel(item: Item): string | null {
   }
 }
 
-export default function MobileItemTop({ item }: { item: Item }) {
+export default function MobileItemTop({ item, routeId }: { item: Item; routeId: string }) {
   const isMobile = useIsMobile();
   const router = useRouter();
   const [agg, setAgg] = useState<AggregateData | null>(null);
@@ -95,6 +97,14 @@ export default function MobileItemTop({ item }: { item: Item }) {
     ? Math.min(5, extNorm10! * 0.55)
     : (ratingCount > 0 ? parseFloat(agg!.avg) : null);
   const robust = ratingCount >= 10 && hasExternal;
+
+  // ── Franchise/series strip — same source as the desktop FranchiseBadge
+  // (lib/franchises), so the /franchise/[slug] link is guaranteed valid and
+  // the strip is hidden for standalone items. Position derived from the
+  // franchise's item order. */
+  const franchise = getFranchiseForItem(routeId);
+  const franchisePos = franchise ? franchise.items.findIndex((it) => it.routeId === routeId) : -1;
+  const franchiseTotal = franchise ? franchise.items.length : 0;
 
   return (
     <div className="mobile-item-top">
@@ -142,6 +152,27 @@ export default function MobileItemTop({ item }: { item: Item }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Franchise / series strip — hidden for standalone items */}
+      {franchise && (
+        <Link href={`/franchise/${franchise.slug}`} className="mid-franchise" aria-label={`Part of ${franchise.name}`}>
+          <div className="mid-franchise-thumb" style={{ background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.18)}, ${hexToRgba(t.color, 0.05)})` }}>
+            {hasCover
+              // eslint-disable-next-line @next/next/no-img-element
+              ? <img src={item.cover} alt="" loading="lazy" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              : <span style={{ fontSize: 14 }}>{franchise.icon}</span>}
+          </div>
+          <div className="mid-franchise-text">
+            <div className="mid-franchise-label">Part of</div>
+            <div className="mid-franchise-name">{franchise.name}</div>
+            <div className="mid-franchise-pos">
+              {franchisePos >= 0 ? `${t.label.replace(/s$/, "")} ${franchisePos + 1} of ${franchiseTotal}` : `${franchiseTotal} entries`}
+              {item.year ? ` · ${item.year}` : ""}
+            </div>
+          </div>
+          <span className="mid-franchise-chev" aria-hidden>›</span>
+        </Link>
       )}
 
       <style>{`
@@ -208,6 +239,29 @@ export default function MobileItemTop({ item }: { item: Item }) {
             position: absolute; left: 0; top: 0; height: 100%;
             background: #2EC4B6; border-radius: 3px;
           }
+
+          .mid-franchise {
+            display: flex; align-items: center; gap: 10px;
+            margin: 14px 16px 0; padding: 10px 12px;
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 6px; text-decoration: none;
+          }
+          .mid-franchise-thumb {
+            width: 32px; height: 48px; border-radius: 3px; flex-shrink: 0;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+          }
+          .mid-franchise-text { flex: 1; min-width: 0; }
+          .mid-franchise-label {
+            font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(232,230,225,0.45); margin-bottom: 2px;
+          }
+          .mid-franchise-name {
+            font-family: var(--font-serif); font-size: 14px; font-weight: 500;
+            color: #e8e6e1; line-height: 1.2;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+          }
+          .mid-franchise-pos { font-size: 10px; color: rgba(232,230,225,0.45); margin-top: 2px; }
+          .mid-franchise-chev { font-size: 20px; color: rgba(232,230,225,0.45); flex-shrink: 0; line-height: 1; }
         }
       `}</style>
     </div>

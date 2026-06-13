@@ -208,7 +208,7 @@ export function ItemPageRender({
           franchise strip, contributing, distribution, your-activity. Mounts
           only on mobile; the desktop back-row + hero below are CSS-hidden
           there. */}
-      <MobileItemTop item={item} />
+      <MobileItemTop item={item} routeId={routeId} />
 
       {/* Back button + badges */}
       <div className="content-width item-detail-deskrow">
