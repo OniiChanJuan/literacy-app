@@ -208,6 +208,27 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
         </div>
       )}
 
+      {/* Rating distribution — only with >=10 community ratings (empty bars
+          below threshold would mislead). */}
+      {ratingCount >= 10 && agg && (
+        <div className="mid-dist">
+          <div className="mid-dist-header">
+            <span className="mid-dist-title">How others rated it</span>
+            <span className="mid-dist-count">{agg.count} ratings</span>
+          </div>
+          {[5, 4, 3, 2, 1].map((star) => {
+            const pct = agg.count > 0 ? Math.round((agg.dist[star - 1] / agg.count) * 100) : 0;
+            return (
+              <div key={star} className="mid-dist-row">
+                <span className="mid-dist-stars">{"★".repeat(star)}</span>
+                <span className="mid-dist-bar"><span className="mid-dist-bar-fill" style={{ width: `${pct}%` }} /></span>
+                <span className="mid-dist-pct">{pct}%</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <style>{`
         /* This whole cluster is mobile-only; the component already returns
            null on desktop, but the guard keeps it invisible during the brief
@@ -313,6 +334,16 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
             background: rgba(46,196,182,0.08); color: #2EC4B6;
             border: 1px solid rgba(46,196,182,0.2);
           }
+
+          .mid-dist { padding: 20px 16px 0; }
+          .mid-dist-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+          .mid-dist-title { font-family: var(--font-serif); font-size: 14px; font-weight: 500; color: #e8e6e1; }
+          .mid-dist-count { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(232,230,225,0.45); }
+          .mid-dist-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+          .mid-dist-stars { width: 60px; font-size: 10px; color: rgba(232,230,225,0.55); white-space: nowrap; }
+          .mid-dist-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; position: relative; }
+          .mid-dist-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(46,196,182,0.6); border-radius: 3px; }
+          .mid-dist-pct { width: 32px; text-align: right; font-size: 10px; color: rgba(232,230,225,0.55); }
         }
       `}</style>
     </div>
