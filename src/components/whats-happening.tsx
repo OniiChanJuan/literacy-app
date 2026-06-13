@@ -165,11 +165,8 @@ function ActivityFeed({ entries }: { entries: ActivityEntry[] | null }) {
             padding: 8px 0 !important;
             gap: 10px !important;
           }
-          .wh-activity-cover {
-            width: 24px !important;
-            height: 24px !important;
-            border-radius: 50% !important;
-          }
+          .wh-activity-cover { display: none !important; }
+          .wh-activity-avatar { display: block !important; }
           .wh-activity-typegenre { display: none !important; }
           .wh-activity-snippet { display: none !important; }
         }
@@ -196,6 +193,18 @@ function ActivitySkeleton() {
   );
 }
 
+// Deterministic 2-color gradient from a user id — gives each person a stable,
+// distinct avatar color when they have no uploaded image (mockup look).
+const AVATAR_PALETTE = ["#E84855", "#C45BAA", "#3185FC", "#2EC4B6", "#9B5DE5", "#F9A620", "#00BBF9", "#FF6B6B"];
+function userGradient(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  const a = AVATAR_PALETTE[h % AVATAR_PALETTE.length];
+  let b = AVATAR_PALETTE[(h >> 3) % AVATAR_PALETTE.length];
+  if (b === a) b = AVATAR_PALETTE[(h >> 5) % AVATAR_PALETTE.length];
+  return `linear-gradient(135deg, ${a}, ${b})`;
+}
+
 function ActivityRow({ entry }: { entry: ActivityEntry }) {
   const t = (TYPES as Record<string, { label: string; icon: string; color: string }>)[entry.item.type] || { color: "#888", label: entry.item.type, icon: "?" };
   const href = getItemUrl(entry.item as any);
@@ -214,7 +223,37 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
         alignItems: "center",
       }}
     >
-      {/* Cover thumbnail (shrinks to a 24px round avatar on mobile) */}
+      {/* Mobile-only: user gradient avatar (this section is about WHO, not
+          what) — uses the user's image if they have one, else a per-user
+          gradient. Hidden on desktop, where the item cover shows instead. */}
+      <Link
+        href={`/user/${entry.user.id}`}
+        className="wh-activity-avatar"
+        aria-label={entry.user.name}
+        style={{
+          display: "none",
+          width: 24,
+          height: 24,
+          flexShrink: 0,
+          borderRadius: "50%",
+          overflow: "hidden",
+          background: userGradient(entry.user.id),
+        }}
+      >
+        {entry.user.avatar && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={entry.user.avatar}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+      </Link>
+
+      {/* Cover thumbnail — desktop only (hidden on mobile; the avatar above
+          replaces it there) */}
       <Link
         href={href}
         className="wh-activity-cover"
