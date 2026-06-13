@@ -373,6 +373,20 @@ export default function LibraryPage() {
             grid-template-columns: 1fr 1fr;
             gap: 10px !important;
           }
+          /* Overflow containment. The shared Card is wrapped in HoverPreview,
+             whose wrapper is width:fit-content. With --card-w:100% in this
+             2-col grid, some engines (notably iOS Safari) size that wrapper to
+             the cover image's intrinsic width instead of the grid cell, so a
+             card with a large/wide-natural-width cover blows its column past
+             the viewport (Chromium masks this — it resolves the inner width:100%
+             against the definite track). Force the whole card chain to fill the
+             cell, hard-cap every cover image regardless of source aspect ratio,
+             and clip as a backstop. */
+          .library-grid > div { min-width: 0; }
+          .library-grid > div > div { width: 100% !important; }
+          .library-grid a { max-width: 100%; }
+          .library-grid img { max-width: 100%; }
+          .library-root { overflow-x: clip; }
           /* Following becomes a horizontal scroller of non-shrinking cards. */
           .lib-follow-row {
             flex-wrap: nowrap !important;
