@@ -29,6 +29,7 @@ import { getFranchiseForItem } from "@/lib/franchises";
 import { useRatings } from "@/lib/ratings-context";
 import { useLibrary, type LibraryStatus } from "@/lib/library-context";
 import ShareButton from "./share-button";
+import { ExpandableText } from "./expandable-text";
 
 const STATUS_LABEL: Record<LibraryStatus, string> = {
   completed: "Completed", in_progress: "In progress", want_to: "Want to", dropped: "Dropped",
@@ -265,6 +266,33 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
         </button>
       )}
 
+      {/* About — relocated here because the desktop hero (which holds the
+          description) is CSS-hidden on mobile. */}
+      {item.desc && item.desc.trim().length > 0 && (
+        <div className="mid-section">
+          <div className="mid-section-header"><span className="mid-section-title">About</span></div>
+          <ExpandableText text={item.desc} compact toggleColor={t.color} />
+        </div>
+      )}
+
+      {/* People — cast/creators (no desktop equivalent; built from item.people) */}
+      {Array.isArray(item.people) && item.people.length > 0 && (
+        <div className="mid-section">
+          <div className="mid-section-header"><span className="mid-section-title">People</span></div>
+          <div className="mid-people">
+            {item.people.slice(0, 12).map((p, i) => (
+              <div key={`${p.name}-${i}`} className="mid-person">
+                <div className="mid-person-avatar" style={{ background: hexToRgba(t.color, 0.15), color: t.color }}>
+                  {(p.name || "?").split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
+                </div>
+                <div className="mid-person-name">{p.name}</div>
+                {p.role && <div className="mid-person-role">{p.role}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <style>{`
         /* This whole cluster is mobile-only; the component already returns
            null on desktop, but the guard keeps it invisible during the brief
@@ -403,6 +431,20 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
             font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
             color: #2EC4B6; margin-top: 6px; font-weight: 500;
           }
+
+          .mid-section { padding: 24px 16px 0; }
+          .mid-section-header { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+          .mid-section-title { font-family: var(--font-serif); font-size: 17px; font-weight: 500; color: #e8e6e1; }
+          .mid-people { display: flex; gap: 12px; overflow-x: auto; margin: 0 -16px; padding: 0 16px 8px; scrollbar-width: none; }
+          .mid-people::-webkit-scrollbar { display: none; }
+          .mid-person { flex-shrink: 0; width: 72px; text-align: center; }
+          .mid-person-avatar {
+            width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-serif); font-size: 18px; font-weight: 500;
+          }
+          .mid-person-name { font-size: 11px; color: #e8e6e1; font-weight: 500; line-height: 1.2; }
+          .mid-person-role { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 1px; }
         }
       `}</style>
     </div>
