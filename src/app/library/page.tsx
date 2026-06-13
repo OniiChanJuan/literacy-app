@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ITEMS, TYPES, TYPE_ORDER, type MediaType, type Item } from "@/lib/data";
 import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";
+import { useRatings } from "@/lib/ratings-context";
 import Card from "@/components/card";
 import type { FollowedFranchise } from "@/app/api/user/following/route";
 
@@ -152,6 +153,16 @@ const STATUSES: { key: LibraryStatus; label: string; icon: string; color: string
   { key: "dropped",     label: "Dropped",      icon: "✕", color: "#E84855" },
 ];
 
+// Sort cycle — only options the data can honestly back (Phase 4a):
+//   recent → entry.createdAt desc · rating → your score desc · alpha → title
+// "Recent" is the default. There is no other reliable activity timestamp.
+type SortKey = "recent" | "rating" | "alpha";
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: "recent", label: "Recent" },
+  { key: "rating", label: "Rating" },
+  { key: "alpha",  label: "A–Z" },
+];
+
 // Build a lookup from static ITEMS for fallback
 const STATIC_ITEMS_MAP = new Map<number, Item>();
 for (const item of ITEMS) {
@@ -160,9 +171,13 @@ for (const item of ITEMS) {
 
 export default function LibraryPage() {
   const { entries, items: dbItems } = useLibrary();
+  const { ratings } = useRatings();
   const router = useRouter();
   const [globalFilter, setGlobalFilter] = useState<MediaType | "all">("all");
   const [statusFilter, setStatusFilter] = useState<LibraryStatus | "all">("all");
+  const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [sort, setSort] = useState<SortKey>("recent");
 
   // Merge static items with DB items — DB items take priority
   const resolvedItems = useMemo(() => {
@@ -198,6 +213,26 @@ export default function LibraryPage() {
   }, [entries, resolvedItems]);
 
   const totalTracked = Object.keys(entries).length;
+
+  // Type filter + library-only title search + sort, applied per section.
+  const q = query.trim().toLowerCase();
+  const refine = (items: Item[]): Item[] => {
+    let r = globalFilter === "all" ? items : items.filter((i) => i.type === globalFilter);
+    if (q) r = r.filter((i) => i.title.toLowerCase().includes(q));
+    const sorted = [...r];
+    if (sort === "alpha") {
+      sorted.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sort === "rating") {
+      // Your score, high → low; unrated sink to the bottom, then alpha tiebreak
+      sorted.sort((a, b) => (ratings[b.id] || 0) - (ratings[a.id] || 0) || a.title.localeCompare(b.title));
+    } else {
+      // recent — newest tracked first. Missing createdAt (optimistic insert) is
+      // the most recent action, so it sorts to the top.
+      const ts = (id: number) => { const c = entries[id]?.createdAt; return c ? Date.parse(c) : Infinity; };
+      sorted.sort((a, b) => ts(b.id) - ts(a.id));
+    }
+    return sorted;
+  };
 
   if (totalTracked === 0) {
     return (
@@ -285,6 +320,28 @@ export default function LibraryPage() {
           }
           .lib-status-pill-num { order: 3; flex-basis: 100%; font-size: 16px; margin-top: 2px; }
         }
+
+        /* Tools (search + sort): teal-tinted, square 4px corners — visually
+           grouped as "tools", distinct from the round type-filter pills. */
+        .lib-tool-btn {
+          display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+          font-family: inherit; cursor: pointer; flex-shrink: 0;
+          background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.18);
+          border-radius: 4px; padding: 6px 10px; font-size: 13px; line-height: 1;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .lib-sort-btn { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; }
+        .lib-type-pill {
+          display: inline-flex; align-items: center; gap: 4px;
+          border-radius: 12px; padding: 5px 12px; font-size: 11px; font-weight: 600;
+          font-family: inherit; cursor: pointer; flex-shrink: 0;
+          -webkit-tap-highlight-color: transparent;
+        }
+        @media (max-width: 640px) {
+          /* Icon-only type pills on mobile per the mockup; "All" keeps its text. */
+          .lib-type-pill { padding: 6px 9px; border-radius: 14px; }
+          .lib-type-pill-label { display: none; }
+        }
       `}</style>
       {/* Header row: status pills + Import shortcut */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
@@ -361,56 +418,104 @@ export default function LibraryPage() {
       </button>
       </div>
 
-      {/* Global media type filter — applies to ALL sections */}
+      {/* Tools + type filter row — search and sort always available; type
+          pills appear when the library spans more than one media type. */}
       {(() => {
         const allTypes = new Set<MediaType>();
         for (const items of Object.values(grouped)) {
           for (const item of items) allTypes.add(item.type);
         }
-        if (allTypes.size <= 1) return null;
+        const multiType = allTypes.size > 1;
+        const sortLabel = SORTS.find((o) => o.key === sort)!.label;
+        const cycleSort = () => {
+          const i = SORTS.findIndex((o) => o.key === sort);
+          setSort(SORTS[(i + 1) % SORTS.length].key);
+        };
         return (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 28 }}>
-            <button
-              onClick={() => setGlobalFilter("all")}
-              style={{
-                background: globalFilter === "all" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
-                color: globalFilter === "all" ? "#fff" : "rgba(255,255,255,0.5)",
-                border: globalFilter === "all" ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
-                borderRadius: 12,
-                padding: "5px 12px",
-                fontSize: 11,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              All
-            </button>
-            {TYPE_ORDER.filter((t) => allTypes.has(t)).map((t) => {
-              const typeInfo = TYPES[t];
-              const active = globalFilter === t;
-              return (
-                <button
-                  key={t}
-                  onClick={() => setGlobalFilter(active ? "all" : t)}
+          <div className="lib-tools-row" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginBottom: 28 }}>
+            {/* Search — library-only title filter */}
+            {searchOpen ? (
+              <div className="lib-search-open" style={{ display: "flex", alignItems: "center", gap: 6, flex: "1 1 160px", minWidth: 0 }}>
+                <input
+                  autoFocus
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Escape") { setQuery(""); setSearchOpen(false); } }}
+                  placeholder="Search your library…"
                   style={{
-                    background: active ? typeInfo.color + "25" : "rgba(255,255,255,0.05)",
-                    color: active ? typeInfo.color : "rgba(255,255,255,0.5)",
-                    border: active ? `1px solid ${typeInfo.color}55` : "1px solid transparent",
-                    borderRadius: 12,
-                    padding: "5px 12px",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4,
+                    flex: 1, minWidth: 0,
+                    background: "rgba(46,196,182,0.04)", border: "1px solid rgba(46,196,182,0.3)",
+                    borderRadius: 6, padding: "7px 10px", fontSize: 13, color: "#fff", outline: "none",
+                  }}
+                />
+                <button
+                  type="button"
+                  aria-label="Close search"
+                  onClick={() => { setQuery(""); setSearchOpen(false); }}
+                  className="lib-tool-btn"
+                  style={{ color: "rgba(46,196,182,0.85)" }}
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                aria-label="Search your library"
+                onClick={() => setSearchOpen(true)}
+                className="lib-tool-btn"
+                style={{ color: "rgba(46,196,182,0.85)" }}
+              >
+                🔍{query ? <span style={{ marginLeft: 5, fontSize: 11 }}>“{query}”</span> : null}
+              </button>
+            )}
+
+            {/* Type filter pills */}
+            {multiType && (
+              <>
+                <button
+                  onClick={() => setGlobalFilter("all")}
+                  className="lib-type-pill"
+                  style={{
+                    background: globalFilter === "all" ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
+                    color: globalFilter === "all" ? "#fff" : "rgba(255,255,255,0.5)",
+                    border: globalFilter === "all" ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
                   }}
                 >
-                  <span style={{ fontSize: 11 }}>{typeInfo.icon}</span>
-                  {typeInfo.label}
+                  All
                 </button>
-              );
-            })}
+                {TYPE_ORDER.filter((t) => allTypes.has(t)).map((t) => {
+                  const typeInfo = TYPES[t];
+                  const active = globalFilter === t;
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => setGlobalFilter(active ? "all" : t)}
+                      title={typeInfo.label}
+                      className="lib-type-pill"
+                      style={{
+                        background: active ? typeInfo.color + "25" : "rgba(255,255,255,0.05)",
+                        color: active ? typeInfo.color : "rgba(255,255,255,0.5)",
+                        border: active ? `1px solid ${typeInfo.color}55` : "1px solid transparent",
+                      }}
+                    >
+                      <span style={{ fontSize: 11 }}>{typeInfo.icon}</span>
+                      <span className="lib-type-pill-label">{typeInfo.label}</span>
+                    </button>
+                  );
+                })}
+              </>
+            )}
+
+            {/* Sort — cycles Recent → Rating → A–Z */}
+            <button
+              type="button"
+              onClick={cycleSort}
+              className="lib-tool-btn lib-sort-btn"
+              style={{ marginLeft: "auto", color: "rgba(46,196,182,0.85)" }}
+            >
+              ↕ {sortLabel.toUpperCase()}
+            </button>
           </div>
         );
       })()}
@@ -426,10 +531,10 @@ export default function LibraryPage() {
         const items = grouped[s.key];
         if (items.length === 0) return null;
 
-        const filtered = globalFilter === "all" ? items : items.filter((i) => i.type === globalFilter);
+        const filtered = refine(items);
 
-        // Hide entire section if global filter results in 0 items
-        if (filtered.length === 0 && globalFilter !== "all") return null;
+        // Hide the whole section when the type filter or search excludes everything
+        if (filtered.length === 0) return null;
 
         return (
           <div key={s.key} style={{ marginBottom: 40 }}>
@@ -472,23 +577,23 @@ export default function LibraryPage() {
                 );
               })}
             </div>
-
-            {filtered.length === 0 && (
-              <div style={{
-                padding: "24px",
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.05)",
-                borderRadius: 14,
-                fontSize: 12,
-                color: "var(--text-faint)",
-                textAlign: "center",
-              }}>
-                No {globalFilter !== "all" ? TYPES[globalFilter].label.toLowerCase() : "items"} in this section
-              </div>
-            )}
           </div>
         );
       })}
+
+      {/* When search/type filter excludes every section, surface one honest
+          empty state instead of a silently blank page. */}
+      {STATUSES.every((s) => {
+        if (statusFilter !== "all" && s.key !== statusFilter) return true;
+        return refine(grouped[s.key]).length === 0;
+      }) && (
+        <div style={{
+          padding: "40px 24px", textAlign: "center",
+          fontSize: 13, color: "var(--text-faint)",
+        }}>
+          {q ? <>No library items match “{query}”.</> : <>Nothing here under this filter.</>}
+        </div>
+      )}
     </div>
   );
 }
