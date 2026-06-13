@@ -326,6 +326,7 @@ model LibraryEntry {
   progressTotal   Int       @default(0) @map("progress_total")
   startedAt       DateTime? @map("started_at")
   completedAt     DateTime? @map("completed_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)

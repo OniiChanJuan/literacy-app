@@ -15,7 +15,11 @@ export async function GET() {
   try {
     const rows = await prisma.libraryEntry.findMany({
       where: { userId: claims.sub },
-      include: {
+      select: {
+        itemId: true,
+        status: true,
+        progressCurrent: true,
+        createdAt: true,
         item: {
           select: {
             id: true,
@@ -33,10 +37,10 @@ export async function GET() {
       },
     });
 
-    const entries: Record<number, { status: string; progress: number }> = {};
+    const entries: Record<number, { status: string; progress: number; createdAt: string }> = {};
     const items: Record<number, any> = {};
     for (const r of rows) {
-      entries[r.itemId] = { status: r.status, progress: r.progressCurrent };
+      entries[r.itemId] = { status: r.status, progress: r.progressCurrent, createdAt: r.createdAt.toISOString() };
       if (r.item) {
         items[r.itemId] = {
           id: r.item.id,

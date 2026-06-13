@@ -9,6 +9,9 @@ export type LibraryStatus = "completed" | "in_progress" | "want_to" | "dropped";
 export interface LibraryEntry {
   status: LibraryStatus;
   progress: number;
+  /** ISO timestamp the entry was first tracked. Undefined for optimistic
+   *  client-side inserts until the next /api/library load reconciles them. */
+  createdAt?: string;
 }
 
 /** Progress unit label per media type */
@@ -51,8 +54,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
         if (data.entries) {
           const typed: Record<number, LibraryEntry> = {};
           for (const [id, entry] of Object.entries(data.entries)) {
-            const e = entry as { status: string; progress: number };
-            typed[Number(id)] = { status: e.status as LibraryStatus, progress: e.progress };
+            const e = entry as { status: string; progress: number; createdAt?: string };
+            typed[Number(id)] = { status: e.status as LibraryStatus, progress: e.progress, createdAt: e.createdAt };
           }
           setEntries(typed);
         }
@@ -74,7 +77,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
         return next;
       }
       const existing = prev[id];
-      return { ...prev, [id]: { progress: existing?.progress ?? 0, status } };
+      return { ...prev, [id]: { progress: existing?.progress ?? 0, status, createdAt: existing?.createdAt } };
     });
 
     // Persist to database. On failure, toast + revert.
