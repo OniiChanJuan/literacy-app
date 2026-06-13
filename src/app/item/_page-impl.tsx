@@ -203,7 +203,7 @@ export function ItemPageRender({
     });
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div className="item-detail-root" style={{ overflowX: "hidden" }}>
       {/* Mobile (<=640px) top cluster — header + hero + (later commits) score,
           franchise strip, contributing, distribution, your-activity. Mounts
           only on mobile; the desktop back-row + hero below are CSS-hidden
@@ -471,7 +471,7 @@ export function ItemPageRender({
 
       {/* ZONE 3 — CONTENT */}
       <div className="content-width">
-        <div style={{ marginTop: 12, marginBottom: 0 }}>
+        <div className="item-detail-franchise-universe" style={{ marginTop: 12, marginBottom: 0 }}>
           <ErrorBoundary>
             <FranchiseUniverse itemId={typeof item.id === "number" ? item.id : 0} />
           </ErrorBoundary>
@@ -527,6 +527,12 @@ export function ItemPageRender({
            by the MobileItemTop cluster. */
         @media (max-width: 640px) {
           .item-detail-deskrow, .item-detail-deskhero { display: none !important; }
+          /* Recommendation rows (cross-shelf / related) shrink to mockup-size
+             cards. Scoped to the detail page so other routes keep 150px. */
+          .item-detail-root { --card-w: 100px; --card-cover-h: 150px; }
+          /* Franchise universe is redundant with the franchise strip on mobile
+             and isn't in the mockup. */
+          .item-detail-franchise-universe { display: none !important; }
         }
       `}</style>
     </div>
