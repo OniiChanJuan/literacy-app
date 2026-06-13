@@ -22,6 +22,7 @@ import { getTopTags, getTagDisplayName } from "@/lib/tags";
 import TagSuggest from "@/components/tag-suggest";
 import ShareButton from "@/components/share-button";
 import MobileItemTop from "@/components/mobile-item-detail";
+import MobileItemActionBar from "@/components/mobile-item-action-bar";
 import { isUpcoming } from "@/lib/data";
 
 // ── Re-export dbItemToItem so callers don't need to duplicate it ─────────────
@@ -502,6 +503,10 @@ export function ItemPageRender({
         {!upcoming && !isExternal && <ErrorBoundary><Recommendations item={item} /></ErrorBoundary>}
       </div>
 
+      {/* Mobile smart-hide action bar (rate + status), stacks above BottomNav.
+          Self-gates to mobile; only for real (non-upcoming) items. */}
+      {!upcoming && <MobileItemActionBar item={item} />}
+
       <style>{`
         @media (max-width: 1024px) and (min-width: 769px) {
           .hero-layout { flex-wrap: wrap !important; }
@@ -528,8 +533,10 @@ export function ItemPageRender({
         @media (max-width: 640px) {
           .item-detail-deskrow, .item-detail-deskhero { display: none !important; }
           /* Recommendation rows (cross-shelf / related) shrink to mockup-size
-             cards. Scoped to the detail page so other routes keep 150px. */
-          .item-detail-root { --card-w: 100px; --card-cover-h: 150px; }
+             cards. Scoped to the detail page so other routes keep 150px.
+             Extra bottom padding clears the fixed action bar (~100px) which
+             sits above the BottomNav (body already pads for the nav itself). */
+          .item-detail-root { --card-w: 100px; --card-cover-h: 150px; padding-bottom: 110px; }
           /* Franchise universe is redundant with the franchise strip on mobile
              and isn't in the mockup. */
           .item-detail-franchise-universe { display: none !important; }
