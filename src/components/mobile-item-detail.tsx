@@ -99,7 +99,13 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
   // session). Number derives from the best external score (same as cards),
   // falling back to the community average. Treatment is teal when the blend
   // is robust (>=10 community ratings AND >=1 external score), else neutral. */
-  const best = getBestExtScore(item.ext, item.voteCount ?? 0);
+  // Detail page shows the external score(s) transparently — bypass the
+  // voteCount display gate (that gate exists to stop low-sample community
+  // scores inflating cards/ranking; on the detail page we surface what the
+  // sources actually say, e.g. a sparse book's lone Goodreads score). The
+  // teal-vs-neutral treatment below still requires >=10 community ratings.
+  const EXT_SHOW_ALL = Number.MAX_SAFE_INTEGER;
+  const best = getBestExtScore(item.ext, EXT_SHOW_ALL);
   const extNorm10 = best && best.kind === "numeric" ? (best.value / best.max) * 10 : null;
   const hasExternal = extNorm10 != null;
   const ratingCount = agg?.count ?? 0;
@@ -120,7 +126,7 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
   // item.ext, plus Community (>=10 ratings) and Recommend% (>=5 recommend
   // tags). Cap 3 visible + a "+N more" expander. */
   type Pill = { source: string; value: string };
-  const extPills: Pill[] = formatExtScores(item.ext, item.voteCount ?? 0)
+  const extPills: Pill[] = formatExtScores(item.ext, EXT_SHOW_ALL)
     .map((s) => ({ source: s.label, value: s.valueStr + (s.suffix || "") }));
   const contribPills: Pill[] = [...extPills];
   if (ratingCount >= 10) contribPills.push({ source: "Community", value: agg!.avg });
