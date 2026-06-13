@@ -128,9 +128,13 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
 
   // Ultrawide (≥1920): up to 6 visible. Laptop-standard (1024-1919): 3.
   // Tablet (640-1023): 2. Mobile (<640): 2.
+  // Source-row count for the mobile section meta ("— N sources"). Excludes
+  // the serendipity slot, which is community-signal, not a "source".
+  const sourceCount = connections.filter((c) => !c.isSerendipitySlot).length;
+
   return (
     <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
-      <Header title={title} subtitle={subtitle} />
+      <Header title={title} subtitle={subtitle} sourceCount={sourceCount} />
       <div
         className="cross-shelf-grid"
         style={{
@@ -160,14 +164,16 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
             display: none !important;
           }
         }
-        /* Mobile */
+        /* Mobile (mockup): single column of borderless source rows, no cap —
+           every source row + the serendipity slot stack and the page scrolls.
+           Gap collapses since the rows carry their own spacing. */
         @media (max-width: 640px) {
           .cross-shelf-grid {
             grid-template-columns: 1fr !important;
+            gap: 0 !important;
           }
-          /* Mobile shows 2 connections, not more */
           .cross-shelf-grid > *:nth-child(n+3) {
-            display: none !important;
+            display: block !important;
           }
         }
       `}</style>
@@ -175,21 +181,43 @@ export default function CrossYourShelf({ refreshKey }: { refreshKey?: number }) 
   );
 }
 
-function Header({ title, subtitle }: { title: string; subtitle: string }) {
+function Header({ title, subtitle, sourceCount }: { title: string; subtitle: string; sourceCount?: number }) {
   return (
-    <div style={{ marginBottom: 14 }}>
-      <div style={{
-        fontFamily: "var(--font-serif)",
-        fontSize: 20,
-        fontWeight: 500,
-        color: "#fff",
-        lineHeight: 1.1,
-      }}>
-        {title}
+    <div className="cross-shelf-header" style={{ marginBottom: 14 }}>
+      {/* Desktop: title over subtitle. Mobile (mockup): italic title with an
+          inline "— N sources" meta, subtitle hidden. */}
+      <div className="cross-shelf-header-inline" style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+        <span className="cross-shelf-title" style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 20,
+          fontWeight: 500,
+          color: "#fff",
+          lineHeight: 1.1,
+        }}>
+          {title}
+        </span>
+        {sourceCount ? (
+          <span className="cross-shelf-meta" style={{
+            display: "none",
+            fontSize: 10,
+            letterSpacing: 1,
+            textTransform: "uppercase",
+            color: "rgba(232,230,225,0.32)",
+          }}>
+            — {sourceCount} {sourceCount === 1 ? "source" : "sources"}
+          </span>
+        ) : null}
       </div>
-      <div style={{ fontSize: 12, color: "rgba(232,230,225,0.25)", marginTop: 4 }}>
+      <div className="cross-shelf-subtitle" style={{ fontSize: 12, color: "rgba(232,230,225,0.25)", marginTop: 4 }}>
         {subtitle}
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .cross-shelf-title { font-style: italic; }
+          .cross-shelf-meta { display: inline !important; }
+          .cross-shelf-subtitle { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -274,6 +302,7 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
 
   return (
     <div
+      className={`cross-shelf-card${connection.isSerendipitySlot ? " cross-shelf-card-serendipity" : ""}`}
       style={{
         position: "relative",
         background: "rgba(255,255,255,0.02)",
@@ -286,6 +315,36 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(46,196,182,0.15)"; setHovered(true); }}
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; setHovered(false); }}
     >
+      {/* Mobile (mockup): borderless source row — framing line, then the
+          "why", then a horizontal-scrolling strip of recommended covers
+          (source named in the framing only). Serendipity slot keeps the
+          gold left-border treatment. Desktop is unchanged.
+          NOTE: rec covers show poster+title only — Connection.recommendedItems
+          carries no score, so the mockup's per-card CrossShelf score line is
+          omitted pending the CrossShelf Score work (same as the wordmark). */}
+      <style>{`
+        @media (max-width: 640px) {
+          .cross-shelf-card {
+            display: flex !important;
+            flex-direction: column !important;
+            background: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 0 0 18px 0 !important;
+          }
+          .cross-shelf-card-serendipity {
+            margin-top: 8px;
+            padding: 12px 10px !important;
+            background: rgba(255,255,255,0.025) !important;
+            border-left: 2px solid rgba(218,165,32,0.5) !important;
+            border-radius: 0 4px 4px 0 !important;
+          }
+          .cross-shelf-framing { order: 0; }
+          .cross-shelf-framing-serendipity { color: rgba(218,165,32,0.85) !important; }
+          .cross-shelf-reason { order: 1; margin-top: 0 !important; margin-bottom: 10px !important; }
+          .cross-shelf-chain { order: 2; }
+        }
+      `}</style>
       {hovered && (
         <button
           onClick={submitDismiss}
@@ -330,7 +389,7 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
             4. Discovery mode: random editorial, signed-out or new user.
           Trending + discovery share the "Editor's pick" treatment. */}
       {connection.isSerendipitySlot ? (
-        <div style={{
+        <div className="cross-shelf-framing cross-shelf-framing-serendipity" style={{
           fontSize: 10,
           color: "rgba(232,230,225,0.45)",
           marginBottom: 12,
@@ -342,7 +401,7 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
           Also loved across CrossShelf
         </div>
       ) : mode === "personalized" ? (
-        <div style={{ fontSize: 12, color: "rgba(232,230,225,0.45)", marginBottom: 12, lineHeight: 1.3 }}>
+        <div className="cross-shelf-framing" style={{ fontSize: 12, color: "rgba(232,230,225,0.45)", marginBottom: 12, lineHeight: 1.3 }}>
           {"Because you rated "}
           <Link
             href={getItemUrl(connection.sourceItem as any)}
@@ -353,7 +412,7 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
           {" highly"}
         </div>
       ) : (
-        <div style={{
+        <div className="cross-shelf-framing" style={{
           fontSize: 10,
           color: "rgba(232,230,225,0.35)",
           marginBottom: 12,
@@ -399,6 +458,7 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
             )}
             <ItemThumbnail
               item={it}
+              isSource={idx === 0}
               onClickTrack={
                 idx > 0
                   ? () => {
@@ -418,34 +478,36 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         ))}
       </div>
       <style>{`
+        /* Mobile (mockup): the chain becomes a horizontal-scrolling strip of
+           recommended posters. The source isn't shown as a poster (it's named
+           in the framing line), and the connector arrows are dropped. Covers
+           grow to the mockup's ~100x150 poster size. */
         @media (max-width: 640px) {
           .cross-shelf-chain {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 10px !important;
-          }
-          .cross-shelf-arrow {
-            transform: rotate(90deg);
-            line-height: 1 !important;
-            /* Reset desktop's vertical arrow offset — irrelevant in column layout. */
-            margin-top: 0 !important;
-            margin-left: 26px !important;
-          }
-          .cross-shelf-thumb {
             flex-direction: row !important;
-            align-items: center !important;
-            gap: 10px !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
           }
-          .cross-shelf-thumb > div:last-child {
-            text-align: left !important;
-            max-width: none !important;
-            width: auto !important;
+          .cross-shelf-chain::-webkit-scrollbar { display: none; }
+          .cross-shelf-arrow { display: none !important; }
+          .cross-shelf-thumb-source { display: none !important; }
+          .cross-shelf-cover {
+            width: 100px !important;
+            height: 150px !important;
+          }
+          .cross-shelf-thumb-title {
+            max-width: 100px !important;
+            width: 100px !important;
+            font-size: 11px !important;
           }
         }
       `}</style>
 
-      {/* Reason */}
-      <div style={{
+      {/* Reason ("why") — moves above the rec strip on mobile via order */}
+      <div className="cross-shelf-reason" style={{
         fontSize: 11,
         color: "rgba(232,230,225,0.35)",
         fontStyle: "italic",
@@ -486,14 +548,14 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
 
 // ── Item thumbnail ─────────────────────────────────────────────────────────
 
-function ItemThumbnail({ item, onClickTrack }: { item: ItemThumb; onClickTrack?: () => void }) {
+function ItemThumbnail({ item, onClickTrack, isSource }: { item: ItemThumb; onClickTrack?: () => void; isSource?: boolean }) {
   const t = (TYPES as Record<string, { label: string; icon: string; color: string }>)[item.type] || { color: "#888", icon: "?", label: item.type };
   const href = getItemUrl(item as any);
   return (
     <Link
       href={href}
       onClick={onClickTrack}
-      className="cross-shelf-thumb"
+      className={`cross-shelf-thumb${isSource ? " cross-shelf-thumb-source" : ""}`}
       style={{
         // Flex column wrapping cover + title. Width is set via the title's
         // max-width so titles can extend slightly past the cover edge for
@@ -510,6 +572,7 @@ function ItemThumbnail({ item, onClickTrack }: { item: ItemThumb; onClickTrack?:
     >
       {/* Cover */}
       <div
+        className="cross-shelf-cover"
         style={{
           position: "relative",
           width: 52,
@@ -558,6 +621,7 @@ function ItemThumbnail({ item, onClickTrack }: { item: ItemThumb; onClickTrack?:
       {/* Title — single line ellipsis. max-width slightly wider than the
           cover for legibility ("Crouching Tig…" instead of "Crouchin…"). */}
       <div
+        className="cross-shelf-thumb-title"
         style={{
           fontSize: 10,
           color: "rgba(232,230,225,0.55)",
