@@ -160,26 +160,35 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
 
           {tasteTags.length > 0 && (
             <div className="taste-identity-tags-row" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10, alignItems: "center" }}>
-              {tasteTags.map((tag, i) => (
-                <span
-                  key={tag}
-                  // Mobile shows only the first two pills + a "+N" overflow pill
-                  className={`taste-identity-tag${i >= 2 ? " taste-identity-tag-overflow" : ""}`}
-                  style={{
-                    fontSize: 11,
-                    padding: "3px 10px",
-                    borderRadius: 16,
-                    border: "1px solid rgba(232,72,85,0.18)",
-                    color: "rgba(232,72,85,0.75)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
+              {/* Pills wrapper: transparent (display:contents) on desktop so the
+                  pills wrap within the row as before; on mobile it becomes the
+                  flexible, clipping zone (flex:1, min-width:0, overflow hidden)
+                  so "+N" and "View profile →" — kept OUTSIDE it as
+                  flex-shrink:0 siblings — are always visible regardless of how
+                  long the vibe tags are. */}
+              <div className="taste-identity-pills" style={{ display: "contents" }}>
+                {tasteTags.map((tag, i) => (
+                  <span
+                    key={tag}
+                    // Mobile shows only the first two pills (+ a "+N" pill below)
+                    className={`taste-identity-tag${i >= 2 ? " taste-identity-tag-overflow" : ""}`}
+                    style={{
+                      fontSize: 11,
+                      padding: "3px 10px",
+                      borderRadius: 16,
+                      border: "1px solid rgba(232,72,85,0.18)",
+                      color: "rgba(232,72,85,0.75)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
               {tasteTags.length > 2 && (
                 <span className="taste-identity-tag taste-identity-tag-more" style={{
                   display: "none",
+                  flexShrink: 0,
                   fontSize: 11,
                   padding: "3px 10px",
                   borderRadius: 16,
@@ -197,6 +206,7 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
                 color: "#2EC4B6",
                 textDecoration: "none",
                 flexShrink: 0,
+                whiteSpace: "nowrap",
               }}>
                 View profile →
               </Link>
@@ -363,6 +373,15 @@ export default function TasteIdentityCard({ stats, tasteTags, authed }: TasteIde
           .taste-identity-tags-row {
             margin-top: 0 !important;
             flex-wrap: nowrap !important;
+            /* Row itself doesn't clip — the pills wrapper does, so "+N" and
+               "View profile →" (flex-shrink:0 siblings) always stay visible. */
+            overflow: visible !important;
+          }
+          .taste-identity-pills {
+            display: flex !important;
+            flex: 1 1 auto;
+            min-width: 0;
+            gap: 6px;
             overflow: hidden;
           }
           .taste-identity-tag {
