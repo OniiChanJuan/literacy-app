@@ -9,6 +9,7 @@ import { getItemUrl } from "@/lib/slugs";
 import { isAnime } from "@/lib/anime";
 import { getBestExtScore } from "@/lib/format-ext-score";
 import { framePickedForYou } from "@/lib/section-framing";
+import { useLibrary } from "@/lib/library-context";
 
 // Mirrors the FilterType defined in src/app/page.tsx
 type FilterType = MediaType | "anime";
@@ -40,6 +41,8 @@ export default function PickedForYouGrid({
   const [items, setItems] = useState<Item[] | null>(null);
   const [meta, setMeta] = useState<ResultMeta | null>(null);
   const [failed, setFailed] = useState(false);
+  // Mobile-only: compact rows collapse to MOBILE_INITIAL, "Show N more" expands.
+  const [mobileExpanded, setMobileExpanded] = useState(false);
 
   // Refetch on filter / refresh change. Filter changes are debounced 250ms
   // so rapid pill-clicking ("try every type quickly") fires one request
@@ -126,7 +129,11 @@ export default function PickedForYouGrid({
 
   const featured = displayed[0];
   const regulars = displayed.slice(1, 7);
-  const mobileItems = displayed.slice(0, 5); // 1 banner + 4 row cards
+  // Mobile (mockup): compact rows only, no banner. Collapsed to the first 3,
+  // with a "Show N more →" affordance that expands the rest in place.
+  const MOBILE_INITIAL = 3;
+  const mobileVisible = mobileExpanded ? displayed : displayed.slice(0, MOBILE_INITIAL);
+  const mobileHidden = displayed.length - mobileVisible.length;
 
   return (
     <section style={{ marginBottom: "clamp(24px, 3vw, 40px)" }}>
@@ -163,16 +170,22 @@ export default function PickedForYouGrid({
         </div>
       </div>
 
-      {/* Mobile stack — 1 full-width banner + 4 row-cards. Hidden ≥640px. */}
+      {/* Mobile stack — compact full-width rows only (no banner), collapsed
+          to the first 3 with a "Show N more" expander. Hidden ≥640px. */}
       <div className="picked-mobile-stack">
-        <div className="picked-mobile-banner-wrap">
-          <EditorialCard item={mobileItems[0]} featured />
-        </div>
-        {mobileItems.slice(1).map((it) => (
+        {mobileVisible.map((it) => (
           <div key={it.id} className="picked-mobile-row-wrap">
             <EditorialCard item={it} mobileRow />
           </div>
         ))}
+        {mobileHidden > 0 && (
+          <button
+            className="picked-show-more"
+            onClick={() => setMobileExpanded(true)}
+          >
+            Show {mobileHidden} more →
+          </button>
+        )}
       </div>
 
       <style>{`
@@ -195,16 +208,25 @@ export default function PickedForYouGrid({
           .picked-mobile-stack {
             display: flex !important;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             width: 100%;
-          }
-          .picked-mobile-banner-wrap {
-            width: 100%;
-            height: 280px;
           }
           .picked-mobile-row-wrap {
             width: 100%;
-            height: 96px;
+            height: 90px;
+          }
+          .picked-show-more {
+            margin: 6px 0 2px;
+            padding: 8px 0;
+            background: none;
+            border: none;
+            color: rgba(232,230,225,0.55);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            min-height: var(--touch-target);
           }
         }
       `}</style>
@@ -320,6 +342,29 @@ function EmptyState({
   );
 }
 
+// ── Library status pill (mobile compact rows) ──────────────────────────────
+// Mirrors the mockup's status icon: ✓ for completed (teal), a bookmark for
+// want-to (neutral), a play glyph for in-progress. Nothing for dropped/none.
+function StatusPill({ status }: { status?: "completed" | "in_progress" | "want_to" | "dropped" }) {
+  if (!status || status === "dropped") return null;
+  const base: React.CSSProperties = {
+    fontSize: 9, lineHeight: 1, padding: "2px 5px", borderRadius: 3,
+    flexShrink: 0, display: "inline-flex", alignItems: "center",
+  };
+  if (status === "completed") {
+    return <span style={{ ...base, color: "#2EC4B6", border: "1px solid rgba(46,196,182,0.3)", background: "rgba(46,196,182,0.08)" }}>✓</span>;
+  }
+  if (status === "in_progress") {
+    return <span style={{ ...base, color: "rgba(232,230,225,0.55)", border: "1px solid rgba(232,230,225,0.15)" }}>▶</span>;
+  }
+  // want_to
+  return (
+    <span style={{ ...base, color: "rgba(232,230,225,0.55)", border: "1px solid rgba(232,230,225,0.15)" }} aria-label="Want to">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M6 2h12a1 1 0 0 1 1 1v18l-7-4-7 4V3a1 1 0 0 1 1-1z" /></svg>
+    </span>
+  );
+}
+
 // ── Editorial card — ONE component for both featured and regular ────────────
 
 function EditorialCard({
@@ -334,6 +379,8 @@ function EditorialCard({
   const href = getItemUrl(item);
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const best = getBestExtScore(item.ext, item.voteCount ?? 0);
+  const { entries } = useLibrary();
+  const libStatus = entries[item.id]?.status;
 
   const numeric = best && best.kind === "numeric"
     ? { normalized10: (best.value / best.max) * 10 }
@@ -451,13 +498,17 @@ function EditorialCard({
                   {recPct}%
                 </span>
               )}
+              <StatusPill status={libStatus} />
             </div>
           ) : steamBest ? (
-            <div style={{
-              fontSize: 11, fontWeight: 700, color: steamBest.color,
-              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-            }}>
-              {steamBest.textLabel}
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{
+                fontSize: 11, fontWeight: 700, color: steamBest.color,
+                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              }}>
+                {steamBest.textLabel}
+              </span>
+              <StatusPill status={libStatus} />
             </div>
           ) : null}
           {item.genre && item.genre.length > 0 && (
