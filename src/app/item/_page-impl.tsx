@@ -21,6 +21,7 @@ import ErrorBoundary from "@/components/error-boundary";
 import { getTopTags, getTagDisplayName } from "@/lib/tags";
 import TagSuggest from "@/components/tag-suggest";
 import ShareButton from "@/components/share-button";
+import MobileItemTop from "@/components/mobile-item-detail";
 import { isUpcoming } from "@/lib/data";
 
 // ── Re-export dbItemToItem so callers don't need to duplicate it ─────────────
@@ -203,15 +204,21 @@ export function ItemPageRender({
 
   return (
     <div style={{ overflowX: "hidden" }}>
+      {/* Mobile (<=640px) top cluster — header + hero + (later commits) score,
+          franchise strip, contributing, distribution, your-activity. Mounts
+          only on mobile; the desktop back-row + hero below are CSS-hidden
+          there. */}
+      <MobileItemTop item={item} />
+
       {/* Back button + badges */}
-      <div className="content-width">
+      <div className="content-width item-detail-deskrow">
         <BackButton />
         {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} subtype={itemSubtype} />}
         <FranchiseBadge routeId={routeId} />
       </div>
 
       {/* ZONE 1 — HERO BANNER */}
-      <div style={{
+      <div className="item-detail-deskhero" style={{
         background: `linear-gradient(135deg, rgba(${heroRgb}, 0.12), rgba(${heroRgb2}, 0.06), rgba(11,11,16, 0.95))`,
         marginBottom: 0,
       }}>
@@ -515,6 +522,11 @@ export function ItemPageRender({
             justify-content: center !important; padding-top: 8px !important;
             border-top: 0.5px solid rgba(255,255,255,0.06) !important;
           }
+        }
+        /* Mobile (<=640px): the desktop back-row + 3-column hero are replaced
+           by the MobileItemTop cluster. */
+        @media (max-width: 640px) {
+          .item-detail-deskrow, .item-detail-deskhero { display: none !important; }
         }
       `}</style>
     </div>
