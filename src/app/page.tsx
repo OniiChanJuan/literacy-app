@@ -764,7 +764,7 @@ export default function ForYouPage() {
   const tasteTagsForCard = forYouData?.tasteProfile ? getTasteTags(forYouData.tasteProfile) : [];
 
   return (
-    <div className="content-width">
+    <div className="content-width foryou-page">
       {/* 1a. Taste identity card — personal stats up top */}
       <ErrorBoundary>
         <TasteIdentityCard
@@ -786,24 +786,32 @@ export default function ForYouPage() {
         </ErrorBoundary>
       )}
 
-      {/* 3. Picked for you — editorial magazine-style grid (1 featured + 6 regular) */}
-      {ratingCount >= 5 && (
-        <ErrorBoundary>
-          <PickedForYouGrid
-            key={`picked-grid-${refreshKey}`}
-            tasteTags={tasteTagsForCard}
-            mediaFilter={activeFilter}
-            onLoad={setPickedForYouItems}
-            refreshKey={refreshKey}
-            onClearFilter={() => setActiveFilter(null)}
-          />
-        </ErrorBoundary>
-      )}
+      {/* 3+4. Picked for you + Cross your shelf. DOM order is the desktop
+          order (Picked, Cross); on mobile a CSS `order` swap (.foryou-stack
+          below) puts Cross above Picked per the mockup, without changing
+          desktop. */}
+      <div className="foryou-stack">
+        {ratingCount >= 5 && (
+          <div className="foryou-picked">
+            <ErrorBoundary>
+              <PickedForYouGrid
+                key={`picked-grid-${refreshKey}`}
+                tasteTags={tasteTagsForCard}
+                mediaFilter={activeFilter}
+                onLoad={setPickedForYouItems}
+                refreshKey={refreshKey}
+                onClearFilter={() => setActiveFilter(null)}
+              />
+            </ErrorBoundary>
+          </div>
+        )}
 
-      {/* 4. Cross your shelf — editorial cross-media connections */}
-      <ErrorBoundary>
-        <CrossYourShelf key={`cross-${refreshKey}`} refreshKey={refreshKey} />
-      </ErrorBoundary>
+        <div className="foryou-cross">
+          <ErrorBoundary>
+            <CrossYourShelf key={`cross-${refreshKey}`} refreshKey={refreshKey} />
+          </ErrorBoundary>
+        </div>
+      </div>
 
       {/* 5. What's happening — activity feed + trending sidebar */}
       <ErrorBoundary>
@@ -916,6 +924,23 @@ export default function ForYouPage() {
         ) : null;
       })()}
 
+      <style>{`
+        /* Mobile (mockup): smaller cards on the horizontal curated rows so
+           ~3 full cards show per scroll position. Scoped to the For You page
+           so Explore/search/detail cards keep their default 150px. Picked &
+           Cross don't use Card, so they're unaffected. */
+        @media (max-width: 640px) {
+          .foryou-page {
+            --card-w: 96px;
+            --card-cover-h: 134px;
+          }
+          /* Section-order swap: Cross your shelf above Picked for you on
+             mobile (desktop DOM order preserved). The stack holds only these
+             two children, so order:-1 on Cross is sufficient. */
+          .foryou-stack { display: flex; flex-direction: column; }
+          .foryou-cross { order: -1; }
+        }
+      `}</style>
     </div>
   );
 }
