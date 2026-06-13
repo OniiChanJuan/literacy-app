@@ -7,6 +7,7 @@ import { TYPES, TYPE_ORDER, type Item, type MediaType } from "@/lib/data";
 import Card from "@/components/card";
 import { MemberBadgeBlock, getMemberTier } from "@/components/member-badge";
 import TypeMixBar from "@/components/type-mix-bar";
+import { useReviewVote } from "@/lib/use-review-vote";
 
 interface ProfileReview {
   id: number;
@@ -447,7 +448,29 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                 </div>
               );
             })}
-            {/* Reviews — next commit */}
+            {/* Reviews — their actual opinions; votes persist, replies link to detail */}
+            {statusFilter === "all" && reviews.length > 0 && (() => {
+              const cap = pfExpanded.__reviews ?? 3;
+              const visible = reviews.slice(0, cap);
+              const remaining = reviews.length - visible.length;
+              return (
+                <div className="pf-section">
+                  <div className="pf-section-header">
+                    <span style={{ color: "#2EC4B6", fontSize: 14 }}>💬</span>
+                    <span className="pf-section-title">Reviews</span>
+                    <span className="pf-section-count">{reviews.length}</span>
+                  </div>
+                  {visible.map((rv) => <ProfileReviewCard key={rv.id} review={rv} />)}
+                  {remaining > 0 && (
+                    <div className="pf-showmore-row">
+                      <button className="pf-showmore" onClick={() => setPfExpanded((e) => ({ ...e, __reviews: cap + 3 }))}>
+                        ▾ Show {Math.min(3, remaining)} more
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </>
         )}
       </div>
@@ -719,6 +742,75 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
 // ── Sub-components ─────────────────────────────────────────────────────────
 
+/** Gold star rating as text. score 1–5. */
+function StarsText({ score }: { score: number }) {
+  const s = Math.max(0, Math.min(5, Math.round(score)));
+  return <span>{"★".repeat(s)}{"☆".repeat(5 - s)}</span>;
+}
+
+function pfTimeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return "yesterday";
+  return `${days}d ago`;
+}
+
+/** A single review on the profile — item context + stars + text + persisted
+ *  up/down (shared useReviewVote). Reply count links to the item detail where
+ *  the full thread lives. */
+function ProfileReviewCard({ review }: { review: ProfileReview }) {
+  const { myVote, count, vote } = useReviewVote(review.id, review.helpfulCount, review.myVote);
+  const itemHref = review.itemSlug ? `/${review.itemType}/${review.itemSlug}` : `/item/${review.itemId}`;
+  const typeInfo = TYPES[review.itemType as MediaType];
+  const hasCover = !!review.itemCover && review.itemCover.startsWith("http");
+  const typeLabel = typeInfo?.label?.replace(/s$/, "") || review.itemType;
+
+  return (
+    <div className="pf-review-card">
+      <div className="pf-review-header">
+        <Link
+          href={itemHref}
+          className="pf-review-cover"
+          style={{
+            background: hasCover
+              ? `url(${review.itemCover}) center/cover`
+              : `linear-gradient(135deg, ${(typeInfo?.color || "#888")}33, ${(typeInfo?.color || "#888")}11)`,
+          }}
+          aria-label={review.itemTitle}
+        />
+        <div className="pf-review-item-block">
+          <Link href={itemHref} className="pf-review-item-title">{review.itemTitle}</Link>
+          <div className="pf-review-item-meta">
+            {typeLabel}{review.itemYear ? ` · ${review.itemYear}` : ""} · {pfTimeAgo(review.createdAt)}
+          </div>
+        </div>
+        {review.score !== null && review.score > 0 && (
+          <div className="pf-review-stars"><StarsText score={review.score} /></div>
+        )}
+      </div>
+      {review.text && <div className="pf-review-text">{review.text}</div>}
+      <div className="pf-review-controls">
+        <button className={`pf-rev-ctrl ${myVote === "up" ? "pf-rev-up" : ""}`} onClick={() => vote("up")}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 10l5-5 5 5" /></svg>
+          {count > 0 && <span>{count}</span>}
+        </button>
+        <button className={`pf-rev-ctrl ${myVote === "down" ? "pf-rev-down" : ""}`} onClick={() => vote("down")}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 14l5 5 5-5" /></svg>
+        </button>
+        <Link href={itemHref} className={`pf-rev-ctrl ${review.replyCount > 0 ? "pf-rev-accent" : ""}`}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+          {review.replyCount > 0 ? `${review.replyCount} ${review.replyCount === 1 ? "reply" : "replies"}` : "Reply"}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 /** Own-profile edit form (name + bio + Private Library toggle). Shared between
  *  the desktop and mobile branches so there's one source of truth. */
 function ProfileEditForm({
@@ -890,6 +982,21 @@ function ProfileMobileStyles() {
       .pf-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
       .pf-showmore-row { text-align: center; padding: 14px 0 4px; }
       .pf-showmore { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15); border-radius: 14px; font-size: 11px; color: rgba(46,196,182,0.85); letter-spacing: 1px; text-transform: uppercase; font-family: inherit; cursor: pointer; }
+
+      /* Reviews */
+      .pf-review-card { padding: 12px; background: rgba(255,255,255,0.025); border-radius: 8px; margin-bottom: 8px; }
+      .pf-review-header { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+      .pf-review-cover { width: 36px; height: 54px; border-radius: 3px; flex-shrink: 0; display: block; background-color: #1a1a22; text-decoration: none; }
+      .pf-review-item-block { flex: 1; min-width: 0; }
+      .pf-review-item-title { font-family: var(--font-serif); font-size: 12px; color: #2EC4B6; font-weight: 500; line-height: 1.2; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .pf-review-item-meta { font-size: 9px; color: rgba(232,230,225,0.45); margin-top: 2px; }
+      .pf-review-stars { color: #DAA520; font-size: 11px; letter-spacing: 1px; align-self: flex-start; flex-shrink: 0; }
+      .pf-review-text { font-size: 12px; color: rgba(232,230,225,0.85); line-height: 1.5; margin: 8px 0; }
+      .pf-review-controls { display: flex; gap: 14px; align-items: center; }
+      .pf-rev-ctrl { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(232,230,225,0.45); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; text-decoration: none; }
+      .pf-rev-accent { color: #2EC4B6; font-weight: 500; }
+      .pf-rev-up { color: #2EC4B6; }
+      .pf-rev-down { color: #E84855; }
 
       @media (max-width: 640px) {
         /* Two-column poster cards via the shared tokens, scoped to the profile.
