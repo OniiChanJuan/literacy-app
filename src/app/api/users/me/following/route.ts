@@ -90,6 +90,9 @@ export async function GET(req: NextRequest) {
         ratedCount: ratingsHidden ? 0 : (c?.ratings ?? 0),
         reviewCount: c?.reviews ?? 0,
         topMediaTypes,
+        // Per-type rating counts (already computed above) so the mobile
+        // type-mix bar can render real proportions. Empty when ratings hidden.
+        typeCounts,
         lastActiveAt,
       };
     })

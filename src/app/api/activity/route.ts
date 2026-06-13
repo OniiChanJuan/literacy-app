@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     where: { userId: { in: followedIds } },
     include: {
       item: { select: { id: true, title: true, type: true, cover: true, year: true, slug: true } },
-      _count: { select: { helpfulVotes: true } },
+      _count: { select: { helpfulVotes: true, replies: true } },
     },
     orderBy: sort === "top" ? { helpfulVotes: { _count: "desc" } } : { createdAt: "desc" },
     take: 80,
@@ -112,6 +112,7 @@ export async function GET(req: NextRequest) {
     recommendTag: string | null;
     text: string;      // empty string = rating only
     helpfulCount: number;
+    replyCount: number; // direct replies to this review (0 for rating-only)
     createdAt: string;
   };
 
@@ -141,6 +142,7 @@ export async function GET(req: NextRequest) {
       recommendTag: ratingHidden ? null : (rating?.recommendTag ?? null),
       text: r.text,
       helpfulCount: r._count.helpfulVotes,
+      replyCount: r._count.replies,
       createdAt: r.createdAt.toISOString(),
     };
   });
@@ -163,6 +165,7 @@ export async function GET(req: NextRequest) {
     recommendTag: r.recommendTag ?? null,
     text: "",
     helpfulCount: 0,
+    replyCount: 0,
     createdAt: r.createdAt.toISOString(),
     };
   });
