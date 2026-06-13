@@ -14,6 +14,7 @@ import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
 import { SkeletonRow } from "@/components/skeleton-card";
 import ErrorBoundary from "@/components/error-boundary";
+import BottomSheet from "@/components/bottom-sheet";
 import Link from "next/link";
 import Image from "next/image";
 import { isAnime } from "@/lib/anime";
@@ -444,6 +445,7 @@ function TasteFilterBar({
   const ratingCount = Object.keys(ratings).length;
   const tags = tasteProfile ? getTasteTags(tasteProfile) : [];
   const profileHref = session?.user?.id ? `/user/${session.user.id}` : "/library";
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Genre pills: user's top genres, deduplicated against taste tags, fallback to popular
   const tasteTagGenreNames = new Set(tags.map((t) => t.toLowerCase()));
@@ -452,8 +454,75 @@ function TasteFilterBar({
     .filter((g) => !tasteTagGenreNames.has(g.toLowerCase()))
     .slice(0, 10);
 
+  // Shared renderers so the desktop bar and the mobile BottomSheet show the
+  // same (functional) filters. NOTE: type + genre only — vibe/tag selectors
+  // are intentionally absent because nothing filters by them yet.
+  const renderMediaGrid = (onPick?: () => void) => (
+    <div className="media-filter-grid-v2" style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(5, auto)",
+      gap: 4,
+      flexShrink: 0,
+    }}>
+      {MEDIA_FILTER_ORDER.map((type) => {
+        const color = type === "anime" ? "#FF6B6B" : TYPES[type as MediaType].color;
+        const isActive = activeFilter === type;
+        return (
+          <button
+            key={type}
+            onClick={() => { onFilterChange(isActive ? null : type); onPick?.(); }}
+            style={{
+              display: "flex", flexDirection: "column", alignItems: "center",
+              gap: 2, padding: "5px 8px", borderRadius: 7, cursor: "pointer",
+              background: isActive ? `rgba(${hexToRgb(color)}, 0.22)` : `rgba(${hexToRgb(color)}, 0.08)`,
+              border: isActive ? `1px solid rgba(${hexToRgb(color)}, 0.5)` : `0.5px solid rgba(${hexToRgb(color)}, 0.18)`,
+              transition: "background 150ms, border 150ms",
+              minWidth: 46,
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.14)`;
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.08)`;
+            }}
+          >
+            <span style={{ display: "block", lineHeight: 0, transform: "scale(0.8125)", transformOrigin: "center" }}>
+              {MEDIA_FILTER_ICONS[type](color)}
+            </span>
+            <span style={{ fontSize: 8, color, lineHeight: 1 }}>{MEDIA_FILTER_LABELS[type]}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const renderGenrePills = () => genrePills.length > 0 && (
+    <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+      <span style={{ fontSize: 11, color: "rgba(232,72,85,0.35)", fontWeight: 500, marginRight: 1, whiteSpace: "nowrap" }}>
+        Genres
+      </span>
+      {genrePills.map((genre) => (
+        <a
+          key={genre}
+          href={`/explore?genre=${encodeURIComponent(genre)}`}
+          className="taste-genre-pill"
+          style={{
+            fontSize: 11, padding: "3px 8px", borderRadius: 10,
+            background: "rgba(232,72,85,0.04)", border: "0.5px solid rgba(232,72,85,0.08)",
+            color: "rgba(232,72,85,0.35)", whiteSpace: "nowrap", cursor: "pointer",
+            textDecoration: "none", transition: "background 150ms, color 150ms",
+          }}
+        >
+          {genre}
+        </a>
+      ))}
+    </div>
+  );
+
+  const activeLabel = activeFilter ? MEDIA_FILTER_LABELS[activeFilter] : null;
+
   return (
-    <div style={{
+    <div className="taste-filter-wrap" style={{
       background: "linear-gradient(135deg, rgba(232,72,85,0.03), rgba(155,93,229,0.015))",
       borderRadius: 10,
       padding: "12px 16px",
@@ -466,71 +535,70 @@ function TasteFilterBar({
         {/* Middle: Genre pills only. Taste/vibe tags are rendered in the
             TasteIdentityCard above to avoid duplication. */}
         <div className="taste-tags-section" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
-          {genrePills.length > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 11, color: "rgba(232,72,85,0.35)", fontWeight: 500, marginRight: 1, whiteSpace: "nowrap" }}>
-                Genres
-              </span>
-              {genrePills.map((genre) => (
-                <a
-                  key={genre}
-                  href={`/explore?genre=${encodeURIComponent(genre)}`}
-                  className="taste-genre-pill"
-                  style={{
-                    fontSize: 11, padding: "3px 8px", borderRadius: 10,
-                    background: "rgba(232,72,85,0.04)", border: "0.5px solid rgba(232,72,85,0.08)",
-                    color: "rgba(232,72,85,0.35)", whiteSpace: "nowrap", cursor: "pointer",
-                    textDecoration: "none", transition: "background 150ms, color 150ms",
-                  }}
-                >
-                  {genre}
-                </a>
-              ))}
-            </div>
-          )}
+          {renderGenrePills()}
         </div>
 
         {/* Divider */}
         <div className="taste-divider" style={{ width: "0.5px", alignSelf: "stretch", background: "rgba(255,255,255,0.06)", flexShrink: 0, margin: "0 4px" }} />
 
         {/* Right: Media type filter grid */}
-        <div className="media-filter-grid-v2" style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, auto)",
-          gap: 4,
-          flexShrink: 0,
-        }}>
-          {MEDIA_FILTER_ORDER.map((type) => {
-            const color = type === "anime" ? "#FF6B6B" : TYPES[type as MediaType].color;
-            const isActive = activeFilter === type;
-            return (
-              <button
-                key={type}
-                onClick={() => onFilterChange(isActive ? null : type)}
-                style={{
-                  display: "flex", flexDirection: "column", alignItems: "center",
-                  gap: 2, padding: "5px 8px", borderRadius: 7, cursor: "pointer",
-                  background: isActive ? `rgba(${hexToRgb(color)}, 0.22)` : `rgba(${hexToRgb(color)}, 0.08)`,
-                  border: isActive ? `1px solid rgba(${hexToRgb(color)}, 0.5)` : `0.5px solid rgba(${hexToRgb(color)}, 0.18)`,
-                  transition: "background 150ms, border 150ms",
-                  minWidth: 46,
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.14)`;
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) (e.currentTarget as HTMLElement).style.background = `rgba(${hexToRgb(color)}, 0.08)`;
-                }}
-              >
-                <span style={{ display: "block", lineHeight: 0, transform: "scale(0.8125)", transformOrigin: "center" }}>
-                  {MEDIA_FILTER_ICONS[type](color)}
-                </span>
-                <span style={{ fontSize: 8, color, lineHeight: 1 }}>{MEDIA_FILTER_LABELS[type]}</span>
-              </button>
-            );
-          })}
-        </div>
+        {renderMediaGrid()}
       </div>
+
+      {/* Mobile: collapsed pill row (mockup .filter-collapsed) — opens the sheet */}
+      <div className="taste-filter-collapsed" style={{
+        display: "none",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}>
+        <button
+          onClick={() => setSheetOpen(true)}
+          style={{
+            display: "flex", alignItems: "center", gap: 6,
+            padding: "6px 12px",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 16,
+            background: "none",
+            fontSize: 11,
+            color: "rgba(232,230,225,0.55)",
+            cursor: "pointer",
+            minHeight: "var(--touch-target)",
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M4 4h16l-6 8v6l-4 2v-8L4 4z" />
+          </svg>
+          <span>Filter by type &amp; genre</span>
+        </button>
+        <span style={{ fontSize: 10, color: "rgba(232,230,225,0.32)" }}>
+          {activeLabel ? `Showing ${activeLabel}` : "Showing all"}
+        </span>
+      </div>
+
+      {/* Mobile filter sheet — first consumer of the Phase 1 BottomSheet */}
+      <BottomSheet open={sheetOpen} onClose={() => setSheetOpen(false)} title="Filter by type & genre">
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div>
+            <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1, color: "rgba(232,230,225,0.45)", marginBottom: 8 }}>
+              Media type
+            </div>
+            {renderMediaGrid(() => setSheetOpen(false))}
+          </div>
+          <div>{renderGenrePills()}</div>
+          {activeFilter && (
+            <button
+              onClick={() => { onFilterChange(null); setSheetOpen(false); }}
+              style={{
+                padding: "10px 0", borderRadius: 8, border: "1px solid var(--border)",
+                background: "var(--surface-2)", color: "var(--text-secondary)",
+                fontSize: 12, cursor: "pointer",
+              }}
+            >
+              Clear filter — show all
+            </button>
+          )}
+        </div>
+      </BottomSheet>
 
       <style>{`
         .taste-tag-pill:hover {
@@ -541,7 +609,8 @@ function TasteFilterBar({
           background: rgba(232,72,85,0.08) !important;
           color: rgba(232,72,85,0.5) !important;
         }
-        @media (max-width: 768px) {
+        /* Tablet (641-768px): keep the full bar but stack its two halves. */
+        @media (min-width: 641px) and (max-width: 768px) {
           .taste-filter-main {
             flex-direction: column !important;
             align-items: flex-start !important;
@@ -558,6 +627,20 @@ function TasteFilterBar({
           .taste-divider {
             display: none !important;
           }
+        }
+        /* Mobile (<=640px): replace the inline bar with the collapsed pill
+           that opens the BottomSheet (mockup .filter-collapsed). Full-bleed
+           flat strip to match the identity strip above it. */
+        @media (max-width: 640px) {
+          .taste-filter-wrap {
+            background: rgba(255,255,255,0.012) !important;
+            border-radius: 0 !important;
+            border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+            padding: 10px 16px !important;
+            margin: 0 -16px 16px !important;
+          }
+          .taste-filter-main { display: none !important; }
+          .taste-filter-collapsed { display: flex !important; }
         }
       `}</style>
     </div>
