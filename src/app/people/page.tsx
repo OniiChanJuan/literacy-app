@@ -1112,7 +1112,10 @@ function ActivityCard({ item }: { item: ActivityItem }) {
       {hasReview && (
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 38, marginTop: 6 }}>
           <VoteButtons reviewId={reviewIdOf(item.id)} helpfulCount={item.helpfulCount} myVote={item.myVote} />
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", cursor: "pointer" }}>Reply</span>
+          {/* No desktop "Reply" control yet — the desktop feed has no thread UI
+              (the existing thread machinery is item-detail-coupled, not
+              feed-reusable). Omitted rather than shown as a dead button.
+              Tracked follow-up: desktop feed threading. */}
         </div>
       )}
     </div>
