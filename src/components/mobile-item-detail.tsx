@@ -24,7 +24,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TYPES, hexToRgba, type Item, type Person } from "@/lib/data";
 import { useIsMobile } from "@/lib/use-is-mobile";
-import { getBestExtScore } from "@/lib/format-ext-score";
+import { getBestExtScore, formatExtScores } from "@/lib/format-ext-score";
 import { getFranchiseForItem } from "@/lib/franchises";
 import ShareButton from "./share-button";
 
@@ -61,6 +61,7 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
   const isMobile = useIsMobile();
   const router = useRouter();
   const [agg, setAgg] = useState<AggregateData | null>(null);
+  const [pillsExpanded, setPillsExpanded] = useState(false);
 
   // Mobile-only fetch. The component renders null on desktop, but its hooks
   // still execute there — so guard the effect on isMobile so the aggregate is
@@ -105,6 +106,18 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
   const franchise = getFranchiseForItem(routeId);
   const franchisePos = franchise ? franchise.items.findIndex((it) => it.routeId === routeId) : -1;
   const franchiseTotal = franchise ? franchise.items.length : 0;
+
+  // ── Contributing scores ("What goes into this") — external scores from
+  // item.ext, plus Community (>=10 ratings) and Recommend% (>=5 recommend
+  // tags). Cap 3 visible + a "+N more" expander. */
+  type Pill = { source: string; value: string };
+  const extPills: Pill[] = formatExtScores(item.ext, item.voteCount ?? 0)
+    .map((s) => ({ source: s.label, value: s.valueStr + (s.suffix || "") }));
+  const contribPills: Pill[] = [...extPills];
+  if (ratingCount >= 10) contribPills.push({ source: "Community", value: agg!.avg });
+  if ((agg?.recCount ?? 0) >= 5) contribPills.push({ source: "Recommend", value: `${agg!.recPct}%` });
+  const visiblePills = pillsExpanded ? contribPills : contribPills.slice(0, 3);
+  const hiddenPillCount = contribPills.length - visiblePills.length;
 
   return (
     <div className="mobile-item-top">
@@ -173,6 +186,26 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
           </div>
           <span className="mid-franchise-chev" aria-hidden>›</span>
         </Link>
+      )}
+
+      {/* Contributing scores — cap 3 + "+N more" expander */}
+      {contribPills.length > 0 && (
+        <div className="mid-contrib">
+          <div className="mid-contrib-label">What goes into this</div>
+          <div className="mid-contrib-grid">
+            {visiblePills.map((p) => (
+              <span key={p.source} className="mid-contrib-pill">
+                <span className="mid-contrib-src">{p.source}</span>
+                <span className="mid-contrib-val">{p.value}</span>
+              </span>
+            ))}
+            {hiddenPillCount > 0 && (
+              <button className="mid-contrib-more" onClick={() => setPillsExpanded(true)}>
+                + {hiddenPillCount} more
+              </button>
+            )}
+          </div>
+        </div>
       )}
 
       <style>{`
@@ -262,6 +295,24 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
           }
           .mid-franchise-pos { font-size: 10px; color: rgba(232,230,225,0.45); margin-top: 2px; }
           .mid-franchise-chev { font-size: 20px; color: rgba(232,230,225,0.45); flex-shrink: 0; line-height: 1; }
+
+          .mid-contrib { padding: 12px 16px 0; }
+          .mid-contrib-label {
+            font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(232,230,225,0.45); margin-bottom: 8px;
+          }
+          .mid-contrib-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+          .mid-contrib-pill {
+            padding: 4px 8px; background: rgba(255,255,255,0.04);
+            border-radius: 4px; font-size: 11px;
+          }
+          .mid-contrib-src { color: rgba(232,230,225,0.45); margin-right: 4px; font-size: 10px; }
+          .mid-contrib-val { color: #e8e6e1; font-weight: 500; }
+          .mid-contrib-more {
+            padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;
+            background: rgba(46,196,182,0.08); color: #2EC4B6;
+            border: 1px solid rgba(46,196,182,0.2);
+          }
         }
       `}</style>
     </div>

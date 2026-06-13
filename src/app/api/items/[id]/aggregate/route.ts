@@ -28,6 +28,7 @@ export async function GET(
       count: 0,
       dist: [0, 0, 0, 0, 0],
       recPct: 0,
+      recCount: 0,
     });
     emptyRes.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
     return emptyRes;
@@ -54,6 +55,10 @@ export async function GET(
     count: ratings.length,
     dist,
     recPct,
+    // recCount: number of "recommend"-tagged ratings (already computed above).
+    // Exposed read-only so the mobile detail page can gate the Recommend%
+    // contributing pill on >=5 tags (tags, not ratings). No aggregation change.
+    recCount,
   });
   // Public aggregate data — cache 60s at CDN, serve stale up to 2 min while revalidating
   res.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
