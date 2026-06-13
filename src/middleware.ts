@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
     "default-src 'self'",
     "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://image.tmdb.org https://images.igdb.com https://books.google.com https://i.scdn.co https://cdn.myanimelist.net https://comicvine.gamespot.com https://upload.wikimedia.org https://covers.openlibrary.org https://*.archive.org https://lh3.googleusercontent.com",
+    "img-src 'self' data: blob: https://image.tmdb.org https://images.igdb.com https://books.google.com https://i.scdn.co https://cdn.myanimelist.net https://comicvine.gamespot.com https://upload.wikimedia.org https://covers.openlibrary.org https://*.archive.org https://lh3.googleusercontent.com https://static01.nyt.com",
     "font-src 'self'",
     "connect-src 'self' https://*.supabase.co https://api.themoviedb.org https://api.igdb.com https://api.jikan.moe https://api.spotify.com https://id.twitch.tv https://www.googleapis.com https://comicvine.gamespot.com",
     "frame-ancestors 'none'",
