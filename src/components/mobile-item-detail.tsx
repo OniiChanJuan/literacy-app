@@ -26,7 +26,13 @@ import { TYPES, hexToRgba, type Item, type Person } from "@/lib/data";
 import { useIsMobile } from "@/lib/use-is-mobile";
 import { getBestExtScore, formatExtScores } from "@/lib/format-ext-score";
 import { getFranchiseForItem } from "@/lib/franchises";
+import { useRatings } from "@/lib/ratings-context";
+import { useLibrary, type LibraryStatus } from "@/lib/library-context";
 import ShareButton from "./share-button";
+
+const STATUS_LABEL: Record<LibraryStatus, string> = {
+  completed: "Completed", in_progress: "In progress", want_to: "Want to", dropped: "Dropped",
+};
 
 interface AggregateData {
   avg: string;
@@ -60,6 +66,8 @@ function lengthLabel(item: Item): string | null {
 export default function MobileItemTop({ item, routeId }: { item: Item; routeId: string }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const { ratings } = useRatings();
+  const { entries } = useLibrary();
   const [agg, setAgg] = useState<AggregateData | null>(null);
   const [pillsExpanded, setPillsExpanded] = useState(false);
 
@@ -118,6 +126,12 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
   if ((agg?.recCount ?? 0) >= 5) contribPills.push({ source: "Recommend", value: `${agg!.recPct}%` });
   const visiblePills = pillsExpanded ? contribPills : contribPills.slice(0, 3);
   const hiddenPillCount = contribPills.length - visiblePills.length;
+
+  // ── Your activity vs Rate prompt — engaged = rated and/or has a library
+  // status (gold card); otherwise the dashed-teal Rate prompt. */
+  const userRating = typeof item.id === "number" ? (ratings[item.id] || 0) : 0;
+  const libStatus = typeof item.id === "number" ? entries[item.id]?.status : undefined;
+  const engaged = userRating > 0 || !!libStatus;
 
   return (
     <div className="mobile-item-top">
@@ -227,6 +241,28 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
             );
           })}
         </div>
+      )}
+
+      {/* Your activity (engaged) vs Rate prompt (not engaged) */}
+      {engaged ? (
+        <div className="mid-activity">
+          <div className="mid-activity-label">Your activity</div>
+          <div className="mid-activity-content">
+            {userRating > 0 && (
+              <>
+                <span>You rated this</span>
+                <span className="mid-activity-stars">{"★".repeat(userRating)}</span>
+              </>
+            )}
+            {userRating > 0 && libStatus && <span>·</span>}
+            {libStatus && <span>{STATUS_LABEL[libStatus]}</span>}
+          </div>
+        </div>
+      ) : (
+        <button className="mid-rate-prompt" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })}>
+          <div className="mid-rate-prompt-text">Seen this? Help others discover it.</div>
+          <div className="mid-rate-prompt-action">Rate now →</div>
+        </button>
       )}
 
       <style>{`
@@ -344,6 +380,29 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
           .mid-dist-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; position: relative; }
           .mid-dist-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(46,196,182,0.6); border-radius: 3px; }
           .mid-dist-pct { width: 32px; text-align: right; font-size: 10px; color: rgba(232,230,225,0.55); }
+
+          .mid-activity {
+            margin: 18px 16px 0; padding: 12px 14px;
+            background: rgba(218,165,32,0.06); border-left: 2px solid rgba(218,165,32,0.4);
+            border-radius: 0 6px 6px 0;
+          }
+          .mid-activity-label {
+            font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(218,165,32,0.85); margin-bottom: 4px;
+          }
+          .mid-activity-content { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; color: #e8e6e1; }
+          .mid-activity-stars { color: #DAA520; font-size: 13px; }
+
+          .mid-rate-prompt {
+            display: block; width: calc(100% - 32px); margin: 18px 16px 0; padding: 14px;
+            background: rgba(46,196,182,0.06); border: 1px dashed rgba(46,196,182,0.25);
+            border-radius: 8px; text-align: center; cursor: pointer;
+          }
+          .mid-rate-prompt-text { font-size: 13px; color: rgba(232,230,225,0.85); }
+          .mid-rate-prompt-action {
+            font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+            color: #2EC4B6; margin-top: 6px; font-weight: 500;
+          }
         }
       `}</style>
     </div>
