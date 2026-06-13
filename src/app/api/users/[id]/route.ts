@@ -42,6 +42,9 @@ export async function GET(
   const showRatings = isOwn || (!user.isPrivate && flags.showRatingsPublicly);
   // showLibraryPublicly already considered alongside is_private here.
   const showLibrary = isOwn || (!user.isPrivate && flags.showLibraryPublicly);
+  // Reviews on the profile follow locked Option B: the single "Private Library"
+  // toggle (is_private) hides them, and showActivityPublicly narrows further.
+  const showReviews = isOwn || (!user.isPrivate && flags.showActivityPublicly);
 
   // Follower/following counts + isFollowing
   const [followerCount, followingCount, followRecord] = await Promise.all([
@@ -90,6 +93,64 @@ export async function GET(
     });
   }
 
+  // Taste fingerprint — per-type counts of the user's ratings (gated by the
+  // same showRatings flag, so taste privacy tracks ratings privacy).
+  let typeCounts: Record<string, number> | null = null;
+  if (showRatings) {
+    const rated = await prisma.rating.findMany({
+      where: { userId: id },
+      select: { item: { select: { type: true } } },
+    });
+    const tc: Record<string, number> = {};
+    for (const r of rated) {
+      const t = r.item?.type;
+      if (t) tc[t] = (tc[t] || 0) + 1;
+    }
+    typeCounts = tc;
+  }
+
+  // Reviews (top-level only) for the profile Reviews section — gated by
+  // showReviews (Option B). Each carries item context, the author's paired
+  // star score (suppressed when ratings are hidden), reply count, and the
+  // viewer's own vote so the feed-style controls render correct state.
+  let reviews: any[] = [];
+  if (showReviews) {
+    const viewerId = claims?.sub;
+    const rows = await prisma.review.findMany({
+      where: { userId: id, parentId: null },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      include: {
+        item: { select: { id: true, title: true, type: true, cover: true, year: true, slug: true } },
+        _count: { select: { helpfulVotes: true, replies: true } },
+        // Only filter the viewer's own vote when authenticated — passing "" to
+        // a uuid column errors.
+        ...(viewerId ? { helpfulVotes: { where: { userId: viewerId }, select: { voteType: true } } } : {}),
+      },
+    });
+    const itemIds = rows.map((r) => r.itemId);
+    const reviewRatings = itemIds.length > 0
+      ? await prisma.rating.findMany({ where: { userId: id, itemId: { in: itemIds } }, select: { itemId: true, score: true } })
+      : [];
+    const scoreMap = new Map(reviewRatings.map((r) => [r.itemId, r.score]));
+    reviews = rows.map((r) => ({
+      id: r.id,
+      itemId: r.itemId,
+      itemTitle: r.item.title,
+      itemType: r.item.type,
+      itemCover: r.item.cover,
+      itemYear: r.item.year,
+      itemSlug: (r.item as any).slug ?? null,
+      // Paired star score respects ratings privacy even within a shown review.
+      score: showRatings ? (scoreMap.get(r.itemId) ?? null) : null,
+      text: r.text,
+      helpfulCount: r._count.helpfulVotes,
+      replyCount: r._count.replies,
+      myVote: (((r as any).helpfulVotes?.[0]?.voteType) as "up" | "down" | undefined) ?? null,
+      createdAt: r.createdAt.toISOString(),
+    }));
+  }
+
   return NextResponse.json({
     user: {
       id: user.id,
@@ -99,7 +160,9 @@ export async function GET(
       isPrivate: user.isPrivate,
       createdAt: user.createdAt,
       ratingsCount: showRatings ? (counts?._count.ratings ?? 0) : 0,
-      reviewsCount: counts?._count.reviews ?? 0, // reviews are always public
+      // Gap A fix: locked Option B hides reviews (and their count) when private,
+      // so a visitor never learns how many reviews a private user wrote.
+      reviewsCount: showReviews ? (counts?._count.reviews ?? 0) : 0,
       trackedCount: showLibrary ? (counts?._count.libraryEntries ?? 0) : 0,
       memberNumber: user.memberNumber,
       followerCount,
@@ -108,6 +171,8 @@ export async function GET(
     },
     topRatings,
     library: showLibrary ? library : null,
+    typeCounts,
+    reviews,
     isOwn,
   });
 }
