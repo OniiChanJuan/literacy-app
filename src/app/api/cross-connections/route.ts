@@ -188,11 +188,20 @@ export async function GET(req: NextRequest) {
         },
         take: 20,
       });
-      // Drop connections whose recs overlap with items the user already rated.
-      personalized = raw.filter((c) => {
-        const recs = Array.isArray(c.recommendedItems) ? c.recommendedItems : [];
-        return !recs.some((r: any) => ratedIds.has(Number(r.item_id)));
-      });
+      // Filter already-rated recs OUT of each connection's rec list, rather
+      // than discarding the whole connection when any single rec overlaps.
+      // A connection is dropped only if per-rec filtering leaves it with zero
+      // recs. Previously one overlapping rec threw away the other 4-6 valid
+      // recommendations — which disproportionately pushed engaged users into
+      // trending mode. Replacing recommendedItems on the row here means every
+      // downstream step (affinity, pool hydration, output) uses the filtered
+      // list automatically.
+      personalized = raw
+        .map((c) => {
+          const recs = Array.isArray(c.recommendedItems) ? c.recommendedItems : [];
+          return { ...c, recommendedItems: recs.filter((r: any) => !ratedIds.has(Number(r.item_id))) };
+        })
+        .filter((c) => (c.recommendedItems as any[]).length > 0);
     }
 
     // Count distinct rated-highly source items that survived filtering.
