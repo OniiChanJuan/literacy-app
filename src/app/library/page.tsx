@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { ITEMS, TYPES, TYPE_ORDER, type MediaType, type Item } from "@/lib/data";
 import { useLibrary, isOngoing, progressUnit, type LibraryStatus } from "@/lib/library-context";
 import { useRatings } from "@/lib/ratings-context";
+import { useIsMobile } from "@/lib/use-is-mobile";
 import Card from "@/components/card";
 import type { FollowedFranchise } from "@/app/api/user/following/route";
 
@@ -163,6 +164,9 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "alpha",  label: "A–Z" },
 ];
 
+// Mobile show-more page size: cards revealed per status section per tap.
+const LIB_PAGE = 4;
+
 // Build a lookup from static ITEMS for fallback
 const STATIC_ITEMS_MAP = new Map<number, Item>();
 for (const item of ITEMS) {
@@ -178,6 +182,9 @@ export default function LibraryPage() {
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [sort, setSort] = useState<SortKey>("recent");
+  const isMobile = useIsMobile();
+  // Mobile-only: how many cards each status section reveals (4 at a time).
+  const [expanded, setExpanded] = useState<Record<string, number>>({});
 
   // Merge static items with DB items — DB items take priority
   const resolvedItems = useMemo(() => {
@@ -341,6 +348,18 @@ export default function LibraryPage() {
           /* Icon-only type pills on mobile per the mockup; "All" keeps its text. */
           .lib-type-pill { padding: 6px 9px; border-radius: 14px; }
           .lib-type-pill-label { display: none; }
+        }
+
+        /* Show-more — a real tappable pill (mockup), not discreet text. Only
+           rendered on mobile, where sections cap at 4 cards. */
+        .lib-show-more {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 8px 16px; border-radius: 14px;
+          background: rgba(46,196,182,0.04); border: 1px solid rgba(46,196,182,0.15);
+          font-size: 11px; color: rgba(46,196,182,0.85);
+          letter-spacing: 1px; text-transform: uppercase;
+          font-family: inherit; cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
         }
       `}</style>
       {/* Header row: status pills + Import shortcut */}
@@ -536,6 +555,12 @@ export default function LibraryPage() {
         // Hide the whole section when the type filter or search excludes everything
         if (filtered.length === 0) return null;
 
+        // Mobile caps each section at LIB_PAGE, revealed progressively.
+        // Desktop renders everything (screen real estate is abundant).
+        const cap = isMobile ? (expanded[s.key] ?? LIB_PAGE) : filtered.length;
+        const visible = filtered.slice(0, cap);
+        const remaining = filtered.length - visible.length;
+
         return (
           <div key={s.key} style={{ marginBottom: 40 }}>
             {/* Section header */}
@@ -549,7 +574,7 @@ export default function LibraryPage() {
 
             {/* Items grid */}
             <div className="library-grid" style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-start" }}>
-              {filtered.map((item) => {
+              {visible.map((item) => {
                 const entry = entries[item.id];
                 return (
                   <div key={item.id} style={{ position: "relative" }}>
@@ -577,6 +602,19 @@ export default function LibraryPage() {
                 );
               })}
             </div>
+
+            {/* Mobile-only progressive reveal — desktop shows everything */}
+            {remaining > 0 && (
+              <div style={{ textAlign: "center", paddingTop: 14 }}>
+                <button
+                  type="button"
+                  onClick={() => setExpanded((e) => ({ ...e, [s.key]: cap + LIB_PAGE }))}
+                  className="lib-show-more"
+                >
+                  ▾ Show {Math.min(LIB_PAGE, remaining)} more · {remaining} remaining
+                </button>
+              </div>
+            )}
           </div>
         );
       })}
