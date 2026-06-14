@@ -2,7 +2,8 @@
 
 One place to run every outstanding **signed-in production check** and see every
 **deferred follow-up** across all shipped mobile phases (2b For You, 3b Item Detail,
-4b Library, 5b People, 6b Public Profile). Last updated: 2026-06-13 (after Phase 6b).
+4b Library, 5b People, 6b Public Profile, 7b Explore). Last updated: 2026-06-13 (after
+Phase 7b — the mobile redesign's last page).
 
 **Why this exists:** most mobile work was verified logged-out (layout, empty states,
 desktop-unchanged) but the *authenticated / populated* surfaces can't be exercised in
@@ -79,6 +80,27 @@ level (data withheld, not UI-only). Signed-in remainder:
 5. **Owner stars on cards** · 380 · **Known gap:** Top Rated / status-section cards show *your* rating (viewer), not the profile owner's — see §2 (`task_86be861b`). Mockup wants the owner's stars.
 6. Reviews reply count · 380 · links to item detail (no inline thread expansion on profile — deferred, §3).
 7. Desktop unchanged · 1280 · (note: the Gap-A privacy fix means the desktop "Reviewed" stat now shows 0 on a *private* profile — intended).
+
+### Explore (`/explore`) — Phase 7b
+Public page — **most of this was verified logged-out** (9-chip row, FILTERS/sort sheets,
+per-type rows, type-selected 2-col grid, search results, desktop unchanged). Signed-in
+remainder is minimal:
+1. **Card stars on Explore** · 380 · cards reuse `<Card>`, so the gold star reflects *your*
+   rating (same as everywhere) — confirm it shows your ratings when signed in.
+2. **Recent searches** · 380 · tapping the search bar shows your recent searches (localStorage;
+   works logged-out too) — confirm persistence across visits.
+3. Spot-check the live states against the mockup: tap each type chip → 2-col grid + others
+   hidden; FILTERS sheet (Genre multi / Vibe + Tag single) updates "Filters: …"; sort sheet
+   updates the bar label; "See all →" / chip both land on the type grid.
+4. Desktop unchanged · 1280 · three filter rows + auto-fill grid intact.
+
+**Deferred (mockup notes call these "design later" — not built, by decision):**
+- **Full-screen search experience** — the mockup's tap-to-fullscreen search is undesigned; we
+  kept the existing inline search (restyled). A real full-screen search is a future task.
+- **Dedicated `/explore/[type]` browse page** — "See all →" uses the existing `?type=` filtered
+  grid instead; no new route built.
+- **"Building" marker** is hardcoded to `{music, podcast}` (editorial, no catalog-status field) —
+  revisit if more catalogs become "building".
 
 ---
 
