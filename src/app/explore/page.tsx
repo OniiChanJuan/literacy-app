@@ -1038,6 +1038,9 @@ function ExploreMobileStyles() {
       @media (max-width: 640px) {
         .explore-desktop-chips { display: none !important; }
         .explore-desktop-only { display: none !important; }
+        /* Per-type row cards shrink to ~110px (mockup density) via the shared
+           card tokens; the type-selected 2-col grid overrides --card-w below. */
+        .explore-root { --card-w: 110px; --card-cover-h: 165px; }
         .explore-mobile-chips { display: flex; gap: 3px; padding: 0 0 12px; margin: 0; }
 
         .explore-mobile-filterbar { display: flex; align-items: center; gap: 8px; padding: 0 0 14px; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.04); }
