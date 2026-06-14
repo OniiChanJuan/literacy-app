@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { TYPES, hexToRgba, type Item, type Person } from "@/lib/data";
 import { useIsMobile } from "@/lib/use-is-mobile";
 import { getBestExtScore, formatExtScores } from "@/lib/format-ext-score";
-import { getFranchiseForItem } from "@/lib/franchises";
+import { useItemFranchise } from "@/lib/use-item-franchise";
 import { useRatings } from "@/lib/ratings-context";
 import { useLibrary, type LibraryStatus } from "@/lib/library-context";
 import ShareButton from "./share-button";
@@ -114,13 +114,10 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
     : (ratingCount > 0 ? parseFloat(agg!.avg) : null);
   const robust = ratingCount >= 10 && hasExternal;
 
-  // ── Franchise/series strip — same source as the desktop FranchiseBadge
-  // (lib/franchises), so the /franchise/[slug] link is guaranteed valid and
-  // the strip is hidden for standalone items. Position derived from the
-  // franchise's item order. */
-  const franchise = getFranchiseForItem(routeId);
-  const franchisePos = franchise ? franchise.items.findIndex((it) => it.routeId === routeId) : -1;
-  const franchiseTotal = franchise ? franchise.items.length : 0;
+  // ── Franchise/series strip — DB-backed (same shared hook as the desktop
+  // FranchiseBadge), linking the numeric /franchise/[id] route. Renders for
+  // any item in a DB franchise; hidden for standalone items.
+  const franchise = useItemFranchise(typeof item.id === "number" ? item.id : undefined);
 
   // ── Contributing scores ("What goes into this") — external scores from
   // item.ext, plus Community (>=10 ratings) and Recommend% (>=5 recommend
@@ -190,7 +187,7 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
 
       {/* Franchise / series strip — hidden for standalone items */}
       {franchise && (
-        <Link href={`/franchise/${franchise.slug}`} className="mid-franchise" aria-label={`Part of ${franchise.name}`}>
+        <Link href={`/franchise/${franchise.id}`} className="mid-franchise" aria-label={`Part of ${franchise.name}`}>
           <div className="mid-franchise-thumb" style={{ background: `linear-gradient(135deg, ${hexToRgba(t.color, 0.18)}, ${hexToRgba(t.color, 0.05)})` }}>
             {hasCover
               // eslint-disable-next-line @next/next/no-img-element
@@ -201,7 +198,7 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
             <div className="mid-franchise-label">Part of</div>
             <div className="mid-franchise-name">{franchise.name}</div>
             <div className="mid-franchise-pos">
-              {franchisePos >= 0 ? `${t.label.replace(/s$/, "")} ${franchisePos + 1} of ${franchiseTotal}` : `${franchiseTotal} entries`}
+              {franchise.totalItems > 0 ? `${franchise.totalItems} entries` : "Series"}
               {item.year ? ` · ${item.year}` : ""}
             </div>
           </div>
