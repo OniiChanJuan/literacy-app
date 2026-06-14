@@ -9,6 +9,7 @@ import { getTagDisplayName } from "@/lib/tags";
 import Card from "@/components/card";
 import UpcomingCard from "@/components/upcoming-card";
 import ScrollRow from "@/components/scroll-row";
+import BottomSheet from "@/components/bottom-sheet";
 import { useScrollRestore } from "@/lib/use-scroll-restore";
 import { getItemUrl } from "@/lib/slugs";
 import { isAnime } from "@/lib/anime";
@@ -79,6 +80,11 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "oldest", label: "Oldest" },
   { value: "az", label: "A-Z" },
 ];
+// Compact labels for the mobile sort button on the filter bar.
+const SORT_SHORT: Record<SortOption, string> = {
+  rating: "Rating", popular: "Popular", top_rated: "Acclaimed",
+  hidden_gems: "Hidden gems", newest: "Newest", oldest: "Oldest", az: "A–Z",
+};
 
 export default function ExplorePage() {
   return (
@@ -237,8 +243,11 @@ function ExploreContent() {
     setSelectedGenres((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]);
   };
 
-  // Which "All X" dropdown panel is open
+  // Which "All X" dropdown panel is open (desktop)
   const [openPanel, setOpenPanel] = useState<"genre" | "vibe" | "tag" | null>(null);
+  // Mobile filter / sort bottom sheets
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
 
   // Multi-select toggles — each category independent
   const toggleStorefrontGenre = (g: string) => {
@@ -494,9 +503,29 @@ function ExploreContent() {
         })}
       </div>
 
-      {/* Active filter banner — shown when a sort or type filter is applied */}
+      {/* Mobile filter bar — FILTERS sheet + applied state + sort sheet */}
+      {(() => {
+        const parts: string[] = [];
+        if (selectedGenres.length > 0) parts.push(...selectedGenres);
+        if (selectedVibe && VIBES[selectedVibe]) parts.push(VIBES[selectedVibe].label);
+        if (selectedTag) parts.push(getTagDisplayName(selectedTag));
+        return (
+          <div className="explore-mobile-filterbar">
+            <button className="exp-filter-btn" onClick={() => setFilterSheetOpen(true)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+              FILTERS
+            </button>
+            <div className="exp-filter-applied">
+              {parts.length > 0 ? <>Filters: <strong>{parts.join(", ")}</strong></> : <>Showing <strong>all</strong></>}
+            </div>
+            <button className="exp-sort-btn" onClick={() => setSortSheetOpen(true)}>↓ {SORT_SHORT[sort].toUpperCase()}</button>
+          </div>
+        );
+      })()}
+
+      {/* Active filter banner — shown when a sort or type filter is applied (desktop) */}
       {(sort !== "rating" || selectedType) && (
-        <div style={{
+        <div className="explore-desktop-only" style={{
           display: "flex", alignItems: "center", gap: 8,
           padding: "8px 16px", marginBottom: 12,
           background: "rgba(255,255,255,0.03)",
@@ -521,6 +550,8 @@ function ExploreContent() {
       {/* ── FILTERED VIEW: media type selected ─────────────────────────── */}
       {selectedType && (
         <div style={{ transition: "opacity 0.15s", opacity: 1 }}>
+          {/* Desktop genre/vibe/sort controls — hidden on mobile (FILTERS sheet handles these) */}
+          <div className="explore-desktop-only">
           {/* Genre sub-filter pills */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
             {typeGenres.map((g) => {
@@ -602,6 +633,7 @@ function ExploreContent() {
               </button>
             </div>
           )}
+          </div>
 
           {/* Unified grid — shows all items for this type (with optional genre/vibe filters) */}
           {gridLoading && gridItems.length === 0 ? (
@@ -639,9 +671,9 @@ function ExploreContent() {
       {/* ── DEFAULT STOREFRONT: no type selected ───────────────────────── */}
       {!selectedType && (
         <>
-          {/* ── Three always-visible filter rows ─────────────────────── */}
+          {/* ── Three always-visible filter rows (desktop; mobile uses the FILTERS sheet) ── */}
           {/* Pill containers are fixed calc(65vw - 150px) wide so all three rows end at the same point */}
-          <div style={{ marginBottom: 8 }}>
+          <div className="explore-desktop-only" style={{ marginBottom: 8 }}>
             {/* ROW 1 — Genre */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(232,72,85,0.5)", flexShrink: 0, width: 42 }}>Genre</span>
@@ -925,11 +957,75 @@ function ExploreContent() {
           </div>
         ) : null;
       })()}
+
+      {/* ── Mobile filter sheet (Genre / Vibe / Tag) ─────────────────────── */}
+      <BottomSheet open={filterSheetOpen} onClose={() => setFilterSheetOpen(false)} title="Filters">
+        <div className="exp-sheet">
+          <ExpFilterGroup label="Genre" color="#E84855">
+            {dropdownGenres.map((g) => {
+              const active = selectedGenres.includes(g);
+              return (
+                <button key={g} onClick={() => toggleStorefrontGenre(g)} className={`exp-sheet-pill${active ? " exp-sheet-pill-active" : ""}`}
+                  style={{ ["--p" as string]: "#E84855" }}>{g}</button>
+              );
+            })}
+          </ExpFilterGroup>
+          <ExpFilterGroup label="Vibe" color="#9B5DE5">
+            {dropdownVibes.map((v) => {
+              const vibe = VIBES[v];
+              const active = selectedVibe === v;
+              return (
+                <button key={v} onClick={() => toggleStorefrontVibe(v)} className={`exp-sheet-pill${active ? " exp-sheet-pill-active" : ""}`}
+                  style={{ ["--p" as string]: "#9B5DE5" }}>{vibe ? `${vibe.icon} ${vibe.label}` : v}</button>
+              );
+            })}
+          </ExpFilterGroup>
+          <ExpFilterGroup label="Tag" color="#2EC4B6">
+            {dropdownTags.map((slug) => {
+              const active = selectedTag === slug;
+              return (
+                <button key={slug} onClick={() => toggleStorefrontTag(slug)} className={`exp-sheet-pill${active ? " exp-sheet-pill-active" : ""}`}
+                  style={{ ["--p" as string]: "#2EC4B6" }}>{getTagDisplayName(slug)}</button>
+              );
+            })}
+          </ExpFilterGroup>
+          <div className="exp-sheet-actions">
+            <button className="exp-sheet-clear" onClick={clearFilters}>Clear all</button>
+            <button className="exp-sheet-apply" onClick={() => setFilterSheetOpen(false)}>Done</button>
+          </div>
+        </div>
+      </BottomSheet>
+
+      {/* ── Mobile sort sheet ────────────────────────────────────────────── */}
+      <BottomSheet open={sortSheetOpen} onClose={() => setSortSheetOpen(false)} title="Sort by">
+        <div className="exp-sort-list">
+          {SORT_OPTIONS.map((o) => (
+            <button
+              key={o.value}
+              className={`exp-sort-row${sort === o.value ? " exp-sort-row-active" : ""}`}
+              onClick={() => { setSort(o.value); setSortSheetOpen(false); }}
+            >
+              {o.label}
+              {sort === o.value && <span className="exp-sort-check">✓</span>}
+            </button>
+          ))}
+        </div>
+      </BottomSheet>
     </div>
   );
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────
+
+/** A labeled group of multi-select chips inside the mobile filter sheet. */
+function ExpFilterGroup({ label, color, children }: { label: string; color: string; children: React.ReactNode }) {
+  return (
+    <div className="exp-sheet-group">
+      <div className="exp-sheet-group-label" style={{ color }}>{label}</div>
+      <div className="exp-sheet-group-pills">{children}</div>
+    </div>
+  );
+}
 
 /** Mobile Explore stylesheet — the desktop/mobile control toggle, the 9-up
  *  type-chip row, the filter bar, and the card tokens. CSS media-query swap,
@@ -938,9 +1034,18 @@ function ExploreMobileStyles() {
   return (
     <style>{`
       .explore-mobile-chips { display: none; }
+      .explore-mobile-filterbar { display: none; }
       @media (max-width: 640px) {
         .explore-desktop-chips { display: none !important; }
+        .explore-desktop-only { display: none !important; }
         .explore-mobile-chips { display: flex; gap: 3px; padding: 0 0 12px; margin: 0; }
+
+        .explore-mobile-filterbar { display: flex; align-items: center; gap: 8px; padding: 0 0 14px; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .exp-filter-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(46,196,182,0.06); border: 1px solid rgba(46,196,182,0.25); border-radius: 6px; font-size: 11px; color: #2EC4B6; letter-spacing: 0.5px; line-height: 1; font-family: inherit; cursor: pointer; flex-shrink: 0; }
+        .exp-filter-applied { flex: 1; min-width: 0; font-size: 11px; color: rgba(232,230,225,0.45); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .exp-filter-applied strong { color: rgba(232,230,225,0.75); font-weight: 500; }
+        .exp-sort-btn { flex-shrink: 0; background: none; border: none; font-size: 10px; color: rgba(232,230,225,0.45); letter-spacing: 0.5px; font-family: inherit; cursor: pointer; padding: 0; }
+
         .exp-chip {
           flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center;
           gap: 2px; padding: 6px 2px; border-radius: 12px; border: 1px solid;
@@ -954,6 +1059,20 @@ function ExploreMobileStyles() {
           width: 5px; height: 5px; background: #DAA520; border-radius: 50%; opacity: 0.6;
         }
       }
+
+      /* Filter/sort sheet content (BottomSheet renders via a portal — global) */
+      .exp-sheet-group { margin-bottom: 18px; }
+      .exp-sheet-group-label { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+      .exp-sheet-group-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+      .exp-sheet-pill { font-size: 11px; padding: 6px 12px; border-radius: 10px; font-family: inherit; cursor: pointer; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(232,230,225,0.6); }
+      .exp-sheet-pill-active { background: color-mix(in srgb, var(--p) 18%, transparent); border-color: var(--p); color: var(--p); font-weight: 500; }
+      .exp-sheet-actions { display: flex; gap: 10px; padding-top: 12px; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.06); }
+      .exp-sheet-clear { flex: 1; padding: 11px; background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: rgba(232,230,225,0.55); font-size: 12px; font-family: inherit; cursor: pointer; }
+      .exp-sheet-apply { flex: 1; padding: 11px; background: rgba(46,196,182,0.15); border: 1px solid rgba(46,196,182,0.4); border-radius: 8px; color: #2EC4B6; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; }
+      .exp-sort-list { display: flex; flex-direction: column; }
+      .exp-sort-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 4px; background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(232,230,225,0.7); font-size: 14px; font-family: inherit; cursor: pointer; text-align: left; }
+      .exp-sort-row-active { color: #2EC4B6; font-weight: 500; }
+      .exp-sort-check { color: #2EC4B6; }
     `}</style>
   );
 }
