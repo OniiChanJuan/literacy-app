@@ -120,12 +120,6 @@ remainder is minimal:
 
 ## §3 — Documented follow-ups (no chip yet)
 
-- **Franchise data-source unification (higher priority).** The mobile item-detail
-  franchise strip reads only the static `src/lib/franchises.ts`, so it shows only for the
-  hardcoded set — e.g. *LOTR: The Return of the King* is NOT in it → no strip. DB-backed
-  franchises (`/api/franchises?itemId=`) have position data but **no slug** for
-  `/franchise/[slug]` links. Unify so the strip works for all franchise items. *(This is
-  the "LOTR strip not showing" bug.)*
 - **Item-detail section order** — People currently precedes Where-to (mockup has Where-to
   between About and People). Cosmetic, inherent to the Option-C hybrid.
 - **Cross-shelf / Related row labels on item detail** keep the desktop labels ("Across
@@ -138,6 +132,13 @@ remainder is minimal:
   the dedicated CrossShelf Score session. The score-row container is ready for it.
 
 ### Resolved (was flagged, now done)
+- **Franchise data-source unification (the "LOTR strip not showing" bug)** — ✅ fixed:
+  the mobile strip + desktop `FranchiseBadge` now use the shared `useItemFranchise` hook
+  (DB `/api/franchises?itemId=`), linking the numeric `/franchise/[id]` route. Renders for
+  all ~3,988 DB-franchise items with working links (verified: LOTR ROTK → `/franchise/575`,
+  Dune → `/franchise/391`). The static `lib/franchises.ts` was removed. **Signed-in note:**
+  this is public, so verifiable logged-out — confirm on prod that item pages broadly show
+  the franchise strip/badge and links resolve.
 - **Private Library toggle enforcement at the API/DB level** — ✅ verified in Phase 6a:
   `/api/users/[id]` withholds ratings/library/reviews/typeCounts and zeroes the counts when
   private (tested as a non-owner against a real flipped-then-restored user). Not UI-only.
