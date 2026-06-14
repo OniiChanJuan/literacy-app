@@ -640,7 +640,7 @@ function ExploreContent() {
             <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-faint)", fontSize: 13 }}>Loading...</div>
           ) : gridItems.length > 0 ? (
             <>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
+              <div className="explore-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
                 {gridItems.map((item) => <Card key={item.id} item={item} />)}
               </div>
               {gridHasMore && (
@@ -1040,7 +1040,16 @@ function ExploreMobileStyles() {
         .explore-desktop-only { display: none !important; }
         /* Per-type row cards shrink to ~110px (mockup density) via the shared
            card tokens; the type-selected 2-col grid overrides --card-w below. */
-        .explore-root { --card-w: 110px; --card-cover-h: 165px; }
+        .explore-root { --card-w: 110px; --card-cover-h: 165px; overflow-x: clip; }
+        /* Type-selected view → 2-col poster grid (cards fill the cell). Same
+           overflow containment as Library/Profile (HoverPreview wrapper fill). */
+        .explore-type-grid {
+          --card-w: 100%; --card-cover-h: 220px;
+          display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important;
+        }
+        .explore-type-grid > * { min-width: 0; width: 100% !important; }
+        .explore-type-grid a { max-width: 100%; }
+        .explore-type-grid img { max-width: 100%; }
         .explore-mobile-chips { display: flex; gap: 3px; padding: 0 0 12px; margin: 0; }
 
         .explore-mobile-filterbar { display: flex; align-items: center; gap: 8px; padding: 0 0 14px; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.04); }
