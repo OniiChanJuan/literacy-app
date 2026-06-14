@@ -215,7 +215,7 @@ export function ItemPageRender({
       <div className="content-width item-detail-deskrow">
         <BackButton />
         {parentGame && <DlcBadge parentId={parentGame.id} parentTitle={parentGame.title} subtype={itemSubtype} />}
-        <FranchiseBadge routeId={routeId} />
+        <FranchiseBadge itemId={typeof item.id === "number" ? item.id : undefined} />
       </div>
 
       {/* ZONE 1 — HERO BANNER */}

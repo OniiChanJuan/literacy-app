@@ -1,13 +1,15 @@
-import Link from "next/link";
-import { getFranchiseForItem, type Franchise } from "@/lib/franchises";
+"use client";
 
-export default function FranchiseBadge({ routeId }: { routeId: string }) {
-  const franchise = getFranchiseForItem(routeId);
+import Link from "next/link";
+import { useItemFranchise } from "@/lib/use-item-franchise";
+
+export default function FranchiseBadge({ itemId }: { itemId: number | undefined }) {
+  const franchise = useItemFranchise(itemId);
   if (!franchise) return null;
 
   return (
     <Link
-      href={`/franchise/${franchise.slug}`}
+      href={`/franchise/${franchise.id}`}
       style={{
         display: "inline-flex",
         alignItems: "center",
