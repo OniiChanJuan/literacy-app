@@ -423,12 +423,47 @@ function ExploreContent() {
     );
   }
 
+  // Mobile type chips share the desktop ordering (movie, tv, anime, then the rest).
+  const mobileTypeKeys = [...TYPE_ORDER.slice(0, 2), "anime", ...TYPE_ORDER.slice(2)] as string[];
+  const onChipTap = (k: string) => {
+    if (selectedType === k) { clearAll(); }
+    else { setSelectedType(k); setSelectedGenres([]); setSelectedVibe(null); setSelectedTag(null); }
+  };
+
   return (
-    <div className="content-width">
+    <div className="content-width explore-root">
+      <ExploreMobileStyles />
       <SearchBar search={search} setSearch={setSearch} />
 
-      {/* Compact media type row */}
-      <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10, marginBottom: 20 }}>
+      {/* Type chips — non-scrolling 9-up row (label over count), mobile only */}
+      <div className="explore-mobile-chips">
+        {mobileTypeKeys.map((k) => {
+          const isAnimeType = k === "anime";
+          const t = isAnimeType ? { color: "#FF6B6B", label: "Anime" } : TYPES[k as MediaType];
+          const active = selectedType === k;
+          const count = isAnimeType ? (typeCounts.anime || 0) : (typeCounts[k] || 0);
+          const label = k === "podcast" ? "Pods" : k === "tv" ? "TV" : t.label;
+          const building = k === "music" || k === "podcast";
+          return (
+            <button
+              key={k}
+              onClick={() => onChipTap(k)}
+              className={`exp-chip${active ? " exp-chip-active" : ""}${building ? " exp-chip-building" : ""}`}
+              style={{
+                color: t.color,
+                background: active ? `${t.color}26` : `${t.color}14`,
+                borderColor: active ? `${t.color}99` : `${t.color}33`,
+              }}
+            >
+              <span className="exp-chip-label">{label}</span>
+              {count > 0 && <span className="exp-chip-count">{count.toLocaleString()}</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Compact media type row (desktop) */}
+      <div className="explore-desktop-chips" style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10, marginBottom: 20 }}>
         {([...TYPE_ORDER.slice(0, 2), "anime", ...TYPE_ORDER.slice(2)] as string[]).map((k) => {
           const isAnimeType = k === "anime";
           const t = isAnimeType ? { color: "#FF6B6B", label: "Anime", icon: "🎌" } : TYPES[k as MediaType];
@@ -895,6 +930,33 @@ function ExploreContent() {
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────
+
+/** Mobile Explore stylesheet — the desktop/mobile control toggle, the 9-up
+ *  type-chip row, the filter bar, and the card tokens. CSS media-query swap,
+ *  scoped to .explore-root; desktop is untouched >640. */
+function ExploreMobileStyles() {
+  return (
+    <style>{`
+      .explore-mobile-chips { display: none; }
+      @media (max-width: 640px) {
+        .explore-desktop-chips { display: none !important; }
+        .explore-mobile-chips { display: flex; gap: 3px; padding: 0 0 12px; margin: 0; }
+        .exp-chip {
+          flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center;
+          gap: 2px; padding: 6px 2px; border-radius: 12px; border: 1px solid;
+          font-family: inherit; cursor: pointer; line-height: 1; position: relative;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .exp-chip-label { font-size: 9px; font-weight: 600; letter-spacing: 0.2px; text-align: center; white-space: nowrap; }
+        .exp-chip-count { font-size: 8px; opacity: 0.7; font-weight: 400; }
+        .exp-chip-building::after {
+          content: ''; position: absolute; top: 3px; right: 3px;
+          width: 5px; height: 5px; background: #DAA520; border-radius: 50%; opacity: 0.6;
+        }
+      }
+    `}</style>
+  );
+}
 
 function SearchBar({ search, setSearch }: { search: string; setSearch: (s: string) => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
