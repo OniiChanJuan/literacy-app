@@ -292,7 +292,8 @@ function ExploreContent() {
     const hasResults = totalResults > 0;
 
     return (
-      <div className="content-width">
+      <div className="content-width explore-root">
+        <ExploreMobileStyles />
         <SearchBar search={search} setSearch={setSearch} />
         {searching && <div style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 16 }}>Searching across all media...</div>}
         {!searching && searchResults && (
