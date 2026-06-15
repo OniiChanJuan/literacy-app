@@ -60,7 +60,7 @@ async function attachConnectionRecs(prisma: typeof import("@/lib/prisma").prisma
   const ids = cards.map((c) => c.id);
   const recs = await prisma.connectionRec.findMany({
     where: { connectionId: { in: ids }, recItemId: { not: null } },
-    select: { connectionId: true, recItemId: true, curatedStrength: true, position: true },
+    select: { id: true, connectionId: true, recItemId: true, curatedStrength: true, position: true },
   });
   const byCard = new Map<number, typeof recs>();
   for (const r of recs) (byCard.get(r.connectionId) ?? byCard.set(r.connectionId, []).get(r.connectionId)!).push(r);
@@ -68,7 +68,8 @@ async function attachConnectionRecs(prisma: typeof import("@/lib/prisma").prisma
     const rs = (byCard.get(c.id) ?? []).slice().sort(
       (a, b) => (STRENGTH_BASE[b.curatedStrength] - STRENGTH_BASE[a.curatedStrength]) || a.position - b.position,
     );
-    c.recommendedItems = rs.map((r) => ({ item_id: r.recItemId }));
+    // carry rec_id so the per-rec thumbs (mobile) can target connection_rec_votes
+    c.recommendedItems = rs.map((r) => ({ item_id: r.recItemId, rec_id: r.id }));
     c.qualityScore = rs.length ? Math.max(...rs.map((r) => STRENGTH_BASE[r.curatedStrength])) : 0.6;
   }
 }
@@ -89,6 +90,10 @@ interface ItemThumb {
   type: string;
   cover: string | null;
   slug: string | null;
+  // Per-rec vote wiring (mobile per-card thumbs). recId = connection_recs.id;
+  // userVote = the signed-in user's per-rec vote. Capture-only.
+  recId?: number;
+  userVote?: -1 | 0 | 1;
 }
 interface ConnectionOut {
   id: number;
@@ -416,12 +421,30 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // Per-rec votes for the signed-in user, so each mobile card shows its
+    // selected thumb state. Capture-only — read here, never feeds ranking.
+    const votableRecIds = chosen.flatMap((c: any) =>
+      (Array.isArray(c.recommendedItems) ? c.recommendedItems : []).map((r: any) => Number(r.rec_id)).filter(Boolean),
+    );
+    const recVoteMap = new Map<number, number>();
+    if (userId && votableRecIds.length > 0) {
+      const rv = await prisma.connectionRecVote.findMany({
+        where: { userId, connectionRecId: { in: votableRecIds } },
+        select: { connectionRecId: true, vote: true },
+      });
+      for (const v of rv) recVoteMap.set(v.connectionRecId, v.vote);
+    }
+
     const out: ConnectionOut[] = chosen
       .filter((c: any) => c.sourceItem)
       .map((c: any) => {
         const recsRaw = Array.isArray(c.recommendedItems) ? c.recommendedItems : [];
         const recs: ItemThumb[] = recsRaw
-          .map((r: any) => recMap.get(Number(r.item_id)))
+          .map((r: any) => {
+            const item = recMap.get(Number(r.item_id));
+            if (!item) return null;
+            return { ...item, recId: r.rec_id, userVote: (recVoteMap.get(Number(r.rec_id)) ?? 0) as -1 | 0 | 1 };
+          })
           .filter(Boolean) as ItemThumb[];
 
         // Affinity was already computed during the personalized slate

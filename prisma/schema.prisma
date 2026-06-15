@@ -43,6 +43,7 @@ model User {
   imports         Import[]
   tagSuggestions  UserTagSuggestion[]
   crossConnectionVotes CrossConnectionVote[]
+  connectionRecVotes   ConnectionRecVote[]
   connectionDismissals ConnectionDismissal[]
   connectionEvents     ConnectionEvent[]
   connectionCredits    ConnectionCredit[]
@@ -588,6 +589,7 @@ model ConnectionRec {
   connection   CrossConnection         @relation(fields: [connectionId], references: [id], onDelete: Cascade)
   recItem      Item?                   @relation(fields: [recItemId], references: [id], onDelete: SetNull)
   pendingTitle ConnectionPendingTitle? @relation(fields: [pendingTitleId], references: [id], onDelete: SetNull)
+  votes        ConnectionRecVote[]
 
   @@unique([connectionId, recItemId])     // dedupe a resolved rec within a card
   @@index([connectionId])
@@ -699,4 +701,23 @@ model CrossConnectionVote {
   @@id([userId, connectionId])
   @@index([connectionId])
   @@map("cross_connection_votes")
+}
+
+/// One vote per user per individual recommendation (a connection_recs row).
+/// Finer-grained than CrossConnectionVote (which is per-card). +1/-1. Mobile's
+/// per-rec thumbs write here; desktop's per-connection thumbs keep using
+/// cross_connection_votes — separate clean lanes. CAPTURE-ONLY: recorded for
+/// future Stage-3 use, NEVER mutates curated_strength (the pre-50-user decoupling).
+model ConnectionRecVote {
+  userId          String   @db.Uuid @map("user_id")
+  connectionRecId Int      @map("connection_rec_id")
+  vote            Int // +1 or -1
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  rec  ConnectionRec @relation(fields: [connectionRecId], references: [id], onDelete: Cascade)
+  user User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, connectionRecId])
+  @@index([connectionRecId])
+  @@map("connection_rec_votes")
 }
