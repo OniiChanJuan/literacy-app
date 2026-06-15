@@ -106,10 +106,13 @@ remainder is minimal:
 
 ## §2 — Tracked follow-up chips (spawned, one-click to start)
 
-- **`task_58550134` — Desktop People feed threading.** The desktop People activity feed
-  has persisted votes but no reply-thread UI (mobile has it); the non-functional desktop
-  "Reply" span was removed. Bring the mobile lazy-loaded threaded-reply experience to the
-  desktop `ActivityCard` (reuse the shared hooks/helpers in `people/page.tsx`).
+- **`task_58550134` — Desktop People feed threading.** ⚠️ **UNVERIFIED on main** (committed
+  `c5bd3c9`, pushed) — landed deliberately as an owner-approved exception to verify-before-commit.
+  Verify signed-in on https://crossshelf.app (desktop 1280, authed account following users whose
+  reviews have replies): **(1) thread expand/collapse, (2) lazy reply load, (3) vote persistence.**
+  Fix forward if any of the three is broken. The original chip scope (bring the mobile lazy-loaded
+  threaded-reply experience to the desktop `ActivityCard`, reusing the shared hooks/helpers in
+  `people/page.tsx`) is implemented; only the interactive signed-in confirmation remains.
 - **`task_86be861b` — Profile cards: owner's rating + Rating sort.** Mobile profile
   collection cards reuse `<Card>`, which shows the *viewer's* rating, not the owner's
   (pre-existing, same on desktop). Add owner-score-per-entry to `/api/users/[id]` (gated
