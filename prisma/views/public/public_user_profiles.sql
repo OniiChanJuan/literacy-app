@@ -1,0 +1,12 @@
+SELECT
+  id,
+  name,
+  username,
+  bio,
+  avatar,
+  image,
+  member_number,
+  created_at,
+  is_private
+FROM
+  users;
