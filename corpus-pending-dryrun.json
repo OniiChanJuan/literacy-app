@@ -1,0 +1,90 @@
+{
+ "unresolvedAnchors": [
+  {
+   "title": "Won't You Be My Neighbor?",
+   "type": "movie"
+  },
+  {
+   "title": "Gone Girl",
+   "type": "book"
+  },
+  {
+   "title": "Mistborn",
+   "type": "book"
+  },
+  {
+   "title": "The Silence of the Lambs",
+   "type": "book"
+  },
+  {
+   "title": "The Call of Cthulhu",
+   "type": "book"
+  },
+  {
+   "title": "The Power Broker",
+   "type": "book"
+  }
+ ],
+ "pendingTitles": {
+  "Movie": [
+   "Begin Again",
+   "Glengarry Glen Ross",
+   "Kill Your Darlings",
+   "The Death of Stalin",
+   "The Fountain",
+   "The Last of Sheila",
+   "The Stepford Wives"
+  ],
+  "Book": [
+   "20,000 Leagues Under the Sea",
+   "Altered Carbon",
+   "Atlas Shrugged",
+   "Battle Royale",
+   "Blindsight",
+   "Brideshead Revisited",
+   "Fear and Loathing in Las Vegas",
+   "Fight Club",
+   "From Blood and Ash",
+   "Gone Girl",
+   "If We Were Villains",
+   "Lore Olympus",
+   "Mistborn",
+   "Murderbot Diaries",
+   "My Side of the Mountain",
+   "Shōgun (novel)",
+   "Snow Crash",
+   "The Call of Cthulhu",
+   "The City of Ember",
+   "The Count of Monte Cristo",
+   "The Expanse",
+   "The Fountainhead",
+   "The Girl with All the Gifts",
+   "The Hating Game",
+   "The House of the Spirits",
+   "The Long Way to a Small, Angry Planet",
+   "The Power Broker",
+   "The Silence of the Lambs",
+   "The Time Traveler's Wife",
+   "The Wheel of Time",
+   "Uprooted",
+   "We",
+   "World War Z"
+  ],
+  "TV": [
+   "Buffy the Vampire Slayer",
+   "Critical Role",
+   "Little Fires Everywhere",
+   "Parks and Recreation",
+   "Penny Dreadful",
+   "Russian Doll",
+   "Station Eleven",
+   "The Corner",
+   "Wolf Hall",
+   "Years and Years"
+  ],
+  "Anime": [
+   "Hajime no Ippo",
+   "Record of Lodoss War"
+  ]
+ }
+}

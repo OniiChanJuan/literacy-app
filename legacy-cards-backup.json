@@ -1,0 +1,580 @@
+[
+ {
+  "id": 4,
+  "sourceItemId": 525,
+  "reason": "Something is deeply wrong with reality and understanding it only makes it worse. Each turns curiosity into a curse.",
+  "recommendedItems": [
+   {
+    "type": "manga",
+    "title": "Uzumaki: Spiral into Horror",
+    "item_id": 20437
+   },
+   {
+    "type": "movie",
+    "title": "Annihilation",
+    "item_id": 3659
+   }
+  ]
+ },
+ {
+  "id": 7,
+  "sourceItemId": 15999,
+  "reason": "Learning to wield power while learning who you are. Each captures the wonder of discovering what you're capable of.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Avatar: The Last Airbender",
+    "item_id": 295
+   },
+   {
+    "type": "game",
+    "title": "Ni no Kuni: Wrath of the White Witch",
+    "item_id": 11750
+   }
+  ]
+ },
+ {
+  "id": 9,
+  "sourceItemId": 10,
+  "reason": "What happens when humanity meets something truly alien? Each explores first contact through politics, language, and power.",
+  "recommendedItems": [
+   {
+    "type": "movie",
+    "title": "Arrival",
+    "item_id": 3137
+   },
+   {
+    "type": "game",
+    "title": "Stellaris",
+    "item_id": 11605
+   }
+  ]
+ },
+ {
+  "id": 11,
+  "sourceItemId": 950,
+  "reason": "Ragtag crews drifting through space. Jazz, humor, and heart hiding behind a tough exterior.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Firefly",
+    "item_id": 10650
+   },
+   {
+    "type": "movie",
+    "title": "Guardians of the Galaxy",
+    "item_id": 1943
+   }
+  ]
+ },
+ {
+  "id": 13,
+  "sourceItemId": 134,
+  "reason": "In space, no one can hear you scream. Each makes the void feel suffocating and hostile.",
+  "recommendedItems": [
+   {
+    "type": "game",
+    "title": "Dead Space",
+    "item_id": 11239
+   },
+   {
+    "type": "tv",
+    "title": "Planetes",
+    "item_id": 19373
+   }
+  ]
+ },
+ {
+  "id": 14,
+  "sourceItemId": 364,
+  "reason": "Nothing is what it seems. Each burrows into your psyche and makes you question what is real.",
+  "recommendedItems": [
+   {
+    "type": "movie",
+    "title": "Donnie Darko",
+    "item_id": 3350
+   },
+   {
+    "type": "book",
+    "title": "House of Leaves",
+    "item_id": 18
+   }
+  ]
+ },
+ {
+  "id": 16,
+  "sourceItemId": 8287,
+  "reason": "Technology was supposed to save us. Each explores the moment we realize it might destroy us instead.",
+  "recommendedItems": [
+   {
+    "type": "book",
+    "title": "1984",
+    "item_id": 17712
+   },
+   {
+    "type": "game",
+    "title": "NieR: Automata",
+    "item_id": 11228
+   }
+  ]
+ },
+ {
+  "id": 6,
+  "sourceItemId": 2008,
+  "reason": "Fantasy where magic has costs and rules matter. Each builds a world so deep you could live in it.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Fullmetal Alchemist: Brotherhood",
+    "item_id": 301
+   },
+   {
+    "type": "game",
+    "title": "Dragon Age: Origins",
+    "item_id": 11223
+   }
+  ]
+ },
+ {
+  "id": 8,
+  "sourceItemId": 1,
+  "reason": "Rain-soaked neon futures where the line between human and machine has blurred beyond recognition.",
+  "recommendedItems": [
+   {
+    "type": "book",
+    "title": "Neuromancer",
+    "item_id": 2
+   },
+   {
+    "type": "game",
+    "title": "Cyberpunk 2077",
+    "item_id": 4
+   }
+  ]
+ },
+ {
+  "id": 19,
+  "sourceItemId": 111,
+  "reason": "The horror isn't the monster — it's the feeling that you're losing your mind. Each makes sanity itself feel fragile.",
+  "recommendedItems": [
+   {
+    "type": "manga",
+    "title": "Uzumaki: Spiral into Horror",
+    "item_id": 20437
+   },
+   {
+    "type": "game",
+    "title": "Amnesia: The Dark Descent",
+    "item_id": 11380
+   }
+  ]
+ },
+ {
+  "id": 20,
+  "sourceItemId": 3306,
+  "reason": "Grief twisted into something monstrous. Each uses personal trauma as the foundation for genuinely terrifying horror.",
+  "recommendedItems": [
+   {
+    "type": "manga",
+    "title": "Tomie",
+    "item_id": 20510
+   },
+   {
+    "type": "game",
+    "title": "Silent Hill 2",
+    "item_id": 547
+   }
+  ]
+ },
+ {
+  "id": 21,
+  "sourceItemId": 3258,
+  "reason": "Something is deeply wrong with this place and you need to get out. But what you discover is worse than you imagined.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "The Promised Neverland",
+    "item_id": 10431
+   },
+   {
+    "type": "game",
+    "title": "Soma",
+    "item_id": 11317
+   }
+  ]
+ },
+ {
+  "id": 24,
+  "sourceItemId": 27,
+  "reason": "Watching a brilliant person slowly become the monster. The thrill of rooting for someone you know is wrong.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Death Note",
+    "item_id": 323
+   },
+   {
+    "type": "movie",
+    "title": "The Talented Mr. Ripley",
+    "item_id": 4545
+   }
+  ]
+ },
+ {
+  "id": 25,
+  "sourceItemId": 36,
+  "reason": "Cities where crime reveals something rotten in the system itself. Each detective discovers the problem is bigger than any one case.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Psycho-Pass",
+    "item_id": 8515
+   },
+   {
+    "type": "game",
+    "title": "L.A. Noire",
+    "item_id": 11259
+   }
+  ]
+ },
+ {
+  "id": 28,
+  "sourceItemId": 3219,
+  "reason": "Murder mystery as entertainment. Each makes solving crimes genuinely fun with investigators you can't help but love.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Detective Conan",
+    "item_id": 430
+   },
+   {
+    "type": "game",
+    "title": "Phoenix Wright: Ace Attorney",
+    "item_id": 11559
+   }
+  ]
+ },
+ {
+  "id": 35,
+  "sourceItemId": 7365,
+  "reason": "Life doesn't have boss fights. Each finds meaning in the quiet, ordinary process of growing up and finding your place.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Honey and Clover",
+    "item_id": 19362
+   },
+   {
+    "type": "game",
+    "title": "Stardew Valley",
+    "item_id": 11219
+   }
+  ]
+ },
+ {
+  "id": 37,
+  "sourceItemId": 14588,
+  "reason": "Two people who obviously belong together but refuse to admit it. Each makes the wait delicious.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Kaguya-sama: Love Is War",
+    "item_id": 376
+   },
+   {
+    "type": "game",
+    "title": "Stardew Valley",
+    "item_id": 11219
+   }
+  ]
+ },
+ {
+  "id": 40,
+  "sourceItemId": 1455,
+  "reason": "Power corrupts and thrones demand blood. Each treats politics as the most dangerous game humans play.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Legend of the Galactic Heroes",
+    "item_id": 918
+   },
+   {
+    "type": "game",
+    "title": "Crusader Kings III",
+    "item_id": 11859
+   }
+  ]
+ },
+ {
+  "id": 43,
+  "sourceItemId": 70,
+  "reason": "War doesn't make heroes — it makes survivors. Each strips away glory to show what conflict really costs.",
+  "recommendedItems": [
+   {
+    "type": "manga",
+    "title": "Kingdom",
+    "item_id": 792
+   },
+   {
+    "type": "game",
+    "title": "Spec Ops: The Line",
+    "item_id": 11280
+   }
+  ]
+ },
+ {
+  "id": 45,
+  "sourceItemId": 16089,
+  "reason": "The world ended but one life still matters. Each reduces everything to its essence: keep this person alive.",
+  "recommendedItems": [
+   {
+    "type": "game",
+    "title": "The Last of Us",
+    "item_id": 17
+   },
+   {
+    "type": "movie",
+    "title": "Children of Men",
+    "item_id": 3998
+   }
+  ]
+ },
+ {
+  "id": 46,
+  "sourceItemId": 3187,
+  "reason": "Civilization fell and now we rebuild from the rubble. Each finds hope and humor in the apocalypse.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Dr. STONE",
+    "item_id": 384
+   },
+   {
+    "type": "game",
+    "title": "Fallout: London",
+    "item_id": 1633
+   }
+  ]
+ },
+ {
+  "id": 47,
+  "sourceItemId": 2643,
+  "reason": "Pure wonder without cynicism. Each transports you to a world that feels like a half-remembered dream.",
+  "recommendedItems": [
+   {
+    "type": "book",
+    "title": "The Neverending Story",
+    "item_id": 14328
+   },
+   {
+    "type": "game",
+    "title": "Journey",
+    "item_id": 584
+   }
+  ]
+ },
+ {
+  "id": 51,
+  "sourceItemId": 39,
+  "reason": "Good enough is never enough. Each explores what happens when the drive to be the best consumes everything else.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "BLUE LOCK",
+    "item_id": 8812
+   },
+   {
+    "type": "game",
+    "title": "Rocket League",
+    "item_id": 11241
+   }
+  ]
+ },
+ {
+  "id": 52,
+  "sourceItemId": 39,
+  "reason": "Music demands everything. Each shows what happens when talent meets obsession.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Beck: Mongolian Chop Squad",
+    "item_id": 10263
+   },
+   {
+    "type": "game",
+    "title": "Rock Band",
+    "item_id": 12260
+   }
+  ]
+ },
+ {
+  "id": 61,
+  "sourceItemId": 1918,
+  "reason": "Heroism as burden, not glory. Each villain holds up a mirror showing how close the hero is to becoming what they fight.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "My Hero Academia",
+    "item_id": 327
+   },
+   {
+    "type": "game",
+    "title": "Batman: Arkham City",
+    "item_id": 1928
+   }
+  ]
+ },
+ {
+  "id": 63,
+  "sourceItemId": 84,
+  "reason": "Reality is a construct and you just noticed the seams. Each explores consciousness in ways that rewire how you think.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Serial Experiments Lain",
+    "item_id": 10713
+   },
+   {
+    "type": "game",
+    "title": "The Talos Principle",
+    "item_id": 11414
+   }
+  ]
+ },
+ {
+  "id": 64,
+  "sourceItemId": 3137,
+  "reason": "Slow down and really look. Each rewards patience with a completely new way of seeing the world.",
+  "recommendedItems": [
+   {
+    "type": "manga",
+    "title": "Mushishi",
+    "item_id": 842
+   },
+   {
+    "type": "game",
+    "title": "The Witness",
+    "item_id": 11385
+   }
+  ]
+ },
+ {
+  "id": 66,
+  "sourceItemId": 3468,
+  "reason": "Absolute chaos delivered with impeccable style. Each is a reminder that art doesn't have to be serious to be brilliant.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Gintama: Enchousen",
+    "item_id": 917
+   },
+   {
+    "type": "game",
+    "title": "Untitled Goose Game",
+    "item_id": 11645
+   }
+  ]
+ },
+ {
+  "id": 73,
+  "sourceItemId": 3577,
+  "reason": "Adventure in its purest form. Each is a love letter to the idea that heroes exist and quests matter.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "One Piece",
+    "item_id": 298
+   },
+   {
+    "type": "game",
+    "title": "The Legend of Zelda: Majora's Mask 3D",
+    "item_id": 540
+   }
+  ]
+ },
+ {
+  "id": 81,
+  "sourceItemId": 2894,
+  "reason": "Fairy tales with teeth. Each starts sweet and reveals something dark enough to haunt you.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Puella Magi Madoka Magica",
+    "item_id": 10819
+   },
+   {
+    "type": "game",
+    "title": "Fran Bow",
+    "item_id": 12267
+   }
+  ]
+ },
+ {
+  "id": 83,
+  "sourceItemId": 3903,
+  "reason": "The art in martial arts. Each treats combat as a form of expression as beautiful as any dance.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Demon Slayer: Kimetsu no Yaiba Entertainment District Arc",
+    "item_id": 970
+   },
+   {
+    "type": "game",
+    "title": "Sifu",
+    "item_id": 11797
+   }
+  ]
+ },
+ {
+  "id": 89,
+  "sourceItemId": 84,
+  "reason": "What if the virtual world mattered more than the real one? Each blurs the line until you forget which side you're on.",
+  "recommendedItems": [
+   {
+    "type": "tv",
+    "title": "Sword Art Online",
+    "item_id": 8653
+   },
+   {
+    "type": "game",
+    "title": "VRChat",
+    "item_id": 12498
+   }
+  ]
+ },
+ {
+  "id": 92,
+  "sourceItemId": 1918,
+  "reason": "Gotham's greatest detective in his natural habitat. Each version of Batman adds a new shadow to the legend.",
+  "recommendedItems": [
+   {
+    "type": "comic",
+    "title": "Batman: The Long Halloween",
+    "item_id": 2558
+   },
+   {
+    "type": "game",
+    "title": "Batman: Arkham Origins",
+    "item_id": 1930
+   }
+  ]
+ },
+ {
+  "id": 1,
+  "sourceItemId": 1531,
+  "reason": "Same bleak worlds, same unforgiving struggle. Dark Souls was directly inspired by Berserk, and Abercrombie writes fantasy with the same gritty realism.",
+  "recommendedItems": [
+   {
+    "type": "manga",
+    "title": "Berserk",
+    "item_id": 12
+   },
+   {
+    "type": "book",
+    "title": "The First Law Trilogy",
+    "item_id": 16048
+   }
+  ]
+ }
+]
