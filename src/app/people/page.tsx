@@ -554,8 +554,16 @@ function StarsText({ score }: { score: number }) {
   return <span>{"★".repeat(s)}{"☆".repeat(5 - s)}</span>;
 }
 
-/** Inline reply composer (posts via POST /api/reviews). */
-function ReplyComposer({ onCancel, onSubmit }: { onCancel: () => void; onSubmit: (text: string) => Promise<void> }) {
+/** Inline reply composer (posts via POST /api/reviews). The mobile variant uses
+ *  the .pm-* stylesheet; the desktop variant uses inline styles to match the
+ *  inline-styled ActivityCard (so the desktop feed needs no extra CSS). */
+function ReplyComposer({
+  onCancel, onSubmit, variant = "mobile",
+}: {
+  onCancel: () => void;
+  onSubmit: (text: string) => Promise<void>;
+  variant?: "mobile" | "desktop";
+}) {
   const [text, setText] = useState("");
   const [posting, setPosting] = useState(false);
   const submit = async () => {
@@ -563,6 +571,48 @@ function ReplyComposer({ onCancel, onSubmit }: { onCancel: () => void; onSubmit:
     setPosting(true);
     try { await onSubmit(text.trim()); setText(""); } finally { setPosting(false); }
   };
+
+  if (variant === "desktop") {
+    return (
+      <div style={{ marginTop: 8 }}>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Write a reply…"
+          rows={2}
+          style={{
+            width: "100%", boxSizing: "border-box", resize: "vertical",
+            background: "#0f0f14", border: "0.5px solid rgba(255,255,255,0.1)",
+            borderRadius: 8, padding: "8px 10px", fontSize: 12, lineHeight: 1.5,
+            color: "rgba(255,255,255,0.85)", fontFamily: "inherit", outline: "none",
+          }}
+        />
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 6 }}>
+          <button
+            onClick={onCancel}
+            style={{
+              background: "none", border: "none", cursor: "pointer", padding: "5px 10px",
+              fontSize: 12, color: "rgba(255,255,255,0.4)",
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={submit}
+            disabled={posting || !text.trim()}
+            style={{
+              background: !text.trim() || posting ? "rgba(46,196,182,0.25)" : "#2EC4B6",
+              border: "none", borderRadius: 6, cursor: posting || !text.trim() ? "default" : "pointer",
+              padding: "5px 12px", fontSize: 12, fontWeight: 500, color: "#0b0b10",
+            }}
+          >
+            {posting ? "Posting…" : "Reply"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="pm-composer">
       <textarea
@@ -1015,12 +1065,130 @@ function StarRow({ score }: { score: number }) {
   );
 }
 
+/** One desktop reply node + its nested replies (Reddit-style). Recursive;
+ *  inline-styled to match ActivityCard. Reuses VoteButtons for persisted votes
+ *  and the shared reply endpoint via onReplyPosted. depth caps at 3 (API). */
+function DesktopReplyNode({
+  reply, onReplyPosted,
+}: {
+  reply: ReplyData;
+  onReplyPosted: (parentId: number, text: string) => Promise<void>;
+}) {
+  const [composing, setComposing] = useState(false);
+  const av = avatarStyle(reply.memberNumber);
+  const initial = reply.userName[0]?.toUpperCase() || "?";
+
+  return (
+    <div style={{ borderLeft: "1px solid rgba(255,255,255,0.06)", paddingLeft: 10, marginTop: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
+        <Link href={`/user/${reply.userId}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+          <div style={{
+            width: 22, height: 22, borderRadius: "50%",
+            background: reply.userAvatar ? `url(${reply.userAvatar}) center/cover` : av.bg,
+            border: `1.5px solid ${av.border}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            {!reply.userAvatar && <span style={{ fontSize: 10, color: av.color }}>{initial}</span>}
+          </div>
+        </Link>
+        <Link href={`/user/${reply.userId}`} style={{ fontSize: 12, fontWeight: 500, color: "#fff", textDecoration: "none" }}>
+          {reply.userName}
+        </Link>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.15)" }}>· {timeAgo(reply.createdAt)}</span>
+      </div>
+
+      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.5, marginLeft: 30 }}>
+        {reply.text}
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: 30, marginTop: 5 }}>
+        <VoteButtons reviewId={reply.id} helpfulCount={reply.helpfulCount} myVote={reply.myVote} />
+        {reply.depth < 3 && (
+          <button
+            onClick={() => setComposing((c) => !c)}
+            style={{
+              background: "none", border: "none", cursor: "pointer", padding: 0,
+              fontSize: 11, color: "rgba(255,255,255,0.4)", fontWeight: 500,
+            }}
+          >
+            Reply
+          </button>
+        )}
+      </div>
+
+      <div style={{ marginLeft: 30 }}>
+        {composing && (
+          <ReplyComposer
+            variant="desktop"
+            onCancel={() => setComposing(false)}
+            onSubmit={async (t) => { await onReplyPosted(reply.id, t); setComposing(false); }}
+          />
+        )}
+      </div>
+
+      {reply.replies.length > 0 && (
+        <div style={{ marginLeft: 30 }}>
+          {reply.replies.map((r) => (
+            <DesktopReplyNode key={r.id} reply={r} onReplyPosted={onReplyPosted} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ActivityCard({ item }: { item: ActivityItem }) {
   const av = avatarStyle(item.userMemberNumber);
   const initial = item.userName[0]?.toUpperCase() || "?";
   const typeInfo = TYPES[item.itemType as keyof typeof TYPES];
   const itemHref = item.itemSlug ? `/${item.itemType}/${item.itemSlug}` : `/item/${item.itemId}`;
   const hasReview = item.text && item.text.trim().length > 0;
+  const reviewId = reviewIdOf(item.id);
+
+  // Lazy-loaded reply thread (mirrors MobileActivityEntry): fetched on first
+  // expand via /api/reviews, posted via POST /api/reviews {itemId, text, parentId}.
+  const [expanded, setExpanded] = useState(false);
+  const [thread, setThread] = useState<ReplyData[] | null>(null);
+  const [loadingThread, setLoadingThread] = useState(false);
+  const [topComposing, setTopComposing] = useState(false);
+
+  const replyCountNow = thread ? thread.length : item.replyCount;
+
+  const postReply = useCallback(async (parentId: number, text: string) => {
+    const r = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId: item.itemId, text, parentId }),
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    const newReply: ReplyData = { ...data, replies: [] };
+    setThread((prev) => {
+      const base = prev ?? [];
+      return parentId === reviewId ? [...base, newReply] : insertReply(base, parentId, newReply);
+    });
+    setExpanded(true);
+  }, [item.itemId, reviewId]);
+
+  const onReplyTap = async () => {
+    if (expanded) { setExpanded(false); return; }
+    if (thread === null) {
+      if (item.replyCount > 0) {
+        setLoadingThread(true);
+        try {
+          const r = await fetch(`/api/reviews?itemId=${item.itemId}&limit=50`);
+          const d = await r.json();
+          const node = reviewId ? findReplyNode(d.reviews || [], reviewId) : null;
+          setThread(node?.replies ?? []);
+        } catch { setThread([]); }
+        finally { setLoadingThread(false); }
+      } else {
+        setThread([]);          // no replies yet → open straight into the composer
+        setTopComposing(true);
+      }
+    }
+    setExpanded(true);
+  };
 
   return (
     <div style={{
@@ -1069,14 +1237,73 @@ function ActivityCard({ item }: { item: ActivityItem }) {
         </div>
       )}
 
-      {/* Bottom: vote buttons + reply (only for reviews) */}
+      {/* Bottom: vote buttons + reply toggle (only for reviews) */}
       {hasReview && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 38, marginTop: 6 }}>
-          <VoteButtons reviewId={reviewIdOf(item.id)} helpfulCount={item.helpfulCount} myVote={item.myVote} />
-          {/* No desktop "Reply" control yet — the desktop feed has no thread UI
-              (the existing thread machinery is item-detail-coupled, not
-              feed-reusable). Omitted rather than shown as a dead button.
-              Tracked follow-up: desktop feed threading. */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginLeft: 38, marginTop: 6 }}>
+          <VoteButtons reviewId={reviewId} helpfulCount={item.helpfulCount} myVote={item.myVote} />
+          <button
+            onClick={onReplyTap}
+            style={{
+              display: "flex", alignItems: "center", gap: 4,
+              background: "none", border: "none", cursor: "pointer", padding: 0,
+              fontSize: 11, fontWeight: 500,
+              color: replyCountNow > 0 ? "#2EC4B6" : "rgba(255,255,255,0.4)",
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            </svg>
+            {replyCountNow > 0 ? `${replyCountNow} ${replyCountNow === 1 ? "reply" : "replies"}` : "Reply"}
+          </button>
+        </div>
+      )}
+
+      {/* Lazy-loaded thread */}
+      {hasReview && expanded && (
+        <div style={{ marginLeft: 38, marginTop: 8 }}>
+          {loadingThread && (
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>Loading replies…</div>
+          )}
+          {!loadingThread && thread && thread.length > 0 && (
+            <div>
+              {thread.map((r) => (
+                <DesktopReplyNode key={r.id} reply={r} onReplyPosted={postReply} />
+              ))}
+            </div>
+          )}
+          {topComposing && reviewId && (
+            <ReplyComposer
+              variant="desktop"
+              onCancel={() => setTopComposing(false)}
+              onSubmit={async (t) => { await postReply(reviewId, t); setTopComposing(false); }}
+            />
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 8 }}>
+            {!topComposing && reviewId && (
+              <button
+                onClick={() => setTopComposing(true)}
+                style={{
+                  background: "none", border: "none", cursor: "pointer", padding: 0,
+                  fontSize: 11, fontWeight: 500, color: "rgba(255,255,255,0.4)",
+                }}
+              >
+                Reply
+              </button>
+            )}
+            <button
+              onClick={() => setExpanded(false)}
+              style={{
+                display: "flex", alignItems: "center", gap: 4,
+                background: "none", border: "none", cursor: "pointer", padding: 0,
+                fontSize: 11, fontWeight: 500, color: "rgba(255,255,255,0.3)",
+              }}
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 15l-6-6-6 6" />
+              </svg>
+              Collapse thread
+            </button>
+          </div>
         </div>
       )}
     </div>
