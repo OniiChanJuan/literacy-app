@@ -40,6 +40,39 @@ const PERSONALIZED_PRIMARY_SLOTS = 5;          // 5 affinity-ranked + 1 serendip
 const MIN_PERSONALIZED_SOURCES = 3;
 const RATED_HIGHLY_MIN_SCORE = 4;
 
+// Provisional curated-strength → numeric base for read-side ordering. This is a
+// READ-LAYER CONSTANT, not stored in the DB — tunable with no migration (decision 3).
+// Curated strength (connection_recs.curated_strength) is the protected editorial
+// grade; community_adjustment stays ignored until vote-weighting is enabled.
+const STRENGTH_BASE: Record<string, number> = { tight: 1.5, medium: 1.0, attenuated: 0.6 };
+
+/**
+ * Hydrate each card's recommendations from the normalized connection_recs table
+ * (the corpus source of truth), strength-ordered (tight → attenuated). Mutates
+ * each card in place: sets `recommendedItems` to the `{ item_id }[]` shape the
+ * rest of the pipeline expects, and overrides the in-memory `qualityScore` with
+ * the card's curated-strength base so ordering/affinity run on the editorial
+ * grade — never on the deprecated mutable column. Pending recs (no rec_item_id)
+ * are excluded from the rendered chain.
+ */
+async function attachConnectionRecs(prisma: typeof import("@/lib/prisma").prisma, cards: any[]) {
+  if (cards.length === 0) return;
+  const ids = cards.map((c) => c.id);
+  const recs = await prisma.connectionRec.findMany({
+    where: { connectionId: { in: ids }, recItemId: { not: null } },
+    select: { connectionId: true, recItemId: true, curatedStrength: true, position: true },
+  });
+  const byCard = new Map<number, typeof recs>();
+  for (const r of recs) (byCard.get(r.connectionId) ?? byCard.set(r.connectionId, []).get(r.connectionId)!).push(r);
+  for (const c of cards) {
+    const rs = (byCard.get(c.id) ?? []).slice().sort(
+      (a, b) => (STRENGTH_BASE[b.curatedStrength] - STRENGTH_BASE[a.curatedStrength]) || a.position - b.position,
+    );
+    c.recommendedItems = rs.map((r) => ({ item_id: r.recItemId }));
+    c.qualityScore = rs.length ? Math.max(...rs.map((r) => STRENGTH_BASE[r.curatedStrength])) : 0.6;
+  }
+}
+
 // Admin gate for the debug surface — mirrors the ADMIN_EMAILS hardcode
 // pattern in /api/admin/reports/route.ts. Replace when the broader
 // admin auth audit (the DB role column) lands.
@@ -188,6 +221,10 @@ export async function GET(req: NextRequest) {
         },
         take: 20,
       });
+      // Source the rec chain from connection_recs (strength-ordered) and override
+      // the in-memory qualityScore with the curated-strength base before any
+      // affinity/selection runs.
+      await attachConnectionRecs(prisma, raw);
       // Filter already-rated recs OUT of each connection's rec list, rather
       // than discarding the whole connection when any single rec overlaps.
       // A connection is dropped only if per-rec filtering leaves it with zero
@@ -333,12 +370,14 @@ export async function GET(req: NextRequest) {
       // Cold-start: brand-new signed-out or never-rated user.
       mode = "discovery";
       chosen = await fetchEditorialFill(TARGET, "random", dismissedConnectionIds);
+      await attachConnectionRecs(prisma, chosen);
     } else {
       // Sparse: user has ratings but fewer than MIN_PERSONALIZED_SOURCES
       // rated-highly items map to seed-connection sources. Offer honest
       // fallback instead of padding lies into personalized.
       mode = "trending";
       chosen = await fetchEditorialFill(TARGET, "top_quality", dismissedConnectionIds);
+      await attachConnectionRecs(prisma, chosen);
     }
 
     // ── Hydrate any rec items not already in recMap ─────────────────
