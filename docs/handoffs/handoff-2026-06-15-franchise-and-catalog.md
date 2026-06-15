@@ -1,8 +1,25 @@
 # Session handoff — 2026-06-15 (franchise unification + what's next)
 
 Audience: a fresh Claude Code session. Everything below is current as of this handoff.
-Branch: **`main`**. All this session's work is **committed and pushed** (`HEAD == origin/main`).
+Branch: **`main`**. All committed work is **pushed** (`HEAD == origin/main`). One file is
+**intentionally uncommitted** — `src/app/people/page.tsx` (held WIP, see §3/§6).
 Repo: `github.com/OniiChanJuan/literacy-app`. Project root: `C:\Users\juang\OneDrive\Desktop\claud md`.
+
+## ⭐ Start here (read first, then pick up)
+1. **Read** this doc + `docs/handoffs/mobile-signed-in-verification-checklist.md` + `CLAUDE.md`.
+   Per-page investigation notes are in `docs/investigations/`.
+2. **The big initiative (the 7-phase mobile redesign) is COMPLETE and shipped** (§2). Don't redo it.
+3. **Likely next work, in rough priority:**
+   - The **catalog-expansion reconciliation** (§5) — flagged as queued/incoming; expect a ~460-title
+     spreadsheet to verify against the catalog *before* any ingestion.
+   - **Land the held desktop-threading WIP** (`task_58550134`, §3/§3a) — needs a *signed-in*
+     verification of 3 interactive criteria, then one commit. Don't commit it unverified.
+   - **Pre-launch infra backlog** (§4): Supabase legacy-key migration, `platform_clicks` columns, etc.
+4. **House rules** (from this initiative — keep applying): class-driven CSS + `<style>` blocks (no
+   Tailwind utilities in markup); desktop visually unchanged >640px unless a fix inherently corrects
+   the same bug (flag it); reuse shared components/tokens, don't fork; hide-don't-placeholder; gate
+   private data at the API, never UI-only; **capture-and-restore any test data you mutate**; verify
+   (tsc + build + runtime) before committing — never commit because code "looks complete."
 
 ---
 
