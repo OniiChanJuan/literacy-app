@@ -42,7 +42,7 @@ interface ProfileData {
     isFollowing: boolean;
   };
   topRatings: { itemId: number; score: number; recommendTag: string | null; item?: any }[];
-  library: { itemId: number; status: string; progressCurrent: number; item?: any }[] | null;
+  library: { itemId: number; status: string; progressCurrent: number; score: number | null; item?: any }[] | null;
   typeCounts: Record<string, number> | null;
   reviews: ProfileReview[];
   isOwn: boolean;
@@ -71,10 +71,10 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const [followHover, setFollowHover] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   // Mobile collection controls (mirrors Library): status filter, type filter,
-  // A–Z sort toggle, and per-section progressive reveal.
+  // sort cycle (Default → Rating → A–Z), and per-section progressive reveal.
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [sortAlpha, setSortAlpha] = useState(false);
+  const [sortMode, setSortMode] = useState<"default" | "rating" | "alpha">("default");
   const [pfExpanded, setPfExpanded] = useState<Record<string, number>>({});
 
   useEffect(() => {
@@ -214,11 +214,18 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   // Media types present across the collection — drives the type-filter pills.
   const pfTypes = new Set<string>();
   for (const it of [...topRatedItems, ...Object.values(libraryByStatus).flat()]) pfTypes.add(it.type);
-  // Type filter + A–Z sort (Rating sort + owner stars would need owner-score
-  // per entry from the library API — flagged follow-up, not in this phase).
+  // Owner's score per item (itemId → 1–5), from Top Rated + library entries.
+  // The API gates these behind showRatings, so the map is empty when the
+  // owner's ratings are private — owner stars + Rating sort then no-op.
+  const ownerScores = new Map<number, number>();
+  for (const r of topRatings) if (typeof r.score === "number") ownerScores.set(r.itemId, r.score);
+  if (library) for (const e of library) if (typeof e.score === "number") ownerScores.set(e.itemId, e.score);
+  const hasOwnerScores = ownerScores.size > 0;
+  // Type filter + sort cycle. Rating sorts by the owner's score (desc); A–Z by title.
   const refineItems = (items: Item[]): Item[] => {
     let r = typeFilter === "all" ? items : items.filter((i) => i.type === typeFilter);
-    if (sortAlpha) r = [...r].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortMode === "alpha") r = [...r].sort((a, b) => a.title.localeCompare(b.title));
+    else if (sortMode === "rating") r = [...r].sort((a, b) => (ownerScores.get(b.id) ?? 0) - (ownerScores.get(a.id) ?? 0));
     return r;
   };
 
@@ -388,8 +395,15 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     </button>
                   );
                 })}
-                <button className="pf-sort-btn" onClick={() => setSortAlpha((s) => !s)}>
-                  ↕ {sortAlpha ? "A–Z" : "DEFAULT"}
+                <button
+                  className="pf-sort-btn"
+                  onClick={() => setSortMode((m) =>
+                    m === "default" ? (hasOwnerScores ? "rating" : "alpha")
+                    : m === "rating" ? "alpha"
+                    : "default"
+                  )}
+                >
+                  ↕ {sortMode === "rating" ? "RATING" : sortMode === "alpha" ? "A–Z" : "DEFAULT"}
                 </button>
               </div>
             )}
@@ -408,7 +422,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     <span className="pf-section-title">Top Rated</span>
                     <span className="pf-section-count">{filtered.length}</span>
                   </div>
-                  <div className="pf-card-grid">{visible.map((it) => <Card key={it.id} item={it} />)}</div>
+                  <div className="pf-card-grid">{visible.map((it) => <Card key={it.id} item={it} ownerScore={ownerScores.get(it.id) ?? 0} />)}</div>
                   {remaining > 0 && (
                     <div className="pf-showmore-row">
                       <button className="pf-showmore" onClick={() => setPfExpanded((e) => ({ ...e, __top: cap + PROFILE_PAGE }))}>
@@ -437,7 +451,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     <span className="pf-section-title">{meta.label}</span>
                     <span className="pf-section-count">{filtered.length}</span>
                   </div>
-                  <div className="pf-card-grid">{visible.map((it) => <Card key={it.id} item={it} />)}</div>
+                  <div className="pf-card-grid">{visible.map((it) => <Card key={it.id} item={it} ownerScore={ownerScores.get(it.id) ?? 0} />)}</div>
                   {remaining > 0 && (
                     <div className="pf-showmore-row">
                       <button className="pf-showmore" onClick={() => setPfExpanded((e) => ({ ...e, [status]: cap + PROFILE_PAGE }))}>

@@ -76,10 +76,31 @@ export async function GET(
     });
   }
 
-  // Library entries with item data
+  // Owner's full ratings (itemId → score + type). Fetched once and reused for
+  // the library score map AND the taste fingerprint. Gated by showRatings so
+  // owner scores never leak when ratings are private.
+  let ownerScoreByItem = new Map<number, number>();
+  let typeCounts: Record<string, number> | null = null;
+  if (showRatings) {
+    const ownerRatings = await prisma.rating.findMany({
+      where: { userId: id },
+      select: { itemId: true, score: true, item: { select: { type: true } } },
+    });
+    const tc: Record<string, number> = {};
+    for (const r of ownerRatings) {
+      ownerScoreByItem.set(r.itemId, r.score);
+      const t = r.item?.type;
+      if (t) tc[t] = (tc[t] || 0) + 1;
+    }
+    typeCounts = tc;
+  }
+
+  // Library entries with item data. Each carries the OWNER's score (not the
+  // viewer's) so the profile can render the owner's stars; null when ratings
+  // are private (showRatings === false).
   let library: any[] = [];
   if (showLibrary) {
-    library = await prisma.libraryEntry.findMany({
+    const entries = await prisma.libraryEntry.findMany({
       where: { userId: id },
       select: {
         itemId: true, status: true, progressCurrent: true,
@@ -91,22 +112,7 @@ export async function GET(
         },
       },
     });
-  }
-
-  // Taste fingerprint — per-type counts of the user's ratings (gated by the
-  // same showRatings flag, so taste privacy tracks ratings privacy).
-  let typeCounts: Record<string, number> | null = null;
-  if (showRatings) {
-    const rated = await prisma.rating.findMany({
-      where: { userId: id },
-      select: { item: { select: { type: true } } },
-    });
-    const tc: Record<string, number> = {};
-    for (const r of rated) {
-      const t = r.item?.type;
-      if (t) tc[t] = (tc[t] || 0) + 1;
-    }
-    typeCounts = tc;
+    library = entries.map((e) => ({ ...e, score: ownerScoreByItem.get(e.itemId) ?? null }));
   }
 
   // Reviews (top-level only) for the profile Reviews section — gated by

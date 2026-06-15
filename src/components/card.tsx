@@ -17,10 +17,14 @@ function isImageUrl(cover: string | undefined | null): boolean {
 
 
 
-const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }: { item: Item; routeId?: string; crossMedia?: boolean; optimized?: boolean }) {
+const Card = memo(function Card({ item, routeId, crossMedia, optimized = false, ownerScore }: { item: Item; routeId?: string; crossMedia?: boolean; optimized?: boolean; ownerScore?: number }) {
   const { ratings, rate } = useRatings();
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
   const userRating = ratings[item.id] || 0;
+  // Profile context: when an owner's score is supplied the card reflects THEIR
+  // rating read-only (badge + static stars), not the viewer's interactive one.
+  const isOwnerView = ownerScore !== undefined;
+  const displayRating = isOwnerView ? (ownerScore || 0) : userRating;
   const href = routeId ? `/item/${routeId}` : getItemUrl(item);
   const hasImage = isImageUrl(item.cover);
   const [imgError, setImgError] = useState(false);
@@ -160,8 +164,8 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
           )}
         </div>
 
-        {/* User rating badge — top right */}
-        {userRating > 0 && (
+        {/* Rating badge — top right. Owner's score on a profile, else the viewer's. */}
+        {displayRating > 0 && (
           <div style={{
             position: "absolute",
             top: 4,
@@ -173,7 +177,7 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
             padding: "1px 5px",
             borderRadius: 4,
           }}>
-            ★ {userRating}
+            ★ {displayRating}
           </div>
         )}
 
@@ -263,13 +267,22 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false }
           </div>
         )}
 
-        {/* Inline stars — lets users rate without navigating */}
+        {/* Inline stars. Owner view: read-only gold stars of the owner's score
+            (omitted when unrated). Otherwise interactive — rate without navigating. */}
         {!routeId && (
-          <Stars
-            rating={userRating}
-            onRate={handleRate}
-            size={9}
-          />
+          isOwnerView ? (
+            displayRating > 0 && (
+              <div style={{ color: "#DAA520", fontSize: 9, letterSpacing: 1, lineHeight: 1 }}>
+                {"★".repeat(displayRating)}{"☆".repeat(Math.max(0, 5 - displayRating))}
+              </div>
+            )
+          ) : (
+            <Stars
+              rating={userRating}
+              onRate={handleRate}
+              size={9}
+            />
+          )
         )}
       </div>
     </Link>
