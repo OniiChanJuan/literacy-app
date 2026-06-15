@@ -2,17 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
-import { SCORE_DELTAS } from "@/lib/connection-score";
 
 /**
  * POST /api/cross-connections/[id]/vote
  *
  * Body: { vote: 1 | -1 | 0 }
- *   1  → upvote    (qualityScore += SCORE_DELTAS.voteUp, capped 2.0)
- *  -1  → downvote  (qualityScore += SCORE_DELTAS.voteDown, floored 0.0)
- *   0  → clear existing vote (reverses whatever delta was applied)
+ *   1  → upvote    (recorded)
+ *  -1  → downvote  (recorded)
+ *   0  → clear existing vote
  *
- * Idempotent: switching vote direction applies the net delta.
+ * CAPTURE-ONLY — deliberate pre-50-user decoupling (2026-06-14). The vote is
+ * RECORDED in cross_connection_votes (vote + user + connection + timestamp) and
+ * read back to drive the thumb's selected state, but it NO LONGER mutates the
+ * curated connection strength (cross_connections.quality_score). Curated
+ * editorial strength must never be auto-mutated by community votes until
+ * vote-weighting is deliberately enabled at 50+ real users — with a couple of
+ * test accounts, ~7 downvotes would otherwise drop a hand-authored connection
+ * below the 0.3 hide threshold and bury it. The signal keeps accumulating for
+ * future Stage-3 use; it just stops moving cards. See
+ * docs/investigations/crossshelf-thumbs-vote-audit-2026-06-14.md.
+ *
+ * Idempotent: re-voting the same direction is a no-op; switching overwrites.
  */
 export async function POST(
   req: NextRequest,
@@ -39,15 +49,8 @@ export async function POST(
   }
 
   try {
-    const existing = await prisma.crossConnectionVote.findUnique({
-      where: { userId_connectionId: { userId: claims.sub, connectionId } },
-      select: { vote: true },
-    });
-    const prev = existing?.vote ?? 0;
-    // Net change. (next - prev) is in {-2,-1,0,1,2}; multiply by the
-    // per-step magnitude (voteUp == -voteDown so either works).
-    const delta = (next - prev) * SCORE_DELTAS.voteUp;
-
+    // Record-only: write the vote row (or clear it). NO quality_score
+    // mutation — see the capture-only note above.
     if (next === 0) {
       await prisma.crossConnectionVote.deleteMany({
         where: { userId: claims.sub, connectionId },
@@ -60,23 +63,7 @@ export async function POST(
       });
     }
 
-    if (delta !== 0) {
-      // Clamp between 0.0 and 2.0 via least/greatest in SQL.
-      await prisma.$executeRawUnsafe(
-        `UPDATE cross_connections
-         SET quality_score = LEAST(2.0, GREATEST(0.0, quality_score + $1))
-         WHERE id = $2`,
-        delta,
-        connectionId,
-      );
-    }
-
-    const after = await prisma.crossConnection.findUnique({
-      where: { id: connectionId },
-      select: { qualityScore: true },
-    });
-
-    return NextResponse.json({ ok: true, qualityScore: after?.qualityScore ?? 1.0, userVote: next });
+    return NextResponse.json({ ok: true, userVote: next });
   } catch (err) {
     console.error("cc vote error:", err);
     return NextResponse.json({ error: "Vote failed" }, { status: 500 });
