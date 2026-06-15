@@ -54,6 +54,9 @@ interface ItemThumb {
   type: string;
   cover: string | null;
   slug: string | null;
+  // Per-rec vote wiring (mobile per-card thumbs). recId = connection_recs.id.
+  recId?: number;
+  userVote?: -1 | 0 | 1;
 }
 interface Connection {
   id: number;
@@ -251,6 +254,9 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
   const [hovered, setHovered] = useState(false);
   const [dismissing, setDismissing] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  // Mobile "+N more": collapse recs beyond the first 3 (which are the
+  // strongest, since recs arrive strength-ordered). Desktop ignores this.
+  const [expanded, setExpanded] = useState(false);
 
   const submitVote = useCallback(async (next: -1 | 1) => {
     if (submitting) return;
@@ -311,6 +317,11 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         padding: 18,
         transition: "border-color 200ms, opacity 200ms",
         opacity: dismissing ? 0 : 1,
+        // Let the grid's 1fr columns stay equal (default min-width:auto would let
+        // a card with many recs expand its track and overflow the page). The
+        // chain's overflow:hidden then clips extra recs — restores desktop density
+        // after the corpus raised rec counts. Harmless on mobile (single column).
+        minWidth: 0,
       }}
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(46,196,182,0.15)"; setHovered(true); }}
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; setHovered(false); }}
@@ -425,9 +436,14 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         </div>
       )}
 
-      {/* Items chain: source → rec1 → rec2 (horizontal ≥640px, vertical on mobile).
-          Chain aligns to flex-start so arrows can be vertically positioned to
-          align with the cover (not the cover+title column). */}
+      {/* Items chain.
+          Desktop (>640px): UNCHANGED — horizontal source → rec → rec with arrows,
+          one per-connection thumbs set (below). Cells are display:contents so the
+          wrapper is invisible to the desktop flex layout.
+          Mobile (<=640px): a 3-across CSS grid (NO horizontal scroll). Source is
+          hidden (named in the framing), arrows dropped, covers fill the cell
+          (~110px). Recs past the first 3 collapse behind a "+N more" pill that
+          wraps the rest into more 3-col rows. Thumbs are per-rec, under each card. */}
       <div
         className="cross-shelf-chain"
         style={{
@@ -438,71 +454,117 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
           overflow: "hidden",
         }}
       >
-        {items.map((it, idx) => (
-          <Fragment key={`chain-${idx}-${it.id}`}>
-            {idx > 0 && (
-              <span
-                aria-hidden
-                className="cross-shelf-arrow"
-                style={{
-                  color: "rgba(232,230,225,0.1)",
-                  fontSize: 16,
-                  lineHeight: 1,
-                  // Cover is 72px tall; align arrow to its midpoint.
-                  marginTop: 30,
-                  flexShrink: 0,
-                }}
-              >
-                →
-              </span>
-            )}
-            <ItemThumbnail
-              item={it}
-              isSource={idx === 0}
-              onClickTrack={
-                idx > 0
-                  ? () => {
-                      // Fire-and-forget cover_click for recommended items
-                      // (idx 0 is the source item; clicks on it are not
-                      // a downstream signal). Errors swallowed.
-                      fetch(`/api/cross-connections/${connection.id}/click`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ itemId: it.id }),
-                      }).catch(() => {});
-                    }
-                  : undefined
-              }
-            />
-          </Fragment>
-        ))}
+        {items.map((it, idx) => {
+          const recIndex = idx - 1; // -1 = source; 0-based for recs
+          const isExtra = recIndex >= 3; // 4th rec onward → behind "+N more"
+          const cellCls =
+            "cross-shelf-cell" +
+            (idx === 0 ? " cross-shelf-cell-source" : "") +
+            (isExtra && !expanded ? " cross-shelf-cell-hidden" : "");
+          return (
+            <Fragment key={`chain-${idx}-${it.id}`}>
+              {idx > 0 && (
+                <span aria-hidden className="cross-shelf-arrow" style={{
+                  color: "rgba(232,230,225,0.1)", fontSize: 16, lineHeight: 1, marginTop: 30, flexShrink: 0,
+                }}>
+                  →
+                </span>
+              )}
+              <div className={cellCls}>
+                <ItemThumbnail
+                  item={it}
+                  isSource={idx === 0}
+                  onClickTrack={
+                    idx > 0
+                      ? () => {
+                          // Fire-and-forget cover_click for recommended items.
+                          fetch(`/api/cross-connections/${connection.id}/click`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ itemId: it.id }),
+                          }).catch(() => {});
+                        }
+                      : undefined
+                  }
+                />
+                {/* Per-rec thumbs (mobile only) — capture-only per-rec signal. */}
+                {idx > 0 && it.recId != null && (
+                  <div className="cross-shelf-rec-votes">
+                    <RecVoteButtons recId={it.recId} initial={(it.userVote ?? 0) as -1 | 0 | 1} />
+                  </div>
+                )}
+              </div>
+            </Fragment>
+          );
+        })}
+        {connection.recommendedItems.length > 3 && (
+          <button
+            className="cross-shelf-more"
+            onClick={() => setExpanded((e) => !e)}
+            aria-expanded={expanded}
+          >
+            {expanded ? "Show less" : `+${connection.recommendedItems.length - 3} more`}
+          </button>
+        )}
       </div>
       <style>{`
-        /* Mobile (mockup): the chain becomes a horizontal-scrolling strip of
-           recommended posters. The source isn't shown as a poster (it's named
-           in the framing line), and the connector arrows are dropped. Covers
-           grow to the mockup's ~100x150 poster size. */
+        /* Desktop: cell wrapper is invisible; per-rec thumbs + "+N more" hidden. */
+        .cross-shelf-cell { display: contents; }
+        .cross-shelf-rec-votes { display: none; }
+        .cross-shelf-more { display: none; }
+
         @media (max-width: 640px) {
+          /* 3-across grid, no horizontal scroll. */
           .cross-shelf-chain {
-            flex-direction: row !important;
-            align-items: flex-start !important;
-            gap: 8px !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px 8px !important;
+            overflow: visible !important;
+            align-items: start !important;
           }
-          .cross-shelf-chain::-webkit-scrollbar { display: none; }
           .cross-shelf-arrow { display: none !important; }
-          .cross-shelf-thumb-source { display: none !important; }
+          .cross-shelf-cell {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 5px !important;
+            min-width: 0 !important;
+          }
+          .cross-shelf-cell-source { display: none !important; }
+          .cross-shelf-cell-hidden { display: none !important; }
+          /* Covers fill the cell (~110px) instead of a fixed strip size. */
+          .cross-shelf-thumb { width: 100% !important; }
           .cross-shelf-cover {
-            width: 100px !important;
-            height: 150px !important;
+            width: 100% !important;
+            height: auto !important;
+            aspect-ratio: 2 / 3 !important;
           }
           .cross-shelf-thumb-title {
-            max-width: 100px !important;
-            width: 100px !important;
+            max-width: 100% !important;
+            width: 100% !important;
             font-size: 11px !important;
           }
+          .cross-shelf-rec-votes {
+            display: flex !important;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+          }
+          .cross-shelf-more {
+            display: block !important;
+            grid-column: 1 / -1 !important;
+            margin-top: 2px;
+            background: none;
+            border: none;
+            color: rgba(46,196,182,0.85);
+            font-size: 12px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            padding: 4px 0;
+          }
+          /* Desktop's single per-connection thumbs set is hidden on mobile. */
+          .cross-shelf-votes-connection { display: none !important; }
         }
       `}</style>
 
@@ -517,8 +579,9 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         {connection.reason}
       </div>
 
-      {/* Quality feedback: thumbs up / down */}
-      <div style={{
+      {/* Quality feedback: per-connection thumbs (DESKTOP only — hidden on mobile,
+          which uses per-rec thumbs under each card instead). */}
+      <div className="cross-shelf-votes-connection" style={{
         position: "absolute",
         right: 10,
         bottom: 8,
@@ -641,6 +704,58 @@ function ItemThumbnail({ item, onClickTrack, isSource }: { item: ItemThumb; onCl
 }
 
 // ── Vote button + icons ────────────────────────────────────────────────────
+
+// Per-rec thumbs (mobile). Compact icon buttons under a card title. Optimistic
+// local state; posts to the per-rec endpoint. CAPTURE-ONLY — records the signal,
+// never feeds ranking/strength.
+function RecVoteButtons({ recId, initial }: { recId: number; initial: -1 | 0 | 1 }) {
+  const [vote, setVote] = useState<-1 | 0 | 1>(initial);
+  const [submitting, setSubmitting] = useState(false);
+
+  const submit = useCallback(async (next: -1 | 1) => {
+    if (submitting) return;
+    const final: -1 | 0 | 1 = vote === next ? 0 : next; // toggle clears
+    const prev = vote;
+    setVote(final);
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/cross-connections/recs/${recId}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vote: final }),
+      });
+      if (!res.ok) setVote(prev);
+    } catch {
+      setVote(prev);
+    } finally {
+      setSubmitting(false);
+    }
+  }, [recId, vote, submitting]);
+
+  const btn = (active: boolean, color: string, label: string, onClick: () => void, icon: React.ReactNode) => (
+    <button
+      aria-label={label}
+      aria-pressed={active}
+      onClick={(e) => { e.preventDefault(); onClick(); }}
+      className="cross-shelf-rec-vbtn"
+      style={{
+        background: "none", border: "none", padding: 4, cursor: "pointer",
+        color: active ? color : "rgba(232,230,225,0.25)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        minWidth: 30, minHeight: 30, transition: "color 150ms",
+      }}
+    >
+      {icon}
+    </button>
+  );
+
+  return (
+    <>
+      {btn(vote === 1, "#2EC4B6", "Helpful", () => submit(1), <ThumbUp />)}
+      {btn(vote === -1, "#E84855", "Not helpful", () => submit(-1), <ThumbDown />)}
+    </>
+  );
+}
 
 function VoteBtn({
   active, activeColor, label, onClick, children,
