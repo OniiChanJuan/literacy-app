@@ -1,0 +1,3682 @@
+[
+{
+"title": "Berserk",
+"media": "Manga",
+"activates": 13,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Attack on Titan · Bloodborne · Dark Souls · Elden Ring · Game of Thrones · Hunter x Hunter · Neon Genesis Evangelion · Pan's Labyrinth · The First Law · The Way of Kings · The Witcher 3 · Vinland Saga"
+},
+{
+"title": "Annihilation",
+"media": "Movie",
+"activates": 10,
+"pending": 10,
+"status": "ADD IT",
+"anchors": "Alien · BioShock · Bloodborne · Serial Experiments Lain · Severance · Subnautica · The Call of Cthulhu · The Shining · The Three-Body Problem · Twin Peaks"
+},
+{
+"title": "Breaking Bad",
+"media": "TV",
+"activates": 10,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Better Call Saul · Crime and Punishment · Death Note · Heat · Red Dead Redemption 2 · The Departed · The Godfather · The Sopranos · The Wire · There Will Be Blood"
+},
+{
+"title": "Disco Elysium",
+"media": "Game",
+"activates": 10,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Baldur's Gate 3 · Blade Runner 2049 · Breaking Bad · Crime and Punishment · Fullmetal Alchemist: Brotherhood · Mass Effect 2 · The Name of the Wind · The Way of Kings · The Wire · Twin Peaks"
+},
+{
+"title": "The Way of Kings",
+"media": "Book",
+"activates": 10,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Avatar: The Last Airbender · Baldur's Gate 3 · Final Fantasy XIV · Fullmetal Alchemist: Brotherhood · Game of Thrones · Mistborn · The Lord of the Rings · The Lord of the Rings: Fellowship · The Name of the Wind · The Witcher 3"
+},
+{
+"title": "Bloodborne",
+"media": "Game",
+"activates": 9,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Alien · Dark Souls · Dracula · Elden Ring · Jujutsu Kaisen · Neon Genesis Evangelion · The Call of Cthulhu · The Shining"
+},
+{
+"title": "Game of Thrones",
+"media": "TV",
+"activates": 9,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Attack on Titan · Dune · Fourth Wing · The First Law · The Lord of the Rings: Fellowship · The Way of Kings · The Witcher 3 · War and Peace"
+},
+{
+"title": "The Lord of the Rings",
+"media": "Book",
+"activates": 9,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Avatar: The Last Airbender · Dark Souls · Elden Ring · Princess Mononoke · The Elder Scrolls V: Skyrim · The Hobbit · The Legend of Zelda: BOTW · The Lord of the Rings: Fellowship · The Way of Kings"
+},
+{
+"title": "Vinland Saga",
+"media": "Anime",
+"activates": 9,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Attack on Titan · Fullmetal Alchemist: Brotherhood · Game of Thrones · God of War (2018) · Oldboy · The Elder Scrolls V: Skyrim"
+},
+{
+"title": "Pachinko",
+"media": "Book",
+"activates": 8,
+"pending": 8,
+"status": "ADD IT",
+"anchors": "Babel · Beloved · One Hundred Years of Solitude · Parasite · Past Lives · Shōgun · The Godfather · War and Peace"
+},
+{
+"title": "The Road",
+"media": "Book",
+"activates": 8,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Apocalypse Now · Children of Men · God of War (2018) · Mad Max: Fury Road · No Country for Old Men · Red Dead Redemption 2 · The Last of Us"
+},
+{
+"title": "True Detective S1",
+"media": "TV",
+"activates": 8,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Apocalypse Now · Blade Runner 2049 · Chernobyl · Disco Elysium · Monster · Se7en · The Silence of the Lambs · Twin Peaks"
+},
+{
+"title": "Mad Men",
+"media": "TV",
+"activates": 7,
+"pending": 7,
+"status": "ADD IT",
+"anchors": "Bojack Horseman · La Dolce Vita · The Crown · The Power Broker · The Sopranos · There Will Be Blood"
+},
+{
+"title": "Neuromancer",
+"media": "Book",
+"activates": 7,
+"pending": 7,
+"status": "ADD IT",
+"anchors": "Blade Runner 2049 · Cyberpunk 2077 · Ghost in the Shell: SAC · Serial Experiments Lain · Severance · The Matrix"
+},
+{
+"title": "1984",
+"media": "Book",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Attack on Titan · Babel · BioShock · Black Mirror · Dr. Strangelove · The Handmaid's Tale"
+},
+{
+"title": "Arrival",
+"media": "Movie",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Blade Runner 2049 · Interstellar · Outer Wilds · Project Hail Mary · Steins;Gate · The Three-Body Problem"
+},
+{
+"title": "Celeste",
+"media": "Game",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "A Silent Voice · Dark Souls · Elden Ring · Hollow Knight · Inside Out · Super Mario Odyssey · The Bear"
+},
+{
+"title": "Cowboy Bebop",
+"media": "Anime",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Cyberpunk 2077 · Devil May Cry 5 · Mass Effect 2 · Persona 5 · Pulp Fiction · The Matrix · The Witcher 3"
+},
+{
+"title": "Crime and Punishment",
+"media": "Book",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "12 Angry Men · Breaking Bad · Death Note · Disco Elysium · Monster · The Sopranos · War and Peace"
+},
+{
+"title": "Dune",
+"media": "Book",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Civilization VI · Foundation · Game of Thrones · Mass Effect 2 · Princess Mononoke · The Matrix · The Three-Body Problem"
+},
+{
+"title": "Elden Ring",
+"media": "Game",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Bloodborne · Dark Souls · Hollow Knight · The Legend of Zelda: BOTW · The Lord of the Rings · The Lord of the Rings: Fellowship · The Way of Kings"
+},
+{
+"title": "Outer Wilds",
+"media": "Game",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Arrival · Project Hail Mary · Re:Zero · Sapiens · Steins;Gate · The Elder Scrolls V: Skyrim · The Legend of Zelda: BOTW"
+},
+{
+"title": "Past Lives",
+"media": "Movie",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Boyhood · Casablanca · La La Land · Norwegian Wood · Pachinko · When Harry Met Sally · Your Name"
+},
+{
+"title": "Severance",
+"media": "TV",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "1984 · Alien · Babel · BioShock · Black Mirror · Neon Genesis Evangelion · Portal 2"
+},
+{
+"title": "Steins;Gate",
+"media": "Anime",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Arrival · Attack on Titan · Interstellar · Outer Wilds · Re:Zero · Your Name"
+},
+{
+"title": "The Last of Us",
+"media": "Game",
+"activates": 7,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Children of Men · God of War (2018) · Resident Evil 4 · The Last of Us · The Road"
+},
+{
+"title": "Bojack Horseman",
+"media": "TV",
+"activates": 6,
+"pending": 6,
+"status": "ADD IT",
+"anchors": "Disco Elysium · Everything Everywhere All at Once · Fleabag · Hades · The Bear · The First Law"
+},
+{
+"title": "Foundation",
+"media": "Book",
+"activates": 6,
+"pending": 6,
+"status": "ADD IT",
+"anchors": "Civilization VI · Dune · Foundation · Mass Effect 2 · The Three-Body Problem"
+},
+{
+"title": "A Little Life",
+"media": "Book",
+"activates": 6,
+"pending": 5,
+"status": "CHECK (mixed)",
+"anchors": "A Silent Voice · Beloved · Bojack Horseman · Fleabag · Hereditary · Neon Genesis Evangelion"
+},
+{
+"title": "Avatar: The Last Airbender",
+"media": "TV",
+"activates": 6,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Fullmetal Alchemist: Brotherhood · Mistborn · One Piece · The Hobbit · The Hunger Games · The Lord of the Rings: Fellowship"
+},
+{
+"title": "Children of Men",
+"media": "Movie",
+"activates": 6,
+"pending": 5,
+"status": "CHECK (mixed)",
+"anchors": "Mad Max: Fury Road · Resident Evil 4 · The Handmaid's Tale · The Last of Us · The Road"
+},
+{
+"title": "Fullmetal Alchemist: Brotherhood",
+"media": "Anime",
+"activates": 6,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Avatar: The Last Airbender · Demon Slayer · One Piece · Persona 5 · The Lord of the Rings: Fellowship · The Way of Kings"
+},
+{
+"title": "Mass Effect 2",
+"media": "Game",
+"activates": 6,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Avatar: The Last Airbender · Baldur's Gate 3 · Dune · Fullmetal Alchemist: Brotherhood · Seven Samurai · The Witcher 3"
+},
+{
+"title": "Vagabond",
+"media": "Manga",
+"activates": 6,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "Crouching Tiger, Hidden Dragon · Elden Ring · Seven Samurai · Shōgun · Vinland Saga · Whiplash"
+},
+{
+"title": "Your Name",
+"media": "Anime",
+"activates": 6,
+"pending": 0,
+"status": "in catalog",
+"anchors": "A Silent Voice · Demon Slayer · Norwegian Wood · Past Lives · Steins;Gate · The Fault in Our Stars"
+},
+{
+"title": "House of Leaves",
+"media": "Book",
+"activates": 5,
+"pending": 5,
+"status": "ADD IT",
+"anchors": "Bloodborne · Serial Experiments Lain · The Call of Cthulhu · The Shining · Twin Peaks"
+},
+{
+"title": "The Time Traveler's Wife",
+"media": "Book",
+"activates": 5,
+"pending": 5,
+"status": "ADD IT",
+"anchors": "Arrival · Outlander · Steins;Gate · This Is Us · Your Name"
+},
+{
+"title": "A Silent Voice",
+"media": "Anime",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Celeste · Inside Out · Norwegian Wood · The Fault in Our Stars · Your Name"
+},
+{
+"title": "Baldur's Gate 3",
+"media": "Game",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Hunter x Hunter · Mass Effect 2 · Mistborn · The Elder Scrolls V: Skyrim · The Witcher 3"
+},
+{
+"title": "BioShock",
+"media": "Game",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "1984 · Alien · Disco Elysium · Severance · There Will Be Blood"
+},
+{
+"title": "Black Mirror",
+"media": "TV",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "1984 · Get Out · Serial Experiments Lain · Severance · The Handmaid's Tale"
+},
+{
+"title": "Blade Runner 2049",
+"media": "Movie",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Cowboy Bebop · Cyberpunk 2077 · Disco Elysium · Ghost in the Shell: SAC · Neuromancer"
+},
+{
+"title": "Death Note",
+"media": "Anime",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Hunter x Hunter · Monster · Se7en · The Dark Knight · The Silence of the Lambs"
+},
+{
+"title": "Heat",
+"media": "Movie",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Breaking Bad · Grand Theft Auto V · Mission: Impossible - Fallout · The Dark Knight"
+},
+{
+"title": "Hereditary",
+"media": "Movie",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "A Little Life · Get Out · Halloween · The Shining"
+},
+{
+"title": "No Country for Old Men",
+"media": "Movie",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Heat · Pulp Fiction · Red Dead Redemption 2 · The Road · There Will Be Blood"
+},
+{
+"title": "Parasite",
+"media": "Movie",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Get Out · Knives Out · Oldboy · Pachinko · Squid Game"
+},
+{
+"title": "Red Dead Redemption 2",
+"media": "Game",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Cowboy Bebop · Heat · No Country for Old Men · The Godfather · Vinland Saga"
+},
+{
+"title": "Spider-Man: Into the Spider-Verse",
+"media": "Movie",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Demon Slayer · Everything Everywhere All at Once · Hades · Hi-Fi Rush · Super Mario Odyssey"
+},
+{
+"title": "The Hobbit",
+"media": "Book",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Baldur's Gate 3 · One Piece · The Lord of the Rings · The Lord of the Rings: Fellowship · The Princess Bride"
+},
+{
+"title": "The Legend of Zelda: BOTW",
+"media": "Game",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "One Piece · Outer Wilds · Princess Mononoke · Super Mario Odyssey · The Elder Scrolls V: Skyrim"
+},
+{
+"title": "The Witcher 3",
+"media": "Game",
+"activates": 5,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Cowboy Bebop · Game of Thrones · Mass Effect 2 · The Elder Scrolls V: Skyrim · The First Law"
+},
+{
+"title": "Blood Meridian",
+"media": "Book",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "No Country for Old Men · Red Dead Redemption 2 · The First Law · The Road"
+},
+{
+"title": "Guardians of the Galaxy",
+"media": "Movie",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "Hi-Fi Rush · One Piece · Overwatch · The Princess Bride"
+},
+{
+"title": "My Neighbor Totoro",
+"media": "Movie",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "Princess Mononoke · Spirited Away · Stardew Valley · The Legend of Zelda: BOTW"
+},
+{
+"title": "Ocean's Eleven",
+"media": "Movie",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "Grand Theft Auto V · Heat · Mistborn · Persona 5"
+},
+{
+"title": "Sekiro",
+"media": "Game",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "Dark Souls · Elden Ring · Hollow Knight · Mission: Impossible - Fallout"
+},
+{
+"title": "Station Eleven",
+"media": "Book",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "Children of Men · The Last of Us · The Road"
+},
+{
+"title": "The Good Place",
+"media": "TV",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "Community · Everything Everywhere All at Once · Outer Wilds · Won't You Be My Neighbor?"
+},
+{
+"title": "The Power Broker",
+"media": "Book",
+"activates": 4,
+"pending": 4,
+"status": "ADD IT",
+"anchors": "Chernobyl · The Crown · The Wire · There Will Be Blood"
+},
+{
+"title": "Dark Souls",
+"media": "Game",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Celeste · Elden Ring · Hollow Knight · The Lord of the Rings"
+},
+{
+"title": "Dune: Part Two",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Blade Runner 2049 · Dune · Foundation · Mad Max: Fury Road"
+},
+{
+"title": "Everything Everywhere All at Once",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Bojack Horseman · Fleabag · Outer Wilds · Spider-Man: Into the Spider-Verse"
+},
+{
+"title": "Get Out",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Babel · Beloved · Black Mirror · Hereditary"
+},
+{
+"title": "Ghost in the Shell",
+"media": "Anime",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Blade Runner 2049 · Cyberpunk 2077 · Neuromancer · The Matrix"
+},
+{
+"title": "Hollow Knight",
+"media": "Game",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Celeste · Dark Souls · Elden Ring · Super Mario Odyssey"
+},
+{
+"title": "Hunter x Hunter",
+"media": "Anime",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Death Note · Fullmetal Alchemist: Brotherhood · Jujutsu Kaisen · Seven Samurai"
+},
+{
+"title": "Jujutsu Kaisen",
+"media": "Anime",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Demon Slayer · Devil May Cry 5 · Hunter x Hunter · Persona 5"
+},
+{
+"title": "Knives Out",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "12 Angry Men · Gone Girl · Murder on the Orient Express · Parasite"
+},
+{
+"title": "Macbeth",
+"media": "Book",
+"activates": 4,
+"pending": 3,
+"status": "CHECK (mixed)",
+"anchors": "Better Call Saul · Breaking Bad · Death Note · There Will Be Blood"
+},
+{
+"title": "Nausicaä of the Valley of the Wind",
+"media": "Anime",
+"activates": 4,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "Dark Souls · Dune · Princess Mononoke · The Lord of the Rings"
+},
+{
+"title": "Norwegian Wood",
+"media": "Book",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "A Little Life · Boyhood · Past Lives · Your Name"
+},
+{
+"title": "Pan's Labyrinth",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Bloodborne · One Hundred Years of Solitude · Spirited Away · The Witcher 3"
+},
+{
+"title": "Princess Mononoke",
+"media": "Anime",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Elden Ring · Hollow Knight · Spirited Away · The Legend of Zelda: BOTW"
+},
+{
+"title": "Se7en",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Death Note · Gone Girl · The Dark Knight · The Silence of the Lambs"
+},
+{
+"title": "Shōgun",
+"media": "TV",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Pachinko · Seven Samurai · The Crown · Vinland Saga"
+},
+{
+"title": "Spirited Away",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Pan's Labyrinth · Princess Mononoke · Spider-Man: Into the Spider-Verse · Stardew Valley"
+},
+{
+"title": "The Matrix",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Dune · Ghost in the Shell: SAC · Neuromancer · Serial Experiments Lain"
+},
+{
+"title": "There Will Be Blood",
+"media": "Movie",
+"activates": 4,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Better Call Saul · Breaking Bad · The Godfather · The Power Broker"
+},
+{
+"title": "2001: A Space Odyssey",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Interstellar · Portal 2 · The Shining"
+},
+{
+"title": "Altered Carbon",
+"media": "Book",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Blade Runner 2049 · Cyberpunk 2077 · Neuromancer"
+},
+{
+"title": "Citizen Kane",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "The Godfather · The Power Broker · There Will Be Blood"
+},
+{
+"title": "Cloud Atlas",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Everything Everywhere All at Once · One Hundred Years of Solitude · The Grand Budapest Hotel"
+},
+{
+"title": "Contact",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Arrival · Interstellar · Outer Wilds"
+},
+{
+"title": "Dark",
+"media": "TV",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Attack on Titan · One Hundred Years of Solitude · Stranger Things"
+},
+{
+"title": "Fargo",
+"media": "TV",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Breaking Bad · Grand Theft Auto V · Pulp Fiction"
+},
+{
+"title": "Firefly",
+"media": "TV",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Mass Effect 2 · One Piece · The Bear"
+},
+{
+"title": "In the Mood for Love",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Casablanca · Crouching Tiger, Hidden Dragon · Past Lives"
+},
+{
+"title": "Lady Bird",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Boyhood · Educated · The Catcher in the Rye"
+},
+{
+"title": "Lost in Translation",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "La Dolce Vita · Norwegian Wood · Past Lives"
+},
+{
+"title": "Minari",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Everything Everywhere All at Once · Pachinko · Past Lives"
+},
+{
+"title": "Notes from Underground",
+"media": "Book",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Crime and Punishment · Disco Elysium · The Catcher in the Rye"
+},
+{
+"title": "Perks of Being a Wallflower",
+"media": "Book",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "A Silent Voice · The Catcher in the Rye · The Fault in Our Stars"
+},
+{
+"title": "Scott Pilgrim vs. the World",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Community · Hi-Fi Rush · Street Fighter 6"
+},
+{
+"title": "Shadow of the Colossus",
+"media": "Game",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Elden Ring · Hollow Knight · The Legend of Zelda: BOTW"
+},
+{
+"title": "Sicario",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Counter-Strike 2 · Heat · No Country for Old Men"
+},
+{
+"title": "Turning Red",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "Celeste · Everything Everywhere All at Once · Inside Out"
+},
+{
+"title": "Unforgiven",
+"media": "Movie",
+"activates": 3,
+"pending": 3,
+"status": "ADD IT",
+"anchors": "God of War (2018) · No Country for Old Men · Red Dead Redemption 2"
+},
+{
+"title": "Beloved",
+"media": "Book",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "A Little Life · One Hundred Years of Solitude · Pachinko"
+},
+{
+"title": "Fleabag",
+"media": "TV",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Bojack Horseman · Pride and Prejudice · When Harry Met Sally"
+},
+{
+"title": "God of War (2018)",
+"media": "Game",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Hades · The Last of Us · Vinland Saga"
+},
+{
+"title": "Interstellar",
+"media": "Movie",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Arrival · Project Hail Mary · The Three-Body Problem"
+},
+{
+"title": "Mistborn",
+"media": "Book",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Hunger Games · The Way of Kings"
+},
+{
+"title": "Oldboy",
+"media": "Movie",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "No Country for Old Men · Parasite · Squid Game"
+},
+{
+"title": "Pulp Fiction",
+"media": "Movie",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Cowboy Bebop · Grand Theft Auto V"
+},
+{
+"title": "Stardew Valley",
+"media": "Game",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Minecraft · The Hobbit · The Sims 4"
+},
+{
+"title": "The Little Prince",
+"media": "Book",
+"activates": 3,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "Inside Out · Outer Wilds · Won't You Be My Neighbor?"
+},
+{
+"title": "The Mandalorian",
+"media": "TV",
+"activates": 3,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "Cowboy Bebop · Red Dead Redemption 2 · The Witcher 3"
+},
+{
+"title": "The Silence of the Lambs",
+"media": "Book",
+"activates": 3,
+"pending": 2,
+"status": "CHECK (mixed)",
+"anchors": "Death Note · Monster · Se7en"
+},
+{
+"title": "The Sopranos",
+"media": "TV",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Breaking Bad · The Departed · The Godfather"
+},
+{
+"title": "The Truman Show",
+"media": "Movie",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Portal 2 · Severance · The Matrix"
+},
+{
+"title": "The Wire",
+"media": "TV",
+"activates": 3,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Chernobyl · The Power Broker · The Sopranos"
+},
+{
+"title": "1917",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Children of Men · Mad Max: Fury Road"
+},
+{
+"title": "A Court of Thorns and Roses",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Fourth Wing"
+},
+{
+"title": "A Song of Ice and Fire",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Game of Thrones · Hunter x Hunter"
+},
+{
+"title": "Akira",
+"media": "Anime",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Cyberpunk 2077 · Mad Max: Fury Road"
+},
+{
+"title": "Animal Crossing",
+"media": "Game",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Stardew Valley · The Sims 4"
+},
+{
+"title": "Arcane",
+"media": "TV",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Spider-Man: Into the Spider-Verse · The Last of Us"
+},
+{
+"title": "Baby Driver",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Hi-Fi Rush · Pulp Fiction"
+},
+{
+"title": "Battle Royale",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Squid Game · The Hunger Games"
+},
+{
+"title": "Bridgerton",
+"media": "TV",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Outlander · Pride and Prejudice"
+},
+{
+"title": "Burning",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Oldboy · Parasite"
+},
+{
+"title": "Chainsaw Man",
+"media": "Anime",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Devil May Cry 5 · Jujutsu Kaisen"
+},
+{
+"title": "Circe",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "God of War (2018) · Hades"
+},
+{
+"title": "Clue",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Knives Out · Murder on the Orient Express"
+},
+{
+"title": "Edge of Tomorrow",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Hades · Re:Zero"
+},
+{
+"title": "Full Metal Jacket",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Apocalypse Now · Whiplash"
+},
+{
+"title": "Glass Onion",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Knives Out · Murder on the Orient Express"
+},
+{
+"title": "Goodfellas",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Grand Theft Auto V · The Departed"
+},
+{
+"title": "Grave of the Fireflies",
+"media": "Anime",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Apocalypse Now · Pan's Labyrinth"
+},
+{
+"title": "Guns, Germs, and Steel",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Civilization VI · Sapiens"
+},
+{
+"title": "Haikyuu!!",
+"media": "Anime",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Overwatch · Persona 5"
+},
+{
+"title": "Hyper Light Drifter",
+"media": "Game",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Elden Ring · Hollow Knight"
+},
+{
+"title": "IT",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Stranger Things · The Shining"
+},
+{
+"title": "Kentucky Route Zero",
+"media": "Game",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Disco Elysium · Twin Peaks"
+},
+{
+"title": "Kindred",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Beloved · Get Out"
+},
+{
+"title": "Logan",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "God of War (2018) · The Last of Us"
+},
+{
+"title": "Made in Abyss",
+"media": "Anime",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Attack on Titan · Hunter x Hunter"
+},
+{
+"title": "Manchester by the Sea",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "A Little Life · Bojack Horseman"
+},
+{
+"title": "My Hero Academia",
+"media": "Anime",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Overwatch · Persona 5"
+},
+{
+"title": "NieR: Automata",
+"media": "Game",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Elden Ring · Hollow Knight"
+},
+{
+"title": "Notting Hill",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Beach Read · When Harry Met Sally"
+},
+{
+"title": "Parks and Recreation",
+"media": "TV",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "The Office (US)"
+},
+{
+"title": "Ready Player One",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Final Fantasy XIV · Minecraft"
+},
+{
+"title": "Rick and Morty",
+"media": "TV",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Community"
+},
+{
+"title": "Saltburn",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "The Secret History"
+},
+{
+"title": "Sin City",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Grand Theft Auto V · Pulp Fiction"
+},
+{
+"title": "Snow Crash",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Cyberpunk 2077 · Neuromancer"
+},
+{
+"title": "Solaris",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Arrival · Blade Runner 2049"
+},
+{
+"title": "Sword Art Online",
+"media": "Anime",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Final Fantasy XIV · Re:Zero"
+},
+{
+"title": "The Brothers Karamazov",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Crime and Punishment · War and Peace"
+},
+{
+"title": "The Call of Cthulhu",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Bloodborne · Neon Genesis Evangelion"
+},
+{
+"title": "The Death of Stalin",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Disco Elysium · Dr. Strangelove"
+},
+{
+"title": "The First Law",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Game of Thrones · The Witcher 3"
+},
+{
+"title": "The Girl with All the Gifts",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Resident Evil 4 · The Last of Us"
+},
+{
+"title": "The King in Yellow",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Bloodborne · The Call of Cthulhu"
+},
+{
+"title": "The Martian",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Project Hail Mary · Subnautica"
+},
+{
+"title": "The Menu",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Knives Out · Parasite"
+},
+{
+"title": "The Ocean at the End of the Lane",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Pan's Labyrinth · Spirited Away"
+},
+{
+"title": "The Secret History",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "A Little Life · Babel"
+},
+{
+"title": "The Thing",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Alien · Halloween"
+},
+{
+"title": "The Wheel of Time",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Final Fantasy XIV · The Way of Kings"
+},
+{
+"title": "Uncut Gems",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Counter-Strike 2 · The Bear"
+},
+{
+"title": "Us",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Get Out · Parasite"
+},
+{
+"title": "V for Vendetta",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "The Handmaid's Tale · The Hunger Games"
+},
+{
+"title": "Veep",
+"media": "TV",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Dr. Strangelove · Seinfeld"
+},
+{
+"title": "Watchmen",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Spider-Man: Into the Spider-Verse · The Dark Knight"
+},
+{
+"title": "Watership Down",
+"media": "Book",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "The Hobbit · The Lord of the Rings"
+},
+{
+"title": "Westworld",
+"media": "TV",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Foundation · Ghost in the Shell: SAC"
+},
+{
+"title": "Zodiac",
+"media": "Movie",
+"activates": 2,
+"pending": 2,
+"status": "ADD IT",
+"anchors": "Se7en · The Silence of the Lambs"
+},
+{
+"title": "Animal Farm",
+"media": "Book",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "1984 · BioShock"
+},
+{
+"title": "Babel",
+"media": "Book",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Name of the Wind · The Secret History"
+},
+{
+"title": "Better Call Saul",
+"media": "TV",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Breaking Bad"
+},
+{
+"title": "Chernobyl",
+"media": "TV",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Power Broker · The Wire"
+},
+{
+"title": "Civilization VI",
+"media": "Game",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Foundation · Sapiens"
+},
+{
+"title": "Coraline",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Pan's Labyrinth · Spirited Away"
+},
+{
+"title": "Cyberpunk 2077",
+"media": "Game",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Ghost in the Shell: SAC · Neuromancer"
+},
+{
+"title": "Demon Slayer",
+"media": "Anime",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Jujutsu Kaisen"
+},
+{
+"title": "Devil May Cry 5",
+"media": "Game",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Hi-Fi Rush · Persona 5"
+},
+{
+"title": "Ghost in the Shell: SAC",
+"media": "Anime",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Cyberpunk 2077 · Serial Experiments Lain"
+},
+{
+"title": "Gone Girl",
+"media": "Movie",
+"activates": 2,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "Gone Girl · Se7en"
+},
+{
+"title": "Hades",
+"media": "Game",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "God of War (2018) · Spider-Man: Into the Spider-Verse"
+},
+{
+"title": "Hi-Fi Rush",
+"media": "Game",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Demon Slayer · Devil May Cry 5"
+},
+{
+"title": "Inside Out",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Celeste · This Is Us"
+},
+{
+"title": "Kill Bill",
+"media": "Movie",
+"activates": 2,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "Devil May Cry 5 · Oldboy"
+},
+{
+"title": "Mad Max: Fury Road",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Mission: Impossible - Fallout · Red Dead Redemption 2"
+},
+{
+"title": "Neon Genesis Evangelion",
+"media": "Anime",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Bloodborne · The Call of Cthulhu"
+},
+{
+"title": "Reservoir Dogs",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Pulp Fiction"
+},
+{
+"title": "Serial Experiments Lain",
+"media": "Anime",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Ghost in the Shell: SAC · Neon Genesis Evangelion"
+},
+{
+"title": "Snowpiercer",
+"media": "Movie",
+"activates": 2,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "Parasite · Squid Game"
+},
+{
+"title": "Squid Game",
+"media": "TV",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Parasite · The Hunger Games"
+},
+{
+"title": "Stand By Me",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Boyhood · Stranger Things"
+},
+{
+"title": "Subnautica",
+"media": "Game",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Alien · Minecraft"
+},
+{
+"title": "The Dark Knight",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Heat · Se7en"
+},
+{
+"title": "The Godfather",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Red Dead Redemption 2 · The Sopranos"
+},
+{
+"title": "The Great Gatsby",
+"media": "Book",
+"activates": 2,
+"pending": 1,
+"status": "CHECK (mixed)",
+"anchors": "La Dolce Vita · The Secret History"
+},
+{
+"title": "The Hunger Games",
+"media": "Book",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Mistborn · Squid Game"
+},
+{
+"title": "The Office (US)",
+"media": "TV",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Community · Seinfeld"
+},
+{
+"title": "Trainspotting",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Cyberpunk 2077 · Pulp Fiction"
+},
+{
+"title": "When Harry Met Sally",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Beach Read · Pride and Prejudice"
+},
+{
+"title": "Whiplash",
+"media": "Movie",
+"activates": 2,
+"pending": 0,
+"status": "in catalog",
+"anchors": "La La Land · The Bear"
+},
+{
+"title": "11/22/63",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Outlander"
+},
+{
+"title": "20,000 Leagues Under the Sea",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Subnautica"
+},
+{
+"title": "20th Century Boys",
+"media": "Manga",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Monster"
+},
+{
+"title": "28 Days Later",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Children of Men"
+},
+{
+"title": "3:10 to Yuma",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Red Dead Redemption 2"
+},
+{
+"title": "A Confederacy of Dunces",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Disco Elysium"
+},
+{
+"title": "A Few Good Men",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "12 Angry Men"
+},
+{
+"title": "A Gentleman in Moscow",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Grand Budapest Hotel"
+},
+{
+"title": "A Man Called Ove",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "This Is Us"
+},
+{
+"title": "A Nightmare on Elm Street",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Halloween"
+},
+{
+"title": "A Quiet Place",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Last of Us"
+},
+{
+"title": "A Wizard of Earthsea",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Name of the Wind"
+},
+{
+"title": "Across the Spider-Verse",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Spider-Man: Into the Spider-Verse"
+},
+{
+"title": "Amelie",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Grand Budapest Hotel"
+},
+{
+"title": "And Then There Were None",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Murder on the Orient Express"
+},
+{
+"title": "Arrested Development",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Seinfeld"
+},
+{
+"title": "Atlas Shrugged",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "BioShock"
+},
+{
+"title": "Avengers",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Seven Samurai"
+},
+{
+"title": "Baki the Grappler",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Street Fighter 6"
+},
+{
+"title": "Band of Brothers",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Chernobyl"
+},
+{
+"title": "Before Sunrise",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "When Harry Met Sally"
+},
+{
+"title": "Begin Again",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "La La Land"
+},
+{
+"title": "Beloved is canon",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Beloved"
+},
+{
+"title": "Beowulf",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Elder Scrolls V: Skyrim"
+},
+{
+"title": "Black Swan",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Whiplash"
+},
+{
+"title": "Blame!",
+"media": "Manga",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dark Souls"
+},
+{
+"title": "Blindsight",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Three-Body Problem"
+},
+{
+"title": "Blue Period",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Whiplash"
+},
+{
+"title": "Brave New World",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "1984"
+},
+{
+"title": "Brideshead Revisited",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Secret History"
+},
+{
+"title": "Brief Encounter",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Casablanca"
+},
+{
+"title": "Brooklyn Nine-Nine",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Office (US)"
+},
+{
+"title": "Buffy the Vampire Slayer",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Persona 5"
+},
+{
+"title": "CODA",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Won't You Be My Neighbor?"
+},
+{
+"title": "Call Me By Your Name",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Norwegian Wood"
+},
+{
+"title": "Cast Away",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Subnautica"
+},
+{
+"title": "Catch Me If You Can",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Better Call Saul"
+},
+{
+"title": "Catch-22",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dr. Strangelove"
+},
+{
+"title": "City of God",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Wire"
+},
+{
+"title": "Cosmos",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Sapiens"
+},
+{
+"title": "Cosmos (Sagan)",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Outer Wilds"
+},
+{
+"title": "Creed",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Street Fighter 6"
+},
+{
+"title": "Crimson Peak",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dracula"
+},
+{
+"title": "Critical Role",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Baldur's Gate 3"
+},
+{
+"title": "Crusader Kings",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Civilization VI"
+},
+{
+"title": "Curb Your Enthusiasm",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Seinfeld"
+},
+{
+"title": "Dark City",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Matrix"
+},
+{
+"title": "Dawn of the Dead",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Resident Evil 4"
+},
+{
+"title": "Detroit: Become Human",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Blade Runner 2049"
+},
+{
+"title": "Deus Ex",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Cyberpunk 2077"
+},
+{
+"title": "Divinity: Original Sin 2",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Baldur's Gate 3"
+},
+{
+"title": "Don't Look Up",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dr. Strangelove"
+},
+{
+"title": "Donnie Brasco",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Departed"
+},
+{
+"title": "Downton Abbey",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Crown"
+},
+{
+"title": "Dragon Age: Origins",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Baldur's Gate 3"
+},
+{
+"title": "Drive",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Cyberpunk 2077"
+},
+{
+"title": "Emma",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Pride and Prejudice"
+},
+{
+"title": "Encanto",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Hades"
+},
+{
+"title": "Equilibrium",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Matrix"
+},
+{
+"title": "Eragon",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Fourth Wing"
+},
+{
+"title": "Event Horizon",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Call of Cthulhu"
+},
+{
+"title": "Exhalation",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Arrival"
+},
+{
+"title": "Fahrenheit 451",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "1984"
+},
+{
+"title": "Fallout",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Last of Us"
+},
+{
+"title": "Fallout: New Vegas",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Mad Max: Fury Road"
+},
+{
+"title": "Fear and Loathing in Las Vegas",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Disco Elysium"
+},
+{
+"title": "Fight Club",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Catcher in the Rye"
+},
+{
+"title": "Final Fantasy VII",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Final Fantasy XIV"
+},
+{
+"title": "Frankenstein",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dracula"
+},
+{
+"title": "From Blood and Ash",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Fourth Wing"
+},
+{
+"title": "Ghost of Tsushima",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Shōgun"
+},
+{
+"title": "Gilmore Girls",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Stardew Valley"
+},
+{
+"title": "Glengarry Glen Ross",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "12 Angry Men"
+},
+{
+"title": "Gone with the Wind",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Casablanca"
+},
+{
+"title": "Good Omens",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Princess Bride"
+},
+{
+"title": "Good Will Hunting",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Educated"
+},
+{
+"title": "Gravity",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Children of Men"
+},
+{
+"title": "Hajime no Ippo",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Street Fighter 6"
+},
+{
+"title": "Hannibal",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Silence of the Lambs"
+},
+{
+"title": "Harry Potter",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Matrix"
+},
+{
+"title": "Heart of Darkness",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Apocalypse Now"
+},
+{
+"title": "Hellboy",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Devil May Cry 5"
+},
+{
+"title": "Her",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Blade Runner 2049"
+},
+{
+"title": "Hero",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Crouching Tiger, Hidden Dragon"
+},
+{
+"title": "Hillbilly Elegy",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Educated"
+},
+{
+"title": "Homegoing",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Pachinko"
+},
+{
+"title": "House of Flying Daggers",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Crouching Tiger, Hidden Dragon"
+},
+{
+"title": "How to Train Your Dragon",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Fourth Wing"
+},
+{
+"title": "Howl's Moving Castle",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Princess Bride"
+},
+{
+"title": "I Saw the Devil",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Oldboy"
+},
+{
+"title": "If We Were Villains",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Babel"
+},
+{
+"title": "In Bruges",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Pulp Fiction"
+},
+{
+"title": "Infernal Affairs",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Departed"
+},
+{
+"title": "Interview with the Vampire",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dracula"
+},
+{
+"title": "It (2017)",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Stranger Things"
+},
+{
+"title": "It Follows",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Halloween"
+},
+{
+"title": "It's Always Sunny in Philadelphia",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Seinfeld"
+},
+{
+"title": "Joe Abercrombie's other books",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The First Law"
+},
+{
+"title": "John Wick",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Mission: Impossible - Fallout"
+},
+{
+"title": "Kafka (The Trial)",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Severance"
+},
+{
+"title": "Kafka on the Shore",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Norwegian Wood"
+},
+{
+"title": "Kill Your Darlings",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Secret History"
+},
+{
+"title": "Kitchen Confidential",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Bear"
+},
+{
+"title": "Klara and the Sun",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Blade Runner 2049"
+},
+{
+"title": "Lego Movie",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Minecraft"
+},
+{
+"title": "Life Is Beautiful",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Pan's Labyrinth"
+},
+{
+"title": "Little Fires Everywhere",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "This Is Us"
+},
+{
+"title": "Little Miss Sunshine",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Sims 4"
+},
+{
+"title": "Lore Olympus",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Hades"
+},
+{
+"title": "Lupin III",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Persona 5"
+},
+{
+"title": "Léon: The Professional",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Last of Us"
+},
+{
+"title": "Me Before You",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Fault in Our Stars"
+},
+{
+"title": "Memories of Murder",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Parasite"
+},
+{
+"title": "Metropolis",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "BioShock"
+},
+{
+"title": "Midsommar",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Hereditary"
+},
+{
+"title": "Mindhunter",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Silence of the Lambs"
+},
+{
+"title": "Mission: Impossible - Fallout",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Mad Max: Fury Road"
+},
+{
+"title": "Moonrise Kingdom",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Grand Budapest Hotel"
+},
+{
+"title": "Morrowind",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Elder Scrolls V: Skyrim"
+},
+{
+"title": "Moulin Rouge",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "La La Land"
+},
+{
+"title": "Mulholland Drive",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Twin Peaks"
+},
+{
+"title": "Murder on the Orient Express",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Knives Out"
+},
+{
+"title": "Murderbot Diaries",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Portal 2"
+},
+{
+"title": "My Side of the Mountain",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Minecraft"
+},
+{
+"title": "Never Let Me Go",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Handmaid's Tale"
+},
+{
+"title": "Normal People",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Fleabag"
+},
+{
+"title": "One Hundred Years of Solitude",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "War and Peace"
+},
+{
+"title": "Only Murders in the Building",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Murder on the Orient Express"
+},
+{
+"title": "Oppenheimer",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Chernobyl"
+},
+{
+"title": "Oyasumi Punpun",
+"media": "Manga",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "A Little Life"
+},
+{
+"title": "Paddington 2",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Super Mario Odyssey"
+},
+{
+"title": "Pale Fire",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Disco Elysium"
+},
+{
+"title": "Pathologic 2",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Disco Elysium"
+},
+{
+"title": "Peaky Blinders",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Red Dead Redemption 2"
+},
+{
+"title": "Penny Dreadful",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dracula"
+},
+{
+"title": "People We Meet on Vacation",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Beach Read"
+},
+{
+"title": "Persuasion",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Pride and Prejudice"
+},
+{
+"title": "Philip K. Dick stories",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Black Mirror"
+},
+{
+"title": "Piranesi",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Hollow Knight"
+},
+{
+"title": "Planescape: Torment",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Disco Elysium"
+},
+{
+"title": "Poldark",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Outlander"
+},
+{
+"title": "Pride and Prejudice (2005)",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Pride and Prejudice"
+},
+{
+"title": "Prisoners",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Last of Us"
+},
+{
+"title": "Ready or Not",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Knives Out"
+},
+{
+"title": "Record of Lodoss War",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Baldur's Gate 3"
+},
+{
+"title": "Return of the Obra Dinn",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Murder on the Orient Express"
+},
+{
+"title": "Roman Holiday",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Casablanca"
+},
+{
+"title": "Rosemary's Baby",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Get Out"
+},
+{
+"title": "Russian Doll",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Everything Everywhere All at Once"
+},
+{
+"title": "Scream",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Halloween"
+},
+{
+"title": "Sharp Objects",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Gone Girl"
+},
+{
+"title": "Shōgun (novel)",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Shōgun"
+},
+{
+"title": "Silence",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Crime and Punishment"
+},
+{
+"title": "Sing Street",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "La La Land"
+},
+{
+"title": "Six of Crows",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Mistborn"
+},
+{
+"title": "Slaughterhouse-Five",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Everything Everywhere All at Once"
+},
+{
+"title": "Song of the Sea",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Spirited Away"
+},
+{
+"title": "Sons of Anarchy",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Red Dead Redemption 2"
+},
+{
+"title": "Stardust",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Princess Bride"
+},
+{
+"title": "Studio Ghibli films",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Legend of Zelda: BOTW"
+},
+{
+"title": "Super 8",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Stranger Things"
+},
+{
+"title": "That Time I Got Reincarnated as a Slime",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Re:Zero"
+},
+{
+"title": "The Abyss",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Subnautica"
+},
+{
+"title": "The Avengers",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Overwatch"
+},
+{
+"title": "The Babadook",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Hereditary"
+},
+{
+"title": "The Before Trilogy",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Boyhood"
+},
+{
+"title": "The Big Sleep",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Disco Elysium"
+},
+{
+"title": "The City of Ember",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "BioShock"
+},
+{
+"title": "The Corner",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Wire"
+},
+{
+"title": "The Count of Monte Cristo",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Oldboy"
+},
+{
+"title": "The Evil Dead",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Resident Evil 4"
+},
+{
+"title": "The Expanse",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Mass Effect 2"
+},
+{
+"title": "The Fall",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Grand Budapest Hotel"
+},
+{
+"title": "The Fountain",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Interstellar"
+},
+{
+"title": "The Fountainhead",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "BioShock"
+},
+{
+"title": "The Girl Who Leapt Through Time",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Steins;Gate"
+},
+{
+"title": "The Girl on the Train",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Gone Girl"
+},
+{
+"title": "The Glass Castle",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Educated"
+},
+{
+"title": "The Goonies",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Stranger Things"
+},
+{
+"title": "The Hateful Eight",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "12 Angry Men"
+},
+{
+"title": "The Hating Game",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Beach Read"
+},
+{
+"title": "The Haunting of Hill House",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Shining"
+},
+{
+"title": "The House in the Cerulean Sea",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Stardew Valley"
+},
+{
+"title": "The House of the Spirits",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "One Hundred Years of Solitude"
+},
+{
+"title": "The Karate Kid",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Whiplash"
+},
+{
+"title": "The Last Samurai",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Shōgun"
+},
+{
+"title": "The Last of Sheila",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Knives Out"
+},
+{
+"title": "The Lighthouse",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Shining"
+},
+{
+"title": "The Lives of Others",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Monster"
+},
+{
+"title": "The Lobster",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Severance"
+},
+{
+"title": "The Long Way to a Small, Angry Planet",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Project Hail Mary"
+},
+{
+"title": "The Magicians",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Name of the Wind"
+},
+{
+"title": "The Magnificent Seven",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Seven Samurai"
+},
+{
+"title": "The Man Who Was Thursday",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Disco Elysium"
+},
+{
+"title": "The Master",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "There Will Be Blood"
+},
+{
+"title": "The Northman",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Vinland Saga"
+},
+{
+"title": "The Power",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Handmaid's Tale"
+},
+{
+"title": "The Revenant",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Red Dead Redemption 2"
+},
+{
+"title": "The Running Man",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Hunger Games"
+},
+{
+"title": "The Song of Achilles",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Hades"
+},
+{
+"title": "The Stanley Parable",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Portal 2"
+},
+{
+"title": "The Stepford Wives",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Get Out"
+},
+{
+"title": "The Sting",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Better Call Saul"
+},
+{
+"title": "The Strange Case of Dr Jekyll and Mr Hyde",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Dracula"
+},
+{
+"title": "The Tale of the Princess Kaguya",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Spirited Away"
+},
+{
+"title": "The Talos Principle",
+"media": "Game",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Portal 2"
+},
+{
+"title": "The Tell-Tale Heart",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Crime and Punishment"
+},
+{
+"title": "The Three-Body Problem",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Foundation"
+},
+{
+"title": "The Twilight Zone",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Black Mirror"
+},
+{
+"title": "The Underground Railroad",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Beloved"
+},
+{
+"title": "The Walking Dead",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Last of Us"
+},
+{
+"title": "The Witch",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Hereditary"
+},
+{
+"title": "The Witcher",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Witcher 3"
+},
+{
+"title": "The Witcher (novels)",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Witcher 3"
+},
+{
+"title": "Thinking, Fast and Slow",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Sapiens"
+},
+{
+"title": "Train to Busan",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Squid Game"
+},
+{
+"title": "Trigun",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Cowboy Bebop"
+},
+{
+"title": "Uprooted",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Witcher 3"
+},
+{
+"title": "We",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "1984"
+},
+{
+"title": "Weathering with You",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Your Name"
+},
+{
+"title": "What We Do in the Shadows",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Office (US)"
+},
+{
+"title": "Wild",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Educated"
+},
+{
+"title": "Wolf Hall",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Crown"
+},
+{
+"title": "World War Z",
+"media": "Book",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "The Last of Us"
+},
+{
+"title": "Years and Years",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Black Mirror"
+},
+{
+"title": "Yojimbo",
+"media": "Movie",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Seven Samurai"
+},
+{
+"title": "You",
+"media": "TV",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "Gone Girl"
+},
+{
+"title": "Your Lie in April",
+"media": "Anime",
+"activates": 1,
+"pending": 1,
+"status": "ADD IT",
+"anchors": "A Silent Voice"
+},
+{
+"title": "Alien",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "BioShock"
+},
+{
+"title": "Attack on Titan",
+"media": "Anime",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Jujutsu Kaisen"
+},
+{
+"title": "Boyhood",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Inside Out"
+},
+{
+"title": "Catcher in the Rye",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Fleabag"
+},
+{
+"title": "Community",
+"media": "TV",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Office (US)"
+},
+{
+"title": "Dr. Strangelove",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Chernobyl"
+},
+{
+"title": "Dracula",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Bloodborne"
+},
+{
+"title": "Inception",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Matrix"
+},
+{
+"title": "Memento",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Oldboy"
+},
+{
+"title": "One Piece",
+"media": "Anime",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Avatar: The Last Airbender"
+},
+{
+"title": "Persona 5",
+"media": "Game",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Catcher in the Rye"
+},
+{
+"title": "Pride and Prejudice",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "When Harry Met Sally"
+},
+{
+"title": "Project Hail Mary",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Interstellar"
+},
+{
+"title": "Re:Zero",
+"media": "Anime",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Steins;Gate"
+},
+{
+"title": "Sapiens",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Civilization VI"
+},
+{
+"title": "Seven Samurai",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Shōgun"
+},
+{
+"title": "Skyrim",
+"media": "Game",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Legend of Zelda: BOTW"
+},
+{
+"title": "Star Wars",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Mass Effect 2"
+},
+{
+"title": "Star Wars: A New Hope",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Matrix"
+},
+{
+"title": "Stranger Things",
+"media": "TV",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Shining"
+},
+{
+"title": "Street Fighter 6",
+"media": "Game",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Counter-Strike 2"
+},
+{
+"title": "The Bear",
+"media": "TV",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Whiplash"
+},
+{
+"title": "The Catcher in the Rye",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Persona 5"
+},
+{
+"title": "The Departed",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Dark Knight"
+},
+{
+"title": "The Elder Scrolls V: Skyrim",
+"media": "Game",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Baldur's Gate 3"
+},
+{
+"title": "The Hitchhiker's Guide to the Galaxy",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "Portal 2"
+},
+{
+"title": "The Lord of the Rings: Fellowship",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Lord of the Rings"
+},
+{
+"title": "The Name of the Wind",
+"media": "Book",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Way of Kings"
+},
+{
+"title": "The Princess Bride",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Hobbit"
+},
+{
+"title": "The Shining",
+"media": "Movie",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Shining"
+},
+{
+"title": "This Is Us",
+"media": "TV",
+"activates": 1,
+"pending": 0,
+"status": "in catalog",
+"anchors": "The Sims 4"
+}
+]

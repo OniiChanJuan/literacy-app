@@ -1,0 +1,9325 @@
+[
+ {
+  "title": "Berserk",
+  "media": "Manga",
+  "activates": 13,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2629,
+    "title": "Berserk",
+    "type": "comic",
+    "year": 1990,
+    "upcoming": false
+   },
+   {
+    "id": 12,
+    "title": "Berserk",
+    "type": "manga",
+    "year": 1989,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Annihilation",
+  "media": "Movie",
+  "activates": 10,
+  "pending": 10,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3659,
+    "title": "Annihilation",
+    "type": "movie",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Breaking Bad",
+  "media": "TV",
+  "activates": 10,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 27,
+    "title": "Breaking Bad",
+    "type": "tv",
+    "year": 2008,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Disco Elysium",
+  "media": "Game",
+  "activates": 10,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 535,
+    "title": "Disco Elysium",
+    "type": "game",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Way of Kings",
+  "media": "Book",
+  "activates": 10,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2008,
+    "title": "The Way of Kings",
+    "type": "book",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Bloodborne",
+  "media": "Game",
+  "activates": 9,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 525,
+    "title": "Bloodborne",
+    "type": "game",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Game of Thrones",
+  "media": "TV",
+  "activates": 9,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1455,
+    "title": "Game of Thrones",
+    "type": "tv",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Lord of the Rings",
+  "media": "Book",
+  "activates": 9,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 1356,
+    "title": "The Lord of the Rings",
+    "type": "movie",
+    "year": 1978
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 17657,
+    "title": "The Lord of the Rings. Appendices",
+    "type": "book",
+    "year": 1999,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 17682,
+    "title": "Poems from The lord of the rings",
+    "type": "book",
+    "year": 1994,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 17692,
+    "title": "The Lord of the Rings [1/6]",
+    "type": "book",
+    "year": 2002,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 17630,
+    "title": "Novels (Hobbit / Lord of the Rings)",
+    "type": "book",
+    "year": 1979,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 15962,
+    "title": "The Lord of the Rings Illustrated",
+    "type": "book",
+    "year": 2021,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 15961,
+    "title": "The Lord of the Rings: Part 1 The Fellowship of the Ring",
+    "type": "book",
+    "year": 2025,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Vinland Saga",
+  "media": "Anime",
+  "activates": 9,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 944,
+    "title": "Vinland Saga",
+    "type": "tv",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Pachinko",
+  "media": "Book",
+  "activates": 8,
+  "pending": 8,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 28690,
+    "title": "Pachinko",
+    "type": "book",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Road",
+  "media": "Book",
+  "activates": 8,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16089,
+    "title": "The Road",
+    "type": "book",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "True Detective S1",
+  "media": "TV",
+  "activates": 8,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 8430,
+    "title": "True Detective",
+    "type": "tv",
+    "year": 2014,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Mad Men",
+  "media": "TV",
+  "activates": 7,
+  "pending": 7,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8345,
+    "title": "Mad Men",
+    "type": "tv",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Neuromancer",
+  "media": "Book",
+  "activates": 7,
+  "pending": 7,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2,
+    "title": "Neuromancer",
+    "type": "book",
+    "year": 1984,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "1984",
+  "media": "Book",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 17712,
+    "title": "1984",
+    "type": "book",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Arrival",
+  "media": "Movie",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3137,
+    "title": "Arrival",
+    "type": "movie",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Celeste",
+  "media": "Game",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 22,
+    "title": "Celeste",
+    "type": "game",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Cowboy Bebop",
+  "media": "Anime",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 950,
+    "title": "Cowboy Bebop",
+    "type": "tv",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Crime and Punishment",
+  "media": "Book",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16431,
+    "title": "Crime and Punishment",
+    "type": "book",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Dune",
+  "media": "Book",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 10,
+    "title": "Dune",
+    "type": "book",
+    "year": 1965,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Elden Ring",
+  "media": "Game",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 454,
+    "title": "Elden Ring",
+    "type": "game",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Outer Wilds",
+  "media": "Game",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 572,
+    "title": "Outer Wilds: Echoes of the Eye",
+    "type": "game",
+    "year": 2021,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Past Lives",
+  "media": "Movie",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 4525,
+    "title": "Past Lives",
+    "type": "movie",
+    "year": 2023,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Severance",
+  "media": "TV",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 5,
+    "title": "Severance",
+    "type": "tv",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Steins;Gate",
+  "media": "Anime",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 910,
+    "title": "Steins;Gate",
+    "type": "tv",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "The Last of Us",
+  "media": "Game",
+  "activates": 7,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 17,
+    "title": "The Last of Us",
+    "type": "game",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Bojack Horseman",
+  "media": "TV",
+  "activates": 6,
+  "pending": 6,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 381,
+    "title": "BoJack Horseman",
+    "type": "tv",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Foundation",
+  "media": "Book",
+  "activates": 6,
+  "pending": 6,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16767,
+    "title": "Foundation",
+    "type": "book",
+    "year": 1951,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Little Life",
+  "media": "Book",
+  "activates": 6,
+  "pending": 5,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 25006,
+    "title": "A Little Life",
+    "type": "book",
+    "year": 2024,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Avatar: The Last Airbender",
+  "media": "TV",
+  "activates": 6,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 295,
+    "title": "Avatar: The Last Airbender",
+    "type": "tv",
+    "year": 2005,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Children of Men",
+  "media": "Movie",
+  "activates": 6,
+  "pending": 5,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 3998,
+    "title": "Children of Men",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Fullmetal Alchemist: Brotherhood",
+  "media": "Anime",
+  "activates": 6,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 301,
+    "title": "Fullmetal Alchemist: Brotherhood",
+    "type": "tv",
+    "year": 2009,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Mass Effect 2",
+  "media": "Game",
+  "activates": 6,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 473,
+    "title": "Mass Effect 2",
+    "type": "game",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Vagabond",
+  "media": "Manga",
+  "activates": 6,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 782,
+    "title": "Vagabond",
+    "type": "manga",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Your Name",
+  "media": "Anime",
+  "activates": 6,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 938,
+    "title": "Your Name.",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   },
+   {
+    "id": 2647,
+    "title": "Your Name.",
+    "type": "movie",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv",
+   "movie"
+  ]
+ },
+ {
+  "title": "House of Leaves",
+  "media": "Book",
+  "activates": 5,
+  "pending": 5,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 18,
+    "title": "House of Leaves",
+    "type": "book",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Time Traveler's Wife",
+  "media": "Book",
+  "activates": 5,
+  "pending": 5,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 6741,
+    "title": "The Time Traveler's Wife",
+    "type": "movie",
+    "year": 2009
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 29293,
+    "title": "The Wife",
+    "type": "book",
+    "year": 2018,
+    "why": "all title tokens in query"
+   }
+  ]
+ },
+ {
+  "title": "A Silent Voice",
+  "media": "Anime",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 925,
+    "title": "A Silent Voice",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Baldur's Gate 3",
+  "media": "Game",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 11516,
+    "title": "Baldur's Gate",
+    "type": "game",
+    "year": 1998,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "BioShock",
+  "media": "Game",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1613,
+    "title": "BioShock",
+    "type": "game",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Black Mirror",
+  "media": "TV",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 8287,
+    "title": "Black Mirror",
+    "type": "tv",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Blade Runner 2049",
+  "media": "Movie",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1,
+    "title": "Blade Runner 2049",
+    "type": "movie",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Death Note",
+  "media": "Anime",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 323,
+    "title": "Death Note",
+    "type": "tv",
+    "year": 2006,
+    "upcoming": false
+   },
+   {
+    "id": 5030,
+    "title": "Death Note",
+    "type": "movie",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv",
+   "movie"
+  ]
+ },
+ {
+  "title": "Heat",
+  "media": "Movie",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3161,
+    "title": "Heat",
+    "type": "movie",
+    "year": 1995,
+    "upcoming": false
+   },
+   {
+    "id": 4699,
+    "title": "The Heat",
+    "type": "movie",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hereditary",
+  "media": "Movie",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3306,
+    "title": "Hereditary",
+    "type": "movie",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "No Country for Old Men",
+  "media": "Movie",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2932,
+    "title": "No Country for Old Men",
+    "type": "movie",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Parasite",
+  "media": "Movie",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 13,
+    "title": "Parasite",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Red Dead Redemption 2",
+  "media": "Game",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 470,
+    "title": "Red Dead Redemption 2",
+    "type": "game",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Spider-Man: Into the Spider-Verse",
+  "media": "Movie",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 29,
+    "title": "Spider-Man: Into the Spider-Verse",
+    "type": "movie",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Hobbit",
+  "media": "Book",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1995,
+    "title": "The Hobbit",
+    "type": "book",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Legend of Zelda: BOTW",
+  "media": "Game",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 1576,
+    "title": "The Legend of Zelda",
+    "type": "game",
+    "year": 1986,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "The Witcher 3",
+  "media": "Game",
+  "activates": 5,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 508,
+    "title": "The Witcher 3: Wild Hunt - Hearts of Stone",
+    "type": "game",
+    "year": 2015,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 461,
+    "title": "The Witcher 3: Wild Hunt - Blood and Wine",
+    "type": "game",
+    "year": 2016,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 9,
+    "title": "The Witcher 3: Wild Hunt",
+    "type": "game",
+    "year": 2015,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1447,
+    "title": "The Witcher",
+    "type": "game",
+    "year": 2007,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Blood Meridian",
+  "media": "Book",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16091,
+    "title": "Blood Meridian",
+    "type": "book",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Guardians of the Galaxy",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1943,
+    "title": "Guardians of the Galaxy",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "My Neighbor Totoro",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3324,
+    "title": "My Neighbor Totoro",
+    "type": "movie",
+    "year": 1988,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Ocean's Eleven",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3412,
+    "title": "Ocean's Eleven",
+    "type": "movie",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Sekiro",
+  "media": "Game",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 550,
+    "title": "Sekiro: Shadows Die Twice",
+    "type": "game",
+    "year": 2019,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Station Eleven",
+  "media": "Book",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 26643,
+    "title": "Station Eleven",
+    "type": "book",
+    "year": 2022,
+    "upcoming": false
+   },
+   {
+    "id": 17192,
+    "title": "Station Eleven",
+    "type": "book",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Good Place",
+  "media": "TV",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 9015,
+    "title": "The Good Place",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Power Broker",
+  "media": "Book",
+  "activates": 4,
+  "pending": 4,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 17188,
+    "title": "The Power",
+    "type": "book",
+    "year": 1998,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Dark Souls",
+  "media": "Game",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1531,
+    "title": "Dark Souls",
+    "type": "game",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Dune: Part Two",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 157,
+    "title": "Dune: Part Two",
+    "type": "movie",
+    "year": 2024,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Everything Everywhere All at Once",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16,
+    "title": "Everything Everywhere All at Once",
+    "type": "movie",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Get Out",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3258,
+    "title": "Get Out",
+    "type": "movie",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Ghost in the Shell",
+  "media": "Anime",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1737,
+    "title": "Ghost in the Shell",
+    "type": "tv",
+    "year": 1995,
+    "upcoming": false
+   },
+   {
+    "id": 1726,
+    "title": "Ghost in the Shell",
+    "type": "movie",
+    "year": 1995,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv",
+   "movie"
+  ]
+ },
+ {
+  "title": "Hollow Knight",
+  "media": "Game",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 30,
+    "title": "Hollow Knight",
+    "type": "game",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hunter x Hunter",
+  "media": "Anime",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 309,
+    "title": "Hunter x Hunter",
+    "type": "tv",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Jujutsu Kaisen",
+  "media": "Anime",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 368,
+    "title": "JUJUTSU KAISEN",
+    "type": "tv",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Knives Out",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3219,
+    "title": "Knives Out",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Macbeth",
+  "media": "Book",
+  "activates": 4,
+  "pending": 3,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 29310,
+    "title": "Macbeth",
+    "type": "book",
+    "year": 2018,
+    "upcoming": false
+   },
+   {
+    "id": 16964,
+    "title": "Macbeth",
+    "type": "book",
+    "year": 1508,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Nausicaä of the Valley of the Wind",
+  "media": "Anime",
+  "activates": 4,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 3884,
+    "title": "Nausicaä of the Valley of the Wind",
+    "type": "movie",
+    "year": 1984,
+    "upcoming": false
+   },
+   {
+    "id": 19163,
+    "title": "Nausicaä of the Valley of the Wind",
+    "type": "tv",
+    "year": 1984,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "movie",
+   "tv"
+  ]
+ },
+ {
+  "title": "Norwegian Wood",
+  "media": "Book",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16069,
+    "title": "Norwegian Wood",
+    "type": "book",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Pan's Labyrinth",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2894,
+    "title": "Pan's Labyrinth",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Princess Mononoke",
+  "media": "Anime",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 51,
+    "title": "Princess Mononoke",
+    "type": "movie",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "movie"
+  ]
+ },
+ {
+  "title": "Se7en",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 36,
+    "title": "Se7en",
+    "type": "movie",
+    "year": 1995,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Shōgun",
+  "media": "TV",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 9557,
+    "title": "Shōgun",
+    "type": "tv",
+    "year": 2024,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Spirited Away",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2643,
+    "title": "Spirited Away",
+    "type": "movie",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Matrix",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 84,
+    "title": "The Matrix",
+    "type": "movie",
+    "year": 1999,
+    "upcoming": false
+   },
+   {
+    "id": 22519,
+    "title": "Matrix",
+    "type": "movie",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "There Will Be Blood",
+  "media": "Movie",
+  "activates": 4,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3594,
+    "title": "There Will Be Blood",
+    "type": "movie",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "2001: A Space Odyssey",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3205,
+    "title": "2001: A Space Odyssey",
+    "type": "movie",
+    "year": 1968,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Altered Carbon",
+  "media": "Book",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 9364,
+    "title": "Altered Carbon",
+    "type": "tv",
+    "year": 2018
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Citizen Kane",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4826,
+    "title": "Citizen Kane",
+    "type": "movie",
+    "year": 1941,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Cloud Atlas",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4707,
+    "title": "Cloud Atlas",
+    "type": "movie",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Contact",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3858,
+    "title": "Contact",
+    "type": "movie",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Dark",
+  "media": "TV",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 21,
+    "title": "Dark",
+    "type": "tv",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Fargo",
+  "media": "TV",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8302,
+    "title": "Fargo",
+    "type": "tv",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Firefly",
+  "media": "TV",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 10650,
+    "title": "Firefly",
+    "type": "tv",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "In the Mood for Love",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 190,
+    "title": "In the Mood for Love",
+    "type": "movie",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Lady Bird",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4200,
+    "title": "Lady Bird",
+    "type": "movie",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Lost in Translation",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3837,
+    "title": "Lost in Translation",
+    "type": "movie",
+    "year": 2003,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Minari",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5395,
+    "title": "Minari",
+    "type": "movie",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Notes from Underground",
+  "media": "Book",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16432,
+    "title": "Notes from Underground",
+    "type": "book",
+    "year": 1994,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Perks of Being a Wallflower",
+  "media": "Book",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 27877,
+    "title": "The Perks of Being a Wallflower",
+    "type": "book",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Scott Pilgrim vs. the World",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4300,
+    "title": "Scott Pilgrim vs. the World",
+    "type": "movie",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Shadow of the Colossus",
+  "media": "Game",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11234,
+    "title": "Shadow of the Colossus",
+    "type": "game",
+    "year": 2005,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Sicario",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2715,
+    "title": "Sicario",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Turning Red",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2826,
+    "title": "Turning Red",
+    "type": "movie",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Unforgiven",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 3,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2943,
+    "title": "Unforgiven",
+    "type": "movie",
+    "year": 1992,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Beloved",
+  "media": "Book",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16115,
+    "title": "Beloved",
+    "type": "book",
+    "year": 2019,
+    "upcoming": false
+   },
+   {
+    "id": 25053,
+    "title": "The Beloved",
+    "type": "book",
+    "year": 2024,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Fleabag",
+  "media": "TV",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 10683,
+    "title": "Fleabag",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "God of War (2018)",
+  "media": "Game",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 1495,
+    "title": "God of War: Origins Collection",
+    "type": "game",
+    "year": 2011,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1496,
+    "title": "God of War: Chains of Olympus",
+    "type": "game",
+    "year": 2011,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1497,
+    "title": "God of War Collection",
+    "type": "game",
+    "year": 2009,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1494,
+    "title": "God of War: Ghost of Sparta",
+    "type": "game",
+    "year": 2011,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1493,
+    "title": "God of War III: Remastered",
+    "type": "game",
+    "year": 2015,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1871,
+    "title": "God of War Ragnarök: Valhalla",
+    "type": "game",
+    "year": 2023,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Interstellar",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 25,
+    "title": "Interstellar",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Mistborn",
+  "media": "Book",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Oldboy",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 87,
+    "title": "Oldboy",
+    "type": "movie",
+    "year": 2003,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Pulp Fiction",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2646,
+    "title": "Pulp Fiction",
+    "type": "movie",
+    "year": 1994,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Stardew Valley",
+  "media": "Game",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 11219,
+    "title": "Stardew Valley",
+    "type": "game",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Little Prince",
+  "media": "Book",
+  "activates": 3,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 22516,
+    "title": "The Little Prince",
+    "type": "book",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Mandalorian",
+  "media": "TV",
+  "activates": 3,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 1335,
+    "title": "The Mandalorian",
+    "type": "tv",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Silence of the Lambs",
+  "media": "Book",
+  "activates": 3,
+  "pending": 2,
+  "sheetStatus": "CHECK (mixed)",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 44,
+    "title": "The Silence of the Lambs",
+    "type": "movie",
+    "year": 1991
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 27566,
+    "title": "The Silence",
+    "type": "book",
+    "year": 2020,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "The Sopranos",
+  "media": "TV",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 311,
+    "title": "The Sopranos",
+    "type": "tv",
+    "year": 1999,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Truman Show",
+  "media": "Movie",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 143,
+    "title": "The Truman Show",
+    "type": "movie",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Wire",
+  "media": "TV",
+  "activates": 3,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 325,
+    "title": "The Wire",
+    "type": "tv",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "1917",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2906,
+    "title": "1917",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Court of Thorns and Roses",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 22973,
+    "title": "A Court of Thorns and Roses",
+    "type": "book",
+    "year": 2026,
+    "upcoming": false
+   },
+   {
+    "id": 27429,
+    "title": "Court of Thorns and Roses",
+    "type": "book",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Song of Ice and Fire",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 15986,
+    "title": "A Storm of Swords (HBO Tie-in Edition): A Song of Ice and Fire: Book Three",
+    "type": "book",
+    "year": 2013,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 15981,
+    "title": "A Dance with Dragons (HBO Tie-in Edition): A Song of Ice and Fire: Book Five",
+    "type": "book",
+    "year": 2015,
+    "why": "all query tokens in title"
+   }
+  ]
+ },
+ {
+  "title": "Akira",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2718,
+    "title": "Akira",
+    "type": "movie",
+    "year": 1988,
+    "upcoming": false
+   },
+   {
+    "id": 18945,
+    "title": "Akira",
+    "type": "tv",
+    "year": 1988,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "movie",
+   "tv"
+  ]
+ },
+ {
+  "title": "Animal Crossing",
+  "media": "Game",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 11397,
+    "title": "Animal Crossing: New Horizons",
+    "type": "game",
+    "year": 2020,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Arcane",
+  "media": "TV",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11,
+    "title": "Arcane",
+    "type": "tv",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Baby Driver",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3414,
+    "title": "Baby Driver",
+    "type": "movie",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Battle Royale",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 20555,
+    "title": "Battle Royale",
+    "type": "manga",
+    "year": 1999
+   },
+   {
+    "id": 3967,
+    "title": "Battle Royale",
+    "type": "movie",
+    "year": 2000
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Bridgerton",
+  "media": "TV",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8235,
+    "title": "Bridgerton",
+    "type": "tv",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Burning",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4808,
+    "title": "Burning",
+    "type": "movie",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Chainsaw Man",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 9037,
+    "title": "Chainsaw Man",
+    "type": "tv",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Circe",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 26523,
+    "title": "Circe",
+    "type": "book",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Clue",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4801,
+    "title": "Clue",
+    "type": "movie",
+    "year": 1985,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Edge of Tomorrow",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3491,
+    "title": "Edge of Tomorrow",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Full Metal Jacket",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 165,
+    "title": "Full Metal Jacket",
+    "type": "movie",
+    "year": 1987,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Glass Onion",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 3327,
+    "title": "Glass",
+    "type": "movie",
+    "year": 2019,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 3729,
+    "title": "Glass Onion: A Knives Out Mystery",
+    "type": "movie",
+    "year": 2022,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Goodfellas",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2650,
+    "title": "GoodFellas",
+    "type": "movie",
+    "year": 1990,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Grave of the Fireflies",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2652,
+    "title": "Grave of the Fireflies",
+    "type": "movie",
+    "year": 1988,
+    "upcoming": false
+   },
+   {
+    "id": 18983,
+    "title": "Grave of the Fireflies",
+    "type": "tv",
+    "year": 1988,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "movie",
+   "tv"
+  ]
+ },
+ {
+  "title": "Guns, Germs, and Steel",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17329,
+    "title": "Guns, germs, and steel",
+    "type": "book",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Haikyuu!!",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 21228,
+    "title": "Haikyuu!!",
+    "type": "manga",
+    "year": 2011
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 334,
+    "title": "Haikyu!!",
+    "type": "tv",
+    "year": 2014,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 19608,
+    "title": "Haikyuu!! the Movie: The Winner and the Loser",
+    "type": "tv",
+    "year": 2015,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Hyper Light Drifter",
+  "media": "Game",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11651,
+    "title": "Hyper Light Drifter",
+    "type": "game",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "IT",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 15875,
+    "title": "It",
+    "type": "book",
+    "year": 1986,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Kentucky Route Zero",
+  "media": "Game",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 12419,
+    "title": "Kentucky Route Zero",
+    "type": "game",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Kindred",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16157,
+    "title": "Kindred",
+    "type": "book",
+    "year": 2004,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Logan",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1973,
+    "title": "Logan",
+    "type": "movie",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Made in Abyss",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 9502,
+    "title": "Made in Abyss",
+    "type": "tv",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Manchester by the Sea",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4837,
+    "title": "Manchester by the Sea",
+    "type": "movie",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "My Hero Academia",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 327,
+    "title": "My Hero Academia",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "NieR: Automata",
+  "media": "Game",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11228,
+    "title": "NieR: Automata",
+    "type": "game",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Notting Hill",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4494,
+    "title": "Notting Hill",
+    "type": "movie",
+    "year": 1999,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Parks and Recreation",
+  "media": "TV",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Ready Player One",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17175,
+    "title": "Ready Player One",
+    "type": "book",
+    "year": 2008,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Rick and Morty",
+  "media": "TV",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 305,
+    "title": "Rick and Morty",
+    "type": "tv",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Saltburn",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3817,
+    "title": "Saltburn",
+    "type": "movie",
+    "year": 2023,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Sin City",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3825,
+    "title": "Sin City",
+    "type": "movie",
+    "year": 2005,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Snow Crash",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Solaris",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 7004,
+    "title": "Solaris",
+    "type": "movie",
+    "year": 1972,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Sword Art Online",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8653,
+    "title": "Sword Art Online",
+    "type": "tv",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "The Brothers Karamazov",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 18461,
+    "title": "The Brothers Karamazov",
+    "type": "book",
+    "year": 2015,
+    "upcoming": false
+   },
+   {
+    "id": 18465,
+    "title": "Brothers Karamazov",
+    "type": "book",
+    "year": 1999,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Call of Cthulhu",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 12046,
+    "title": "Call of Cthulhu",
+    "type": "game",
+    "year": 2018
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Death of Stalin",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The First Law",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 17862,
+    "title": "Eight Stories From Rest of the Robots (First Law / Galley Slave / Lenny / Let's Get Together / Risk / Robot AL-76 Goes Astray / Satisfaction Guaranteed / Victory Unintentional)",
+    "type": "book",
+    "year": 1964,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 16053,
+    "title": "The First Law Trilogy Boxed Set",
+    "type": "book",
+    "year": 2012,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 16048,
+    "title": "The First Law Trilogy",
+    "type": "book",
+    "year": 2021,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "The Girl with All the Gifts",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The King in Yellow",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16644,
+    "title": "The King in Yellow",
+    "type": "book",
+    "year": 1895,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Martian",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16850,
+    "title": "The Martian",
+    "type": "book",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Menu",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3654,
+    "title": "The Menu",
+    "type": "movie",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Ocean at the End of the Lane",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 15922,
+    "title": "The Ocean at the End of the Lane",
+    "type": "book",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Secret History",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 23354,
+    "title": "Family of Spies: A World War II Story of Nazi Espionage, Betrayal, and the Secret History Behind Pearl Harbor",
+    "type": "book",
+    "year": 2025,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 23277,
+    "title": "Chaos: Charles Manson, the CIA, and the Secret History of the Sixties",
+    "type": "book",
+    "year": 2020,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 24546,
+    "title": "The Secret",
+    "type": "book",
+    "year": 2024,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 16590,
+    "title": "The Secret History: A Read with Jenna Pick",
+    "type": "book",
+    "year": 2011,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "The Thing",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3155,
+    "title": "The Thing",
+    "type": "movie",
+    "year": 1982,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Wheel of Time",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 9112,
+    "title": "The Wheel of Time",
+    "type": "tv",
+    "year": 2021
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Uncut Gems",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4608,
+    "title": "Uncut Gems",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Us",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4054,
+    "title": "Us",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "V for Vendetta",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3689,
+    "title": "V for Vendetta",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Veep",
+  "media": "TV",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8817,
+    "title": "Veep",
+    "type": "tv",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Watchmen",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 15,
+    "title": "Watchmen",
+    "type": "comic",
+    "year": 1986
+   },
+   {
+    "id": 3949,
+    "title": "Watchmen",
+    "type": "movie",
+    "year": 2009
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 23915,
+    "title": "Watch Me",
+    "type": "book",
+    "year": 2025,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Watership Down",
+  "media": "Book",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17310,
+    "title": "Watership Down",
+    "type": "book",
+    "year": 1972,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Westworld",
+  "media": "TV",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8337,
+    "title": "Westworld",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Zodiac",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 2,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3399,
+    "title": "Zodiac",
+    "type": "movie",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Animal Farm",
+  "media": "Book",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16750,
+    "title": "Animal Farm",
+    "type": "book",
+    "year": 1945,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Babel",
+  "media": "Book",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 25507,
+    "title": "Babel",
+    "type": "book",
+    "year": 2023,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Better Call Saul",
+  "media": "TV",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 299,
+    "title": "Better Call Saul",
+    "type": "tv",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Chernobyl",
+  "media": "TV",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 300,
+    "title": "Chernobyl",
+    "type": "tv",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Civilization VI",
+  "media": "Game",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 11335,
+    "title": "Sid Meier's Civilization VI",
+    "type": "game",
+    "year": 2016,
+    "why": "all query tokens in title"
+   }
+  ]
+ },
+ {
+  "title": "Coraline",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2697,
+    "title": "Coraline",
+    "type": "movie",
+    "year": 2009,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Cyberpunk 2077",
+  "media": "Game",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 4,
+    "title": "Cyberpunk 2077",
+    "type": "game",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Demon Slayer",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 116,
+    "title": "Demon Slayer -Kimetsu no Yaiba- The Movie: Mugen Train",
+    "type": "movie",
+    "year": 2020,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 970,
+    "title": "Demon Slayer: Kimetsu no Yaiba Entertainment District Arc",
+    "type": "tv",
+    "year": 2021,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 215,
+    "title": "Demon Slayer: Kimetsu no Yaiba Infinity Castle",
+    "type": "movie",
+    "year": 2025,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 6034,
+    "title": "Immortal Demon Slayer",
+    "type": "movie",
+    "year": 2017,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 318,
+    "title": "Demon Slayer: Kimetsu no Yaiba",
+    "type": "tv",
+    "year": 2019,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Devil May Cry 5",
+  "media": "Game",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 11371,
+    "title": "Devil May Cry 5",
+    "type": "game",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Ghost in the Shell: SAC",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 1737,
+    "title": "Ghost in the Shell",
+    "type": "tv",
+    "year": 1995,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 1729,
+    "title": "Ghost in the Shell: S.A.C. 2nd GIG - Individual Eleven",
+    "type": "movie",
+    "year": 2006,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1726,
+    "title": "Ghost in the Shell",
+    "type": "movie",
+    "year": 1995,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 3626,
+    "title": "Ghost",
+    "type": "movie",
+    "year": 1990,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Gone Girl",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 3150,
+    "title": "Gone Girl",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hades",
+  "media": "Game",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 14,
+    "title": "Hades",
+    "type": "game",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hi-Fi Rush",
+  "media": "Game",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 11920,
+    "title": "Hi-Fi Rush",
+    "type": "game",
+    "year": 2023,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Inside Out",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2811,
+    "title": "Inside Out",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Kill Bill",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 2723,
+    "title": "Kill Bill: The Whole Bloody Affair",
+    "type": "movie",
+    "year": 2011,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Mad Max: Fury Road",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3187,
+    "title": "Mad Max: Fury Road",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Neon Genesis Evangelion",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 364,
+    "title": "Neon Genesis Evangelion",
+    "type": "tv",
+    "year": 1995,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Reservoir Dogs",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 167,
+    "title": "Reservoir Dogs",
+    "type": "movie",
+    "year": 1992,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Serial Experiments Lain",
+  "media": "Anime",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 10713,
+    "title": "Serial Experiments Lain",
+    "type": "tv",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Snowpiercer",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 3518,
+    "title": "Snowpiercer",
+    "type": "movie",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Squid Game",
+  "media": "TV",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 8475,
+    "title": "Squid Game",
+    "type": "tv",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Stand By Me",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3402,
+    "title": "Stand by Me",
+    "type": "movie",
+    "year": 1986,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Subnautica",
+  "media": "Game",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 11354,
+    "title": "Subnautica",
+    "type": "game",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Dark Knight",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1918,
+    "title": "The Dark Knight",
+    "type": "movie",
+    "year": 2008,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Godfather",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2638,
+    "title": "The Godfather",
+    "type": "movie",
+    "year": 1972,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Great Gatsby",
+  "media": "Book",
+  "activates": 2,
+  "pending": 1,
+  "sheetStatus": "CHECK (mixed)",
+  "present": true,
+  "matches": [
+   {
+    "id": 16495,
+    "title": "Great Gatsby",
+    "type": "book",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Hunger Games",
+  "media": "Book",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16759,
+    "title": "The Hunger Games",
+    "type": "book",
+    "year": 2008,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Office (US)",
+  "media": "TV",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 342,
+    "title": "The Office",
+    "type": "tv",
+    "year": 2005,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 10953,
+    "title": "Isekai Office Worker: The Other World's Books Depend on the Bean Counter",
+    "type": "tv",
+    "year": 2026,
+    "why": "all query tokens in title"
+   }
+  ]
+ },
+ {
+  "title": "Trainspotting",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 4334,
+    "title": "Trainspotting",
+    "type": "movie",
+    "year": 1996,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "When Harry Met Sally",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 5045,
+    "title": "When Harry Met Sally...",
+    "type": "movie",
+    "year": 1989,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Whiplash",
+  "media": "Movie",
+  "activates": 2,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 39,
+    "title": "Whiplash",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "11/22/63",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2036,
+    "title": "11/22/63",
+    "type": "book",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "20,000 Leagues Under the Sea",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 18148,
+    "title": "The Sea",
+    "type": "book",
+    "year": 1998,
+    "why": "all title tokens in query"
+   }
+  ]
+ },
+ {
+  "title": "20th Century Boys",
+  "media": "Manga",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 799,
+    "title": "20th Century Boys",
+    "type": "manga",
+    "year": 1999,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "28 Days Later",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 7940,
+    "title": "28 Days Later",
+    "type": "movie",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "3:10 to Yuma",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2973,
+    "title": "3:10 to Yuma",
+    "type": "movie",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Confederacy of Dunces",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17295,
+    "title": "A Confederacy of Dunces",
+    "type": "book",
+    "year": 1980,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Few Good Men",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4000,
+    "title": "A Few Good Men",
+    "type": "movie",
+    "year": 1992,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Gentleman in Moscow",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 27444,
+    "title": "A Gentleman in Moscow",
+    "type": "book",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Man Called Ove",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 25885,
+    "title": "A Man Called Ove",
+    "type": "book",
+    "year": 2023,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Nightmare on Elm Street",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3429,
+    "title": "A Nightmare on Elm Street",
+    "type": "movie",
+    "year": 1984,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Quiet Place",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3380,
+    "title": "A Quiet Place",
+    "type": "movie",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "A Wizard of Earthsea",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 14283,
+    "title": "A Wizard of Earthsea",
+    "type": "book",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Across the Spider-Verse",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 46,
+    "title": "Spider-Man: Across the Spider-Verse",
+    "type": "movie",
+    "year": 2023,
+    "why": "all query tokens in title"
+   }
+  ]
+ },
+ {
+  "title": "Amelie",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3386,
+    "title": "Amélie",
+    "type": "movie",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "And Then There Were None",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 14446,
+    "title": "And Then There Were None",
+    "type": "book",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Arrested Development",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8694,
+    "title": "Arrested Development",
+    "type": "tv",
+    "year": 2003,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Atlas Shrugged",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Avengers",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 253,
+    "title": "The Avengers",
+    "type": "movie",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Baki the Grappler",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 10916,
+    "title": "Baki the Grappler",
+    "type": "tv",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Band of Brothers",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 349,
+    "title": "Band of Brothers",
+    "type": "tv",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Before Sunrise",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4082,
+    "title": "Before Sunrise",
+    "type": "movie",
+    "year": 1995,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Begin Again",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 27722,
+    "title": "Begin Again",
+    "type": "book",
+    "year": 2020
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Beloved is canon",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 16115,
+    "title": "Beloved",
+    "type": "book",
+    "year": 2019,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Beowulf",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17648,
+    "title": "Beowulf",
+    "type": "book",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Black Swan",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3710,
+    "title": "Black Swan",
+    "type": "movie",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Blame!",
+  "media": "Manga",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 20459,
+    "title": "Blame!",
+    "type": "manga",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Blindsight",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Blue Period",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 19065,
+    "title": "Blue Period",
+    "type": "tv",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Brave New World",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16746,
+    "title": "Brave New World",
+    "type": "book",
+    "year": 1932,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Brideshead Revisited",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 25087,
+    "title": "Bride",
+    "type": "book",
+    "year": 2024,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Brief Encounter",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 7070,
+    "title": "Brief Encounter",
+    "type": "movie",
+    "year": 1945,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Brooklyn Nine-Nine",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8325,
+    "title": "Brooklyn Nine-Nine",
+    "type": "tv",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Buffy the Vampire Slayer",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "CODA",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2988,
+    "title": "CODA",
+    "type": "movie",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Call Me By Your Name",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 27848,
+    "title": "Call Me By Your Name",
+    "type": "book",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Cast Away",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3551,
+    "title": "Cast Away",
+    "type": "movie",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Catch Me If You Can",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3292,
+    "title": "Catch Me If You Can",
+    "type": "movie",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Catch-22",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17302,
+    "title": "Catch-22",
+    "type": "book",
+    "year": 1961,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "City of God",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2656,
+    "title": "City of God",
+    "type": "movie",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Cosmos",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 15582,
+    "title": "Cosmos",
+    "type": "book",
+    "year": 1995,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Cosmos (Sagan)",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 15582,
+    "title": "Cosmos",
+    "type": "book",
+    "year": 1995,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Creed",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3461,
+    "title": "Creed",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Crimson Peak",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5069,
+    "title": "Crimson Peak",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Critical Role",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Crusader Kings",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 11672,
+    "title": "Crusader Kings II",
+    "type": "game",
+    "year": 2012,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 11859,
+    "title": "Crusader Kings III",
+    "type": "game",
+    "year": 2020,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Curb Your Enthusiasm",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8305,
+    "title": "Curb Your Enthusiasm",
+    "type": "tv",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Dark City",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4115,
+    "title": "Dark City",
+    "type": "movie",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Dawn of the Dead",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4201,
+    "title": "Dawn of the Dead",
+    "type": "movie",
+    "year": 2004,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Detroit: Become Human",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11237,
+    "title": "Detroit: Become Human",
+    "type": "game",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Deus Ex",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 11258,
+    "title": "Deus Ex: Human Revolution",
+    "type": "game",
+    "year": 2011,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Divinity: Original Sin 2",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Don't Look Up",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3172,
+    "title": "Don't Look Up",
+    "type": "movie",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Donnie Brasco",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5725,
+    "title": "Donnie Brasco",
+    "type": "movie",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Downton Abbey",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8756,
+    "title": "Downton Abbey",
+    "type": "tv",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Dragon Age: Origins",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11223,
+    "title": "Dragon Age: Origins",
+    "type": "game",
+    "year": 2009,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Drive",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3477,
+    "title": "Drive",
+    "type": "movie",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Emma",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 14264,
+    "title": "Emma",
+    "type": "book",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Encanto",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3316,
+    "title": "Encanto",
+    "type": "movie",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Equilibrium",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4450,
+    "title": "Equilibrium",
+    "type": "movie",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Eragon",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 14289,
+    "title": "Eragon",
+    "type": "book",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Event Horizon",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5260,
+    "title": "Event Horizon",
+    "type": "movie",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Exhalation",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 28496,
+    "title": "Exhalation",
+    "type": "book",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Fahrenheit 451",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16284,
+    "title": "Fahrenheit 451",
+    "type": "book",
+    "year": 2003,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Fallout",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8575,
+    "title": "Fallout",
+    "type": "tv",
+    "year": 2024,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Fallout: New Vegas",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1635,
+    "title": "Fallout: New Vegas",
+    "type": "game",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Fear and Loathing in Las Vegas",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 5444,
+    "title": "Fear and Loathing in Las Vegas",
+    "type": "movie",
+    "year": 1998
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 27680,
+    "title": "Fear",
+    "type": "book",
+    "year": 2020,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Fight Club",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 2654,
+    "title": "Fight Club",
+    "type": "movie",
+    "year": 1999
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 24097,
+    "title": "Fight",
+    "type": "book",
+    "year": 2025,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Final Fantasy VII",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1564,
+    "title": "Final Fantasy VII",
+    "type": "game",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Frankenstein",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 14211,
+    "title": "Frankenstein",
+    "type": "book",
+    "year": 2025,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "From Blood and Ash",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Ghost of Tsushima",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 560,
+    "title": "Ghost of Tsushima",
+    "type": "game",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Gilmore Girls",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8347,
+    "title": "Gilmore Girls",
+    "type": "tv",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Glengarry Glen Ross",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Gone with the Wind",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2922,
+    "title": "Gone with the Wind",
+    "type": "movie",
+    "year": 1939,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Good Omens",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 10535,
+    "title": "Good Omens",
+    "type": "tv",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Good Will Hunting",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 139,
+    "title": "Good Will Hunting",
+    "type": "movie",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Gravity",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3827,
+    "title": "Gravity",
+    "type": "movie",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hajime no Ippo",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Hannibal",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8992,
+    "title": "Hannibal",
+    "type": "tv",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Harry Potter",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 22759,
+    "title": "Harry Potter and the Sorcerer's Stone (Stenciled Edges) (Harry Potter, Book 1)",
+    "type": "book",
+    "year": 2024,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 23152,
+    "title": "Harry Potter and the Sorcerer's Stone (Harry Potter, Book 1)",
+    "type": "book",
+    "year": 2023,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 23215,
+    "title": "Harry Potter and the Goblet of Fire (Harry Potter, Book 4) (Interactive Illustrated Edition)",
+    "type": "book",
+    "year": 2025,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1987,
+    "title": "Harry Potter and the Half-Blood Prince",
+    "type": "book",
+    "year": 2017,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1988,
+    "title": "Harry Potter and the Deathly Hallows",
+    "type": "book",
+    "year": 2015,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 1982,
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "type": "book",
+    "year": 2015,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Heart of Darkness",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16813,
+    "title": "Heart of Darkness",
+    "type": "book",
+    "year": 1899,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hellboy",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4275,
+    "title": "Hellboy",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Her",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3270,
+    "title": "Her",
+    "type": "movie",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hero",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3045,
+    "title": "Hero",
+    "type": "movie",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Hillbilly Elegy",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 24043,
+    "title": "Hillbilly Elegy",
+    "type": "book",
+    "year": 2025,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Homegoing",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 27600,
+    "title": "Homegoing",
+    "type": "book",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "House of Flying Daggers",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 6311,
+    "title": "House of Flying Daggers",
+    "type": "movie",
+    "year": 2004,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "How to Train Your Dragon",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3095,
+    "title": "How to Train Your Dragon",
+    "type": "movie",
+    "year": 2025,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Howl's Moving Castle",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 33,
+    "title": "Howl's Moving Castle",
+    "type": "movie",
+    "year": 2004,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "I Saw the Devil",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3890,
+    "title": "I Saw the Devil",
+    "type": "movie",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "If We Were Villains",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "In Bruges",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5060,
+    "title": "In Bruges",
+    "type": "movie",
+    "year": 2008,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Infernal Affairs",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4570,
+    "title": "Infernal Affairs",
+    "type": "movie",
+    "year": 2002,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Interview with the Vampire",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16866,
+    "title": "Interview With the Vampire",
+    "type": "book",
+    "year": 1976,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "It (2017)",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "It Follows",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3610,
+    "title": "It Follows",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "It's Always Sunny in Philadelphia",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8443,
+    "title": "It's Always Sunny in Philadelphia",
+    "type": "tv",
+    "year": 2005,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Joe Abercrombie's other books",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "John Wick",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1369,
+    "title": "John Wick",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Kafka (The Trial)",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 18825,
+    "title": "Kafka",
+    "type": "book",
+    "year": 1976,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 16519,
+    "title": "The Trial by Franz Kafka",
+    "type": "book",
+    "year": 2020,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 16521,
+    "title": "The Trial - Franz Kafka",
+    "type": "book",
+    "year": 2021,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 14207,
+    "title": "The Trial",
+    "type": "book",
+    "year": 1992,
+    "why": "all title tokens in query"
+   }
+  ]
+ },
+ {
+  "title": "Kafka on the Shore",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16068,
+    "title": "Kafka on the Shore",
+    "type": "book",
+    "year": 2005,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Kill Your Darlings",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Kitchen Confidential",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 22522,
+    "title": "Kitchen Confidential: Adventures in the Culinary Underbelly",
+    "type": "book",
+    "year": 2000,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Klara and the Sun",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 16578,
+    "title": "Klara and the Sun: A GMA Book Club Pick",
+    "type": "book",
+    "year": 2021,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 16215,
+    "title": "The Sun",
+    "type": "book",
+    "year": 1972,
+    "why": "all title tokens in query"
+   }
+  ]
+ },
+ {
+  "title": "Lego Movie",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3882,
+    "title": "The Lego Movie",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Life Is Beautiful",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2653,
+    "title": "Life Is Beautiful",
+    "type": "movie",
+    "year": 1997,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Little Fires Everywhere",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 27443,
+    "title": "Little Fires Everywhere",
+    "type": "book",
+    "year": 2021
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Little Miss Sunshine",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5623,
+    "title": "Little Miss Sunshine",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Lore Olympus",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 25837,
+    "title": "Lore",
+    "type": "book",
+    "year": 2023,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Lupin III",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 10122,
+    "title": "Lupin",
+    "type": "tv",
+    "year": 2021,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 19594,
+    "title": "Lupin III: The Castle of Cagliostro",
+    "type": "tv",
+    "year": 1979,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Léon: The Professional",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 60,
+    "title": "Léon: The Professional",
+    "type": "movie",
+    "year": 1994,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Me Before You",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 3284,
+    "title": "Me Before You",
+    "type": "movie",
+    "year": 2016
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 14591,
+    "title": "Me Before You (Movie Tie-In)",
+    "type": "book",
+    "year": 2016,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Memories of Murder",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3824,
+    "title": "Memories of Murder",
+    "type": "movie",
+    "year": 2003,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Metropolis",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 191,
+    "title": "Metropolis",
+    "type": "movie",
+    "year": 1927,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Midsommar",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3328,
+    "title": "Midsommar",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Mindhunter",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 9461,
+    "title": "MINDHUNTER",
+    "type": "tv",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Mission: Impossible - Fallout",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1392,
+    "title": "Mission: Impossible - Fallout",
+    "type": "movie",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Moonrise Kingdom",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 6010,
+    "title": "Moonrise Kingdom",
+    "type": "movie",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Morrowind",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 1648,
+    "title": "The Elder Scrolls III: Morrowind",
+    "type": "game",
+    "year": 2002,
+    "why": "query substring of title"
+   },
+   {
+    "id": 1652,
+    "title": "The Elder Scrolls Online: Morrowind",
+    "type": "game",
+    "year": 2017,
+    "why": "query substring of title"
+   }
+  ]
+ },
+ {
+  "title": "Moulin Rouge",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5138,
+    "title": "Moulin Rouge!",
+    "type": "movie",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Mulholland Drive",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3471,
+    "title": "Mulholland Drive",
+    "type": "movie",
+    "year": 2001,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Murder on the Orient Express",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16803,
+    "title": "Murder on the Orient Express",
+    "type": "book",
+    "year": 1933,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Murderbot Diaries",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "My Side of the Mountain",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Never Let Me Go",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16572,
+    "title": "Never Let Me Go",
+    "type": "book",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Normal People",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 10781,
+    "title": "Normal People",
+    "type": "tv",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "One Hundred Years of Solitude",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16414,
+    "title": "One Hundred Years of Solitude",
+    "type": "book",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Only Murders in the Building",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8882,
+    "title": "Only Murders in the Building",
+    "type": "tv",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Oppenheimer",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3027,
+    "title": "Oppenheimer",
+    "type": "movie",
+    "year": 2023,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Oyasumi Punpun",
+  "media": "Manga",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Paddington 2",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4478,
+    "title": "Paddington 2",
+    "type": "movie",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Pale Fire",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17155,
+    "title": "Pale Fire",
+    "type": "book",
+    "year": 1945,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Pathologic 2",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 12515,
+    "title": "Pathologic 2",
+    "type": "game",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Peaky Blinders",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8163,
+    "title": "Peaky Blinders",
+    "type": "tv",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Penny Dreadful",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "People We Meet on Vacation",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 23218,
+    "title": "People We Meet on Vacation",
+    "type": "book",
+    "year": 2026,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Persuasion",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16920,
+    "title": "Persuasion",
+    "type": "book",
+    "year": 1789,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Philip K. Dick stories",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 18123,
+    "title": "Second Variety (The Collected Stories of Philip K. Dick, Vol. 3)",
+    "type": "book",
+    "year": 1998,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 18091,
+    "title": "We Can Remember It for You Wholesale (The Collected Short Stories of Philip K. Dick, Vol. 2)",
+    "type": "book",
+    "year": 1998,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 18127,
+    "title": "Paycheck And Other Classic Stories By Philip K. Dick",
+    "type": "book",
+    "year": 2003,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 18133,
+    "title": "Days of Perky Pat (The Collected Stories of Philip K Dick)",
+    "type": "book",
+    "year": 1987,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 18108,
+    "title": "The Father-thing (The Collected Short Stories of Philip K. Dick)",
+    "type": "book",
+    "year": 1987,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 16186,
+    "title": "Philip K. Dick",
+    "type": "book",
+    "year": 1988,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Piranesi",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 27672,
+    "title": "Piranesi",
+    "type": "book",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Planescape: Torment",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11458,
+    "title": "Planescape: Torment",
+    "type": "game",
+    "year": 1999,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Poldark",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 9516,
+    "title": "Poldark",
+    "type": "tv",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Pride and Prejudice (2005)",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 3261,
+    "title": "Pride & Prejudice",
+    "type": "movie",
+    "year": 2005,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 5311,
+    "title": "Pride",
+    "type": "movie",
+    "year": 2014,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Prisoners",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 178,
+    "title": "Prisoners",
+    "type": "movie",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Ready or Not",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 12805,
+    "title": "Ready or Not",
+    "type": "game",
+    "year": 2023
+   },
+   {
+    "id": 29736,
+    "title": "Ready or Not!",
+    "type": "book",
+    "year": 2017
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 263,
+    "title": "Ready or Not: Here I Come",
+    "type": "movie",
+    "year": 2026,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Record of Lodoss War",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Return of the Obra Dinn",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 512,
+    "title": "Return of the Obra Dinn",
+    "type": "game",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Roman Holiday",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5568,
+    "title": "Roman Holiday",
+    "type": "movie",
+    "year": 1953,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Rosemary's Baby",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5532,
+    "title": "Rosemary's Baby",
+    "type": "movie",
+    "year": 1968,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Russian Doll",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Scream",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1305,
+    "title": "Scream",
+    "type": "movie",
+    "year": 1996,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Sharp Objects",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 28888,
+    "title": "Sharp Objects",
+    "type": "book",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Shōgun (novel)",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Silence",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 30070,
+    "title": "Silence",
+    "type": "book",
+    "year": 2017,
+    "upcoming": false
+   },
+   {
+    "id": 27566,
+    "title": "The Silence",
+    "type": "book",
+    "year": 2020,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Sing Street",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 6921,
+    "title": "Sing Street",
+    "type": "movie",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Six of Crows",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 14305,
+    "title": "Six of Crows",
+    "type": "book",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Slaughterhouse-Five",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16317,
+    "title": "Slaughterhouse-Five",
+    "type": "book",
+    "year": 1991,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Song of the Sea",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5987,
+    "title": "Song of the Sea",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Sons of Anarchy",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8342,
+    "title": "Sons of Anarchy",
+    "type": "tv",
+    "year": 2008,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Stardust",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4255,
+    "title": "Stardust",
+    "type": "movie",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Studio Ghibli films",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Super 8",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 6288,
+    "title": "Super 8",
+    "type": "movie",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "That Time I Got Reincarnated as a Slime",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 9078,
+    "title": "That Time I Got Reincarnated as a Slime",
+    "type": "tv",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "The Abyss",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4186,
+    "title": "The Abyss",
+    "type": "movie",
+    "year": 1989,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Avengers",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 253,
+    "title": "The Avengers",
+    "type": "movie",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Babadook",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5959,
+    "title": "The Babadook",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Before Trilogy",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Big Sleep",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16782,
+    "title": "The Big Sleep",
+    "type": "book",
+    "year": 1939,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The City of Ember",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 5575,
+    "title": "City of Ember",
+    "type": "movie",
+    "year": 2008
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Corner",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 17476,
+    "title": "The corner",
+    "type": "book",
+    "year": 1997
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 19478,
+    "title": "In This Corner of the World",
+    "type": "tv",
+    "year": 2016,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 20405,
+    "title": "Tales of the Street Corner",
+    "type": "tv",
+    "year": 1962,
+    "why": "all query tokens in title"
+   }
+  ]
+ },
+ {
+  "title": "The Count of Monte Cristo",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 9305,
+    "title": "The Count of Monte Cristo",
+    "type": "tv",
+    "year": 2025
+   },
+   {
+    "id": 3789,
+    "title": "The Count of Monte Cristo",
+    "type": "movie",
+    "year": 2024
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Evil Dead",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3690,
+    "title": "The Evil Dead",
+    "type": "movie",
+    "year": 1981,
+    "upcoming": false
+   },
+   {
+    "id": 4828,
+    "title": "Evil Dead",
+    "type": "movie",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Expanse",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 8390,
+    "title": "The Expanse",
+    "type": "tv",
+    "year": 2015
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Fall",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 6098,
+    "title": "The Fall",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   },
+   {
+    "id": 3436,
+    "title": "Fall",
+    "type": "movie",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Fountain",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Fountainhead",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Girl Who Leapt Through Time",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4825,
+    "title": "The Girl Who Leapt Through Time",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   },
+   {
+    "id": 18966,
+    "title": "The Girl Who Leapt Through Time",
+    "type": "tv",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "movie",
+   "tv"
+  ]
+ },
+ {
+  "title": "The Girl on the Train",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 30058,
+    "title": "The Girl on the Train",
+    "type": "book",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Glass Castle",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 23346,
+    "title": "The Glass Castle: A Memoir",
+    "type": "book",
+    "year": 2006,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 16525,
+    "title": "The Castle",
+    "type": "book",
+    "year": 2025,
+    "why": "all title tokens in query"
+   }
+  ]
+ },
+ {
+  "title": "The Goonies",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3600,
+    "title": "The Goonies",
+    "type": "movie",
+    "year": 1985,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Hateful Eight",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2934,
+    "title": "The Hateful Eight",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Hating Game",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 4820,
+    "title": "The Hating Game",
+    "type": "movie",
+    "year": 2021
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Haunting of Hill House",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16871,
+    "title": "The Haunting of Hill House",
+    "type": "book",
+    "year": 1959,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The House in the Cerulean Sea",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 26740,
+    "title": "The House in the Cerulean Sea",
+    "type": "book",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The House of the Spirits",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Karate Kid",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3711,
+    "title": "The Karate Kid",
+    "type": "movie",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Last Samurai",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2910,
+    "title": "The Last Samurai",
+    "type": "movie",
+    "year": 2003,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Last of Sheila",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Lighthouse",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4771,
+    "title": "The Lighthouse",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Lives of Others",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5330,
+    "title": "The Lives of Others",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Lobster",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4391,
+    "title": "The Lobster",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Long Way to a Small, Angry Planet",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Magicians",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 9354,
+    "title": "The Magicians",
+    "type": "tv",
+    "year": 2015
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 14299,
+    "title": "The Magician's Nephew Color Gift Edition",
+    "type": "book",
+    "year": 2003,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 28900,
+    "title": "Them",
+    "type": "book",
+    "year": 2018,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 16698,
+    "title": "The Magician's Nephew",
+    "type": "book",
+    "year": 1955,
+    "why": "title starts-with query (subtitle)"
+   },
+   {
+    "id": 16865,
+    "title": "The Magician",
+    "type": "book",
+    "year": 1908,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "The Magnificent Seven",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2941,
+    "title": "The Magnificent Seven",
+    "type": "movie",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Man Who Was Thursday",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16736,
+    "title": "The Man Who Was Thursday",
+    "type": "book",
+    "year": 1908,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Master",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 6364,
+    "title": "The Master",
+    "type": "movie",
+    "year": 2012,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Northman",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 4113,
+    "title": "The Northman",
+    "type": "movie",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Power",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17188,
+    "title": "The Power",
+    "type": "book",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Revenant",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 2709,
+    "title": "The Revenant",
+    "type": "movie",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Running Man",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 17178,
+    "title": "The Running Man",
+    "type": "book",
+    "year": 1982,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Song of Achilles",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 24,
+    "title": "The Song of Achilles",
+    "type": "book",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Stanley Parable",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11268,
+    "title": "The Stanley Parable",
+    "type": "game",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Stepford Wives",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "The Sting",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 5003,
+    "title": "The Sting",
+    "type": "movie",
+    "year": 1973,
+    "upcoming": false
+   },
+   {
+    "id": 6719,
+    "title": "Sting",
+    "type": "movie",
+    "year": 2024,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Strange Case of Dr Jekyll and Mr Hyde",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16754,
+    "title": "The Strange Case of Dr. Jekyll and Mr. Hyde",
+    "type": "book",
+    "year": 1875,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Tale of the Princess Kaguya",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 185,
+    "title": "The Tale of The Princess Kaguya",
+    "type": "movie",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Talos Principle",
+  "media": "Game",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 11414,
+    "title": "The Talos Principle",
+    "type": "game",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Tell-Tale Heart",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 15721,
+    "title": "The Tell-Tale Heart",
+    "type": "book",
+    "year": 2015,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Three-Body Problem",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 16346,
+    "title": "The Three-Body Problem",
+    "type": "book",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Twilight Zone",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8363,
+    "title": "The Twilight Zone",
+    "type": "tv",
+    "year": 1959,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Underground Railroad",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 27026,
+    "title": "The Underground Railroad",
+    "type": "book",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Walking Dead",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 2507,
+    "title": "The Walking Dead",
+    "type": "comic",
+    "year": 2006
+   },
+   {
+    "id": 11221,
+    "title": "The Walking Dead",
+    "type": "game",
+    "year": 2012
+   },
+   {
+    "id": 2506,
+    "title": "Walking Dead",
+    "type": "comic",
+    "year": 2011
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 8569,
+    "title": "Fear the Walking Dead",
+    "type": "tv",
+    "year": 2015,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 10066,
+    "title": "The Walking Dead: Daryl Dixon",
+    "type": "tv",
+    "year": 2023,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "The Witch",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 4713,
+    "title": "The Blair Witch Project",
+    "type": "movie",
+    "year": 1999,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 4634,
+    "title": "Roald Dahl's The Witches",
+    "type": "movie",
+    "year": 2020,
+    "why": "query substring of title"
+   },
+   {
+    "id": 7605,
+    "title": "Scooby-Doo! and the Witch's Ghost",
+    "type": "movie",
+    "year": 1999,
+    "why": "query substring of title"
+   },
+   {
+    "id": 4653,
+    "title": "The Calling Witch",
+    "type": "movie",
+    "year": 2026,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 3484,
+    "title": "The Last Witch Hunter",
+    "type": "movie",
+    "year": 2015,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 3507,
+    "title": "The Witch: Part 2. The Other One",
+    "type": "movie",
+    "year": 2022,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "The Witcher",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 1444,
+    "title": "The Witcher",
+    "type": "tv",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Witcher (novels)",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Thinking, Fast and Slow",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 22806,
+    "title": "Thinking, Fast and Slow",
+    "type": "book",
+    "year": 2026,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Train to Busan",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 3244,
+    "title": "Train to Busan",
+    "type": "movie",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Trigun",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 9567,
+    "title": "TRIGUN",
+    "type": "tv",
+    "year": 1998,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Uprooted",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "We",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 5704,
+    "title": "We",
+    "type": "movie",
+    "year": 2018
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Weathering with You",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 18926,
+    "title": "Weathering with You",
+    "type": "tv",
+    "year": 2019,
+    "upcoming": false
+   },
+   {
+    "id": 3597,
+    "title": "Weathering with You",
+    "type": "movie",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv",
+   "movie"
+  ]
+ },
+ {
+  "title": "What We Do in the Shadows",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8487,
+    "title": "What We Do in the Shadows",
+    "type": "tv",
+    "year": 2019,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Wild",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 29537,
+    "title": "Wild",
+    "type": "book",
+    "year": 2017,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Wolf Hall",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "World War Z",
+  "media": "Book",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 3160,
+    "title": "World War Z",
+    "type": "movie",
+    "year": 2013
+   },
+   {
+    "id": 12132,
+    "title": "World War Z",
+    "type": "game",
+    "year": 2019
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": []
+ },
+ {
+  "title": "Years and Years",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 9955,
+    "title": "I've Been Killing Slimes for 300 Years and Maxed Out My Level",
+    "type": "tv",
+    "year": 2021,
+    "why": "all query tokens in title"
+   }
+  ]
+ },
+ {
+  "title": "Yojimbo",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 6576,
+    "title": "Yojimbo",
+    "type": "movie",
+    "year": 1961,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "You",
+  "media": "TV",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 8394,
+    "title": "You",
+    "type": "tv",
+    "year": 2018,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Your Lie in April",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 1,
+  "sheetStatus": "ADD IT",
+  "present": true,
+  "matches": [
+   {
+    "id": 369,
+    "title": "Your Lie in April",
+    "type": "tv",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Alien",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 134,
+    "title": "Alien",
+    "type": "movie",
+    "year": 1979,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Attack on Titan",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 307,
+    "title": "Attack on Titan",
+    "type": "tv",
+    "year": 2013,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Boyhood",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 7365,
+    "title": "Boyhood",
+    "type": "movie",
+    "year": 2014,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Catcher in the Rye",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16962,
+    "title": "The Catcher in the Rye",
+    "type": "book",
+    "year": 1945,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Community",
+  "media": "TV",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 8169,
+    "title": "Community",
+    "type": "tv",
+    "year": 2009,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Dr. Strangelove",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 162,
+    "title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+    "type": "movie",
+    "year": 1964,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Dracula",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 14705,
+    "title": "Dracula",
+    "type": "book",
+    "year": 2021,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Inception",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 40,
+    "title": "Inception",
+    "type": "movie",
+    "year": 2010,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Memento",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 129,
+    "title": "Memento",
+    "type": "movie",
+    "year": 2000,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "One Piece",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 298,
+    "title": "One Piece",
+    "type": "tv",
+    "year": 1999,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": [
+   "tv"
+  ]
+ },
+ {
+  "title": "Persona 5",
+  "media": "Game",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 475,
+    "title": "Persona 5",
+    "type": "game",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Pride and Prejudice",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 14588,
+    "title": "Pride and Prejudice",
+    "type": "book",
+    "year": 1980,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Project Hail Mary",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [
+   {
+    "id": 91,
+    "title": "Project Hail Mary",
+    "type": "movie",
+    "year": 2026
+   }
+  ],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 22685,
+    "title": "Project Hail Mary: A Novel",
+    "type": "book",
+    "year": 2022,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Re:Zero",
+  "media": "Anime",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 8432,
+    "title": "Re:ZERO -Starting Life in Another World-",
+    "type": "tv",
+    "year": 2016,
+    "why": "title starts-with query (subtitle)"
+   }
+  ]
+ },
+ {
+  "title": "Sapiens",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 23222,
+    "title": "Sapiens",
+    "type": "book",
+    "year": 2026,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Seven Samurai",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 2651,
+    "title": "Seven Samurai",
+    "type": "movie",
+    "year": 1954,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Skyrim",
+  "media": "Game",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 1650,
+    "title": "The Elder Scrolls V: Skyrim VR",
+    "type": "game",
+    "year": 2017,
+    "why": "query substring of title"
+   },
+   {
+    "id": 1644,
+    "title": "The Elder Scrolls V: Skyrim",
+    "type": "game",
+    "year": 2011,
+    "why": "query substring of title"
+   }
+  ]
+ },
+ {
+  "title": "Star Wars",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 115,
+    "title": "Star Wars",
+    "type": "movie",
+    "year": 1977,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Star Wars: A New Hope",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 8101,
+    "title": "Star!",
+    "type": "movie",
+    "year": 1968,
+    "why": "query starts-with title"
+   },
+   {
+    "id": 115,
+    "title": "Star Wars",
+    "type": "movie",
+    "year": 1977,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "Stranger Things",
+  "media": "TV",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 354,
+    "title": "Stranger Things",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "Street Fighter 6",
+  "media": "Game",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 12275,
+    "title": "Street Fighter 6",
+    "type": "game",
+    "year": 2023,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Bear",
+  "media": "TV",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 8930,
+    "title": "The Bear",
+    "type": "tv",
+    "year": 2022,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Catcher in the Rye",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16962,
+    "title": "The Catcher in the Rye",
+    "type": "book",
+    "year": 1945,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Departed",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 138,
+    "title": "The Departed",
+    "type": "movie",
+    "year": 2006,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Elder Scrolls V: Skyrim",
+  "media": "Game",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 1644,
+    "title": "The Elder Scrolls V: Skyrim",
+    "type": "game",
+    "year": 2011,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Hitchhiker's Guide to the Galaxy",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 16744,
+    "title": "The Hitch Hiker's Guide to the Galaxy",
+    "type": "book",
+    "year": 1979,
+    "upcoming": false
+   },
+   {
+    "id": 16330,
+    "title": "The Hitchhiker's Guide to the Galaxy",
+    "type": "book",
+    "year": 1986,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Lord of the Rings: Fellowship",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": false,
+  "matches": [],
+  "otherTypeOnly": [],
+  "crossTypeNote": [],
+  "fuzzy": [
+   {
+    "id": 1352,
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "type": "movie",
+    "year": 2001,
+    "why": "all query tokens in title"
+   },
+   {
+    "id": 1356,
+    "title": "The Lord of the Rings",
+    "type": "movie",
+    "year": 1978,
+    "why": "query starts-with title"
+   }
+  ]
+ },
+ {
+  "title": "The Name of the Wind",
+  "media": "Book",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 15999,
+    "title": "The Name of the Wind",
+    "type": "book",
+    "year": 2007,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Princess Bride",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 3577,
+    "title": "The Princess Bride",
+    "type": "movie",
+    "year": 1987,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "The Shining",
+  "media": "Movie",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 111,
+    "title": "The Shining",
+    "type": "movie",
+    "year": 1980,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ },
+ {
+  "title": "This Is Us",
+  "media": "TV",
+  "activates": 1,
+  "pending": 0,
+  "sheetStatus": "in catalog",
+  "present": true,
+  "matches": [
+   {
+    "id": 8315,
+    "title": "This Is Us",
+    "type": "tv",
+    "year": 2016,
+    "upcoming": false
+   }
+  ],
+  "otherTypeOnly": [],
+  "crossTypeNote": []
+ }
+]
