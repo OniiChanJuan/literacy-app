@@ -88,15 +88,34 @@ explore-, franchise-unification-, library-mobile-).
 
 ## 3. Open tracked follow-up chips
 
-- **`task_58550134` — Desktop People feed threading.** The desktop People activity feed has
-  persisted votes but no reply-thread UI (mobile has it; the dead "Reply" span was removed). Bring
-  the mobile lazy-loaded threaded-reply experience to the desktop `ActivityCard` (reuse the shared
-  hooks/helpers in `src/app/people/page.tsx` + `src/lib/use-review-vote.ts`).
-- **`task_86be861b` — Profile cards show viewer's rating, not owner's (blocks Rating sort).** The
-  mobile Public Profile collection cards reuse `<Card>`, which shows the *viewer's* star, not the
-  profile owner's. Fix: add owner-score-per-`library`-entry to `GET /api/users/[id]` (gated by the
-  existing `showRatings`), render owner stars, and enable a "Rating" sort (currently A–Z only in the
-  mobile profile). Same gap exists on desktop profile.
+> **Update (this session, WIP triage):** the two chips below had pre-existing uncommitted
+> implementations in the working tree. **`task_86be861b` is now DONE + verified + committed
+> (`2bca4ed`, pushed)** — closeable. **`task_58550134` is HELD uncommitted** in
+> `src/app/people/page.tsx` — see §3a.
+
+- **`task_58550134` — Desktop People feed threading.** ⏸ **HELD (code complete, unverified).** A
+  full implementation sits **uncommitted** in `src/app/people/page.tsx` (~245 lines:
+  `DesktopReplyNode`, `ReplyComposer` `variant:"desktop"`, lazy-thread state on the desktop
+  `ActivityCard`; reuses `VoteButtons`/`useReviewVote`/`/api/reviews`). **Verified:** tsc + build
+  clean; mobile People unaffected (`ReplyComposer` defaults to `variant:"mobile"` → original path);
+  desktop renders without errors; the `ActivityCard` is fully wired to the thread. **NOT verified
+  (needs signed-in):** thread expand/collapse, lazy reply load, vote persist — all require an
+  authenticated People feed with followed-user reviews that have replies, which the logged-out dev
+  preview can't provide. **Do not commit until a signed-in pass confirms the 3 interactive
+  criteria.** The diff is intact in the working tree (`git diff src/app/people/page.tsx`).
+- **`task_86be861b` — ✅ DONE (committed `2bca4ed`, pushed).** Profile cards now show the OWNER's
+  read-only rating (new `Card.ownerScore` prop) and the mobile profile sort gained a Rating mode
+  (Default → Rating → A–Z). `GET /api/users/[id]` returns owner `score` per library entry, gated by
+  `showRatings`. **Privacy verified** (flipped a real account private → no `score` leaks anywhere in
+  the response; restored). This chip is **closeable**.
+
+### 3a. Why Feature 2 was held (do not lose this)
+The owner-score work (`task_86be861b`) was publicly verifiable logged-out and shipped. The desktop
+threading (`task_58550134`) is **auth-gated** — its acceptance criteria are interactive behaviors on
+the activity feed that can't be exercised without a signed-in account + followed reviews. Per the
+"commit only what passes / don't commit because it looks complete" rule, it stays uncommitted.
+**Next session OR a signed-in run:** verify the 3 interactive criteria on prod/locally signed-in,
+then `git add src/app/people/page.tsx && git commit` (single commit, ref `task_58550134`).
 
 No new chips opened this session.
 
@@ -132,22 +151,17 @@ the per-source sync scripts documented in `CLAUDE.md`.
 
 ## 6. Mid-flight / working-tree state (read before committing anything)
 
-- **My work is fully committed + pushed.** `git log origin/main..HEAD` is empty.
-- **Pre-existing uncommitted changes exist** in the working tree — these were present in the
-  **session-start git snapshot** and are **NOT from this session's work**:
-  ```
-   M src/app/api/users/[id]/route.ts   (~42 lines)
-   M src/app/people/page.tsx           (~245 lines)
-   M src/app/user/[id]/page.tsx        (~34 lines)
-   M src/components/card.tsx           (~33 lines)   ← never touched this session (last commit 1ddc47a)
-  ```
-  Plus untracked files from prior sessions: `.claude-handoff.md`, `crossshelf-score-investigation.md`,
-  `mobile-foundation-investigation.md`, `prisma/views/`, `scripts/_test-rls-session2d.ts`,
-  `scripts/migrate-add-show-publicly-helpers.ts`, `scripts/migrate-rls-privacy-flag-tightening.ts`.
-  **Next session: run `git diff` on these and decide before staging — do NOT assume they're part of
-  the mobile/franchise work (they aren't). They look like a separate WIP.** (Note: the repo triggers
-  LF→CRLF normalization warnings on Windows; a little of the diff may be line-ending noise, but the
-  insertion counts — especially `people/page.tsx` — indicate real content.)
+- **TRIAGED + RESOLVED (update).** The pre-existing uncommitted WIP turned out to be the two open
+  chips' implementations. Outcome:
+  - `task_86be861b` (owner-stars + Rating sort) — verified incl. privacy, **committed `2bca4ed`, pushed.**
+  - The investigation notes + Session-2d privacy/RLS scripts + `public_user_profiles.sql` view —
+    **committed** (`e35711d`, `3044b5e`), two root docs relocated into `docs/investigations/`.
+  - `.claude-handoff.md` — **discarded** (stale).
+- **One file remains intentionally uncommitted:** `src/app/people/page.tsx` — the **held** desktop
+  threading WIP (`task_58550134`, see §3/§3a). `git diff src/app/people/page.tsx` shows it. **Do not
+  commit until the 3 interactive criteria are verified signed-in.**
+- **`git log origin/main..HEAD` is empty** (all committed work pushed). Tree is clean **except** the
+  one held file above (expected).
 - **No open branches** other than `main`. No decisions made-but-unimplemented beyond what's listed in
   §3/§4/§5.
 - A dev preview server was running during this session (Claude Preview, port 3000); it can be
