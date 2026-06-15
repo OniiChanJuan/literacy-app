@@ -150,6 +150,8 @@ model Item {
   crossConnections CrossConnection[]
   connectionEvents ConnectionEvent[]
   connectionCredits ConnectionCredit[]
+  connectionRecs   ConnectionRec[]
+  pendingTitleResolutions ConnectionPendingTitle[]
 
   @@index([type])
   @@index([year])
@@ -494,25 +496,126 @@ model Import {
 /// Editorially curated cross-media recommendations.
 /// recommendedItems is a JSONB array of { item_id, title, type } objects,
 /// because a connection can point at 1-3 items of any media type.
+/// Curated editorial strength — PROTECTED. Set only from the authored corpus
+/// grade (or implicitly `medium` for un-authored legacy rows). NEVER written by
+/// votes, dismiss, click-credits, or the decay cron. This (per-rec, on
+/// ConnectionRec) is the read-layer ordering input.
+enum CuratedStrength {
+  tight
+  medium
+  attenuated
+
+  @@map("curated_strength")
+}
+
+/// THE CARD = one anchor (source Item) × one cluster. The unit the user sees,
+/// votes on, and dismisses. Evolution of the original flat row: source_item_id
+/// stays (so votes/dismissals/events/credits keep their connection_id FK), plus
+/// a cluster link, normalized recs (ConnectionRec), and an INERT community lane.
 model CrossConnection {
   id               Int      @id @default(autoincrement())
   sourceItemId     Int      @map("source_item_id")
-  recommendedItems Json     @map("recommended_items")
-  reason           String
+  clusterId        Int?     @map("cluster_id")            // null only for un-clustered legacy rows
+  recommendedItems Json     @map("recommended_items")     // legacy JSON recs (superseded by ConnectionRec)
+  reason           String                                 // = cluster blurb, or a per-anchor override
   themeTags        String[] @default([]) @map("theme_tags")
+  position         Int      @default(0)                   // cluster order under the anchor (authoring)
   createdBy        String   @default("editorial") @map("created_by")
-  qualityScore     Float    @default(1.0) @map("quality_score")
   createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // ── COMMUNITY LANE (inert; recorded, not acted on pre-50-users) ──
+  // The ONLY mutable signal field; the four behavioral mutators write HERE.
+  // Default 0.0 = neutral. Ignored by the read layer until vote-weighting is
+  // deliberately enabled. NEVER blended into a curated column.
+  communityAdjustment Float @default(0.0) @map("community_adjustment")
+
+  // NOTE: quality_score is RETAINED (default 1.0) but DEPRECATED — kept only to
+  // keep the cutover reversible. It is never read into a curated grade. Dropped
+  // in a later step once the read layer is fully repointed.
+  qualityScore     Float    @default(1.0) @map("quality_score")
 
   sourceItem  Item                   @relation(fields: [sourceItemId], references: [id], onDelete: Cascade)
+  cluster     ConnectionCluster?     @relation(fields: [clusterId], references: [id], onDelete: SetNull)
+  recs        ConnectionRec[]
   votes       CrossConnectionVote[]
   dismissals  ConnectionDismissal[]
   events      ConnectionEvent[]
   credits     ConnectionCredit[]
 
+  @@unique([sourceItemId, clusterId])    // one card per (anchor, cluster); import idempotency
   @@index([sourceItemId])
+  @@index([clusterId])
   @@index([qualityScore])
   @@map("cross_connections")
+}
+
+/// Canonical cluster (225). Authored ONCE; reused by many anchors across types.
+/// Identity = the consolidated "Canonical Clusters" sheet.
+model ConnectionCluster {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique                  // stable key for idempotent import + authoring tool
+  label       String                             // cluster "reason" name
+  blurb       String                             // user-facing sentence shown on card expand
+  spans       String[] @default([])              // media types it spans (denormalized for the workhorse query)
+  isCanonical Boolean  @default(true) @map("is_canonical")  // false = single-anchor unique cluster
+  mergedFrom  String[] @default([]) @map("merged_from")     // provenance: original cluster names folded in
+  createdBy   String   @default("import") @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  cards CrossConnection[]
+
+  @@map("connection_clusters")
+}
+
+/// A single graded recommendation inside a card. curated_strength lives HERE
+/// (per-rec), protected. Exactly one of rec_item_id / pending_title_id is set.
+model ConnectionRec {
+  id               Int             @id @default(autoincrement())
+  connectionId     Int             @map("connection_id")
+  recItemId        Int?            @map("rec_item_id")
+  pendingTitleId   Int?            @map("pending_title_id")
+  curatedStrength  CuratedStrength @map("curated_strength")        // PROTECTED enum
+  sharedThreads    String[]        @default([]) @map("shared_threads")  // connection-logic tags
+  recMediaAuthored String?         @map("rec_media_authored")      // media as authored (cross-media display)
+  whatItIs         String?         @map("what_it_is")              // editorial descriptor
+  position         Int             @default(0)
+  createdBy        String          @default("import") @map("created_by")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @default(now()) @updatedAt @map("updated_at")
+
+  connection   CrossConnection         @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  recItem      Item?                   @relation(fields: [recItemId], references: [id], onDelete: SetNull)
+  pendingTitle ConnectionPendingTitle? @relation(fields: [pendingTitleId], references: [id], onDelete: SetNull)
+
+  @@unique([connectionId, recItemId])     // dedupe a resolved rec within a card
+  @@index([connectionId])
+  @@index([recItemId])
+  @@index([pendingTitleId])
+  @@index([curatedStrength])
+  @@map("connection_recs")
+}
+
+/// Connections (or anchors) referencing a title not yet in the catalog.
+/// Mistborn + Outer Wilds (recon §2B) land here unless Step 2 ingests them first.
+model ConnectionPendingTitle {
+  id             Int      @id @default(autoincrement())
+  titleAuthored  String   @map("title_authored")
+  mediaAuthored  String   @map("media_authored")
+  whatItIs       String?  @map("what_it_is")
+  normalizedKey  String   @map("normalized_key")    // reconciliation-matcher key for later auto-resolve
+  reason         String   @default("not_in_catalog")  // 'not_in_catalog' | 'ambiguous' | 'non_ingestable'
+  resolvedItemId Int?     @map("resolved_item_id")   // set when ingested; backfill links recs → real item
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+
+  recs         ConnectionRec[]
+  resolvedItem Item?  @relation(fields: [resolvedItemId], references: [id], onDelete: SetNull)
+
+  @@unique([normalizedKey, mediaAuthored])
+  @@index([resolvedItemId])
+  @@map("connection_pending_titles")
 }
 
 /// One row per (user, connection) that the user dismissed from the
