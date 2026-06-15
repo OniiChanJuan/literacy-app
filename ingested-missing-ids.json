@@ -1,0 +1,359 @@
+[
+ {
+  "seed": "Outer Wilds",
+  "id": 30130,
+  "title": "Outer Wilds",
+  "type": "game",
+  "year": 2019
+ },
+ {
+  "seed": "The Time Traveler's Wife",
+  "id": 30131,
+  "title": "The Time Traveler's Wife",
+  "type": "book",
+  "year": 2003
+ },
+ {
+  "seed": "The Power Broker",
+  "id": 30132,
+  "title": "The power broker: Robert Moses and the fall of New York",
+  "type": "book",
+  "year": 1974
+ },
+ {
+  "seed": "Mistborn",
+  "id": 30133,
+  "title": "Mistborn",
+  "type": "book",
+  "year": 2001
+ },
+ {
+  "seed": "Altered Carbon",
+  "id": 30134,
+  "title": "Altered Carbon",
+  "type": "book",
+  "year": 2002
+ },
+ {
+  "seed": "The Silence of the Lambs",
+  "id": 30135,
+  "title": "The Silence of the Lambs",
+  "type": "book",
+  "year": 1988
+ },
+ {
+  "seed": "Snow Crash",
+  "id": 30136,
+  "title": "Snow Crash",
+  "type": "book",
+  "year": 1992
+ },
+ {
+  "seed": "The Call of Cthulhu",
+  "id": 30137,
+  "title": "The Call of Cthulhu",
+  "type": "book",
+  "year": 2016
+ },
+ {
+  "seed": "The Girl with All the Gifts",
+  "id": 30138,
+  "title": "The Girl with All the Gifts",
+  "type": "book",
+  "year": 2014
+ },
+ {
+  "seed": "Battle Royale",
+  "id": 30139,
+  "title": "Battle royale",
+  "type": "book",
+  "year": 1999
+ },
+ {
+  "seed": "Parks and Recreation",
+  "id": 30140,
+  "title": "Parks and Recreation",
+  "type": "tv",
+  "year": 2009
+ },
+ {
+  "seed": "The Death of Stalin",
+  "id": 30141,
+  "title": "The Death of Stalin",
+  "type": "movie",
+  "year": 2017
+ },
+ {
+  "seed": "20,000 Leagues Under the Sea",
+  "id": 30142,
+  "title": "20,000 Leagues under The Sea",
+  "type": "book",
+  "year": 1998
+ },
+ {
+  "seed": "Atlas Shrugged",
+  "id": 30143,
+  "title": "Atlas Shrugged (Centennial Ed. HC)",
+  "type": "book",
+  "year": 1936
+ },
+ {
+  "seed": "Blindsight",
+  "id": 30144,
+  "title": "Blindsight",
+  "type": "book",
+  "year": 2006
+ },
+ {
+  "seed": "Brideshead Revisited",
+  "id": 30145,
+  "title": "Brideshead Revisited",
+  "type": "book",
+  "year": 1945
+ },
+ {
+  "seed": "Fear and Loathing in Las Vegas",
+  "id": 30146,
+  "title": "Fear and Loathing in Las Vegas",
+  "type": "book",
+  "year": 1971
+ },
+ {
+  "seed": "Fight Club",
+  "id": 30147,
+  "title": "Fight Club",
+  "type": "book",
+  "year": 1996
+ },
+ {
+  "seed": "From Blood and Ash",
+  "id": 30148,
+  "title": "From Blood and Ash",
+  "type": "book",
+  "year": 2020
+ },
+ {
+  "seed": "If We Were Villains",
+  "id": 30149,
+  "title": "If We Were Villains",
+  "type": "book",
+  "year": 2017
+ },
+ {
+  "seed": "Lore Olympus",
+  "id": 30150,
+  "title": "Lore Olympus",
+  "type": "book",
+  "year": 2021
+ },
+ {
+  "seed": "My Side of the Mountain",
+  "id": 30151,
+  "title": "My side of the mountain",
+  "type": "book",
+  "year": 1959
+ },
+ {
+  "seed": "Shōgun",
+  "id": 30152,
+  "title": "Shōgun",
+  "type": "book",
+  "year": 1975
+ },
+ {
+  "seed": "The City of Ember",
+  "id": 30153,
+  "title": "The City of Ember (The First Book of Ember)",
+  "type": "book",
+  "year": 1998
+ },
+ {
+  "seed": "The Count of Monte Cristo",
+  "id": 30154,
+  "title": "The Count of Monte Cristo",
+  "type": "book",
+  "year": 1920
+ },
+ {
+  "seed": "The Expanse",
+  "id": 30155,
+  "title": "Leviathan Wakes",
+  "type": "book",
+  "year": 2009
+ },
+ {
+  "seed": "The Fountainhead",
+  "id": 30156,
+  "title": "The Fountainhead",
+  "type": "book",
+  "year": 1943
+ },
+ {
+  "seed": "The Hating Game",
+  "id": 30157,
+  "title": "The Hating Game",
+  "type": "book",
+  "year": 2016
+ },
+ {
+  "seed": "The House of the Spirits",
+  "id": 30158,
+  "title": "The House of the Spirits by Isabel Allende",
+  "type": "book",
+  "year": 2018
+ },
+ {
+  "seed": "The Long Way to a Small, Angry Planet",
+  "id": 30159,
+  "title": "The Long Way to a Small, Angry Planet",
+  "type": "book",
+  "year": 2014
+ },
+ {
+  "seed": "The Magicians",
+  "id": 30160,
+  "title": "The Magicians",
+  "type": "book",
+  "year": 2009
+ },
+ {
+  "seed": "Uprooted",
+  "id": 30161,
+  "title": "Uprooted",
+  "type": "book",
+  "year": 2015
+ },
+ {
+  "seed": "World War Z",
+  "id": 30162,
+  "title": "World War Z",
+  "type": "book",
+  "year": 2006
+ },
+ {
+  "seed": "Ready or Not",
+  "id": 30163,
+  "title": "Ready or Not",
+  "type": "movie",
+  "year": 2019
+ },
+ {
+  "seed": "The Witch",
+  "id": 30164,
+  "title": "The Witch",
+  "type": "movie",
+  "year": 2015
+ },
+ {
+  "seed": "Begin Again",
+  "id": 30165,
+  "title": "Begin Again",
+  "type": "movie",
+  "year": 2014
+ },
+ {
+  "seed": "Glengarry Glen Ross",
+  "id": 30166,
+  "title": "Glengarry Glen Ross",
+  "type": "movie",
+  "year": 1992
+ },
+ {
+  "seed": "Kill Your Darlings",
+  "id": 30167,
+  "title": "Kill Your Darlings",
+  "type": "movie",
+  "year": 2013
+ },
+ {
+  "seed": "The Fountain",
+  "id": 30168,
+  "title": "The Fountain",
+  "type": "movie",
+  "year": 2006
+ },
+ {
+  "seed": "The Last of Sheila",
+  "id": 30169,
+  "title": "The Last of Sheila",
+  "type": "movie",
+  "year": 1973
+ },
+ {
+  "seed": "The Stepford Wives",
+  "id": 30170,
+  "title": "The Stepford Wives",
+  "type": "movie",
+  "year": 1975
+ },
+ {
+  "seed": "Buffy the Vampire Slayer",
+  "id": 30171,
+  "title": "Buffy the Vampire Slayer",
+  "type": "tv",
+  "year": 1997
+ },
+ {
+  "seed": "Penny Dreadful",
+  "id": 30172,
+  "title": "Penny Dreadful",
+  "type": "tv",
+  "year": 2014
+ },
+ {
+  "seed": "Russian Doll",
+  "id": 30173,
+  "title": "Russian Doll",
+  "type": "tv",
+  "year": 2019
+ },
+ {
+  "seed": "Wolf Hall",
+  "id": 30174,
+  "title": "Wolf Hall",
+  "type": "tv",
+  "year": 2015
+ },
+ {
+  "seed": "Years and Years",
+  "id": 30175,
+  "title": "Years and Years",
+  "type": "tv",
+  "year": 2019
+ },
+ {
+  "seed": "The Corner",
+  "id": 30176,
+  "title": "The Corner",
+  "type": "tv",
+  "year": 2000
+ },
+ {
+  "seed": "Critical Role",
+  "id": 30177,
+  "title": "Critical Role",
+  "type": "tv",
+  "year": 2015
+ },
+ {
+  "seed": "Little Fires Everywhere",
+  "id": 30178,
+  "title": "Little Fires Everywhere",
+  "type": "tv",
+  "year": 2020
+ },
+ {
+  "seed": "The Walking Dead",
+  "id": 30179,
+  "title": "The Walking Dead",
+  "type": "tv",
+  "year": 2010
+ },
+ {
+  "seed": "Record of Lodoss War",
+  "id": 30180,
+  "title": "Record of Lodoss War",
+  "type": "tv",
+  "year": 1990
+ }
+]
