@@ -46,6 +46,14 @@ const RATED_HIGHLY_MIN_SCORE = 4;
 // grade; community_adjustment stays ignored until vote-weighting is enabled.
 const STRENGTH_BASE: Record<string, number> = { tight: 1.5, medium: 1.0, attenuated: 0.6 };
 
+// The cross-shelf row is a curated taste of the strongest connections, not an
+// exhaustive list. Cap each card at the strongest N recs (desktop shows 4, mobile
+// shows 3 via a display-only trim of the 4th). Capping here — before item
+// hydration — means we never fetch covers/titles for recs we won't render
+// (Supabase egress saver). The long tail stays in the corpus for a full
+// connection view elsewhere.
+const MAX_CARD_RECS = 4;
+
 /**
  * Hydrate each card's recommendations from the normalized connection_recs table
  * (the corpus source of truth), strength-ordered (tight → attenuated). Mutates
@@ -67,7 +75,7 @@ async function attachConnectionRecs(prisma: typeof import("@/lib/prisma").prisma
   for (const c of cards) {
     const rs = (byCard.get(c.id) ?? []).slice().sort(
       (a, b) => (STRENGTH_BASE[b.curatedStrength] - STRENGTH_BASE[a.curatedStrength]) || a.position - b.position,
-    );
+    ).slice(0, MAX_CARD_RECS); // strongest-first, capped — don't hydrate the rest
     // carry rec_id so the per-rec thumbs (mobile) can target connection_rec_votes
     c.recommendedItems = rs.map((r) => ({ item_id: r.recItemId, rec_id: r.id }));
     c.qualityScore = rs.length ? Math.max(...rs.map((r) => STRENGTH_BASE[r.curatedStrength])) : 0.6;

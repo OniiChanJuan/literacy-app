@@ -254,9 +254,6 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
   const [hovered, setHovered] = useState(false);
   const [dismissing, setDismissing] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  // Mobile "+N more": collapse recs beyond the first 3 (which are the
-  // strongest, since recs arrive strength-ordered). Desktop ignores this.
-  const [expanded, setExpanded] = useState(false);
 
   const submitVote = useCallback(async (next: -1 | 1) => {
     if (submitting) return;
@@ -317,10 +314,11 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         padding: 18,
         transition: "border-color 200ms, opacity 200ms",
         opacity: dismissing ? 0 : 1,
-        // Let the grid's 1fr columns stay equal (default min-width:auto would let
-        // a card with many recs expand its track and overflow the page). The
-        // chain's overflow:hidden then clips extra recs — restores desktop density
-        // after the corpus raised rec counts. Harmless on mobile (single column).
+        // Keep the grid's 1fr columns equal so the page never overflows: source +
+        // 4 recs is wider than one 3-col track at narrow desktop widths, and
+        // without this the track expands and pushes the page sideways. The
+        // thumbnail footprint is tightened (below) so all 4 recs fit fully at
+        // standard widths (no clip); this only guards the narrow tail.
         minWidth: 0,
       }}
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(46,196,182,0.15)"; setHovered(true); }}
@@ -436,19 +434,21 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
         </div>
       )}
 
-      {/* Items chain.
-          Desktop (>640px): UNCHANGED — horizontal source → rec → rec with arrows,
-          one per-connection thumbs set (below). Cells are display:contents so the
-          wrapper is invisible to the desktop flex layout.
+      {/* Items chain — a curated taste of the strongest connections, capped.
+          The API returns at most 4 recs per card (strongest-first by curated
+          strength); extras simply aren't on this surface.
+          Desktop (>640px): source → up to 4 recs with arrows, one per-connection
+          thumbs set (below). Cells are display:contents so the wrapper is invisible
+          to the desktop flex layout. 4 recs fit the column — nothing to clip.
           Mobile (<=640px): a 3-across CSS grid (NO horizontal scroll). Source is
           hidden (named in the framing), arrows dropped, covers fill the cell
-          (~110px). Recs past the first 3 collapse behind a "+N more" pill that
-          wraps the rest into more 3-col rows. Thumbs are per-rec, under each card. */}
+          (~110px), per-rec thumbs under each. The 4th rec is desktop-only, so
+          mobile shows a fixed 3. */}
       <div
         className="cross-shelf-chain"
         style={{
           display: "flex",
-          gap: 6,
+          gap: 4, // tightened (was 6) so source + 4 recs fit one desktop column
           alignItems: "flex-start",
           flexWrap: "nowrap",
           overflow: "hidden",
@@ -456,11 +456,10 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
       >
         {items.map((it, idx) => {
           const recIndex = idx - 1; // -1 = source; 0-based for recs
-          const isExtra = recIndex >= 3; // 4th rec onward → behind "+N more"
           const cellCls =
             "cross-shelf-cell" +
             (idx === 0 ? " cross-shelf-cell-source" : "") +
-            (isExtra && !expanded ? " cross-shelf-cell-hidden" : "");
+            (recIndex === 3 ? " cross-shelf-cell-desktop-only" : ""); // 4th rec: desktop only
           return (
             <Fragment key={`chain-${idx}-${it.id}`}>
               {idx > 0 && (
@@ -497,21 +496,11 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
             </Fragment>
           );
         })}
-        {connection.recommendedItems.length > 3 && (
-          <button
-            className="cross-shelf-more"
-            onClick={() => setExpanded((e) => !e)}
-            aria-expanded={expanded}
-          >
-            {expanded ? "Show less" : `+${connection.recommendedItems.length - 3} more`}
-          </button>
-        )}
       </div>
       <style>{`
-        /* Desktop: cell wrapper is invisible; per-rec thumbs + "+N more" hidden. */
+        /* Desktop: cell wrapper is invisible; per-rec thumbs hidden. */
         .cross-shelf-cell { display: contents; }
         .cross-shelf-rec-votes { display: none; }
-        .cross-shelf-more { display: none; }
 
         @media (max-width: 640px) {
           /* 3-across grid, no horizontal scroll. */
@@ -531,7 +520,8 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
             min-width: 0 !important;
           }
           .cross-shelf-cell-source { display: none !important; }
-          .cross-shelf-cell-hidden { display: none !important; }
+          /* 4th rec is desktop-only — mobile caps at a fixed 3. */
+          .cross-shelf-cell-desktop-only { display: none !important; }
           /* Covers fill the cell (~110px) instead of a fixed strip size. */
           .cross-shelf-thumb { width: 100% !important; }
           .cross-shelf-cover {
@@ -549,19 +539,6 @@ function ConnectionCard({ connection, mode }: { connection: Connection; mode: Se
             justify-content: center;
             gap: 12px;
             width: 100%;
-          }
-          .cross-shelf-more {
-            display: block !important;
-            grid-column: 1 / -1 !important;
-            margin-top: 2px;
-            background: none;
-            border: none;
-            color: rgba(46,196,182,0.85);
-            font-size: 12px;
-            font-weight: 600;
-            text-align: left;
-            cursor: pointer;
-            padding: 4px 0;
           }
           /* Desktop's single per-connection thumbs set is hidden on mobile. */
           .cross-shelf-votes-connection { display: none !important; }
@@ -681,15 +658,16 @@ function ItemThumbnail({ item, onClickTrack, isSource }: { item: ItemThumb; onCl
         </span>
       </div>
 
-      {/* Title — single line ellipsis. max-width slightly wider than the
-          cover for legibility ("Crouching Tig…" instead of "Crouchin…"). */}
+      {/* Title — single line ellipsis. Matched to the cover width (52) so a
+          desktop card fits source + 4 recs in one 3-col track without clipping.
+          Mobile overrides to 100% of the (wider) grid cell. */}
       <div
         className="cross-shelf-thumb-title"
         style={{
           fontSize: 10,
           color: "rgba(232,230,225,0.55)",
-          maxWidth: 60,
-          width: 60,
+          maxWidth: 52,
+          width: 52,
           textAlign: "center",
           whiteSpace: "nowrap",
           overflow: "hidden",
