@@ -37,7 +37,7 @@ function mapCategories(categories?: string[]): string[] {
 
 // ── Vibe derivation ─────────────────────────────────────────────────────
 
-function deriveVibes(genres: string[], description: string): string[] {
+export function deriveVibes(genres: string[], description: string): string[] {
   const vibes: string[] = [];
   const g = new Set(genres.map((s) => s.toLowerCase()));
   const d = description.toLowerCase();

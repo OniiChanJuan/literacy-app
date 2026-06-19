@@ -34,24 +34,46 @@ export function neutralDimensions(): TasteDimensions {
 const DARK_TAGS = new Set(["dark", "gritty", "noir", "brutal", "melancholic", "intense"]);
 const LIGHT_TAGS = new Set(["wholesome", "uplifting", "cozy", "heartfelt", "funny", "heartwarming"]);
 
-const SERIOUS_GENRES = new Set(["drama", "thriller", "mystery", "crime", "war", "history", "biography"]);
+// NOTE: genre sets include BISAC full-form strings (Google Books) and IGDB game
+// genre names as actually stored in the catalog, so a book tagged
+// "Biography & Autobiography" or a "Shooter" game fingerprints correctly.
+const SERIOUS_GENRES = new Set(["drama", "thriller", "mystery", "crime", "war", "history", "biography", "biography & autobiography"]);
 const FUN_GENRES = new Set(["comedy", "animation", "family", "musical", "kids"]);
 
 const SLOW_TAGS = new Set(["slow burn", "slow-burn", "atmospheric", "cerebral", "melancholic"]);
 const FAST_TAGS = new Set(["intense", "fast-paced", "fast paced", "chaotic", "brutal"]);
 
 const COMPLEX_TAGS = new Set(["mind-bending", "mind bending", "thought-provoking", "thought provoking", "cerebral", "surreal"]);
+// Genre-driven complexity — strategy/puzzle/cerebral game genres (IGDB).
+const COMPLEX_GENRES = new Set(["strategy", "turn-based strategy (tbs)", "real time strategy (rts)", "tactical", "puzzle", "point-and-click", "visual novel"]);
 
 const FANTASY_GENRES = new Set(["fantasy", "sci-fi", "science fiction", "supernatural", "superhero", "animation"]);
-const REALIST_GENRES = new Set(["documentary", "biography", "history", "true crime", "news"]);
+const REALIST_GENRES = new Set(["documentary", "biography", "history", "true crime", "news", "biography & autobiography"]);
 
-const VIOLENT_GENRES = new Set(["horror", "action", "war", "crime", "thriller"]);
+// + IGDB combat-genre game names (shooter / fighting / hack-and-slash).
+const VIOLENT_GENRES = new Set(["horror", "action", "war", "crime", "thriller", "shooter", "fighting", "hack and slash/beat 'em up"]);
 const VIOLENT_TAGS = new Set(["dark", "intense", "brutal", "gritty"]);
 
 const EMOTIONAL_TAGS = new Set(["emotional", "heartfelt", "heartbreaking", "melancholic", "wholesome", "heartwarming"]);
 
 const WORLDBUILD_TAGS = new Set(["immersive", "epic", "atmospheric"]);
-const WORLDBUILD_GENRES = new Set(["fantasy", "sci-fi", "science fiction"]);
+// + IGDB world-building game genres (RPG). "Adventure" deliberately excluded —
+// too broad/high-frequency a tag to reliably imply world-building.
+const WORLDBUILD_GENRES = new Set(["fantasy", "sci-fi", "science fiction", "role-playing (rpg)", "rpg"]);
+
+// ─── Demographic tone priors (manga/anime) ───────────────────────────
+// Structured, high-confidence signals already present in genre[]. Each entry
+// is a per-axis nudge applied in calculateItemDimensions. Polarity matches the
+// axis definition (slow_vs_fast: fast = lower; character_vs_plot: plot = lower).
+type AxisDelta = Partial<Record<keyof TasteDimensions, number>>;
+const DEMOGRAPHIC_PRIORS: Record<string, AxisDelta> = {
+  shounen: { violence_tolerance: 0.1, slow_vs_fast: -0.1, character_vs_plot: -0.05 },
+  shonen: { violence_tolerance: 0.1, slow_vs_fast: -0.1, character_vs_plot: -0.05 },
+  seinen: { violence_tolerance: 0.15, dark_vs_light: 0.1, complex_vs_simple: 0.1 },
+  josei: { emotional_intensity: 0.1, character_vs_plot: 0.1 },
+  shoujo: { emotional_intensity: 0.12, character_vs_plot: 0.1, dark_vs_light: -0.05 },
+  shojo: { emotional_intensity: 0.12, character_vs_plot: 0.1, dark_vs_light: -0.05 },
+};
 
 const CHAR_TAGS = new Set(["slow burn", "slow-burn", "cerebral", "emotional", "heartfelt", "atmospheric"]);
 const PLOT_TAGS = new Set(["fast-paced", "fast paced", "intense", "chaotic", "epic"]);
@@ -104,8 +126,8 @@ export function calculateItemDimensions(
   const fastSignal = countMatches(v, FAST_TAGS);
   const slowVsFast = clamp(0.5 + (slowSignal - fastSignal) * 0.15);
 
-  // complex_vs_simple: mind-bending/thought-provoking → 1.0
-  const complexSignal = countMatches(v, COMPLEX_TAGS) + descKeywords(desc, DESC_COMPLEX) * 0.3;
+  // complex_vs_simple: mind-bending/thought-provoking vibes + strategy/puzzle genres → 1.0
+  const complexSignal = countMatches(v, COMPLEX_TAGS) + countMatches(g, COMPLEX_GENRES) + descKeywords(desc, DESC_COMPLEX) * 0.3;
   const complexVsSimple = clamp(0.5 + complexSignal * 0.12);
 
   // realistic_vs_fantastical: fantasy/sci-fi → 1.0, documentary → 0.0
@@ -139,7 +161,7 @@ export function calculateItemDimensions(
   const lowVotes = voteCount < 1000 ? 0.15 : voteCount < 5000 ? 0.08 : 0;
   const noveltyVsFamiliar = clamp(0.5 + genreComboRarity + lowVotes);
 
-  return {
+  const dims: TasteDimensions = {
     dark_vs_light: darkVsLight,
     serious_vs_fun: seriousVsFun,
     slow_vs_fast: slowVsFast,
@@ -151,6 +173,18 @@ export function calculateItemDimensions(
     character_vs_plot: characterVsPlot,
     novelty_vs_familiar: noveltyVsFamiliar,
   };
+
+  // Demographic tone priors (manga/anime) — additive per-axis nudges, re-clamped.
+  for (const tag of g) {
+    const prior = DEMOGRAPHIC_PRIORS[tag];
+    if (!prior) continue;
+    for (const [axis, delta] of Object.entries(prior)) {
+      const k = axis as keyof TasteDimensions;
+      dims[k] = clamp(dims[k] + (delta as number));
+    }
+  }
+
+  return dims;
 }
 
 /**
