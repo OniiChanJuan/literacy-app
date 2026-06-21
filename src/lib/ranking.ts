@@ -3,6 +3,7 @@
  * Handles scoring, filtering, deduplication, and diversity.
  */
 import { scorePassesThreshold } from "./score-thresholds";
+import { SOURCE_SCALE } from "./crossshelf-score";
 
 // ── Normalized score ────────────────────────────────────────────────────
 /**
@@ -22,15 +23,9 @@ export function normalizeScore(ext: Record<string, number>, type: string, voteCo
     podcast: ["spotify_popularity"],
   };
 
-  const maxScales: Record<string, number> = {
-    tmdb: 10, igdb: 100, igdb_critics: 100, google_books: 10,
-    spotify_popularity: 100,
-    imdb: 10, rt_critics: 100, rt_audience: 100,
-    metacritic: 100, mal: 10, anilist: 100,
-    steam: 100, pitchfork: 10,
-    comicvine: 5, aoty: 100, opencritic: 100, rym: 5,
-    letterboxd: 5, storygraph: 5,
-  };
+  // Canonical 0–10 scale table lives in crossshelf-score.ts (single source of
+  // truth). This used to carry a near-duplicate copy.
+  const maxScales = SOURCE_SCALE;
 
   const order = priorities[type] || Object.keys(ext);
 

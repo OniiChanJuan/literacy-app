@@ -17,6 +17,7 @@
  */
 
 import { scorePassesThreshold } from "./score-thresholds";
+import { SOURCE_SCALE } from "./crossshelf-score";
 
 export type ExtScoreKind = "numeric" | "steam-text";
 
@@ -55,24 +56,25 @@ const HIDDEN_KEYS = new Set([
   "steam_label",
 ]);
 
+// Per-source display label + value suffix. The numeric scale (`max`) is NOT
+// duplicated here — it comes from the canonical SOURCE_SCALE table.
 interface SourceMeta {
   label: string;
-  max: number;
   suffix: string;
 }
 const SOURCE_META: Record<string, SourceMeta> = {
-  imdb:               { label: "IMDb",        max: 10,  suffix: "/10"  },
-  tmdb:               { label: "TMDB",        max: 10,  suffix: "/10"  },
-  mal:                { label: "MAL",         max: 10,  suffix: "/10"  },
-  google_books:       { label: "Books",       max: 10,  suffix: "/10"  },
-  rt_critics:         { label: "RT",          max: 100, suffix: "%"    },
-  metacritic:         { label: "Metacritic",  max: 100, suffix: ""     },
-  pitchfork:          { label: "Pitchfork",   max: 10,  suffix: "/10"  },
-  ign:                { label: "IGN",         max: 10,  suffix: "/10"  },
-  spotify_popularity: { label: "Spotify",     max: 100, suffix: "/100" },
-  aoty:               { label: "AOTY",        max: 100, suffix: "/100" },
-  opencritic:         { label: "OpenCritic",  max: 100, suffix: "/100" },
-  anilist:            { label: "AniList",     max: 100, suffix: "/100" },
+  imdb:               { label: "IMDb",        suffix: "/10"  },
+  tmdb:               { label: "TMDB",        suffix: "/10"  },
+  mal:                { label: "MAL",         suffix: "/10"  },
+  google_books:       { label: "Books",       suffix: "/10"  },
+  rt_critics:         { label: "RT",          suffix: "%"    },
+  metacritic:         { label: "Metacritic",  suffix: ""     },
+  pitchfork:          { label: "Pitchfork",   suffix: "/10"  },
+  ign:                { label: "IGN",         suffix: "/10"  },
+  spotify_popularity: { label: "Spotify",     suffix: "/100" },
+  aoty:               { label: "AOTY",        suffix: "/100" },
+  opencritic:         { label: "OpenCritic",  suffix: "/100" },
+  anilist:            { label: "AniList",     suffix: "/100" },
 };
 
 /** Priority when picking the single "best" score for a compact card badge. */
@@ -179,17 +181,18 @@ function formatOne(source: string, rawValue: unknown, ext: Record<string, unknow
   // ── Everything else: lookup in SOURCE_META ───────────────────────────
   const meta = SOURCE_META[source];
   if (!meta) return null; // unknown source — hide, don't render a raw key name
-  const valueStr = meta.max <= 10 ? rawValue.toFixed(1) : String(Math.round(rawValue));
+  const max = SOURCE_SCALE[source] ?? 10;
+  const valueStr = max <= 10 ? rawValue.toFixed(1) : String(Math.round(rawValue));
   return {
     key: source,
     source,
     label: meta.label,
     kind: "numeric",
     value: rawValue,
-    max: meta.max,
+    max,
     valueStr,
     suffix: meta.suffix,
-    color: scoreColor(rawValue, meta.max),
+    color: scoreColor(rawValue, max),
   };
 }
 
