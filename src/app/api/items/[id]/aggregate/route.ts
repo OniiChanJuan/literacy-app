@@ -29,6 +29,7 @@ export async function GET(
       dist: [0, 0, 0, 0, 0],
       recPct: 0,
       recCount: 0,
+      taggedCount: 0,
     });
     emptyRes.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
     return emptyRes;
@@ -46,19 +47,24 @@ export async function GET(
     }
   }
 
-  // Recommend percentage
+  // Recommend percentage — denominator is TAGGED ratings only. A user who
+  // stars without choosing recommend/mixed/skip must not silently count as a
+  // non-recommend (the old `/ ratings.length` deflated every recPct). recPct is
+  // recommend ÷ (recommend + mixed + skip); 0 when nothing is tagged yet.
   const recCount = ratings.filter((r) => r.recommendTag === "recommend").length;
-  const recPct = Math.round((recCount / ratings.length) * 100);
+  const taggedCount = ratings.filter((r) => r.recommendTag != null).length;
+  const recPct = taggedCount > 0 ? Math.round((recCount / taggedCount) * 100) : 0;
 
   const res = NextResponse.json({
     avg,
     count: ratings.length,
     dist,
     recPct,
-    // recCount: number of "recommend"-tagged ratings (already computed above).
-    // Exposed read-only so the mobile detail page can gate the Recommend%
-    // contributing pill on >=5 tags (tags, not ratings). No aggregation change.
+    // recCount: "recommend"-tagged ratings; taggedCount: ratings with ANY tag
+    // (the recPct denominator). Both exposed read-only so callers can gate the
+    // Recommend% leg/pill on >=5 tags (tags, not ratings).
     recCount,
+    taggedCount,
   });
   // Public aggregate data — cache 60s at CDN, serve stale up to 2 min while revalidating
   res.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
