@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrossShelf Score — Proposed Treatment v2 (Mockup)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  :root{
+    --bg:#1a1a22; --panel:#0a0a0f; --panel2:#14141c;
+    --line:rgba(255,255,255,0.08); --line2:rgba(255,255,255,0.12);
+    --ink:#e8e6e1; --dim:rgba(232,230,225,0.6); --faint:rgba(232,230,225,0.34);
+    --teal:#2EC4B6; --red:#E84855; --gold:#DAA520; --green:#3ECf8E; --violet:#9B5DE5;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; padding:40px 20px 80px; background:var(--bg); color:var(--ink); font-family:'DM Sans',sans-serif; display:flex; flex-direction:column; align-items:center; gap:36px;}
+  .doc-header{max-width:660px; text-align:center;}
+  .doc-header h1{font-family:'Playfair Display',serif; font-weight:500; font-size:26px; margin:0 0 8px;}
+  .doc-header h1 .it{font-style:italic; color:var(--teal);}
+  .doc-header p{font-size:13.5px; color:var(--dim); margin:0; line-height:1.6;}
+  .doc-meta{font-size:11px; color:var(--faint); letter-spacing:1px; text-transform:uppercase; margin-top:12px;}
+
+  .block{width:100%; max-width:940px;}
+  .block-label{font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--teal); margin-bottom:6px; display:flex; align-items:center; gap:10px;}
+  .block-label::before{content:""; width:24px; height:1px; background:var(--teal); display:inline-block;}
+  .block-title{font-family:'Playfair Display',serif; font-size:21px; font-weight:500; margin:0 0 6px;}
+  .block-sub{font-size:13px; color:var(--dim); margin:0 0 20px; line-height:1.55; max-width:700px;}
+  .block-sub b{color:var(--ink); font-weight:500;}
+
+  .cs-mark{font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal);}
+  .cs-num{font-family:'Playfair Display',serif; font-weight:500; color:var(--ink); line-height:1;}
+
+  /* ===== segmented composition bar ===== */
+  .comp-bar{height:8px; border-radius:4px; overflow:hidden; display:flex; background:rgba(255,255,255,0.06);}
+  .comp-seg{height:100%;}
+  .seg-ext{background:var(--teal);}
+  .seg-com{background:var(--violet);}
+  .seg-rec{background:var(--gold);}
+  .seg-ghost{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.05),rgba(255,255,255,0.05) 4px,transparent 4px,transparent 8px);}
+  .comp-legend{display:flex; gap:14px; margin-top:9px; flex-wrap:wrap;}
+  .comp-legend span{display:inline-flex; align-items:center; gap:6px; font-size:10px; color:var(--dim);}
+  .comp-legend .sw{width:9px; height:9px; border-radius:2px; flex-shrink:0;}
+  .sw-ext{background:var(--teal);} .sw-com{background:var(--violet);} .sw-rec{background:var(--gold);}
+  .comp-legend .pct{color:var(--faint);}
+  .comp-legend .ghost-note{color:var(--faint); font-style:italic;}
+
+  /* ===== CARDS (unchanged treatment, condensed) ===== */
+  .cards-row{display:flex; gap:18px; flex-wrap:wrap;}
+  .card{width:185px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .card-cover{position:relative; height:230px; display:flex; align-items:flex-end; padding:12px; background-size:cover;}
+  .card-type{position:absolute; top:10px; left:10px; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#fff; padding:2px 7px; border-radius:4px; font-weight:600;}
+  .tp-movie{background:var(--red);} .tp-manga{background:#E84855;} .tp-game{background:#2EC4B6; color:#06231f;} .tp-comic{background:var(--gold); color:#2a2102;}
+  .your-rating{position:absolute; top:8px; right:8px; display:flex; align-items:center; gap:4px; background:rgba(10,10,15,0.82); border:1px solid rgba(218,165,32,0.55); border-radius:7px; padding:3px 7px;}
+  .your-rating .star{color:var(--gold); font-size:11px;}
+  .your-rating .yr-num{font-family:'Playfair Display',serif; font-size:12px; color:var(--gold); font-weight:600; line-height:1;}
+  .your-rating .yr-tag{font-size:7px; letter-spacing:0.5px; text-transform:uppercase; color:rgba(218,165,32,0.85); margin-left:1px;}
+  .card-body{padding:11px 13px 14px;}
+  .card-title{font-family:'Playfair Display',serif; font-size:14px; font-weight:500; line-height:1.15; margin-bottom:8px; height:32px; overflow:hidden;}
+  .cs-row{display:flex; align-items:baseline; gap:5px; margin-bottom:7px;}
+  .cs-row .cs-num{font-size:17px;}
+  .cs-row .cs-slash{font-size:10px; color:var(--faint);}
+  .fill-bar{height:3px; background:rgba(255,255,255,0.08); border-radius:2px; position:relative; margin-bottom:8px;}
+  .fill-bar i{position:absolute; left:0; top:0; height:100%; background:var(--teal); border-radius:2px;}
+  .card-genre{font-size:10px; color:var(--faint);}
+  .rate-stars{display:flex; gap:3px; margin-top:7px;}
+  .rate-stars i{color:rgba(232,230,225,0.28); font-size:14px;}
+  .cs-dash{font-family:'Playfair Display',serif; font-size:17px; color:var(--faint);}
+
+  .annot{display:flex; gap:8px; align-items:flex-start; margin-top:14px; padding:11px 14px; background:rgba(46,196,182,0.06); border:1px solid rgba(46,196,182,0.2); border-radius:9px; font-size:12px; color:var(--dim); line-height:1.5;}
+  .annot i{color:var(--teal); font-size:15px; flex-shrink:0; margin-top:1px;}
+  .annot b{color:var(--ink); font-weight:500;}
+  .annot.warn{background:rgba(218,165,32,0.06); border-color:rgba(218,165,32,0.25);}
+  .annot.warn i{color:var(--gold);}
+
+  /* ===== detail hero (shared) ===== */
+  .stage-label{font-size:10px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; font-weight:600;}
+  .stage-default{color:var(--dim);}
+  .stage-expanded{color:var(--gold);}
+
+  .desk{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:24px 26px;}
+  .score-hero{padding:20px 22px; background:var(--panel2); border:1px solid var(--line2); border-radius:12px; border-left:3px solid var(--teal);}
+  .hero-top{display:flex; align-items:center; gap:24px;}
+  .hero-num-block{text-align:center; flex-shrink:0;}
+  .hero-num-block .cs-mark{font-size:10px; letter-spacing:2px; margin-bottom:3px; display:block;}
+  .hero-num-block .cs-num{font-size:48px;}
+  .hero-num-block .cs-slash{font-size:14px; color:var(--faint); font-family:'DM Sans',sans-serif;}
+  .hero-detail{flex:1; min-width:0;}
+  .goes-into-label{font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--faint); margin:14px 0 8px;}
+  .goes-into{display:flex; gap:8px; flex-wrap:wrap;}
+  .gi-pill{display:flex; align-items:center; gap:6px; font-size:11px; padding:5px 10px; border:1px solid var(--line2); border-radius:7px; color:var(--dim);}
+  .gi-pill b{color:var(--ink); font-weight:500;}
+  .gi-pill.pending{border-style:dashed; color:var(--faint);}
+  .expand-row{display:flex; align-items:center; justify-content:center; gap:6px; margin-top:14px; padding-top:13px; border-top:1px solid var(--line); font-size:11px; color:var(--teal); cursor:pointer;}
+  .expand-row i{font-size:14px;}
+  /* expanded panel */
+  .expanded{margin-top:14px; padding-top:14px; border-top:1px solid var(--line);}
+  .exp-line{font-size:12px; color:var(--dim); line-height:1.55; margin-bottom:10px;}
+  .exp-line b{color:var(--ink); font-weight:500;}
+  .weights{display:flex; gap:18px; margin:12px 0; flex-wrap:wrap;}
+  .weight{font-size:11px; color:var(--dim);}
+  .weight .wn{font-family:'Playfair Display',serif; font-size:16px; display:block;}
+  .wn.ext{color:var(--teal);} .wn.com{color:var(--violet);} .wn.rec{color:var(--gold);}
+  .dist{padding:13px 15px; background:rgba(255,255,255,0.02); border:1px solid var(--line); border-radius:10px; margin-top:6px;}
+  .dist-label{font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--faint); margin-bottom:9px;}
+  .dist-row{display:flex; align-items:center; gap:8px; margin-bottom:5px;}
+  .dist-star{font-size:9px; color:var(--dim); width:46px;}
+  .dist-track{flex:1; height:5px; background:rgba(255,255,255,0.07); border-radius:3px; position:relative;}
+  .dist-track i{position:absolute; left:0; top:0; height:100%; background:var(--gold); border-radius:3px;}
+  .dist-empty{font-size:11px; color:var(--faint); font-style:italic; text-align:center; padding:5px 0;}
+
+  /* mobile */
+  .phone{width:330px; background:var(--panel); border-radius:28px; border:1px solid var(--line2); overflow:hidden;}
+  .phone-pad{padding:18px 16px 22px;}
+  .m-type{display:inline-block; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#fff; background:var(--red); padding:2px 8px; border-radius:4px; margin-bottom:8px; font-weight:600;}
+  .m-title{font-family:'Playfair Display',serif; font-size:21px; font-weight:600; line-height:1.1; margin-bottom:3px;}
+  .m-meta{font-size:11px; color:var(--faint); margin-bottom:16px;}
+  .m-hero{padding:15px; background:var(--panel2); border:1px solid var(--line2); border-radius:12px; border-left:3px solid var(--teal);}
+  .m-hero-top{display:flex; align-items:center; gap:16px;}
+  .m-hero-num{text-align:center; flex-shrink:0;}
+  .m-hero-num .cs-mark{font-size:9px; letter-spacing:1.5px; display:block; margin-bottom:2px;}
+  .m-hero-num .cs-num{font-size:36px;}
+  .m-hero-num .cs-slash{font-size:11px; color:var(--faint); font-family:'DM Sans',sans-serif;}
+  .m-hero-detail{flex:1;}
+
+  .layouts{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start;}
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>The Cross<span class="it">Shelf</span> Score — v2</h1>
+  <p>Updated with two changes you asked for: a <b>clean default</b> with the full explanation tucked behind an expand (no clutter), and a <b>segmented composition bar</b> that actually shows what the score is built from instead of a plain teal fill.</p>
+  <div class="doc-meta">Mockup v2 · for approval · June 2026</div>
+</div>
+
+<!-- THE BAR EXPLAINED -->
+<div class="block">
+  <div class="block-label">The new bar</div>
+  <h2 class="block-title">A composition bar, not a plain fill</h2>
+  <p class="block-sub">The old bar just repeated the number as a teal fill — dead weight. The new one shows <b>what the score is made of</b>: external critics, community, and recommend, each as a segment. Today it's all external (one teal segment, with the community/recommend space ghosted to show it's waiting). As you get ratings, the bar visibly fills in and rebalances — so the bar itself becomes an honest at-a-glance signal of how "real" the blend is.</p>
+
+  <div class="desk" style="max-width:560px;">
+    <div style="font-size:11px; color:var(--faint); letter-spacing:1px; text-transform:uppercase; margin-bottom:10px;">Today — external only</div>
+    <div class="comp-bar">
+      <div class="comp-seg seg-ext" style="width:100%;"></div>
+    </div>
+    <div class="comp-legend">
+      <span><span class="sw sw-ext"></span>External critics <span class="pct">100%</span></span>
+      <span class="ghost-note">community &amp; recommend activate as ratings come in</span>
+    </div>
+
+    <div style="font-size:11px; color:var(--faint); letter-spacing:1px; text-transform:uppercase; margin:22px 0 10px;">Later — once a title has ratings + tags</div>
+    <div class="comp-bar">
+      <div class="comp-seg seg-ext" style="width:50%;"></div>
+      <div class="comp-seg seg-com" style="width:35%;"></div>
+      <div class="comp-seg seg-rec" style="width:15%;"></div>
+    </div>
+    <div class="comp-legend">
+      <span><span class="sw sw-ext"></span>External <span class="pct">50%</span></span>
+      <span><span class="sw sw-com"></span>Community <span class="pct">35%</span></span>
+      <span><span class="sw sw-rec"></span>Recommend <span class="pct">15%</span></span>
+    </div>
+  </div>
+  <div class="annot"><i class="ti ti-bulb"></i><div>The bar now does real work: it's the visual twin of "what goes into this," and it <b>honestly shows the blend is external-heavy today</b> without needing a sentence to say so. As community fills in, the violet segment grows — you can literally watch the score become more "CrossShelf."</div></div>
+</div>
+
+<!-- DESKTOP DETAIL: DEFAULT vs EXPANDED -->
+<div class="block">
+  <div class="block-label">Desktop detail · progressive disclosure</div>
+  <h2 class="block-title">Clean by default, the full story on tap</h2>
+  <p class="block-sub">Default shows the score, the composition bar, and "what goes into this" — no disclaimer paragraph cluttering it. Tap <b>"How this score works"</b> and it expands to the honest detail: the exact weights, the external-heavy-right-now explanation, and the rating distribution.</p>
+
+  <div class="layouts">
+    <!-- DEFAULT -->
+    <div class="desk" style="flex:1; min-width:340px;">
+      <div class="stage-label stage-default">Default — collapsed</div>
+      <div class="score-hero">
+        <div class="hero-top">
+          <div class="hero-num-block">
+            <span class="cs-mark">CrossShelf</span>
+            <span class="cs-num">8.4</span><span class="cs-slash">/10</span>
+          </div>
+          <div class="hero-detail">
+            <div class="comp-bar">
+              <div class="comp-seg seg-ext" style="width:100%;"></div>
+            </div>
+            <div class="comp-legend">
+              <span><span class="sw sw-ext"></span>External <span class="pct">100%</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="goes-into-label">What goes into this</div>
+        <div class="goes-into">
+          <div class="gi-pill"><b>IMDb</b> 8.4/10</div>
+          <div class="gi-pill"><b>Rotten Tomatoes</b> 91%</div>
+        </div>
+        <div class="expand-row"><i class="ti ti-chevron-down"></i> How this score works</div>
+      </div>
+    </div>
+
+    <!-- EXPANDED -->
+    <div class="desk" style="flex:1; min-width:340px;">
+      <div class="stage-label stage-expanded">↓ After tapping "How this score works"</div>
+      <div class="score-hero">
+        <div class="hero-top">
+          <div class="hero-num-block">
+            <span class="cs-mark">CrossShelf</span>
+            <span class="cs-num">8.4</span><span class="cs-slash">/10</span>
+          </div>
+          <div class="hero-detail">
+            <div class="comp-bar"><div class="comp-seg seg-ext" style="width:100%;"></div></div>
+            <div class="comp-legend"><span><span class="sw sw-ext"></span>External <span class="pct">100%</span></span></div>
+          </div>
+        </div>
+        <div class="goes-into-label">What goes into this</div>
+        <div class="goes-into">
+          <div class="gi-pill"><b>IMDb</b> 8.4/10</div>
+          <div class="gi-pill"><b>Rotten Tomatoes</b> 91%</div>
+          <div class="gi-pill pending">Community · at 10 ratings</div>
+          <div class="gi-pill pending">Recommend · at 5 tags</div>
+        </div>
+        <div class="expanded">
+          <div class="exp-line">The CrossShelf Score blends three sources. <b>Right now it's built entirely from external critics</b> — community and recommend join in once this title has enough ratings.</div>
+          <div class="weights">
+            <div class="weight"><span class="wn ext">50%</span>External critics</div>
+            <div class="weight"><span class="wn com">35%</span>Community <span style="color:var(--faint)">(10+ ratings)</span></div>
+            <div class="weight"><span class="wn rec">15%</span>Recommend <span style="color:var(--faint)">(5+ tags)</span></div>
+          </div>
+          <div class="dist">
+            <div class="dist-label">Community rating distribution</div>
+            <div class="dist-empty">Opens at 10 community ratings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot"><i class="ti ti-eye"></i><div><b>The default never lies by omission</b> — it shows the real external sources and the honest composition bar. The full weighting + "external-heavy now" explanation lives one tap away, so the page stays clean for the 95% who just want the number.</div></div>
+</div>
+
+<!-- MOBILE -->
+<div class="block">
+  <div class="block-label">Mobile detail</div>
+  <h2 class="block-title">Same idea, sized for the phone</h2>
+  <div class="layouts">
+    <div class="phone">
+      <div class="phone-pad">
+        <div class="m-type">TV Show</div>
+        <div class="m-title">Avatar: The Last Airbender</div>
+        <div class="m-meta">2005 · 61 episodes · Animation · Action</div>
+        <div class="m-hero">
+          <div class="m-hero-top">
+            <div class="m-hero-num"><span class="cs-mark">CrossShelf</span><span class="cs-num">8.8</span><span class="cs-slash">/10</span></div>
+            <div class="m-hero-detail">
+              <div class="comp-bar"><div class="comp-seg seg-ext" style="width:100%;"></div></div>
+              <div class="comp-legend"><span><span class="sw sw-ext"></span>External <span class="pct">100%</span></span></div>
+            </div>
+          </div>
+          <div class="goes-into-label">What goes into this</div>
+          <div class="goes-into">
+            <div class="gi-pill"><b>IMDb</b> 8.8/10</div>
+          </div>
+          <div class="expand-row"><i class="ti ti-chevron-down"></i> How this score works</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div class="phone-pad">
+        <div class="stage-label stage-expanded" style="margin-bottom:8px;">↓ Expanded</div>
+        <div class="m-type">TV Show</div>
+        <div class="m-title">Avatar: The Last Airbender</div>
+        <div class="m-meta">2005 · 61 episodes</div>
+        <div class="m-hero">
+          <div class="m-hero-top">
+            <div class="m-hero-num"><span class="cs-mark">CrossShelf</span><span class="cs-num">8.8</span><span class="cs-slash">/10</span></div>
+            <div class="m-hero-detail">
+              <div class="comp-bar"><div class="comp-seg seg-ext" style="width:100%;"></div></div>
+              <div class="comp-legend"><span><span class="sw sw-ext"></span>External <span class="pct">100%</span></span></div>
+            </div>
+          </div>
+          <div class="goes-into-label">What goes into this</div>
+          <div class="goes-into">
+            <div class="gi-pill"><b>IMDb</b> 8.8/10</div>
+            <div class="gi-pill pending">Community · 10+</div>
+            <div class="gi-pill pending">Recommend · 5+</div>
+          </div>
+          <div class="expanded">
+            <div class="exp-line">Built entirely from external critics right now. Community &amp; recommend activate as ratings come in.</div>
+            <div class="weights">
+              <div class="weight"><span class="wn ext">50%</span>External</div>
+              <div class="weight"><span class="wn com">35%</span>Community</div>
+              <div class="weight"><span class="wn rec">15%</span>Recommend</div>
+            </div>
+            <div class="dist"><div class="dist-label">Distribution</div><div class="dist-empty">Opens at 10 ratings</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARDS (carry-over, condensed) -->
+<div class="block">
+  <div class="block-label">Cards — unchanged from v1</div>
+  <h2 class="block-title">CrossShelf Score + your rating, distinct</h2>
+  <p class="block-sub">Teal row = the item's CrossShelf Score. Gold corner + "You" tag = your own rating. Comics → dash. (Cards keep the simple fill bar — the composition bar is a detail-page element where there's room for it.)</p>
+  <div class="cards-row">
+    <div class="card">
+      <div class="card-cover" style="background:linear-gradient(160deg,#2a2418,#0a0a0f);">
+        <div class="card-type tp-movie">Movie</div>
+        <div class="your-rating"><i class="ti ti-star-filled star"></i><span class="yr-num">5</span><span class="yr-tag">You</span></div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">LOTR: Fellowship</div>
+        <div class="cs-row"><span class="cs-mark">CrossShelf</span><span class="cs-num">8.4</span><span class="cs-slash">/10</span></div>
+        <div class="fill-bar"><i style="width:84%;"></i></div>
+        <div class="card-genre">Adventure · Fantasy</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-cover" style="background:linear-gradient(160deg,#3a1f1f,#0a0a0f);"><div class="card-type tp-manga">Manga</div></div>
+      <div class="card-body">
+        <div class="card-title">Chainsaw Man</div>
+        <div class="cs-row"><span class="cs-mark">CrossShelf</span><span class="cs-num">8.7</span><span class="cs-slash">/10</span></div>
+        <div class="fill-bar"><i style="width:87%;"></i></div>
+        <div class="card-genre">Action · Horror</div>
+        <div class="rate-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-cover" style="background:linear-gradient(160deg,#2a2410,#0a0a0f);"><div class="card-type tp-comic">Comic</div></div>
+      <div class="card-body">
+        <div class="card-title">Invincible, Vol. 1</div>
+        <div class="cs-row"><span class="cs-mark">CrossShelf</span><span class="cs-dash">—</span></div>
+        <div class="fill-bar"></div>
+        <div class="card-genre">Superhero</div>
+        <div class="rate-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
