@@ -1,71 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useSession } from "@/lib/supabase/use-session";
 import Link from "next/link";
 import type { Item, RecTag as RecTagType } from "@/lib/data";
-import { scorePassesThreshold } from "@/lib/score-thresholds";
 import { useRatings } from "@/lib/ratings-context";
 import { useLibrary, isOngoing, type LibraryStatus } from "@/lib/library-context";
 import { useIsMobile } from "@/lib/use-is-mobile";
 import Stars from "./stars";
 
-interface ScoreData {
-  source: string;
-  score: number;
-  maxScore: number;
-  scoreType: string;
-  label: string;
-}
-
-interface AggregateData {
-  avg: string;
-  count: number;
-  dist: [number, number, number, number, number];
-  recPct: number;
-}
-
-const SOURCE_META: Record<string, { displayName: string; suffix: string; max: number }> = {
-  tmdb:              { displayName: "TMDB",         suffix: "/10",  max: 10  },
-  igdb:              { displayName: "IGDB",         suffix: "/100", max: 100 },
-  igdb_critics:      { displayName: "IGDB Critics", suffix: "/100", max: 100 },
-  google_books:      { displayName: "Google Books", suffix: "/10",  max: 10  },
-  spotify_popularity:{ displayName: "Spotify",      suffix: "/100", max: 100 },
-  imdb:              { displayName: "IMDb",         suffix: "/10",  max: 10  },
-  rt_critics:        { displayName: "RT Critics",   suffix: "%",    max: 100 },
-  rt_audience:       { displayName: "RT Audience",  suffix: "%",    max: 100 },
-  metacritic:        { displayName: "Metacritic",   suffix: "/100", max: 100 },
-  mal:               { displayName: "MAL",          suffix: "/10",  max: 10  },
-  anilist:           { displayName: "AniList",      suffix: "/100", max: 100 },
-  ign:               { displayName: "IGN",          suffix: "/10",  max: 10  },
-  pitchfork:         { displayName: "Pitchfork",    suffix: "/10",  max: 10  },
-  steam:             { displayName: "Steam",        suffix: "%",    max: 100 },
-  letterboxd:        { displayName: "Letterboxd",   suffix: "/5",   max: 5   },
-  storygraph:        { displayName: "StoryGraph",   suffix: "/5",   max: 5   },
-  rym:               { displayName: "RYM",          suffix: "/5",   max: 5   },
-  aoty:              { displayName: "AOTY",         suffix: "/100", max: 100 },
-  opencritic:        { displayName: "OpenCritic",   suffix: "/100", max: 100 },
-};
-
-// Only hide the raw IGDB user score (too similar to the blended igdb score)
-const HIDDEN_SOURCES = new Set(["igdb_user"]);
-
-function sColor(score: number, maxScore: number): string {
-  const pct = score / maxScore;
-  if (pct >= 0.75) return "#2EC4B6";
-  if (pct >= 0.5) return "#F9A620";
-  return "#E84855";
-}
-
-function steamLabelStyle(label: string): { bg: string; border: string; color: string } {
-  if (label === "Overwhelmingly Positive") return { bg: "rgba(46,196,182,0.1)", border: "rgba(46,196,182,0.2)", color: "#2EC4B6" };
-  if (label === "Very Positive")           return { bg: "rgba(46,196,182,0.08)", border: "rgba(46,196,182,0.15)", color: "#2EC4B6" };
-  if (label === "Mostly Positive" || label === "Positive") return { bg: "rgba(46,196,182,0.06)", border: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.8)" };
-  if (label === "Mixed")                   return { bg: "rgba(249,166,32,0.08)", border: "rgba(249,166,32,0.15)", color: "#F9A620" };
-  if (label === "Mostly Negative" || label === "Negative") return { bg: "rgba(232,72,85,0.08)", border: "rgba(232,72,85,0.15)", color: "#E84855" };
-  if (label === "Very Negative" || label === "Overwhelmingly Negative") return { bg: "rgba(232,72,85,0.1)", border: "rgba(232,72,85,0.2)", color: "#E84855" };
-  return { bg: "rgba(255,255,255,0.04)", border: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" };
-}
+/**
+ * ItemSubBanner — desktop rating + track controls for the item detail page.
+ *
+ * Score DISPLAY now lives in <CrossShelfHero> (the CrossShelf Score, its
+ * composition bar, and the "what goes into this" external pills). This banner
+ * is purely the user's rating/recommend/track actions; the old external-score
+ * pills + mislabeled "CrossShelf" community pill that lived here were removed
+ * when the hero became the single, honest score surface.
+ *
+ * Desktop-only: on mobile the smart-hide MobileItemActionBar owns rate/track.
+ */
 
 const REC_OPTIONS: { key: RecTagType; label: string; icon: string; color: string }[] = [
   { key: "recommend", label: "Recommend", icon: "👍", color: "#2EC4B6" },
@@ -86,319 +39,121 @@ interface SubBannerProps {
   heroColor?: string;
 }
 
-export default function ItemSubBanner({ item, typeColor, heroColor }: SubBannerProps) {
-  // Desktop-only: on mobile (<=640px) the MobileItemTop cluster renders the
-  // score row / contributing pills / distribution / rating + status, so this
-  // bundled banner is gated out — and crucially its aggregate/scores fetch is
-  // skipped (below) so /api/items/[id]/aggregate is fetched exactly once.
+export default function ItemSubBanner({ item }: SubBannerProps) {
+  // Desktop-only: on mobile (<=640px) MobileItemActionBar owns rate/track.
   const isMobile = useIsMobile();
   const { data: session } = useSession();
   const { ratings, recTags, rate, setRecTag } = useRatings();
   const { entries, setStatus } = useLibrary();
-  const [scores, setScores] = useState<ScoreData[]>([]);
-  const [agg, setAgg] = useState<AggregateData | null>(null);
-  const [loaded, setLoaded] = useState(false);
-  const [showAllScores, setShowAllScores] = useState(false);
 
   const currentRating = ratings[item.id] || 0;
   const currentRec = recTags[item.id] ?? null;
   const entry = entries[item.id];
   const currentStatus = entry?.status ?? null;
   const ongoing = isOngoing(item.type);
-  const rgb = hexToRgb(heroColor || typeColor);
 
-  useEffect(() => {
-    if (isMobile) return; // MobileItemTop owns the fetch on mobile
-    // Defer one macrotask so useIsMobile's post-hydration correction lands
-    // first: on mobile the SSR default (false) would otherwise fire a stray
-    // fetch before the store settles to true. The cleanup cancels that stray
-    // timer when isMobile flips, so the aggregate is fetched exactly once.
-    const timer = setTimeout(() => {
-      Promise.all([
-        fetch(`/api/scores?itemId=${item.id}`).then((r) => r.json()).catch(() => []),
-        fetch(`/api/items/${item.id}/aggregate`).then((r) => r.json()).catch(() => null),
-      ]).then(([scoreData, aggData]) => {
-        const dbScores = Array.isArray(scoreData) ? scoreData.filter((s: ScoreData) => !HIDDEN_SOURCES.has(s.source)) : [];
-        setScores(dbScores);
-        setAgg(aggData?.count > 0 ? aggData : null);
-        setLoaded(true);
-      });
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [item.id, isMobile]);
-
-  // Gate the whole banner out on mobile (after hooks, per rules of hooks).
   if (isMobile) return null;
-
-  const voteCount = item.voteCount ?? 0;
-  const ext = (item.ext || {}) as Record<string, any>;
-
-  // Apply threshold filtering: hide scores with insufficient vote counts
-  const filterByThreshold = (s: ScoreData) =>
-    scorePassesThreshold(s.source, ext, voteCount);
-
-  // Fallback to ext JSON if no DB scores
-  const displayScores: ScoreData[] = scores.length > 0
-    ? scores.filter(filterByThreshold)
-    : (() => {
-        if (!loaded) return [];
-        const entries = Object.entries(ext) as [string, any][];
-        return entries
-          .filter(([source, value]) =>
-            !HIDDEN_SOURCES.has(source) &&
-            typeof value === "number" &&
-            SOURCE_META[source] !== undefined &&
-            scorePassesThreshold(source, ext, voteCount)
-          )
-          .map(([source, value]) => {
-            const meta = SOURCE_META[source]!;
-            const scoreType = source.includes("critic") ? "critics"
-              : source === "spotify_popularity" ? "popularity"
-              : "community";
-            return { source, score: value, maxScore: meta.max, scoreType, label: "" };
-          });
-      })();
-
-  const statusButtons = ALL_STATUSES;
 
   return (
     <div className="item-sub-banner-layout" style={{
       padding: "10px 0",
       display: "flex",
       alignItems: "center",
-      gap: 12,
+      gap: 10,
       flexWrap: "wrap",
     }}>
-      {/* Left — scores (external + community) */}
-      <div style={{ flex: 1, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", minWidth: 0 }}>
-        {loaded && displayScores.length === 0 && !agg && (
-          <div style={{
-            fontSize: 10,
-            color: "rgba(255,255,255,0.25)",
-            fontStyle: "italic",
-            padding: "4px 0",
-          }}>
-            No external scores yet
-          </div>
-        )}
-        {(showAllScores ? displayScores : displayScores.slice(0, 3)).map((s) => {
-          // Steam: text label badge — "Steam · Overwhelmingly Positive"
-          if (s.source === "steam") {
-            const label = s.label || (ext as any).steam_label || "";
-            if (!label) return null;
-            const sls = steamLabelStyle(label);
-            return (
-              <div key="steam" style={{
-                background: sls.bg,
-                border: `0.5px solid ${sls.border}`,
-                borderRadius: 6,
-                padding: "5px 10px",
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-                flexShrink: 0,
-              }}>
-                <span style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                  Steam
-                </span>
-                <span style={{ fontSize: 9, color: sls.color, fontWeight: 600 }}>
-                  {label}
-                </span>
-              </div>
-            );
-          }
+      {session?.user ? (
+        <>
+          {/* Stars */}
+          <Stars rating={currentRating} onRate={(s) => rate(item.id, s)} size={16} />
 
-          // All other sources: numeric badge
-          const meta = SOURCE_META[s.source] || { displayName: s.source, suffix: "", max: s.maxScore };
-          const color = sColor(s.score, s.maxScore);
-          const scoreStr = s.maxScore <= 5 ? s.score.toFixed(1)
-            : s.maxScore <= 10 ? s.score.toFixed(1)
-            : Math.round(s.score).toString();
-
-          return (
-            <div key={s.source} style={{
-              background: `rgba(${rgb}, 0.06)`,
-              border: `0.5px solid rgba(${rgb}, 0.12)`,
-              borderRadius: 6,
-              padding: "5px 12px",
-              textAlign: "center",
-            }}>
-              <div style={{ fontSize: 16, fontWeight: 500, color, lineHeight: 1.2 }}>
-                {scoreStr}
-                <span style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", fontWeight: 400 }}>
-                  {meta.suffix}
-                </span>
-              </div>
-              <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1 }}>
-                {meta.displayName}
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Show all toggle when more than 3 scores */}
-        {displayScores.length > 3 && !showAllScores && (
-          <button
-            onClick={() => setShowAllScores(true)}
-            style={{
-              background: `rgba(${rgb}, 0.04)`,
-              border: `0.5px solid rgba(${rgb}, 0.10)`,
-              borderRadius: 6,
-              padding: "5px 10px",
-              color: "rgba(255,255,255,0.3)",
-              fontSize: 9,
-              cursor: "pointer",
-            }}
-          >
-            +{displayScores.length - 3} more ▾
-          </button>
-        )}
-
-        {/* CrossShelf community score */}
-        {agg && (
-          <>
-            <div style={{
-              background: `rgba(${rgb}, 0.06)`,
-              border: `0.5px solid rgba(${rgb}, 0.12)`,
-              borderRadius: 6,
-              padding: "5px 12px",
-              textAlign: "center",
-            }}>
-              <div style={{ fontSize: 16, fontWeight: 500, color: sColor(parseFloat(agg.avg), 5), lineHeight: 1.2 }}>
-                {agg.avg}
-              </div>
-              <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1 }}>
-                CrossShelf
-              </div>
-            </div>
-
-            {/* Recommend % */}
-            <div style={{
-              background: `rgba(${rgb}, 0.06)`,
-              border: `0.5px solid rgba(${rgb}, 0.12)`,
-              borderRadius: 6,
-              padding: "5px 12px",
-              textAlign: "center",
-            }}>
-              <div style={{
-                fontSize: 16,
-                fontWeight: 500,
-                color: agg.recPct >= 70 ? "#2EC4B6" : agg.recPct >= 40 ? "#F9A620" : "#E84855",
-                lineHeight: 1.2,
-              }}>
-                {agg.recPct}%
-              </div>
-              <div style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", marginTop: 1 }}>
-                Recommend
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Divider */}
-      <div style={{
-        width: 0.5,
-        height: 28,
-        background: "rgba(255,255,255,0.06)",
-        flexShrink: 0,
-      }} />
-
-      {/* Right — rating + track */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, flexWrap: "wrap" }}>
-        {session?.user ? (
-          <>
-            {/* Stars */}
-            <Stars rating={currentRating} onRate={(s) => rate(item.id, s)} size={16} />
-
-            {/* Rec tags — show after rating */}
-            {currentRating > 0 && (
-              <div style={{ display: "flex", gap: 4 }}>
-                {REC_OPTIONS.map((o) => {
-                  const active = currentRec === o.key;
-                  return (
-                    <button
-                      key={o.key}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setRecTag(item.id, active ? null : o.key);
-                      }}
-                      style={{
-                        background: active ? o.color : "rgba(255,255,255,0.04)",
-                        color: active ? "#fff" : "rgba(255,255,255,0.3)",
-                        border: active ? "none" : "0.5px solid rgba(255,255,255,0.08)",
-                        borderRadius: 6,
-                        padding: "3px 8px",
-                        fontSize: 8,
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 3,
-                      }}
-                    >
-                      <span style={{ fontSize: 9 }}>{o.icon}</span>
-                      {o.label}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Track buttons — all 4 always visible, scrollable on narrow screens */}
-            <div style={{
-              display: "flex",
-              gap: 4,
-              overflowX: "auto",
-              WebkitOverflowScrolling: "touch" as any,
-              scrollbarWidth: "none" as any,
-              msOverflowStyle: "none" as any,
-            }}>
-              {statusButtons.map((s) => {
-                const active = currentStatus === s.key;
-                const label = s.key === "completed" && ongoing ? "Caught Up" : s.label;
+          {/* Rec tags — show after rating */}
+          {currentRating > 0 && (
+            <div style={{ display: "flex", gap: 4 }}>
+              {REC_OPTIONS.map((o) => {
+                const active = currentRec === o.key;
                 return (
                   <button
-                    key={s.key}
-                    onClick={() => setStatus(item.id, active ? null : s.key)}
+                    key={o.key}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRecTag(item.id, active ? null : o.key);
+                    }}
                     style={{
+                      background: active ? o.color : "rgba(255,255,255,0.04)",
+                      color: active ? "#fff" : "rgba(255,255,255,0.3)",
+                      border: active ? "none" : "0.5px solid rgba(255,255,255,0.08)",
+                      borderRadius: 6,
+                      padding: "3px 8px",
+                      fontSize: 8,
+                      fontWeight: 600,
+                      cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
                       gap: 3,
-                      padding: "6px 10px",
-                      borderRadius: 6,
-                      border: active ? `0.5px solid rgba(${hexToRgb(s.color)}, 0.25)` : "0.5px solid rgba(255,255,255,0.08)",
-                      background: active ? `rgba(${hexToRgb(s.color)}, 0.15)` : "rgba(255,255,255,0.04)",
-                      color: active ? s.color : "rgba(255,255,255,0.3)",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                      minHeight: 32,
                     }}
                   >
-                    <span style={{ fontSize: 8 }}>{s.icon}</span>
-                    {label}
+                    <span style={{ fontSize: 9 }}>{o.icon}</span>
+                    {o.label}
                   </button>
                 );
               })}
             </div>
-          </>
-        ) : (
-          <Link href="/login" style={{
-            padding: "4px 12px",
-            borderRadius: 6,
-            background: "#E84855",
-            color: "#fff",
-            fontSize: 10,
-            fontWeight: 700,
-            textDecoration: "none",
+          )}
+
+          {/* Track buttons — all 4 always visible, scrollable on narrow screens */}
+          <div style={{
+            display: "flex",
+            gap: 4,
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch" as any,
+            scrollbarWidth: "none" as any,
+            msOverflowStyle: "none" as any,
           }}>
-            Sign in to rate
-          </Link>
-        )}
-      </div>
+            {ALL_STATUSES.map((s) => {
+              const active = currentStatus === s.key;
+              const label = s.key === "completed" && ongoing ? "Caught Up" : s.label;
+              return (
+                <button
+                  key={s.key}
+                  onClick={() => setStatus(item.id, active ? null : s.key)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3,
+                    padding: "6px 10px",
+                    borderRadius: 6,
+                    border: active ? `0.5px solid rgba(${hexToRgb(s.color)}, 0.25)` : "0.5px solid rgba(255,255,255,0.08)",
+                    background: active ? `rgba(${hexToRgb(s.color)}, 0.15)` : "rgba(255,255,255,0.04)",
+                    color: active ? s.color : "rgba(255,255,255,0.3)",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    minHeight: 32,
+                  }}
+                >
+                  <span style={{ fontSize: 8 }}>{s.icon}</span>
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <Link href="/login" style={{
+          padding: "4px 12px",
+          borderRadius: 6,
+          background: "#E84855",
+          color: "#fff",
+          fontSize: 10,
+          fontWeight: 700,
+          textDecoration: "none",
+        }}>
+          Sign in to rate
+        </Link>
+      )}
     </div>
   );
 }

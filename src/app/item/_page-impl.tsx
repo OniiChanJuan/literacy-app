@@ -17,6 +17,7 @@ import FranchiseUniverse from "@/components/franchise-universe";
 import AwardBadges from "@/components/award-badges";
 import DlcSection, { DlcBadge } from "@/components/dlc-section";
 import ItemSubBanner from "@/components/item-sub-banner";
+import CrossShelfHero from "@/components/crossshelf-hero";
 import ErrorBoundary from "@/components/error-boundary";
 import { getTopTags, getTagDisplayName } from "@/lib/tags";
 import TagSuggest from "@/components/tag-suggest";
@@ -42,6 +43,9 @@ export function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null
     platforms: (dbItem.platforms as any[] | null) ?? [],
     ext: (dbItem.ext as Record<string, number> | null) ?? {},
     totalEp: dbItem.totalEp ?? 0,
+    // Real external sample size — the CrossShelf Score's external leg gates
+    // community sources (tmdb/mal/google_books) on this via scorePassesThreshold.
+    voteCount: dbItem.voteCount ?? 0,
     tmdbId: dbItem.tmdbId ?? undefined,
     primaryColor: dbItem.primaryColor || null,
     secondaryColor: dbItem.secondaryColor || null,
@@ -462,7 +466,13 @@ export function ItemPageRender({
           borderTop: `1px solid rgba(${heroRgb}, 0.1)`,
           borderBottom: "0.5px solid rgba(255,255,255,0.04)",
         }}>
-          <div className="content-width">
+          <div className="content-width" style={{ paddingTop: 14, paddingBottom: 4 }}>
+            {/* Desktop CrossShelf Score hero (new). Self-gates to desktop; the
+                mobile hero lives in MobileItemTop. */}
+            <ErrorBoundary>
+              <CrossShelfHero item={item} variant="desktop" />
+            </ErrorBoundary>
+            {/* Rating + track controls (scores moved into the hero above). */}
             <ErrorBoundary>
               <ItemSubBanner item={item} typeColor={t.color} heroColor={primaryColor || t.color} />
             </ErrorBoundary>

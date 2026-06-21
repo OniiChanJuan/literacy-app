@@ -19,12 +19,11 @@
  *
  * Sections are added per-commit (Phase 3b): this commit ships header + hero.
  */
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TYPES, hexToRgba, type Item, type Person } from "@/lib/data";
 import { useIsMobile } from "@/lib/use-is-mobile";
-import { getBestExtScore, formatExtScores } from "@/lib/format-ext-score";
+import CrossShelfHero from "./crossshelf-hero";
 import { useItemFranchise } from "@/lib/use-item-franchise";
 import { useRatings } from "@/lib/ratings-context";
 import { useLibrary, type LibraryStatus } from "@/lib/library-context";
@@ -34,14 +33,6 @@ import { ExpandableText } from "./expandable-text";
 const STATUS_LABEL: Record<LibraryStatus, string> = {
   completed: "Completed", in_progress: "In progress", want_to: "Want to", dropped: "Dropped",
 };
-
-interface AggregateData {
-  avg: string;
-  count: number;
-  dist: [number, number, number, number, number];
-  recPct: number;
-  recCount?: number;
-}
 
 const CREATOR_ROLES = ["Director", "Author", "Creator", "Developer", "Artist", "Musician", "Host"];
 
@@ -69,21 +60,12 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
   const router = useRouter();
   const { ratings } = useRatings();
   const { entries } = useLibrary();
-  const [agg, setAgg] = useState<AggregateData | null>(null);
-  const [pillsExpanded, setPillsExpanded] = useState(false);
-
-  // Mobile-only fetch. The component renders null on desktop, but its hooks
-  // still execute there — so guard the effect on isMobile so the aggregate is
-  // fetched exactly once (ItemSubBanner skips its fetch on mobile in turn).
-  useEffect(() => {
-    if (!isMobile || typeof item.id !== "number") return;
-    let cancelled = false;
-    fetch(`/api/items/${item.id}/aggregate`)
-      .then((r) => r.json())
-      .then((d) => { if (!cancelled) setAgg(d); })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, [isMobile, item.id]);
+  // ── Franchise/series strip — DB-backed (same shared hook as the desktop
+  // FranchiseBadge), linking the numeric /franchise/[id] route. Called BEFORE
+  // the isMobile early-return so hook order stays stable across the
+  // useIsMobile false→true post-hydration correction (a hook after the return
+  // changes the hook count and trips the error boundary).
+  const franchise = useItemFranchise(typeof item.id === "number" ? item.id : undefined);
 
   if (!isMobile) return null;
 
@@ -93,43 +75,6 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
   const len = lengthLabel(item);
   const metaLine1 = [item.year || null, len].filter(Boolean).join(" · ");
   const genres = (item.genre || []).slice(0, 3).join(" · ");
-
-  // ── CrossShelf score (deferred contents: current 0-5 number, NO wordmark,
-  // NO /10, NO "blended from N" text — those land in the CrossShelf Score
-  // session). Number derives from the best external score (same as cards),
-  // falling back to the community average. Treatment is teal when the blend
-  // is robust (>=10 community ratings AND >=1 external score), else neutral. */
-  // Detail page shows the external score(s) transparently — bypass the
-  // voteCount display gate (that gate exists to stop low-sample community
-  // scores inflating cards/ranking; on the detail page we surface what the
-  // sources actually say, e.g. a sparse book's lone Goodreads score). The
-  // teal-vs-neutral treatment below still requires >=10 community ratings.
-  const EXT_SHOW_ALL = Number.MAX_SAFE_INTEGER;
-  const best = getBestExtScore(item.ext, EXT_SHOW_ALL);
-  const extNorm10 = best && best.kind === "numeric" ? (best.value / best.max) * 10 : null;
-  const hasExternal = extNorm10 != null;
-  const ratingCount = agg?.count ?? 0;
-  const score05 = hasExternal
-    ? Math.min(5, extNorm10! * 0.55)
-    : (ratingCount > 0 ? parseFloat(agg!.avg) : null);
-  const robust = ratingCount >= 10 && hasExternal;
-
-  // ── Franchise/series strip — DB-backed (same shared hook as the desktop
-  // FranchiseBadge), linking the numeric /franchise/[id] route. Renders for
-  // any item in a DB franchise; hidden for standalone items.
-  const franchise = useItemFranchise(typeof item.id === "number" ? item.id : undefined);
-
-  // ── Contributing scores ("What goes into this") — external scores from
-  // item.ext, plus Community (>=10 ratings) and Recommend% (>=5 recommend
-  // tags). Cap 3 visible + a "+N more" expander. */
-  type Pill = { source: string; value: string };
-  const extPills: Pill[] = formatExtScores(item.ext, EXT_SHOW_ALL)
-    .map((s) => ({ source: s.label, value: s.valueStr + (s.suffix || "") }));
-  const contribPills: Pill[] = [...extPills];
-  if (ratingCount >= 10) contribPills.push({ source: "Community", value: agg!.avg });
-  if ((agg?.recCount ?? 0) >= 5) contribPills.push({ source: "Recommend", value: `${agg!.recPct}%` });
-  const visiblePills = pillsExpanded ? contribPills : contribPills.slice(0, 3);
-  const hiddenPillCount = contribPills.length - visiblePills.length;
 
   // ── Your activity vs Rate prompt — engaged = rated and/or has a library
   // status (gold card); otherwise the dashed-teal Rate prompt. */
@@ -168,22 +113,12 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
         </div>
       </div>
 
-      {/* CrossShelf score row — teal-tinted (robust) vs neutral (thin) */}
-      {score05 != null && (
-        <div
-          className="mid-score"
-          style={robust
-            ? { background: "rgba(46,196,182,0.05)", border: "1px solid rgba(46,196,182,0.15)" }
-            : { background: "rgba(255,255,255,0.02)", border: "1px solid rgba(232,230,225,0.08)" }}
-        >
-          <div className="mid-score-num">{score05.toFixed(1)}</div>
-          <div className="mid-score-right">
-            <div className="mid-score-bar">
-              <div className="mid-score-bar-fill" style={{ width: `${Math.min(100, Math.max(0, (score05 / 5) * 100))}%` }} />
-            </div>
-          </div>
-        </div>
-      )}
+      {/* CrossShelf Score hero (mobile variant) — score + composition bar +
+          "what goes into this" pills + progressive disclosure (weights +
+          distribution). Replaces the old fabricated 0–5 proxy. */}
+      <div className="mid-hero-wrap">
+        <CrossShelfHero item={item} variant="mobile" />
+      </div>
 
       {/* Franchise / series strip — hidden for standalone items */}
       {franchise && (
@@ -204,47 +139,6 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
           </div>
           <span className="mid-franchise-chev" aria-hidden>›</span>
         </Link>
-      )}
-
-      {/* Contributing scores — cap 3 + "+N more" expander */}
-      {contribPills.length > 0 && (
-        <div className="mid-contrib">
-          <div className="mid-contrib-label">What goes into this</div>
-          <div className="mid-contrib-grid">
-            {visiblePills.map((p) => (
-              <span key={p.source} className="mid-contrib-pill">
-                <span className="mid-contrib-src">{p.source}</span>
-                <span className="mid-contrib-val">{p.value}</span>
-              </span>
-            ))}
-            {hiddenPillCount > 0 && (
-              <button className="mid-contrib-more" onClick={() => setPillsExpanded(true)}>
-                + {hiddenPillCount} more
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Rating distribution — only with >=10 community ratings (empty bars
-          below threshold would mislead). */}
-      {ratingCount >= 10 && agg && (
-        <div className="mid-dist">
-          <div className="mid-dist-header">
-            <span className="mid-dist-title">How others rated it</span>
-            <span className="mid-dist-count">{agg.count} ratings</span>
-          </div>
-          {[5, 4, 3, 2, 1].map((star) => {
-            const pct = agg.count > 0 ? Math.round((agg.dist[star - 1] / agg.count) * 100) : 0;
-            return (
-              <div key={star} className="mid-dist-row">
-                <span className="mid-dist-stars">{"★".repeat(star)}</span>
-                <span className="mid-dist-bar"><span className="mid-dist-bar-fill" style={{ width: `${pct}%` }} /></span>
-                <span className="mid-dist-pct">{pct}%</span>
-              </div>
-            );
-          })}
-        </div>
       )}
 
       {/* Your activity (engaged) vs Rate prompt (not engaged) */}
@@ -343,23 +237,7 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
           .mid-creator { font-size: 12px; color: rgba(232,230,225,0.65); margin-bottom: 6px; }
           .mid-meta-info { font-size: 11px; color: rgba(232,230,225,0.45); line-height: 1.5; }
 
-          .mid-score {
-            margin: 4px 16px 0; padding: 14px 16px; border-radius: 8px;
-            display: flex; align-items: center; gap: 16px;
-          }
-          .mid-score-num {
-            font-family: var(--font-serif); font-size: 36px; font-weight: 500;
-            color: #e8e6e1; line-height: 1; flex-shrink: 0;
-          }
-          .mid-score-right { flex: 1; }
-          .mid-score-bar {
-            height: 6px; background: rgba(255,255,255,0.08);
-            border-radius: 3px; position: relative;
-          }
-          .mid-score-bar-fill {
-            position: absolute; left: 0; top: 0; height: 100%;
-            background: #2EC4B6; border-radius: 3px;
-          }
+          .mid-hero-wrap { padding: 4px 16px 0; }
 
           .mid-franchise {
             display: flex; align-items: center; gap: 10px;
@@ -383,34 +261,6 @@ export default function MobileItemTop({ item, routeId }: { item: Item; routeId: 
           }
           .mid-franchise-pos { font-size: 10px; color: rgba(232,230,225,0.45); margin-top: 2px; }
           .mid-franchise-chev { font-size: 20px; color: rgba(232,230,225,0.45); flex-shrink: 0; line-height: 1; }
-
-          .mid-contrib { padding: 12px 16px 0; }
-          .mid-contrib-label {
-            font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
-            color: rgba(232,230,225,0.45); margin-bottom: 8px;
-          }
-          .mid-contrib-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-          .mid-contrib-pill {
-            padding: 4px 8px; background: rgba(255,255,255,0.04);
-            border-radius: 4px; font-size: 11px;
-          }
-          .mid-contrib-src { color: rgba(232,230,225,0.45); margin-right: 4px; font-size: 10px; }
-          .mid-contrib-val { color: #e8e6e1; font-weight: 500; }
-          .mid-contrib-more {
-            padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;
-            background: rgba(46,196,182,0.08); color: #2EC4B6;
-            border: 1px solid rgba(46,196,182,0.2);
-          }
-
-          .mid-dist { padding: 20px 16px 0; }
-          .mid-dist-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
-          .mid-dist-title { font-family: var(--font-serif); font-size: 14px; font-weight: 500; color: #e8e6e1; }
-          .mid-dist-count { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(232,230,225,0.45); }
-          .mid-dist-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-          .mid-dist-stars { width: 60px; font-size: 10px; color: rgba(232,230,225,0.55); white-space: nowrap; }
-          .mid-dist-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; position: relative; }
-          .mid-dist-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(46,196,182,0.6); border-radius: 3px; }
-          .mid-dist-pct { width: 32px; text-align: right; font-size: 10px; color: rgba(232,230,225,0.55); }
 
           .mid-activity {
             margin: 18px 16px 0; padding: 12px 14px;
