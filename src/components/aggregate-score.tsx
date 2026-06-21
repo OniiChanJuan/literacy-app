@@ -1,151 +1,73 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { scoreColor } from "@/lib/score-utils";
+/**
+ * RatingDistribution — the community rating-distribution bars (5★→1★), gold
+ * fill, shown inside the CrossShelf Score hero's "How this score works" panel.
+ *
+ * Honest gate: only renders bars at >=10 community ratings. Below that it shows
+ * an explicit "Opens at 10 community ratings" empty state — never empty bars,
+ * which would imply a distribution that isn't statistically there yet.
+ *
+ * Presentational only: the hero already fetched the aggregate, so dist + count
+ * are passed in (no second fetch). This file previously held dead ScoreBadge /
+ * AggregateScorePanel exports (imported nowhere); it's now the single home of
+ * the distribution UI per the locked CrossShelf Score design.
+ */
 
-interface AggregateData {
-  avg: string;
-  count: number;
+export const DISTRIBUTION_MIN_RATINGS = 10;
+
+const GOLD = "#DAA520";
+
+export function RatingDistribution({
+  dist,
+  count,
+}: {
   dist: [number, number, number, number, number];
-  recPct: number;
-}
-
-// ── Compact: for cards ──────────────────────────────────────────────────
-export function ScoreBadge({ itemId }: { itemId: number }) {
-  const [agg, setAgg] = useState<AggregateData | null>(null);
-
-  useEffect(() => {
-    fetch(`/api/items/${itemId}/aggregate`)
-      .then((r) => r.json())
-      .then(setAgg)
-      .catch(() => {});
-  }, [itemId]);
-
-  if (!agg || agg.count === 0) {
-    return (
-      <span style={{ fontSize: 10, color: "var(--text-faint)" }}>No ratings</span>
-    );
-  }
-
-  const avg = parseFloat(agg.avg);
-  const color = scoreColor(avg);
-
+  count: number;
+}) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-      <span style={{ fontSize: 12, fontWeight: 700, color }}>{agg.avg}</span>
-      <span style={{ fontSize: 10, color: "var(--text-faint)" }}>({agg.count})</span>
-    </div>
-  );
-}
-
-// ── Full: for detail page ───────────────────────────────────────────────
-export function AggregateScorePanel({ itemId }: { itemId: number }) {
-  const [agg, setAgg] = useState<AggregateData | null>(null);
-
-  useEffect(() => {
-    fetch(`/api/items/${itemId}/aggregate`)
-      .then((r) => r.json())
-      .then(setAgg)
-      .catch(() => {});
-  }, [itemId]);
-
-  if (!agg) {
-    return (
-      <div style={{ padding: 16, textAlign: "center", color: "var(--text-faint)", fontSize: 13 }}>
-        Loading...
+    <div style={{
+      padding: "13px 15px",
+      background: "rgba(255,255,255,0.02)",
+      border: "1px solid rgba(255,255,255,0.08)",
+      borderRadius: 10,
+      marginTop: 6,
+    }}>
+      <div style={{
+        fontSize: 9, letterSpacing: 1.5, textTransform: "uppercase",
+        color: "rgba(232,230,225,0.34)", marginBottom: 9,
+      }}>
+        Community rating distribution
       </div>
-    );
-  }
 
-  if (agg.count === 0) {
-    return (
-      <div style={{ padding: 16, textAlign: "center", color: "var(--text-faint)", fontSize: 13 }}>
-        No ratings yet. Be the first!
-      </div>
-    );
-  }
-
-  const avg = parseFloat(agg.avg);
-  const color = scoreColor(avg);
-  const maxDist = Math.max(...agg.dist, 1);
-  const recEmoji = agg.recPct >= 70 ? "👍" : agg.recPct >= 40 ? "🤷" : "👎";
-  const recColor = agg.recPct >= 70 ? "var(--score-good)" : agg.recPct >= 40 ? "var(--score-mid)" : "var(--score-poor)";
-
-  return (
-    <div>
-      {/* Score + Recommend side by side */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
-        {/* CrossShelf score */}
+      {count < DISTRIBUTION_MIN_RATINGS ? (
         <div style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-          padding: "16px 18px",
-          background: "var(--surface-1)",
-          borderRadius: 14,
-          border: "1px solid var(--border)",
+          fontSize: 11, color: "rgba(232,230,225,0.34)", fontStyle: "italic",
+          textAlign: "center", padding: "5px 0",
         }}>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 32, fontWeight: 900, color, lineHeight: 1 }}>{agg.avg}</div>
-            <div style={{ fontSize: 9, color: "var(--text-faint)", marginTop: 4, textTransform: "uppercase", letterSpacing: 1 }}>
-              CrossShelf
-            </div>
-          </div>
-          <div style={{ width: 1, height: 36, background: "var(--surface-3)" }} />
-          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-            {agg.count} {agg.count === 1 ? "rating" : "ratings"}
-          </div>
+          Opens at {DISTRIBUTION_MIN_RATINGS} community ratings
         </div>
-
-        {/* Recommend percentage */}
-        <div style={{
-          minWidth: 90,
-          padding: "16px 0",
-          background: `color-mix(in srgb, ${recColor} 10%, transparent)`,
-          border: `1px solid color-mix(in srgb, ${recColor} 20%, transparent)`,
-          borderRadius: 14,
-          textAlign: "center",
-        }}>
-          <div style={{ fontSize: 16, marginBottom: 4 }}>{recEmoji}</div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: recColor, lineHeight: 1 }}>{agg.recPct}%</div>
-          <div style={{ fontSize: 8, color: "var(--text-faint)", marginTop: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>
-            Recommend
-          </div>
-        </div>
-      </div>
-
-      {/* Rating distribution bars */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-        {[5, 4, 3, 2, 1].map((star) => {
-          const count = agg.dist[star - 1];
-          const pct = (count / maxDist) * 100;
+      ) : (
+        [5, 4, 3, 2, 1].map((star) => {
+          const c = dist[star - 1] ?? 0;
+          const pct = count > 0 ? (c / count) * 100 : 0;
           return (
-            <div key={star} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 11, color: "var(--text-muted)", width: 14, textAlign: "right" }}>{star}</span>
-              <span style={{ fontSize: 10, color: "#f1c40f" }}>★</span>
+            <div key={star} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+              <span style={{ fontSize: 9, color: "rgba(232,230,225,0.6)", width: 30 }}>{star} ★</span>
               <div style={{
-                flex: 1,
-                height: 6,
-                background: "var(--surface-2)",
-                borderRadius: 3,
-                overflow: "hidden",
+                flex: 1, height: 5, background: "rgba(255,255,255,0.07)",
+                borderRadius: 3, position: "relative", overflow: "hidden",
               }}>
                 <div style={{
-                  width: `${pct}%`,
-                  height: "100%",
-                  background: color,
-                  borderRadius: 3,
-                  transition: "width 0.3s ease",
+                  position: "absolute", left: 0, top: 0, height: "100%",
+                  width: `${pct}%`, background: GOLD, borderRadius: 3,
                 }} />
               </div>
-              <span style={{ fontSize: 10, color: "var(--text-faint)", width: 16, textAlign: "right" }}>
-                {count}
-              </span>
+              <span style={{ fontSize: 10, color: "rgba(232,230,225,0.34)", width: 24, textAlign: "right" }}>{c}</span>
             </div>
           );
-        })}
-      </div>
+        })
+      )}
     </div>
   );
 }
