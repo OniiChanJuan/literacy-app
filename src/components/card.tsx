@@ -6,7 +6,7 @@ import { Item, TYPES, hexToRgba } from "@/lib/data";
 import CoverImage from "./cover-image";
 import { getItemUrl } from "@/lib/slugs";
 import { useRatings } from "@/lib/ratings-context";
-import { getBestExtScore } from "@/lib/format-ext-score";
+import CardScore from "./card-score";
 import Stars from "./stars";
 import HoverPreview from "./hover-preview";
 import { isAnime } from "@/lib/anime";
@@ -32,20 +32,6 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false, 
   const handleRate = useCallback((s: number) => {
     rate(item.id, s);
   }, [rate, item.id]);
-
-  const bestScore = getBestExtScore(item.ext, item.voteCount ?? 0);
-  // Numeric scores (IMDb, TMDB, Critic Score, etc.) feed the card's
-  // compact "X ★ | YY%" display. Steam scores are text-only so they're
-  // shown via a separate branch below.
-  const numericScore = bestScore && bestScore.kind === "numeric"
-    ? { normalized10: (bestScore.value / bestScore.max) * 10, display: `${bestScore.valueStr} ${bestScore.label}` }
-    : null;
-  const steamBest = bestScore && bestScore.kind === "steam-text" ? bestScore : null;
-
-  // CrossShelf score derived from external score until real community ratings are available
-  const literacyScore = numericScore ? Math.min(5, numericScore.normalized10 * 0.55).toFixed(1) : null;
-  const literacyScoreNum = literacyScore ? parseFloat(literacyScore) : 0;
-  const recPct = numericScore ? Math.min(99, Math.round(numericScore.normalized10 * 10.5)) : null;
 
   return (
     <HoverPreview item={item}>
@@ -164,20 +150,31 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false, 
           )}
         </div>
 
-        {/* Rating badge — top right. Owner's score on a profile, else the viewer's. */}
+        {/* Rating badge — top right. Gold = the user's own rating ("You"), kept
+            distinct from the teal CrossShelf Score by color + position. On a
+            profile it's the owner's rating (no "You" tag). */}
         {displayRating > 0 && (
           <div style={{
             position: "absolute",
             top: 4,
             right: 4,
-            background: "rgba(0,0,0,0.7)",
-            color: "#f1c40f",
+            display: "flex",
+            alignItems: "center",
+            gap: 3,
+            background: "rgba(0,0,0,0.72)",
+            border: "0.5px solid rgba(218,165,32,0.55)",
+            color: "#DAA520",
             fontSize: 10,
             fontWeight: 700,
             padding: "1px 5px",
             borderRadius: 4,
           }}>
             ★ {displayRating}
+            {!isOwnerView && (
+              <span style={{ fontSize: 6.5, letterSpacing: 0.5, textTransform: "uppercase", color: "rgba(218,165,32,0.85)" }}>
+                You
+              </span>
+            )}
           </div>
         )}
 
@@ -215,46 +212,11 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false, 
           {item.title}
         </div>
 
-        {/* Score row: number + bar + liked % (all one line) */}
-        {literacyScore ? (
-          <div style={{
-            display: "flex", alignItems: "center", gap: 5, marginBottom: 3,
-          }}>
-            <span style={{
-              fontSize: 12, fontWeight: 700, color: "#2EC4B6", lineHeight: 1, flexShrink: 0,
-            }}>
-              {literacyScore}
-            </span>
-            <div style={{
-              flex: 1, minWidth: 0,
-              height: 3, background: "rgba(255,255,255,0.05)",
-              borderRadius: 2, overflow: "hidden",
-            }}>
-              <div style={{
-                width: `${Math.min(100, Math.max(0, (literacyScoreNum / 5) * 100))}%`,
-                height: "100%", background: "#2EC4B6", borderRadius: 2,
-              }} />
-            </div>
-            {recPct !== null && (
-              <span style={{
-                fontSize: 10, color: "rgba(232,230,225,0.25)", lineHeight: 1, flexShrink: 0,
-              }}>
-                {recPct}%
-              </span>
-            )}
-          </div>
-        ) : steamBest ? (
-          <div style={{
-            fontSize: 11, fontWeight: 700, color: steamBest.color, lineHeight: 1.2,
-            marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-          }}>
-            {steamBest.textLabel}
-          </div>
-        ) : (
-          <div style={{ fontSize: 10, color: "rgba(232,230,225,0.2)", marginBottom: 3 }}>
-            {item.year || "TBA"}
-          </div>
-        )}
+        {/* CrossShelf Score unit — wordmark + 0–10 + fill bar (dash for comics
+            / no external data). Shared with the For You grid + other surfaces. */}
+        <div style={{ marginBottom: 3 }}>
+          <CardScore item={item} numSize={12} />
+        </div>
 
         {/* Genre (always visible, not hover-gated) */}
         {item.genre && item.genre.length > 0 && (
@@ -267,8 +229,9 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false, 
           </div>
         )}
 
-        {/* Inline stars. Owner view: read-only gold stars of the owner's score
-            (omitted when unrated). Otherwise interactive — rate without navigating. */}
+        {/* Rating affordance. Owner view: read-only gold stars of the owner's
+            score. Normal view: interactive rate-stars when UNRATED — once rated,
+            the gold "You" corner badge carries the rating (per the mockup). */}
         {!routeId && (
           isOwnerView ? (
             displayRating > 0 && (
@@ -277,11 +240,13 @@ const Card = memo(function Card({ item, routeId, crossMedia, optimized = false, 
               </div>
             )
           ) : (
-            <Stars
-              rating={userRating}
-              onRate={handleRate}
-              size={9}
-            />
+            userRating === 0 && (
+              <Stars
+                rating={userRating}
+                onRate={handleRate}
+                size={9}
+              />
+            )
           )
         )}
       </div>

@@ -7,7 +7,7 @@ import { TYPES, hexToRgba } from "@/lib/data";
 import HoverPreview from "./hover-preview";
 import { getItemUrl } from "@/lib/slugs";
 import { isAnime } from "@/lib/anime";
-import { getBestExtScore } from "@/lib/format-ext-score";
+import CardScore from "./card-score";
 import { framePickedForYou } from "@/lib/section-framing";
 import { useLibrary } from "@/lib/library-context";
 
@@ -378,17 +378,8 @@ function EditorialCard({
 }) {
   const href = getItemUrl(item);
   const t = TYPES[item.type] || { color: "#888", icon: "?", label: "Unknown" };
-  const best = getBestExtScore(item.ext, item.voteCount ?? 0);
   const { entries } = useLibrary();
   const libStatus = entries[item.id]?.status;
-
-  const numeric = best && best.kind === "numeric"
-    ? { normalized10: (best.value / best.max) * 10 }
-    : null;
-  const literacyScore = numeric ? Math.min(5, numeric.normalized10 * 0.55).toFixed(1) : null;
-  const literacyNum = literacyScore ? parseFloat(literacyScore) : 0;
-  const recPct = numeric ? Math.min(99, Math.round(numeric.normalized10 * 10.5)) : null;
-  const steamBest = best && best.kind === "steam-text" ? best : null;
 
   const metaHeight = featured ? 80 : 60;
   const titleSize = featured ? 16 : 13;
@@ -478,39 +469,7 @@ function EditorialCard({
           }}>
             {item.title}
           </div>
-          {literacyScore ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#2EC4B6", lineHeight: 1 }}>
-                {literacyScore}
-              </span>
-              <div style={{
-                flex: 1, minWidth: 0, height: 3,
-                background: "rgba(255,255,255,0.05)",
-                borderRadius: 2, overflow: "hidden",
-              }}>
-                <div style={{
-                  width: `${Math.min(100, Math.max(0, (literacyNum / 5) * 100))}%`,
-                  height: "100%", background: "#2EC4B6", borderRadius: 2,
-                }} />
-              </div>
-              {recPct !== null && (
-                <span style={{ fontSize: 10, color: "rgba(232,230,225,0.25)", lineHeight: 1 }}>
-                  {recPct}%
-                </span>
-              )}
-              <StatusPill status={libStatus} />
-            </div>
-          ) : steamBest ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{
-                fontSize: 11, fontWeight: 700, color: steamBest.color,
-                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-              }}>
-                {steamBest.textLabel}
-              </span>
-              <StatusPill status={libStatus} />
-            </div>
-          ) : null}
+          <CardScore item={item} numSize={13} trailing={<StatusPill status={libStatus} />} />
           {item.genre && item.genre.length > 0 && (
             <div style={{
               fontSize: 11,
@@ -687,63 +646,8 @@ function EditorialCard({
             {item.title}
           </div>
 
-          {/* Score row */}
-          {literacyScore ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{
-                fontSize: scoreSize,
-                fontWeight: 700,
-                color: "#2EC4B6",
-                lineHeight: 1,
-              }}>
-                {literacyScore}
-              </span>
-              <div style={{
-                flex: 1,
-                minWidth: 0,
-                height: 3,
-                background: "rgba(255,255,255,0.05)",
-                borderRadius: 2,
-                overflow: "hidden",
-              }}>
-                <div style={{
-                  width: `${Math.min(100, Math.max(0, (literacyNum / 5) * 100))}%`,
-                  height: "100%",
-                  background: "#2EC4B6",
-                  borderRadius: 2,
-                }} />
-              </div>
-              {recPct !== null && (
-                <span style={{
-                  fontSize: 10,
-                  color: "rgba(232,230,225,0.25)",
-                  lineHeight: 1,
-                }}>
-                  {recPct}%
-                </span>
-              )}
-            </div>
-          ) : steamBest ? (
-            <div style={{
-              fontSize: featured ? 13 : 11,
-              fontWeight: 700,
-              color: steamBest.color,
-              lineHeight: 1.2,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>
-              {steamBest.textLabel}
-            </div>
-          ) : (
-            <div style={{
-              fontSize: scoreSize,
-              color: "rgba(232,230,225,0.2)",
-              lineHeight: 1,
-            }}>
-              —
-            </div>
-          )}
+          {/* CrossShelf Score unit */}
+          <CardScore item={item} numSize={scoreSize} />
 
           {/* Genre */}
           <div style={{
