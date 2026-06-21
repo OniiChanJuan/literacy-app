@@ -381,7 +381,14 @@ function EditorialCard({
   const { entries } = useLibrary();
   const libStatus = entries[item.id]?.status;
 
-  const metaHeight = featured ? 80 : 60;
+  // Meta block height — reserves room for the three stacked rows (title →
+  // CrossShelf score → genre). The Phase-3 CardScore is a two-line unit
+  // (number row + fill bar), taller than the old single-line score, so these
+  // were bumped from 80/60: measured natural content height is ~81px featured /
+  // ~70px regular (title + genre are nowrap = 1 line, so this is constant).
+  // The cover absorbs the change via `calc(100% - metaHeight)`, so the fixed
+  // 240px grid cell still fits — the genre no longer clips at the bottom edge.
+  const metaHeight = featured ? 84 : 72;
   const titleSize = featured ? 16 : 13;
   const scoreSize = featured ? 14 : 12;
 
