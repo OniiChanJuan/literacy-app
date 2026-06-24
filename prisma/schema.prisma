@@ -163,6 +163,9 @@ model Item {
   @@index([parentItemId])
   @@index([steamAppId])
   @@index([type, slug])
+  // pg_trgm GIN index — accelerates search's `title ILIKE '%q%'` + similarity()
+  // (created by scripts/add-title-trgm-index.ts; declared here so db push keeps it).
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin, map: "items_title_trgm_idx")
   @@map("items")
 }
 
