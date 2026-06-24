@@ -14,6 +14,7 @@ import { useScrollRestore } from "@/lib/use-scroll-restore";
 import { getItemUrl } from "@/lib/slugs";
 import { isAnime } from "@/lib/anime";
 import { getRecentSearches, saveRecentSearch, removeRecentSearch, clearRecentSearches, type RecentSearch } from "@/lib/recent-searches";
+import { mergeSearch } from "@/lib/search-merge";
 
 interface SearchResult extends Item { source: string; routeId: string; }
 
@@ -108,6 +109,7 @@ function ExploreContent() {
   const [sort, setSort] = useState<SortOption>((searchParams.get("sort") as SortOption) || "rating");
   const [searchResults, setSearchResults] = useState<any | null>(null);
   const [searching, setSearching] = useState(false);
+  const [searchingMore, setSearchingMore] = useState(false);
   const [upcoming, setUpcoming] = useState<UpcomingItem[]>([]);
   const [gridItems, setGridItems] = useState<Item[]>([]);
   const [gridLoading, setGridLoading] = useState(false);
@@ -181,16 +183,28 @@ function ExploreContent() {
     }).catch(() => {});
   }, []);
 
-  // Search — grouped results
+  // Search — two-phase: instant indexed-local, then merge the non-blocking
+  // external (live-API) follow-up.
   useEffect(() => {
-    if (!search.trim() || search.trim().length < 2) { setSearchResults(null); return; }
+    if (!search.trim() || search.trim().length < 2) { setSearchResults(null); setSearchingMore(false); return; }
     setSearching(true);
-    const t = setTimeout(() => {
-      fetch(`/api/search?q=${encodeURIComponent(search.trim())}&grouped=true`)
-        .then((r) => r.json()).then((d) => { setSearchResults(d); setSearching(false); })
-        .catch(() => { setSearchResults({ groups: {}, franchise: null, suggestions: [], totalResults: 0 }); setSearching(false); });
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const qs = encodeURIComponent(search.trim());
+      try {
+        const local = await fetch(`/api/search?q=${qs}&grouped=true&scope=local`).then((r) => r.json());
+        if (cancelled) return;
+        setSearchResults(local); setSearching(false); setSearchingMore(true);
+        const external = await fetch(`/api/search?q=${qs}&grouped=true&scope=external`).then((r) => r.json());
+        if (cancelled) return;
+        setSearchResults(mergeSearch(local, external));
+      } catch {
+        if (!cancelled) setSearchResults({ groups: {}, franchise: null, suggestions: [], totalResults: 0 });
+      } finally {
+        if (!cancelled) { setSearching(false); setSearchingMore(false); }
+      }
     }, 300);
-    return () => clearTimeout(t);
+    return () => { cancelled = true; clearTimeout(t); };
   }, [search]);
 
   // Fetch grid items — used whenever selectedType is active (with or without genre/vibe)
@@ -300,6 +314,7 @@ function ExploreContent() {
           <>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>
               {totalResults} result{totalResults !== 1 ? "s" : ""} for &ldquo;{search}&rdquo;
+              {searchingMore && <span style={{ marginLeft: 8, color: "rgba(255,255,255,0.25)" }}>· searching more sources…</span>}
             </div>
 
             {/* Franchise match */}

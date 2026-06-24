@@ -11,24 +11,7 @@ import {
   clearRecentSearches,
   type RecentSearch,
 } from "@/lib/recent-searches";
-
-interface SearchResult {
-  id: number;
-  title: string;
-  type: MediaType;
-  year?: number;
-  cover?: string;
-  routeId?: string;
-  slug?: string | null;
-  source?: string;
-}
-
-interface GroupedResults {
-  bestMatch: SearchResult | null;
-  groups: Record<string, { label: string; items: SearchResult[] }>;
-  franchise: { id: number; name: string; icon: string; itemCount: number; typeCount: number } | null;
-  totalResults: number;
-}
+import { mergeSearch, type GroupedSearch } from "@/lib/search-merge";
 
 export default function GlobalSearch() {
   const router = useRouter();
@@ -36,8 +19,9 @@ export default function GlobalSearch() {
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<GroupedResults | null>(null);
+  const [results, setResults] = useState<GroupedSearch | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -79,20 +63,34 @@ export default function GlobalSearch() {
     }
   }, [open]);
 
-  // Debounced search
+  // Debounced two-phase search: instant indexed-local results, then merge the
+  // non-blocking external (live-API) follow-up so the obscure stays reachable.
   useEffect(() => {
     if (!query.trim() || query.trim().length < 2) {
       setResults(null);
+      setLoadingMore(false);
       return;
     }
     setLoading(true);
-    const t = setTimeout(() => {
-      fetch(`/api/search?q=${encodeURIComponent(query.trim())}&grouped=true`)
-        .then((r) => r.json())
-        .then((d) => { setResults(d); setLoading(false); })
-        .catch(() => { setResults(null); setLoading(false); });
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const qs = encodeURIComponent(query.trim());
+      try {
+        const local = await fetch(`/api/search?q=${qs}&grouped=true&scope=local`).then((r) => r.json());
+        if (cancelled) return;
+        setResults(local);
+        setLoading(false);
+        setLoadingMore(true);
+        const external = await fetch(`/api/search?q=${qs}&grouped=true&scope=external`).then((r) => r.json());
+        if (cancelled) return;
+        setResults(mergeSearch(local, external));
+      } catch {
+        if (!cancelled) setResults(null);
+      } finally {
+        if (!cancelled) { setLoading(false); setLoadingMore(false); }
+      }
     }, 300);
-    return () => clearTimeout(t);
+    return () => { cancelled = true; clearTimeout(t); };
   }, [query]);
 
   const handleSubmit = useCallback((overrideQuery?: string) => {
@@ -328,7 +326,7 @@ export default function GlobalSearch() {
             </div>
           )}
 
-          {!loading && results && !hasResults && (
+          {!loading && !loadingMore && results && !hasResults && (
             <div style={{ padding: "16px", textAlign: "center" }}>
               <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 12, marginBottom: 6 }}>
                 No results for &ldquo;{query}&rdquo;
@@ -336,6 +334,14 @@ export default function GlobalSearch() {
               <div style={{ color: "rgba(255,255,255,0.2)", fontSize: 10 }}>
                 Try a different spelling or search by creator
               </div>
+            </div>
+          )}
+
+          {/* Local results are in; the live-API follow-up is still streaming. */}
+          {loadingMore && (
+            <div style={{ padding: "6px 14px", fontSize: 10, color: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", gap: 6 }}>
+              <span className="skeleton-shimmer" style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.15)" }} />
+              Searching more sources…
             </div>
           )}
 
@@ -420,7 +426,7 @@ export default function GlobalSearch() {
                       justifyContent: "center",
                       fontSize: 14,
                     }}>
-                      {TYPES[item.type]?.icon || "?"}
+                      {TYPES[item.type as MediaType]?.icon || "?"}
                     </div>
                   )}
                   <div style={{ minWidth: 0, flex: 1 }}>
@@ -444,7 +450,7 @@ export default function GlobalSearch() {
           ))}
 
           {/* See all results */}
-          {results && results.totalResults > 0 && (
+          {results && (results.totalResults ?? 0) > 0 && (
             <button
               onClick={() => handleSubmit()}
               style={{
