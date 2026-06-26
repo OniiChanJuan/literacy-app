@@ -1,0 +1,3506 @@
+{
+ "source": "Rolling Stone 500 Greatest Albums (2003), via github.com/Currie32/500-Greatest-Albums",
+ "count": 500,
+ "albums": [
+  {
+   "album": "Sgt. Pepper's Lonely Hearts Club Band",
+   "artist": "The Beatles",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Psychedelic Rock"
+  },
+  {
+   "album": "Pet Sounds",
+   "artist": "The Beach Boys",
+   "year": 1966,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Revolver",
+   "artist": "The Beatles",
+   "year": 1966,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Pop Rock"
+  },
+  {
+   "album": "Highway 61 Revisited",
+   "artist": "Bob Dylan",
+   "year": 1965,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Blues Rock"
+  },
+  {
+   "album": "Rubber Soul",
+   "artist": "The Beatles",
+   "year": 1965,
+   "genre": "Rock, Pop",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "What's Going On",
+   "artist": "Marvin Gaye",
+   "year": 1971,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Exile on Main St.",
+   "artist": "The Rolling Stones",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Rock & Roll, Classic Rock"
+  },
+  {
+   "album": "London Calling",
+   "artist": "The Clash",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "Punk, New Wave"
+  },
+  {
+   "album": "Blonde on Blonde",
+   "artist": "Bob Dylan",
+   "year": 1966,
+   "genre": "Rock, Blues",
+   "subgenre": "Folk Rock, Rhythm & Blues"
+  },
+  {
+   "album": "The Beatles (\"The White Album\")",
+   "artist": "The Beatles",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Pop Rock, Psychedelic Rock, Experimental"
+  },
+  {
+   "album": "The Sun Sessions",
+   "artist": "Elvis Presley",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll"
+  },
+  {
+   "album": "Kind of Blue",
+   "artist": "Miles Davis",
+   "year": 1959,
+   "genre": "Jazz",
+   "subgenre": "Modal"
+  },
+  {
+   "album": "The Velvet Underground & Nico",
+   "artist": "The Velvet Underground",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Garage Rock, Art Rock, Experimental"
+  },
+  {
+   "album": "Abbey Road",
+   "artist": "The Beatles",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Classic Rock, Pop Rock"
+  },
+  {
+   "album": "Are You Experienced",
+   "artist": "The Jimi Hendrix Experience",
+   "year": 1967,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Blood on the Tracks",
+   "artist": "Bob Dylan",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Acoustic, Ballad"
+  },
+  {
+   "album": "Nevermind",
+   "artist": "Nirvana",
+   "year": 1991,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Grunge"
+  },
+  {
+   "album": "Born to Run",
+   "artist": "Bruce Springsteen",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Astral Weeks",
+   "artist": "Van Morrison",
+   "year": 1968,
+   "genre": "Jazz, Rock, Blues, Folk, World, & Country",
+   "subgenre": "Acoustic, Classic Rock, Free Improvisation"
+  },
+  {
+   "album": "Thriller",
+   "artist": "Michael Jackson",
+   "year": 1982,
+   "genre": "Funk / Soul, Pop",
+   "subgenre": "Disco"
+  },
+  {
+   "album": "The Great Twenty_Eight",
+   "artist": "Chuck Berry",
+   "year": 1982,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll"
+  },
+  {
+   "album": "The Complete Recordings",
+   "artist": "Robert Johnson",
+   "year": 1990,
+   "genre": "Blues",
+   "subgenre": "Delta Blues"
+  },
+  {
+   "album": "John Lennon/Plastic Ono Band",
+   "artist": "John Lennon / Plastic Ono Band",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Innervisions",
+   "artist": "Stevie Wonder",
+   "year": 1973,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Live at the Apollo, 1962",
+   "artist": "James Brown",
+   "year": 1963,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Soul"
+  },
+  {
+   "album": "Rumours",
+   "artist": "Fleetwood Mac",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "The Joshua Tree",
+   "artist": "U2",
+   "year": 1987,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Pop Rock"
+  },
+  {
+   "album": "Who's Next",
+   "artist": "The Who",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Mod, Prog Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Led Zeppelin",
+   "artist": "Led Zeppelin",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Hard Rock"
+  },
+  {
+   "album": "Blue",
+   "artist": "Joni Mitchell",
+   "year": 1971,
+   "genre": "Pop",
+   "subgenre": "Acoustic, Ballad, Folk"
+  },
+  {
+   "album": "Bringing It All Back Home",
+   "artist": "Bob Dylan",
+   "year": 1965,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Folk Rock, Folk"
+  },
+  {
+   "album": "Let It Bleed",
+   "artist": "The Rolling Stones",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Hard Rock"
+  },
+  {
+   "album": "Ramones",
+   "artist": "Ramones",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Punk"
+  },
+  {
+   "album": "Music From Big Pink",
+   "artist": "The Band",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Acoustic, Blues Rock"
+  },
+  {
+   "album": "The Rise and Fall of Ziggy Stardust and the Spiders From Mars",
+   "artist": "David Bowie",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Classic Rock, Glam"
+  },
+  {
+   "album": "Tapestry",
+   "artist": "Carole King",
+   "year": 1971,
+   "genre": "Rock, Pop",
+   "subgenre": "Folk Rock, Soft Rock"
+  },
+  {
+   "album": "Hotel California",
+   "artist": "Eagles",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "The Anthology",
+   "artist": "Muddy Waters",
+   "year": 2001,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Folk"
+  },
+  {
+   "album": "Please Please Me",
+   "artist": "The Beatles",
+   "year": 1963,
+   "genre": "Rock",
+   "subgenre": "Beat, Rock & Roll"
+  },
+  {
+   "album": "Forever Changes",
+   "artist": "Love",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Never Mind the Bollocks Here's the Sex Pistols",
+   "artist": "Sex Pistols",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Punk"
+  },
+  {
+   "album": "The Doors",
+   "artist": "The Doors",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock"
+  },
+  {
+   "album": "The Dark Side of the Moon",
+   "artist": "Pink Floyd",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Prog Rock"
+  },
+  {
+   "album": "Horses",
+   "artist": "Patti Smith",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Art Rock"
+  },
+  {
+   "album": "The Band (\"The Brown Album\")",
+   "artist": "The Band",
+   "year": 1969,
+   "genre": "Classical, Stage & Screen",
+   "subgenre": "Soundtrack, Modern Classical, Contemporary, Score"
+  },
+  {
+   "album": "Legend: The Best of Bob Marley and The Wailers",
+   "artist": "Bob Marley & The Wailers",
+   "year": 1984,
+   "genre": "Reggae",
+   "subgenre": "Reggae, Roots Reggae"
+  },
+  {
+   "album": "A Love Supreme",
+   "artist": "John Coltrane",
+   "year": 1965,
+   "genre": "Jazz",
+   "subgenre": "Free Jazz, Hard Bop, Modal"
+  },
+  {
+   "album": "It Takes a Nation of Millions to Hold Us Back",
+   "artist": "Public Enemy",
+   "year": 1988,
+   "genre": "Hip Hop",
+   "subgenre": "Conscious"
+  },
+  {
+   "album": "At Fillmore East",
+   "artist": "The Allman Brothers Band",
+   "year": 1971,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "Here's Little Richard",
+   "artist": "Little Richard",
+   "year": 1957,
+   "genre": "Rock, Blues",
+   "subgenre": "Rock & Roll, Rhythm & Blues"
+  },
+  {
+   "album": "Bridge Over Troubled Water",
+   "artist": "Simon & Garfunkel",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Classic Rock"
+  },
+  {
+   "album": "Greatest Hits",
+   "artist": "Al Green",
+   "year": 1975,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Meet The Beatles!",
+   "artist": "The Beatles",
+   "year": 1964,
+   "genre": "Rock",
+   "subgenre": "Beat, Rock & Roll"
+  },
+  {
+   "album": "The Birth of Soul",
+   "artist": "Ray Charles",
+   "year": 1991,
+   "genre": "Jazz, Funk / Soul",
+   "subgenre": "Rhythm & Blues, Big Band, Soul, Soul-Jazz"
+  },
+  {
+   "album": "Electric Ladyland",
+   "artist": "The Jimi Hendrix Experience",
+   "year": 1968,
+   "genre": "Rock, Blues",
+   "subgenre": "Electric Blues, Psychedelic Rock"
+  },
+  {
+   "album": "Elvis Presley",
+   "artist": "Elvis Presley",
+   "year": 1956,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Rockabilly"
+  },
+  {
+   "album": "Songs in the Key of Life",
+   "artist": "Stevie Wonder",
+   "year": 1976,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul, Disco"
+  },
+  {
+   "album": "Beggars Banquet",
+   "artist": "The Rolling Stones",
+   "year": 1968,
+   "genre": "Rock, Funk / Soul, Pop",
+   "subgenre": "Blues Rock, Southern Rock, Classic Rock"
+  },
+  {
+   "album": "Chronicle: The 20 Greatest Hits",
+   "artist": "Creedence Clearwater Revival",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "None"
+  },
+  {
+   "album": "Trout Mask Replica",
+   "artist": "Captain Beefheart & His Magic Band",
+   "year": 1969,
+   "genre": "Rock, Blues",
+   "subgenre": "Dialogue, Field Recording, Avantgarde, Electric Blues, Psychedelic Rock, Experimental"
+  },
+  {
+   "album": "Greatest Hits",
+   "artist": "Sly & The Family Stone",
+   "year": 1970,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Funk"
+  },
+  {
+   "album": "Appetite for Destruction",
+   "artist": "Guns N' Roses",
+   "year": 1987,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Heavy Metal"
+  },
+  {
+   "album": "Achtung Baby",
+   "artist": "U2",
+   "year": 1991,
+   "genre": "Electronic, Rock",
+   "subgenre": "Pop Rock, Synth-pop, Alternative Rock, Arena Rock"
+  },
+  {
+   "album": "Sticky Fingers",
+   "artist": "The Rolling Stones",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "Back to Mono (1958-1969)",
+   "artist": "Phil Spector",
+   "year": 1991,
+   "genre": "Rock, Funk / Soul, Pop",
+   "subgenre": "Doo Wop, Pop Rock, Ballad, Rhythm & Blues"
+  },
+  {
+   "album": "Moondance",
+   "artist": "Van Morrison",
+   "year": 1970,
+   "genre": "Jazz, Rock, Funk / Soul, Folk, World, & Country",
+   "subgenre": "Folk Rock, Rhythm & Blues, Classic Rock, Contemporary Jazz"
+  },
+  {
+   "album": "Kid A",
+   "artist": "Radiohead",
+   "year": 2000,
+   "genre": "Electronic, Rock",
+   "subgenre": "Alternative Rock, IDM, Experimental"
+  },
+  {
+   "album": "Off the Wall",
+   "artist": "Michael Jackson",
+   "year": 1979,
+   "genre": "Funk / Soul, Pop",
+   "subgenre": "Disco, Soul, Ballad"
+  },
+  {
+   "album": "[Led Zeppelin IV]",
+   "artist": "Led Zeppelin",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Classic Rock, Blues Rock"
+  },
+  {
+   "album": "The Stranger",
+   "artist": "Billy Joel",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Graceland",
+   "artist": "Paul Simon",
+   "year": 1986,
+   "genre": "Jazz, Rock, Funk / Soul, Pop, Folk, World, & Country",
+   "subgenre": "Folk Rock, Pop Rock, African, Afrobeat, Zydeco, Funk, Rhythm & Blues"
+  },
+  {
+   "album": "Superfly",
+   "artist": "Curtis Mayfield",
+   "year": 1972,
+   "genre": "Funk / Soul, Stage & Screen",
+   "subgenre": "Soundtrack, Soul"
+  },
+  {
+   "album": "Physical Graffiti",
+   "artist": "Led Zeppelin",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "After the Gold Rush",
+   "artist": "Neil Young",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Country Rock"
+  },
+  {
+   "album": "Star Time",
+   "artist": "James Brown",
+   "year": 1991,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul, Funk, Disco"
+  },
+  {
+   "album": "Purple Rain",
+   "artist": "Prince and the Revolution",
+   "year": 1984,
+   "genre": "Electronic, Rock, Funk / Soul, Stage & Screen",
+   "subgenre": "Pop Rock, Funk, Soundtrack, Synth-pop"
+  },
+  {
+   "album": "Back in Black",
+   "artist": "AC/DC",
+   "year": 1980,
+   "genre": "Rock",
+   "subgenre": "Hard Rock"
+  },
+  {
+   "album": "Otis Blue: Otis Redding Sings Soul",
+   "artist": "Otis Redding",
+   "year": 1965,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Led Zeppelin II",
+   "artist": "Led Zeppelin",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Classic Rock, Hard Rock"
+  },
+  {
+   "album": "Imagine",
+   "artist": "John Lennon",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "The Clash",
+   "artist": "The Clash",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Punk"
+  },
+  {
+   "album": "Harvest",
+   "artist": "Neil Young",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Country Rock, Classic Rock"
+  },
+  {
+   "album": "Axis: Bold as Love",
+   "artist": "The Jimi Hendrix Experience",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Electric Blues"
+  },
+  {
+   "album": "I Never Loved a Man the Way I Love You",
+   "artist": "Aretha Franklin",
+   "year": 1967,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Lady Soul",
+   "artist": "Aretha Franklin",
+   "year": 1968,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Born in the U.S.A.",
+   "artist": "Bruce Springsteen",
+   "year": 1984,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "The Wall",
+   "artist": "Pink Floyd",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Prog Rock"
+  },
+  {
+   "album": "At Folsom Prison",
+   "artist": "Johnny Cash",
+   "year": 1968,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country"
+  },
+  {
+   "album": "Dusty in Memphis",
+   "artist": "Dusty Springfield",
+   "year": 1969,
+   "genre": "Rock, Funk / Soul",
+   "subgenre": "Pop Rock, Soul"
+  },
+  {
+   "album": "Talking Book",
+   "artist": "Stevie Wonder",
+   "year": 1972,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul, Funk"
+  },
+  {
+   "album": "Goodbye Yellow Brick Road",
+   "artist": "Elton John",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Classic Rock"
+  },
+  {
+   "album": "20 Golden Greats",
+   "artist": "Buddy Holly",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll"
+  },
+  {
+   "album": "Sign \"Peace\" the Times",
+   "artist": "Prince",
+   "year": 1987,
+   "genre": "Rock, Reggae",
+   "subgenre": "Ska, Reggae-Pop"
+  },
+  {
+   "album": "40 Greatest Hits",
+   "artist": "Hank Williams",
+   "year": 1984,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country"
+  },
+  {
+   "album": "Bitches Brew",
+   "artist": "Miles Davis",
+   "year": 1970,
+   "genre": "Jazz",
+   "subgenre": "Fusion"
+  },
+  {
+   "album": "Tommy",
+   "artist": "The Who",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock"
+  },
+  {
+   "album": "The Freewheelin' Bob Dylan",
+   "artist": "Bob Dylan",
+   "year": 1963,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Folk"
+  },
+  {
+   "album": "This Year's Model",
+   "artist": "Elvis Costello",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "New Wave"
+  },
+  {
+   "album": "There's a Riot Goin' On",
+   "artist": "Sly & The Family Stone",
+   "year": 1971,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Funk"
+  },
+  {
+   "album": "Odessey and Oracle",
+   "artist": "The Zombies",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock"
+  },
+  {
+   "album": "In the Wee Small Hours",
+   "artist": "Frank Sinatra",
+   "year": 1955,
+   "genre": "Jazz, Pop",
+   "subgenre": "Big Band, Ballad"
+  },
+  {
+   "album": "Fresh Cream",
+   "artist": "Cream",
+   "year": 1966,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock, Electric Blues"
+  },
+  {
+   "album": "Giant Steps",
+   "artist": "John Coltrane",
+   "year": 1959,
+   "genre": "Jazz",
+   "subgenre": "Hard Bop"
+  },
+  {
+   "album": "Sweet Baby James",
+   "artist": "James Taylor",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Acoustic, Soft Rock"
+  },
+  {
+   "album": "Modern Sounds in Country and Western Music",
+   "artist": "Ray Charles",
+   "year": 1962,
+   "genre": "Funk / Soul, Folk, World, & Country",
+   "subgenre": "Country, Rhythm & Blues"
+  },
+  {
+   "album": "Rocket to Russia",
+   "artist": "Ramones",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Punk"
+  },
+  {
+   "album": "Portrait of a Legend 1951-1964",
+   "artist": "Sam Cooke",
+   "year": 2003,
+   "genre": "Latin, Funk / Soul",
+   "subgenre": "Soul, Rhythm & Blues, Gospel, Cha-Cha"
+  },
+  {
+   "album": "Hunky Dory",
+   "artist": "David Bowie",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Classic Rock, Glam"
+  },
+  {
+   "album": "Aftermath",
+   "artist": "The Rolling Stones",
+   "year": 1966,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Pop Rock"
+  },
+  {
+   "album": "Loaded",
+   "artist": "The Velvet Underground",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Art Rock, Classic Rock"
+  },
+  {
+   "album": "The Bends",
+   "artist": "Radiohead",
+   "year": 1995,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "If You Can Believe Your Eyes and Ears",
+   "artist": "The Mamas and the Papas",
+   "year": 1966,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Pop Rock"
+  },
+  {
+   "album": "Court and Spark",
+   "artist": "Joni Mitchell",
+   "year": 1974,
+   "genre": "Rock",
+   "subgenre": "Soft Rock, Pop Rock"
+  },
+  {
+   "album": "Disraeli Gears",
+   "artist": "Cream",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Blues Rock"
+  },
+  {
+   "album": "The Who Sell Out",
+   "artist": "The Who",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Mod"
+  },
+  {
+   "album": "Out of Our Heads",
+   "artist": "The Rolling Stones",
+   "year": 1965,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Rock & Roll"
+  },
+  {
+   "album": "Layla and Other Assorted Love Songs",
+   "artist": "Derek and the Dominos",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "Late Registration",
+   "artist": "Kanye West",
+   "year": 2005,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "At Last!",
+   "artist": "Etta James",
+   "year": 1960,
+   "genre": "Funk / Soul, Blues",
+   "subgenre": "Rhythm & Blues, Soul"
+  },
+  {
+   "album": "Sweetheart of the Rodeo",
+   "artist": "The Byrds",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Country Rock"
+  },
+  {
+   "album": "Stand!",
+   "artist": "Sly & The Family Stone",
+   "year": 1969,
+   "genre": "Funk / Soul",
+   "subgenre": "Funk, Psychedelic, Disco"
+  },
+  {
+   "album": "The Harder They Come",
+   "artist": "Various Artists",
+   "year": 1972,
+   "genre": "Reggae,�Pop,�Folk, World, & Country,�Stage & Screen",
+   "subgenre": "Reggae,�Roots Reggae,�Rocksteady,�Contemporary,�Soundtrack"
+  },
+  {
+   "album": "Raising Hell",
+   "artist": "Run D.M.C.",
+   "year": 1986,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Moby Grape",
+   "artist": "Moby Grape",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Pearl",
+   "artist": "Janis Joplin",
+   "year": 1971,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "Catch a Fire",
+   "artist": "The Wailers",
+   "year": 1973,
+   "genre": "Reggae",
+   "subgenre": "Roots Reggae"
+  },
+  {
+   "album": "Younger Than Yesterday",
+   "artist": "The Byrds",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Raw Power",
+   "artist": "Iggy and The Stooges",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Garage Rock, Hard Rock, Punk"
+  },
+  {
+   "album": "Remain in Light",
+   "artist": "Talking Heads",
+   "year": 1980,
+   "genre": "Electronic, Rock",
+   "subgenre": "New Wave, Art Rock, Funk"
+  },
+  {
+   "album": "Marquee Moon",
+   "artist": "Television",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "New Wave, Punk"
+  },
+  {
+   "album": "Paranoid",
+   "artist": "Black Sabbath",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Heavy Metal"
+  },
+  {
+   "album": "Saturday Night Fever: The Original Movie Sound Track",
+   "artist": "Various Artists",
+   "year": 1977,
+   "genre": "Electronic,�Stage & Screen",
+   "subgenre": "Soundtrack,�Disco"
+  },
+  {
+   "album": "The Wild, the Innocent & the E Street Shuffle",
+   "artist": "Bruce Springsteen",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "None"
+  },
+  {
+   "album": "Ready to Die",
+   "artist": "The Notorious B.I.G.",
+   "year": 1994,
+   "genre": "Hip Hop",
+   "subgenre": "Thug Rap"
+  },
+  {
+   "album": "Slanted and Enchanted",
+   "artist": "Pavement",
+   "year": 1992,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "Greatest Hits",
+   "artist": "Elton John",
+   "year": 1974,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "Tim",
+   "artist": "The Replacements",
+   "year": 1985,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "The Chronic",
+   "artist": "Dr. Dre",
+   "year": 1992,
+   "genre": "Hip Hop",
+   "subgenre": "Gangsta"
+  },
+  {
+   "album": "Rejuvenation",
+   "artist": "The Meters",
+   "year": 1974,
+   "genre": "Funk / Soul",
+   "subgenre": "Bayou Funk, Soul"
+  },
+  {
+   "album": "Parallel Lines",
+   "artist": "Blondie",
+   "year": 1978,
+   "genre": "Electronic, Rock",
+   "subgenre": "New Wave, Pop Rock, Punk, Disco"
+  },
+  {
+   "album": "Live at the Regal",
+   "artist": "B.B. King",
+   "year": 1965,
+   "genre": "Blues",
+   "subgenre": "Chicago Blues"
+  },
+  {
+   "album": "A Christmas Gift for You From Phil Spector",
+   "artist": "Phil Spector",
+   "year": 1963,
+   "genre": "Rock, Funk / Soul, Pop",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Gris-Gris",
+   "artist": "Dr. John, the Night Tripper",
+   "year": 1968,
+   "genre": "Jazz, Rock, Funk / Soul, Blues",
+   "subgenre": "Soul-Jazz, Louisiana Blues, Fusion, Bayou Funk"
+  },
+  {
+   "album": "Straight Outta Compton",
+   "artist": "N.W.A",
+   "year": 1988,
+   "genre": "Hip Hop",
+   "subgenre": "Gangsta"
+  },
+  {
+   "album": "Aja",
+   "artist": "Steely Dan",
+   "year": 1977,
+   "genre": "Jazz, Rock",
+   "subgenre": "Jazz-Rock, Classic Rock"
+  },
+  {
+   "album": "Surrealistic Pillow",
+   "artist": "Jefferson Airplane",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Deja vu",
+   "artist": "Crosby, Stills, Nash & Young",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "Houses of the Holy",
+   "artist": "Led Zeppelin",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "Santana",
+   "artist": "Santana",
+   "year": 1969,
+   "genre": "Rock, Latin, Funk / Soul",
+   "subgenre": "Afro-Cuban, Psychedelic Rock"
+  },
+  {
+   "album": "Darkness on the Edge of Town",
+   "artist": "Bruce Springsteen",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Funeral",
+   "artist": "Arcade Fire",
+   "year": 2004,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "The B 52's / Play Loud",
+   "artist": "The B 52's",
+   "year": 1979,
+   "genre": "Electronic, Rock, Pop",
+   "subgenre": "New Wave, Punk, Mod"
+  },
+  {
+   "album": "The Low End Theory",
+   "artist": "A Tribe Called Quest",
+   "year": 1991,
+   "genre": "Hip Hop",
+   "subgenre": "Conscious"
+  },
+  {
+   "album": "Moanin' in the Moonlight",
+   "artist": "Howlin' Wolf",
+   "year": 1958,
+   "genre": "Blues",
+   "subgenre": "Chicago Blues"
+  },
+  {
+   "album": "Pretenders",
+   "artist": "Pretenders",
+   "year": 1980,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, New Wave"
+  },
+  {
+   "album": "Paul's Boutique",
+   "artist": "Beastie Boys",
+   "year": 1989,
+   "genre": "Hip Hop, Rock, Funk / Soul",
+   "subgenre": "Alternative Rock, Pop Rap, Psychedelic"
+  },
+  {
+   "album": "Closer",
+   "artist": "Joy Division",
+   "year": 1980,
+   "genre": "Rock",
+   "subgenre": "Post-Punk, New Wave"
+  },
+  {
+   "album": "Captain Fantastic and the Brown Dirt Cowboy",
+   "artist": "Elton John",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Classic Rock"
+  },
+  {
+   "album": "Alive!",
+   "artist": "KISS",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Glam"
+  },
+  {
+   "album": "Electric Warrior",
+   "artist": "T. Rex",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Glam, Classic Rock"
+  },
+  {
+   "album": "The Dock of the Bay",
+   "artist": "Otis Redding",
+   "year": 1968,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Soul"
+  },
+  {
+   "album": "OK Computer",
+   "artist": "Radiohead",
+   "year": 1997,
+   "genre": "Electronic, Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "1999",
+   "artist": "Prince",
+   "year": 1982,
+   "genre": "Funk / Soul, Pop",
+   "subgenre": "None"
+  },
+  {
+   "album": "The Very Best of Linda Ronstadt",
+   "artist": "Linda Ronstadt",
+   "year": 2002,
+   "genre": "Rock, Pop",
+   "subgenre": "Soft Rock, Pop Rock"
+  },
+  {
+   "album": "Let's Get It On",
+   "artist": "Marvin Gaye",
+   "year": 1973,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Imperial Bedroom",
+   "artist": "Elvis Costello & The Attractions",
+   "year": 1982,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, New Wave"
+  },
+  {
+   "album": "Master of Puppets",
+   "artist": "Metallica",
+   "year": 1986,
+   "genre": "Rock",
+   "subgenre": "Thrash, Speed Metal"
+  },
+  {
+   "album": "My Aim Is True",
+   "artist": "Elvis Costello",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "New Wave, Pop Rock"
+  },
+  {
+   "album": "Exodus",
+   "artist": "Bob Marley & The Wailers",
+   "year": 1977,
+   "genre": "Reggae",
+   "subgenre": "Reggae, Roots Reggae"
+  },
+  {
+   "album": "Live at Leeds",
+   "artist": "The Who",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Classic Rock, Blues Rock, Hard Rock"
+  },
+  {
+   "album": "The Notorious Byrd Brothers",
+   "artist": "The Byrds",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Folk Rock, Country Rock, Pop Rock"
+  },
+  {
+   "album": "Every Picture Tells a Story",
+   "artist": "Rod Stewart",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Something/Anything?",
+   "artist": "Todd Rundgren",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Power Pop, Pop Rock, Prog Rock"
+  },
+  {
+   "album": "Desire",
+   "artist": "Bob Dylan",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Folk Rock"
+  },
+  {
+   "album": "Close to You",
+   "artist": "Carpenters",
+   "year": 1970,
+   "genre": "Rock, Pop",
+   "subgenre": "Pop Rock, Vocal"
+  },
+  {
+   "album": "Rocks",
+   "artist": "Aerosmith",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Classic Rock"
+  },
+  {
+   "album": "One Nation Under a Groove",
+   "artist": "Funkadelic",
+   "year": 1978,
+   "genre": "Funk / Soul",
+   "subgenre": "P.Funk"
+  },
+  {
+   "album": "The Anthology: 1961-1977",
+   "artist": "Curtis Mayfield and The Impressions",
+   "year": 1992,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Soul, Funk"
+  },
+  {
+   "album": "The Definitive Collection",
+   "artist": "ABBA",
+   "year": 2001,
+   "genre": "Electronic, Pop",
+   "subgenre": "Europop, Synth-pop, Disco"
+  },
+  {
+   "album": "The Rolling Stones, Now!",
+   "artist": "The Rolling Stones",
+   "year": 1965,
+   "genre": "Rock, Blues, Pop",
+   "subgenre": "Pop Rock, Rhythm & Blues, Rock & Roll"
+  },
+  {
+   "album": "Natty Dread",
+   "artist": "Bob Marley & The Wailers",
+   "year": 1974,
+   "genre": "Reggae",
+   "subgenre": "Reggae, Roots Reggae"
+  },
+  {
+   "album": "Fleetwood Mac",
+   "artist": "Fleetwood Mac",
+   "year": 1975,
+   "genre": "Rock, Pop",
+   "subgenre": "Folk Rock, Pop Rock"
+  },
+  {
+   "album": "Red Headed Stranger",
+   "artist": "Willie Nelson",
+   "year": 1975,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country"
+  },
+  {
+   "album": "The Immaculate Collection",
+   "artist": "Madonna",
+   "year": 1990,
+   "genre": "Electronic, Pop",
+   "subgenre": "Synth-pop"
+  },
+  {
+   "album": "The Stooges",
+   "artist": "The Stooges",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Garage Rock, Punk"
+  },
+  {
+   "album": "Fresh",
+   "artist": "Sly & The Family Stone",
+   "year": 1973,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Funk"
+  },
+  {
+   "album": "So",
+   "artist": "Peter Gabriel",
+   "year": 1986,
+   "genre": "Electronic, Rock, Funk / Soul, Pop",
+   "subgenre": "Art Rock, Pop Rock, Synth-pop, Funk"
+  },
+  {
+   "album": "Buffalo Springfield Again",
+   "artist": "Buffalo Springfield",
+   "year": 1967,
+   "genre": "Rock, Pop",
+   "subgenre": "Country Rock"
+  },
+  {
+   "album": "Happy Trails",
+   "artist": "Quicksilver Messenger Service",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Acid Rock, Psychedelic Rock"
+  },
+  {
+   "album": "From Elvis in Memphis",
+   "artist": "Elvis Presley",
+   "year": 1969,
+   "genre": "Rock, Funk / Soul, Folk, World, & Country",
+   "subgenre": "Country, Soul"
+  },
+  {
+   "album": "Fun House",
+   "artist": "The Stooges",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Garage Rock, Punk"
+  },
+  {
+   "album": "The Gilded Palace of Sin",
+   "artist": "The Flying Burrito Brothers",
+   "year": 1969,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Country Rock"
+  },
+  {
+   "album": "Dookie",
+   "artist": "Green Day",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Pop Punk, Punk"
+  },
+  {
+   "album": "Transformer",
+   "artist": "Lou Reed",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Glam"
+  },
+  {
+   "album": "Blues Breakers With Eric Clapton (\"The Beano Album\")",
+   "artist": "John Mayall & The Bluesbreakers",
+   "year": 1966,
+   "genre": "Rock,�Blues",
+   "subgenre": "Blues Rock,�Electric Blues,�Harmonica Blues"
+  },
+  {
+   "album": "Nuggets: Original Artyfacts From the First Psychedelic Era, 1965-1968",
+   "artist": "Various Artists",
+   "year": 1998,
+   "genre": "Rock",
+   "subgenre": "Garage Rock,�Psychedelic Rock"
+  },
+  {
+   "album": "Murmur",
+   "artist": "R.E.M.",
+   "year": 1983,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "The Best of Little Walter",
+   "artist": "Little Walter",
+   "year": 1967,
+   "genre": "Blues",
+   "subgenre": "Chicago Blues"
+  },
+  {
+   "album": "Is This It",
+   "artist": "The Strokes",
+   "year": 2001,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Highway to Hell",
+   "artist": "AC/DC",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "Hard Rock"
+  },
+  {
+   "album": "The Downward Spiral",
+   "artist": "Nine Inch Nails",
+   "year": 1994,
+   "genre": "Electronic, Rock",
+   "subgenre": "Industrial"
+  },
+  {
+   "album": "Parsley, Sage, Rosemary and Thyme",
+   "artist": "Simon & Garfunkel",
+   "year": 1966,
+   "genre": "Rock, Pop, Folk, World, & Country",
+   "subgenre": "Folk Rock, Pop Rock"
+  },
+  {
+   "album": "Bad",
+   "artist": "Michael Jackson",
+   "year": 1987,
+   "genre": "Funk / Soul, Pop",
+   "subgenre": "Pop Rock, Ballad, Funk, Soul"
+  },
+  {
+   "album": "Modern Times",
+   "artist": "Bob Dylan",
+   "year": 2006,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Folk Rock"
+  },
+  {
+   "album": "Wheels of Fire",
+   "artist": "Cream",
+   "year": 1968,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock, Psychedelic Rock, Classic Rock"
+  },
+  {
+   "album": "Dirty Mind",
+   "artist": "Prince",
+   "year": 1980,
+   "genre": "Funk / Soul",
+   "subgenre": "None"
+  },
+  {
+   "album": "Abraxas",
+   "artist": "Santana",
+   "year": 1970,
+   "genre": "Rock, Latin",
+   "subgenre": "Fusion, Hard Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Tea for the Tillerman",
+   "artist": "Cat Stevens",
+   "year": 1970,
+   "genre": "Rock, Stage & Screen",
+   "subgenre": "Folk Rock, Pop Rock"
+  },
+  {
+   "album": "Ten",
+   "artist": "Pearl Jam",
+   "year": 1991,
+   "genre": "Rock",
+   "subgenre": "Grunge"
+  },
+  {
+   "album": "Everybody Knows This Is Nowhere",
+   "artist": "Neil Young & Crazy Horse",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Country Rock, Classic Rock"
+  },
+  {
+   "album": "Wish You Were Here",
+   "artist": "Pink Floyd",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Classic Rock, Prog Rock"
+  },
+  {
+   "album": "Crooked Rain Crooked Rain",
+   "artist": "Pavement",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Indie Rock"
+  },
+  {
+   "album": "Tattoo You",
+   "artist": "The Rolling Stones",
+   "year": 1981,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "Proud Mary: The Best of Ike and Tina Turner",
+   "artist": "Ike & Tina Turner",
+   "year": 1991,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Bayou Funk, Soul"
+  },
+  {
+   "album": "New York Dolls",
+   "artist": "New York Dolls",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Glam"
+  },
+  {
+   "album": "Bo Diddley / Go Bo Diddley",
+   "artist": "Bo Diddley",
+   "year": 1986,
+   "genre": "Rock, Blues",
+   "subgenre": "Rhythm & Blues, Rock & Roll"
+  },
+  {
+   "album": "Two Steps From the Blues",
+   "artist": "Bobby \"Blue\" Bland",
+   "year": 1961,
+   "genre": "Funk / Soul, Blues",
+   "subgenre": "Rhythm & Blues, Soul"
+  },
+  {
+   "album": "The Queen Is Dead",
+   "artist": "The Smiths",
+   "year": 1986,
+   "genre": "Rock, Pop",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Licensed to Ill",
+   "artist": "Beastie Boys",
+   "year": 1986,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Look-Ka Py Py",
+   "artist": "The Meters",
+   "year": 1970,
+   "genre": "Funk / Soul",
+   "subgenre": "Bayou Funk, Soul, Funk"
+  },
+  {
+   "album": "Loveless",
+   "artist": "My Bloody Valentine",
+   "year": 1991,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Shoegaze"
+  },
+  {
+   "album": "New Orleans Piano",
+   "artist": "Professor Longhair",
+   "year": 1972,
+   "genre": "Funk / Soul, Blues",
+   "subgenre": "Piano Blues"
+  },
+  {
+   "album": "War",
+   "artist": "U2",
+   "year": 1983,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "The Neil Diamond Collection",
+   "artist": "Neil Diamond",
+   "year": 1999,
+   "genre": "Rock, Pop",
+   "subgenre": "Soft Rock, Ballad"
+  },
+  {
+   "album": "American Idiot",
+   "artist": "Green Day",
+   "year": 2004,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Punk"
+  },
+  {
+   "album": "Nebraska",
+   "artist": "Bruce Springsteen",
+   "year": 1982,
+   "genre": "Rock",
+   "subgenre": "Acoustic"
+  },
+  {
+   "album": "Doolittle",
+   "artist": "Pixies",
+   "year": 1989,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Paid in Full",
+   "artist": "Eric B. & Rakim",
+   "year": 1987,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Toys in the Attic",
+   "artist": "Aerosmith",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Blues Rock"
+  },
+  {
+   "album": "Nick of Time",
+   "artist": "Bonnie Raitt",
+   "year": 1989,
+   "genre": "Rock, Pop",
+   "subgenre": "Blues Rock, Pop Rock"
+  },
+  {
+   "album": "A Night at the Opera",
+   "artist": "Queen",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Pop Rock, Prog Rock"
+  },
+  {
+   "album": "The Kink Kronikles",
+   "artist": "The Kinks",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Pop Rock"
+  },
+  {
+   "album": "Mr. Tambourine Man",
+   "artist": "The Byrds",
+   "year": 1965,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Garage Rock, Pop Rock"
+  },
+  {
+   "album": "Bookends",
+   "artist": "Simon & Garfunkel",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Classic Rock"
+  },
+  {
+   "album": "The Ultimate Collection",
+   "artist": "Patsy Cline",
+   "year": 2000,
+   "genre": "Folk, World, & Country",
+   "subgenre": "None"
+  },
+  {
+   "album": "Mr. Excitement!",
+   "artist": "Jackie Wilson",
+   "year": 1992,
+   "genre": "Funk / Soul",
+   "subgenre": "None"
+  },
+  {
+   "album": "My Generation",
+   "artist": "The Who",
+   "year": 1965,
+   "genre": "Rock",
+   "subgenre": "Mod"
+  },
+  {
+   "album": "Howlin' Wolf",
+   "artist": "Howlin' Wolf",
+   "year": 1962,
+   "genre": "Blues",
+   "subgenre": "None"
+  },
+  {
+   "album": "Like a Prayer",
+   "artist": "Madonna",
+   "year": 1989,
+   "genre": "Electronic, Pop",
+   "subgenre": "Synth-pop"
+  },
+  {
+   "album": "Can't Buy a Thrill",
+   "artist": "Steely Dan",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "Let It Be",
+   "artist": "The Replacements",
+   "year": 1984,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Power Pop, Punk, Indie Rock"
+  },
+  {
+   "album": "Run D.M.C.",
+   "artist": "Run D.M.C.",
+   "year": 1984,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Black Sabbath",
+   "artist": "Black Sabbath",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Heavy Metal"
+  },
+  {
+   "album": "The Marshall Mathers LP",
+   "artist": "Eminem",
+   "year": 2000,
+   "genre": "Hip Hop",
+   "subgenre": "Pop Rap, Hardcore Hip-Hop, Horrorcore"
+  },
+  {
+   "album": "All Killer No Filler! The Jerry Lee Lewis Anthology",
+   "artist": "Jerry Lee Lewis",
+   "year": 1993,
+   "genre": "Rock, Blues, Folk, World, & Country",
+   "subgenre": "Country Blues, Rock & Roll, Rhythm & Blues"
+  },
+  {
+   "album": "Freak Out!",
+   "artist": "The Mothers of Invention",
+   "year": 1966,
+   "genre": "Electronic, Rock",
+   "subgenre": "Musique Concr?te, Avantgarde, Symphonic Rock, Rhythm & Blues, Psychedelic Rock, Experimental, Parody"
+  },
+  {
+   "album": "Live/Dead",
+   "artist": "The Grateful Dead",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Country Rock, Psychedelic Rock, Experimental"
+  },
+  {
+   "album": "The Shape of Jazz to Come",
+   "artist": "Ornette Coleman",
+   "year": 1959,
+   "genre": "Jazz",
+   "subgenre": "Free Jazz"
+  },
+  {
+   "album": "Automatic for the People",
+   "artist": "R.E.M.",
+   "year": 1992,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "Reasonable Doubt",
+   "artist": "Jay Z",
+   "year": 1996,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Low",
+   "artist": "David Bowie",
+   "year": 1977,
+   "genre": "Electronic, Rock",
+   "subgenre": "Art Rock, Ambient, Experimental"
+  },
+  {
+   "album": "The Blueprint",
+   "artist": "Jay Z",
+   "year": 2001,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "The River",
+   "artist": "Bruce Springsteen",
+   "year": 1980,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Pop Rock, Classic Rock"
+  },
+  {
+   "album": "Complete & Unbelievable: The Otis Redding Dictionary of Soul",
+   "artist": "Otis Redding",
+   "year": 1966,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Metallica (\"The Black Album\")",
+   "artist": "Metallica",
+   "year": 1991,
+   "genre": "Rock",
+   "subgenre": "Heavy Metal"
+  },
+  {
+   "album": "Trans Europa Express",
+   "artist": "Kraftwerk",
+   "year": 1977,
+   "genre": "Electronic",
+   "subgenre": "Electro"
+  },
+  {
+   "album": "Whitney Houston",
+   "artist": "Whitney Houston",
+   "year": 1985,
+   "genre": "Funk / Soul, Pop",
+   "subgenre": "Synth-pop, Rhythm & Blues"
+  },
+  {
+   "album": "The Kinks Are The Village Green Preservation Society",
+   "artist": "The Kinks",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Pop Rock"
+  },
+  {
+   "album": "The Velvet Rope",
+   "artist": "Janet",
+   "year": 1997,
+   "genre": "Electronic, Funk / Soul, Pop",
+   "subgenre": "RnB/Swing, Downtempo"
+  },
+  {
+   "album": "Stardust",
+   "artist": "Willie Nelson",
+   "year": 1978,
+   "genre": "Pop, Folk, World, & Country",
+   "subgenre": "Vocal"
+  },
+  {
+   "album": "American Beauty",
+   "artist": "Grateful Dead",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Folk Rock"
+  },
+  {
+   "album": "Crosby, Stills & Nash",
+   "artist": "Crosby, Stills & Nash",
+   "year": 1969,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Folk Rock, Classic Rock"
+  },
+  {
+   "album": "Tracy Chapman",
+   "artist": "Tracy Chapman",
+   "year": 1988,
+   "genre": "Rock",
+   "subgenre": "None"
+  },
+  {
+   "album": "Workingman's Dead",
+   "artist": "Grateful Dead",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Country Rock, Classic Rock"
+  },
+  {
+   "album": "The Genius of Ray Charles",
+   "artist": "Ray Charles",
+   "year": 1959,
+   "genre": "Jazz, Pop",
+   "subgenre": "Soul-Jazz, Big Band"
+  },
+  {
+   "album": "Child Is Father to the Man",
+   "artist": "Blood, Sweat & Tears",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Jazz-Rock, Classic Rock"
+  },
+  {
+   "album": "Quadrophenia",
+   "artist": "The Who",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Classic Rock, Mod"
+  },
+  {
+   "album": "Paul Simon",
+   "artist": "Paul Simon",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Pop Rock"
+  },
+  {
+   "album": "Psychocandy",
+   "artist": "The Jesus and Mary Chain",
+   "year": 1985,
+   "genre": "Rock",
+   "subgenre": "Noise"
+  },
+  {
+   "album": "Some Girls",
+   "artist": "The Rolling Stones",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Rock & Roll, Classic Rock, Disco"
+  },
+  {
+   "album": "The Beach Boys Today!",
+   "artist": "The Beach Boys",
+   "year": 1965,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Psychedelic Rock"
+  },
+  {
+   "album": "Dig Me Out",
+   "artist": "Sleater Kinney",
+   "year": 1997,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Going to a Go-Go",
+   "artist": "Smokey Robinson & The Miracles",
+   "year": 1966,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Nightbirds",
+   "artist": "LaBelle",
+   "year": 1974,
+   "genre": "Funk / Soul",
+   "subgenre": "Funk, Disco"
+  },
+  {
+   "album": "The Slim Shady LP",
+   "artist": "Eminem",
+   "year": 1999,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Mothership Connection",
+   "artist": "Parliament",
+   "year": 1975,
+   "genre": "Funk / Soul",
+   "subgenre": "P.Funk, Funk"
+  },
+  {
+   "album": "Rhythm Nation 1814",
+   "artist": "Janet Jackson",
+   "year": 1989,
+   "genre": "Electronic, Hip Hop, Pop",
+   "subgenre": "RnB/Swing, Downtempo, Synth-pop"
+  },
+  {
+   "album": "Anthology of American Folk Music",
+   "artist": "Various",
+   "year": 1997,
+   "genre": "Blues, Folk, World, & Country",
+   "subgenre": "Cajun, Country, Field Recording, Gospel, Delta Blues, Folk"
+  },
+  {
+   "album": "Aladdin Sane",
+   "artist": "David Bowie",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Glam"
+  },
+  {
+   "album": "All That You Can't Leave Behind",
+   "artist": "U2",
+   "year": 2000,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "My Life",
+   "artist": "Mary J. Blige",
+   "year": 1994,
+   "genre": "Hip Hop",
+   "subgenre": "RnB/Swing"
+  },
+  {
+   "album": "Folk Singer",
+   "artist": "Muddy Waters",
+   "year": 1964,
+   "genre": "Blues",
+   "subgenre": "Delta Blues"
+  },
+  {
+   "album": "Can't Get Enough",
+   "artist": "Barry White",
+   "year": 1974,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul, Disco"
+  },
+  {
+   "album": "The Cars",
+   "artist": "The Cars",
+   "year": 1978,
+   "genre": "Electronic, Rock",
+   "subgenre": "New Wave, Pop Rock, Synth-pop"
+  },
+  {
+   "album": "Music of My Mind",
+   "artist": "Stevie Wonder",
+   "year": 1972,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul-Jazz, Soul"
+  },
+  {
+   "album": "I'm Still in Love With You",
+   "artist": "Al Green",
+   "year": 1972,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Soul"
+  },
+  {
+   "album": "Los Angeles",
+   "artist": "X",
+   "year": 1980,
+   "genre": "Rock",
+   "subgenre": "Punk, Rock & Roll"
+  },
+  {
+   "album": "Anthem of the Sun",
+   "artist": "Grateful Dead",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock"
+  },
+  {
+   "album": "Something Else by The Kinks",
+   "artist": "The Kinks",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Psychedelic Rock, Mod"
+  },
+  {
+   "album": "Call Me",
+   "artist": "Al Green",
+   "year": 1973,
+   "genre": "Funk / Soul",
+   "subgenre": "Rhythm & Blues, Soul"
+  },
+  {
+   "album": "Talking Heads: 77",
+   "artist": "Talking Heads",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "New Wave"
+  },
+  {
+   "album": "The Basement Tapes",
+   "artist": "Bob Dylan and the Band",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Country Rock, Classic Rock"
+  },
+  {
+   "album": "White Light/White Heat",
+   "artist": "The Velvet Underground",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Avantgarde, Experimental"
+  },
+  {
+   "album": "Kick Out the Jams",
+   "artist": "MC5",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Garage Rock, Hard Rock, Punk, Blues Rock"
+  },
+  {
+   "album": "Songs of Love and Hate",
+   "artist": "Leonard Cohen",
+   "year": 1970,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Folk Rock, Folk, Ballad"
+  },
+  {
+   "album": "Meat Is Murder",
+   "artist": "The Smiths",
+   "year": 1985,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Indie Rock"
+  },
+  {
+   "album": "We're Only in It for the Money",
+   "artist": "The Mothers of Invention",
+   "year": 1968,
+   "genre": "Electronic, Rock",
+   "subgenre": "Modern Classical, Avantgarde, Psychedelic Rock, Experimental, Parody"
+  },
+  {
+   "album": "The College Dropout",
+   "artist": "Kanye West",
+   "year": 2003,
+   "genre": "Hip Hop",
+   "subgenre": "Pop Rap, Conscious, Contemporary R&B"
+  },
+  {
+   "album": "Weezer (Blue Album)",
+   "artist": "Weezer",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Emo"
+  },
+  {
+   "album": "Master of Reality",
+   "artist": "Black Sabbath",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Heavy Metal"
+  },
+  {
+   "album": "Coat of Many Colors",
+   "artist": "Dolly Parton",
+   "year": 1971,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country"
+  },
+  {
+   "album": "Fear of a Black Planet",
+   "artist": "Public Enemy",
+   "year": 1990,
+   "genre": "Hip Hop",
+   "subgenre": "Conscious"
+  },
+  {
+   "album": "John Wesley Harding",
+   "artist": "Bob Dylan",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Country Rock"
+  },
+  {
+   "album": "Grace",
+   "artist": "Jeff Buckley",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Folk Rock"
+  },
+  {
+   "album": "Car Wheels on a Gravel Road",
+   "artist": "Lucinda Williams",
+   "year": 1998,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country, Folk"
+  },
+  {
+   "album": "Odelay",
+   "artist": "Beck",
+   "year": 1996,
+   "genre": "Electronic, Hip Hop, Funk / Soul, Pop",
+   "subgenre": "Electro, Downtempo, Hip Hop, Disco, Afrobeat, Abstract"
+  },
+  {
+   "album": "A Hard Day's Night",
+   "artist": "The Beatles",
+   "year": 1964,
+   "genre": "Rock, Stage & Screen",
+   "subgenre": "Soundtrack, Beat, Pop Rock"
+  },
+  {
+   "album": "Songs for Swingin' Lovers!",
+   "artist": "Frank Sinatra",
+   "year": 1956,
+   "genre": "Jazz, Pop",
+   "subgenre": "Vocal, Easy Listening"
+  },
+  {
+   "album": "Willy and the Poor Boys",
+   "artist": "Creedence Clearwater Revival",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Rock & Roll, Classic Rock"
+  },
+  {
+   "album": "Blood Sugar Sex Magik",
+   "artist": "Red Hot Chili Peppers",
+   "year": 1991,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Funk Metal"
+  },
+  {
+   "album": "The Sun Records Collection",
+   "artist": "Various",
+   "year": 1994,
+   "genre": "Rock, Funk / Soul, Blues, Pop, Folk, World, & Country",
+   "subgenre": "Country Blues, Rock & Roll, Rockabilly"
+  },
+  {
+   "album": "Nothing's Shocking",
+   "artist": "Jane's Addiction",
+   "year": 1988,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "MTV Unplugged in New York",
+   "artist": "Nirvana",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Acoustic, Grunge"
+  },
+  {
+   "album": "The Miseducation of Lauryn Hill",
+   "artist": "Lauryn Hill",
+   "year": 1998,
+   "genre": "Hip Hop",
+   "subgenre": "RnB/Swing, Conscious"
+  },
+  {
+   "album": "Damn the Torpedoes",
+   "artist": "Tom Petty and the Heartbreakers",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "Soft Rock, Hard Rock, Pop Rock"
+  },
+  {
+   "album": "The Velvet Underground",
+   "artist": "The Velvet Underground",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Garage Rock, Art Rock, Experimental"
+  },
+  {
+   "album": "Surfer Rosa",
+   "artist": "Pixies",
+   "year": 1988,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "Back Stabbers",
+   "artist": "The O'Jays",
+   "year": 1972,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Burnin'",
+   "artist": "The Wailers",
+   "year": 1973,
+   "genre": "Reggae",
+   "subgenre": "Reggae"
+  },
+  {
+   "album": "Amnesiac",
+   "artist": "Radiohead",
+   "year": 2001,
+   "genre": "Electronic, Rock",
+   "subgenre": "Alternative Rock, Experimental"
+  },
+  {
+   "album": "Pink Moon",
+   "artist": "Nick Drake",
+   "year": 1972,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Folk, Folk Rock, Acoustic"
+  },
+  {
+   "album": "Sail Away",
+   "artist": "Randy Newman",
+   "year": 1972,
+   "genre": "Rock, Pop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Ghost in the Machine",
+   "artist": "The Police",
+   "year": 1981,
+   "genre": "Rock, Pop",
+   "subgenre": "Alternative Rock, New Wave, Pop Rock"
+  },
+  {
+   "album": "Station to Station",
+   "artist": "David Bowie",
+   "year": 1976,
+   "genre": "Rock, Funk / Soul",
+   "subgenre": "Classic Rock, Soul, Funk, Art Rock"
+  },
+  {
+   "album": "Slowhand",
+   "artist": "Eric Clapton",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "None"
+  },
+  {
+   "album": "Disintegration",
+   "artist": "The Cure",
+   "year": 1989,
+   "genre": "Electronic, Rock",
+   "subgenre": "New Wave, Alternative Rock"
+  },
+  {
+   "album": "Exile in Guyville",
+   "artist": "Liz Phair",
+   "year": 1993,
+   "genre": "Rock",
+   "subgenre": "Lo-Fi, Indie Rock"
+  },
+  {
+   "album": "Daydream Nation",
+   "artist": "Sonic Youth",
+   "year": 1988,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Indie Rock"
+  },
+  {
+   "album": "In the Jungle Groove",
+   "artist": "James Brown",
+   "year": 1986,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul, Funk"
+  },
+  {
+   "album": "Tonight's the Night",
+   "artist": "Neil Young",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Folk Rock, Classic Rock"
+  },
+  {
+   "album": "Help!",
+   "artist": "The Beatles",
+   "year": 1965,
+   "genre": "Rock, Stage & Screen",
+   "subgenre": "Beat, Soundtrack, Pop Rock"
+  },
+  {
+   "album": "Shoot Out the Lights",
+   "artist": "Richard & Linda Thompson",
+   "year": 1982,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Folk Rock"
+  },
+  {
+   "album": "Wild Gift",
+   "artist": "X",
+   "year": 1981,
+   "genre": "Rock",
+   "subgenre": "Rock & Roll, Punk"
+  },
+  {
+   "album": "Squeezing Out Sparks",
+   "artist": "Graham Parker & The Rumour",
+   "year": 1979,
+   "genre": "Rock, Blues",
+   "subgenre": "None"
+  },
+  {
+   "album": "Superunknown",
+   "artist": "Soundgarden",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "In Rainbows",
+   "artist": "Radiohead",
+   "year": 2007,
+   "genre": "Electronic, Rock",
+   "subgenre": "Alternative Rock, Art Rock"
+  },
+  {
+   "album": "Aqualung",
+   "artist": "Jethro Tull",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Classic Rock, Prog Rock"
+  },
+  {
+   "album": "Cheap Thrills",
+   "artist": "Big Brother & the Holding Company",
+   "year": 1968,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Blues Rock, Psychedelic Rock"
+  },
+  {
+   "album": "The Heart of Saturday Night",
+   "artist": "Tom Waits",
+   "year": 1974,
+   "genre": "Jazz, Pop, Folk, World, & Country",
+   "subgenre": "Contemporary Jazz, Spoken Word"
+  },
+  {
+   "album": "Damaged",
+   "artist": "Black Flag",
+   "year": 1981,
+   "genre": "Rock",
+   "subgenre": "Hardcore, Punk"
+  },
+  {
+   "album": "Play",
+   "artist": "Moby",
+   "year": 1999,
+   "genre": "Electronic",
+   "subgenre": "Breakbeat, Leftfield, Downtempo"
+  },
+  {
+   "album": "Violator",
+   "artist": "Depeche Mode",
+   "year": 1990,
+   "genre": "Electronic",
+   "subgenre": "Synth-pop"
+  },
+  {
+   "album": "Bat Out of Hell",
+   "artist": "Meat Loaf",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Berlin",
+   "artist": "Lou Reed",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Hard Rock"
+  },
+  {
+   "album": "Stop Making Sense",
+   "artist": "Talking Heads",
+   "year": 1984,
+   "genre": "Rock, Funk / Soul",
+   "subgenre": "Funk, Indie Rock, New Wave"
+  },
+  {
+   "album": "3 Feet High and Rising",
+   "artist": "De La Soul",
+   "year": 1989,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "The Piper at the Gates of Dawn",
+   "artist": "Pink Floyd",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock"
+  },
+  {
+   "album": "Muddy Waters at Newport 1960",
+   "artist": "Muddy Waters",
+   "year": 1960,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock, Chicago Blues"
+  },
+  {
+   "album": "The Black Album",
+   "artist": "Jay Z",
+   "year": 2003,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Roger the Engineer",
+   "artist": "The Yardbirds",
+   "year": 1966,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock, Pop Rock"
+  },
+  {
+   "album": "Rust Never Sleeps",
+   "artist": "Neil Young & Crazy Horse",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Arena Rock"
+  },
+  {
+   "album": "Brothers in Arms",
+   "artist": "Dire Straits",
+   "year": 1985,
+   "genre": "Rock",
+   "subgenre": "AOR, Classic Rock"
+  },
+  {
+   "album": "My Beautiful Dark Twisted Fantasy",
+   "artist": "Kanye West",
+   "year": 2010,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "52nd Street",
+   "artist": "Billy Joel",
+   "year": 1978,
+   "genre": "Jazz, Rock, Pop",
+   "subgenre": "Pop Rock, Ballad, Latin Jazz"
+  },
+  {
+   "album": "Having a Rave Up",
+   "artist": "The Yardbirds",
+   "year": 1965,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Psychedelic Rock"
+  },
+  {
+   "album": "12 Songs",
+   "artist": "Randy Newman",
+   "year": 1970,
+   "genre": "Rock, Pop",
+   "subgenre": "Pop Rock, Vocal"
+  },
+  {
+   "album": "Between the Buttons",
+   "artist": "The Rolling Stones",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Psychedelic Rock, Pop Rock"
+  },
+  {
+   "album": "Sketches of Spain",
+   "artist": "Miles Davis",
+   "year": 1960,
+   "genre": "Jazz",
+   "subgenre": "Modal"
+  },
+  {
+   "album": "Honky Ch�teau",
+   "artist": "Elton John",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Pop Rock,�Classic Rock"
+  },
+  {
+   "album": "Singles Going Steady",
+   "artist": "Buzzcocks",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "Punk"
+  },
+  {
+   "album": "Stankonia",
+   "artist": "OutKast",
+   "year": 2000,
+   "genre": "Hip Hop, Funk / Soul",
+   "subgenre": "Gangsta, P.Funk, Crunk, Conscious"
+  },
+  {
+   "album": "Siamese Dream",
+   "artist": "The Smashing Pumpkins",
+   "year": 1993,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "Substance 1987",
+   "artist": "New Order",
+   "year": 1987,
+   "genre": "Electronic",
+   "subgenre": "Synth-pop"
+  },
+  {
+   "album": "L.A. Woman",
+   "artist": "The Doors",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Classic Rock"
+  },
+  {
+   "album": "Rage Against the Machine",
+   "artist": "Rage Against the Machine",
+   "year": 1992,
+   "genre": "Hip Hop, Rock",
+   "subgenre": "Funk Metal"
+  },
+  {
+   "album": "American Recordings",
+   "artist": "Johnny Cash",
+   "year": 1994,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country, Gospel, Folk"
+  },
+  {
+   "album": "Ray of Light",
+   "artist": "Madonna",
+   "year": 1998,
+   "genre": "Electronic, Pop",
+   "subgenre": "House, Techno, Downtempo, Vocal, Ambient"
+  },
+  {
+   "album": "Eagles",
+   "artist": "Eagles",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Country Rock, Classic Rock"
+  },
+  {
+   "album": "Louder Than Bombs",
+   "artist": "The Smiths",
+   "year": 1987,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Indie Rock"
+  },
+  {
+   "album": "Mott",
+   "artist": "Mott the Hoople",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "Whatever People Say I Am, That's What I'm Not",
+   "artist": "Arctic Monkeys",
+   "year": 2006,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Reggatta de Blanc",
+   "artist": "The Police",
+   "year": 1979,
+   "genre": "Rock, Pop",
+   "subgenre": "New Wave, Pop Rock"
+  },
+  {
+   "album": "Volunteers",
+   "artist": "Jefferson Airplane",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock, Folk Rock, Country Rock, Honky Tonk"
+  },
+  {
+   "album": "Siren",
+   "artist": "Roxy Music",
+   "year": 1975,
+   "genre": "Rock",
+   "subgenre": "Art Rock, Pop Rock, Glam"
+  },
+  {
+   "album": "Late for the Sky",
+   "artist": "Jackson Browne",
+   "year": 1974,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Post",
+   "artist": "Bjork",
+   "year": 1995,
+   "genre": "Electronic",
+   "subgenre": "Breakbeat, IDM, Electro"
+  },
+  {
+   "album": "The Ultimate Collection: 1948-1990",
+   "artist": "John Lee Hooker",
+   "year": 1991,
+   "genre": "Blues",
+   "subgenre": "Country Blues, Electric Blues, Chicago Blues, Jump Blues"
+  },
+  {
+   "album": "(What's the Story) Morning Glory?",
+   "artist": "Oasis",
+   "year": 1995,
+   "genre": "Rock, Pop",
+   "subgenre": "Brit Pop"
+  },
+  {
+   "album": "CrazySexyCool",
+   "artist": "TLC",
+   "year": 1994,
+   "genre": "Electronic, Hip Hop, Funk / Soul",
+   "subgenre": "RnB/Swing"
+  },
+  {
+   "album": "Funky Kingston",
+   "artist": "Toots & The Maytals",
+   "year": 1973,
+   "genre": "Reggae",
+   "subgenre": "Reggae Gospel, Reggae, Roots Reggae, Rocksteady"
+  },
+  {
+   "album": "The Smile Sessions",
+   "artist": "The Beach Boys",
+   "year": 2011,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Psychedelic Rock"
+  },
+  {
+   "album": "The Modern Lovers",
+   "artist": "The Modern Lovers",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Art Rock, Indie Rock"
+  },
+  {
+   "album": "More Songs About Buildings and Food",
+   "artist": "Talking Heads",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "New Wave, Indie Rock"
+  },
+  {
+   "album": "A Quick One",
+   "artist": "The Who",
+   "year": 1966,
+   "genre": "Rock",
+   "subgenre": "Mod, Beat, Psychedelic Rock"
+  },
+  {
+   "album": "\"Love and Theft\"",
+   "artist": "Bob Dylan",
+   "year": 2001,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Blues Rock"
+  },
+  {
+   "album": "Pretzel Logic",
+   "artist": "Steely Dan",
+   "year": 1974,
+   "genre": "Jazz, Rock",
+   "subgenre": "Jazz-Rock, Pop Rock, Classic Rock"
+  },
+  {
+   "album": "Enter the Wu_Tang: 36 Chambers",
+   "artist": "Wu Tang Clan",
+   "year": 1993,
+   "genre": "Hip Hop",
+   "subgenre": "Gangsta"
+  },
+  {
+   "album": "The Indestructible Beat of Soweto",
+   "artist": "Various Artists",
+   "year": 1985,
+   "genre": "Funk / Soul,�Folk, World, & Country",
+   "subgenre": "African"
+  },
+  {
+   "album": "The End of the Innocence",
+   "artist": "Don Henley",
+   "year": 1989,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Elephant",
+   "artist": "The White Stripes",
+   "year": 2003,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Garage Rock, Alternative Rock"
+  },
+  {
+   "album": "The Pretender",
+   "artist": "Jackson Browne",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Soft Rock, Pop Rock"
+  },
+  {
+   "album": "Let It Be",
+   "artist": "The Beatles",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Kala",
+   "artist": "M.I.A.",
+   "year": 2007,
+   "genre": "Electronic, Hip Hop, Reggae, Pop",
+   "subgenre": "Grime, Bollywood, Hip Hop, Dancehall"
+  },
+  {
+   "album": "Good Old Boys",
+   "artist": "Randy Newman",
+   "year": 1974,
+   "genre": "Rock, Pop",
+   "subgenre": "Pop Rock, Vocal"
+  },
+  {
+   "album": "Sound of Silver",
+   "artist": "LCD Soundsystem",
+   "year": 2007,
+   "genre": "Electronic, Rock",
+   "subgenre": "Leftfield, Alternative Rock, Electro, Disco"
+  },
+  {
+   "album": "For Your Pleasure",
+   "artist": "Roxy Music",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Art Rock, Avantgarde, Glam"
+  },
+  {
+   "album": "Blue Lines",
+   "artist": "Massive Attack",
+   "year": 1991,
+   "genre": "Electronic, Reggae",
+   "subgenre": "Dub, Downtempo"
+  },
+  {
+   "album": "Eliminator",
+   "artist": "ZZ Top",
+   "year": 1983,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Rain Dogs",
+   "artist": "Tom Waits",
+   "year": 1985,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "Anthology: The Best of The Temptations",
+   "artist": "The Temptations",
+   "year": 1995,
+   "genre": "Electronic, Funk / Soul",
+   "subgenre": "Soul, Disco"
+  },
+  {
+   "album": "Californication",
+   "artist": "Red Hot Chili Peppers",
+   "year": 1999,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Funk Metal"
+  },
+  {
+   "album": "Illmatic",
+   "artist": "Nas",
+   "year": 1994,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "(pronounced 'leh-'nerd 'skin-'nerd)",
+   "artist": "Lynyrd Skynyrd",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Hard Rock, Southern Rock"
+  },
+  {
+   "album": "Dr. John's Gumbo",
+   "artist": "Dr. John",
+   "year": 1972,
+   "genre": "Funk / Soul",
+   "subgenre": "Bayou Funk, Funk, Rhythm & Blues"
+  },
+  {
+   "album": "Radio City",
+   "artist": "Big Star",
+   "year": 1974,
+   "genre": "Rock",
+   "subgenre": "Power Pop"
+  },
+  {
+   "album": "Rid of Me",
+   "artist": "PJ Harvey",
+   "year": 1993,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Sandinista!",
+   "artist": "The Clash",
+   "year": 1980,
+   "genre": "Rock, Reggae",
+   "subgenre": "Rock & Roll, Dub, Punk"
+  },
+  {
+   "album": "I Do Not Want What I Haven't Got",
+   "artist": "Sinead O'Connor",
+   "year": 1989,
+   "genre": "Rock, Funk / Soul, Blues",
+   "subgenre": "Blues Rock, Rhythm & Blues, Soul"
+  },
+  {
+   "album": "Strange Days",
+   "artist": "The Doors",
+   "year": 1967,
+   "genre": "Rock",
+   "subgenre": "Psychedelic Rock"
+  },
+  {
+   "album": "Time Out of Mind",
+   "artist": "Bob Dylan",
+   "year": 1997,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "461 Ocean Boulevard",
+   "artist": "Eric Clapton",
+   "year": 1974,
+   "genre": "Rock",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "Pink Flag",
+   "artist": "Wire",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Punk"
+  },
+  {
+   "album": "Double Nickels on the Dime",
+   "artist": "Minutemen",
+   "year": 1984,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Hardcore, Punk"
+  },
+  {
+   "album": "Beauty and the Beat",
+   "artist": "The Go Go's",
+   "year": 1981,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Van Halen",
+   "artist": "Van Halen",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "Hard Rock"
+  },
+  {
+   "album": "Mule Variations",
+   "artist": "Tom Waits",
+   "year": 1999,
+   "genre": "Electronic, Rock",
+   "subgenre": "Abstract, Art Rock"
+  },
+  {
+   "album": "Boy",
+   "artist": "U2",
+   "year": 1980,
+   "genre": "Rock",
+   "subgenre": "New Wave, Pop Rock"
+  },
+  {
+   "album": "Band on the Run",
+   "artist": "Paul McCartney & Wings",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Dummy",
+   "artist": "Portishead",
+   "year": 1994,
+   "genre": "Electronic",
+   "subgenre": "Trip Hop, Downtempo"
+  },
+  {
+   "album": "The \"Chirping\" Crickets",
+   "artist": "The Crickets",
+   "year": 1957,
+   "genre": "Rock, Pop",
+   "subgenre": "Rockabilly, Rock & Roll"
+  },
+  {
+   "album": "The Best of the Girl Groups, Volume 1",
+   "artist": "Various Artists",
+   "year": 1990,
+   "genre": "Rock,�Pop",
+   "subgenre": "Pop Rock, Vocal"
+  },
+  {
+   "album": "Presenting the Fabulous Ronettes Featuring Veronica",
+   "artist": "The Ronettes",
+   "year": 1963,
+   "genre": "Rock, Pop",
+   "subgenre": "Rock & Roll, Vocal"
+  },
+  {
+   "album": "Anthology",
+   "artist": "Diana Ross & The Supremes",
+   "year": 2001,
+   "genre": "Electronic, Funk / Soul",
+   "subgenre": "Pop Rock, Soul, Disco"
+  },
+  {
+   "album": "The Rising",
+   "artist": "Bruce Springsteen",
+   "year": 2002,
+   "genre": "Rock",
+   "subgenre": "Folk Rock, Classic Rock"
+  },
+  {
+   "album": "Grievous Angel",
+   "artist": "Gram Parsons",
+   "year": 1974,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Country Rock, Honky Tonk"
+  },
+  {
+   "album": "Cheap Trick at Budokan",
+   "artist": "Cheap Trick",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "Power Pop, Pop Rock, Arena Rock, Hard Rock"
+  },
+  {
+   "album": "Sleepless",
+   "artist": "Peter Wolf",
+   "year": 2002,
+   "genre": "Rock, Blues, Pop",
+   "subgenre": "Blues Rock, Pop Rock, Ballad"
+  },
+  {
+   "album": "Outlandos d'Amour",
+   "artist": "The Police",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, New Wave, Punk"
+  },
+  {
+   "album": "Another Green World",
+   "artist": "Brian Eno",
+   "year": 1975,
+   "genre": "Electronic",
+   "subgenre": "Experimental, Ambient"
+  },
+  {
+   "album": "Vampire Weekend",
+   "artist": "Vampire Weekend",
+   "year": 2007,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Stories From the City, Stories From the Sea",
+   "artist": "PJ Harvey",
+   "year": 2000,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Here Come the Warm Jets",
+   "artist": "Brian Eno",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Art Rock, Glam"
+  },
+  {
+   "album": "All Things Must Pass",
+   "artist": "George Harrison",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "#1 Record",
+   "artist": "Big Star",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Power Pop"
+  },
+  {
+   "album": "In Utero",
+   "artist": "Nirvana",
+   "year": 1993,
+   "genre": "Rock",
+   "subgenre": "Grunge, Alternative Rock"
+  },
+  {
+   "album": "Sea Change",
+   "artist": "Beck",
+   "year": 2002,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Post Rock"
+  },
+  {
+   "album": "Tha Carter III",
+   "artist": "Lil Wayne",
+   "year": 2008,
+   "genre": "Hip Hop, Funk / Soul",
+   "subgenre": "RnB/Swing, Screw, Pop Rap, Thug Rap"
+  },
+  {
+   "album": "Boys Don't Cry",
+   "artist": "The Cure",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "New Wave, Post-Punk"
+  },
+  {
+   "album": "Live at the Harlem Square Club, 1963",
+   "artist": "Sam Cooke",
+   "year": 1985,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Rum Sodomy & the Lash",
+   "artist": "The Pogues",
+   "year": 1985,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Folk Rock, Celtic, Punk"
+  },
+  {
+   "album": "Suicide",
+   "artist": "Suicide",
+   "year": 1977,
+   "genre": "Electronic, Rock",
+   "subgenre": "New Wave, Experimental"
+  },
+  {
+   "album": "Q: Are We Not Men? A: We Are Devo!",
+   "artist": "DEVO",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "New Wave"
+  },
+  {
+   "album": "In Color",
+   "artist": "Cheap Trick",
+   "year": 1977,
+   "genre": "Rock",
+   "subgenre": "Power Pop, Pop Rock, Hard Rock"
+  },
+  {
+   "album": "The World Is a Ghetto",
+   "artist": "War",
+   "year": 1972,
+   "genre": "Funk / Soul",
+   "subgenre": "Funk"
+  },
+  {
+   "album": "Fly Like an Eagle",
+   "artist": "Steve Miller Band",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "Back in the USA",
+   "artist": "MC5",
+   "year": 1970,
+   "genre": "Rock",
+   "subgenre": "Garage Rock, Rock & Roll"
+  },
+  {
+   "album": "Getz / Gilberto",
+   "artist": "Stan Getz�/�Joao Gilberto�featuring�Antonio Carlos Jobim",
+   "year": 1964,
+   "genre": "Jazz",
+   "subgenre": "Bossa Nova,�Latin Jazz"
+  },
+  {
+   "album": "Synchronicity",
+   "artist": "The Police",
+   "year": 1983,
+   "genre": "Rock, Pop",
+   "subgenre": "New Wave, Pop Rock"
+  },
+  {
+   "album": "Third/Sister Lovers",
+   "artist": "Big Star",
+   "year": 1978,
+   "genre": "Rock",
+   "subgenre": "Lo-Fi,�Indie Rock"
+  },
+  {
+   "album": "For Everyman",
+   "artist": "Jackson Browne",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Pop Rock, Classic Rock"
+  },
+  {
+   "album": "Back to Black",
+   "artist": "Amy Winehouse",
+   "year": 2006,
+   "genre": "Funk / Soul, Pop",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "John Prine",
+   "artist": "John Prine",
+   "year": 1971,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country, Folk"
+  },
+  {
+   "album": "Strictly Business",
+   "artist": "EPMD",
+   "year": 1987,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Love It to Death",
+   "artist": "Alice Cooper",
+   "year": 1971,
+   "genre": "Rock",
+   "subgenre": "Classic Rock"
+  },
+  {
+   "album": "How Will the Wolf Survive?",
+   "artist": "Los Lobos",
+   "year": 1984,
+   "genre": "Rock, Latin",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "Here, My Dear",
+   "artist": "Marvin Gaye",
+   "year": 1978,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul"
+  },
+  {
+   "album": "Z",
+   "artist": "My Morning Jacket",
+   "year": 2005,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "Tumbleweed Connection",
+   "artist": "Elton John",
+   "year": 1970,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Soft Rock, Country Rock"
+  },
+  {
+   "album": "The Drifters' Golden Hits",
+   "artist": "The Drifters",
+   "year": 1968,
+   "genre": "Rock, Funk / Soul",
+   "subgenre": "Rhythm & Blues, Soul"
+  },
+  {
+   "album": "Live Through This",
+   "artist": "Hole",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Grunge"
+  },
+  {
+   "album": "Metal Box",
+   "artist": "Public Image Ltd.",
+   "year": 1979,
+   "genre": "Electronic, Rock",
+   "subgenre": "Post-Punk, Dub, Avantgarde, Experimental"
+  },
+  {
+   "album": "Document",
+   "artist": "R.E.M.",
+   "year": 1987,
+   "genre": "Rock",
+   "subgenre": "None"
+  },
+  {
+   "album": "Heaven Up Here",
+   "artist": "Echo and The Bunnymen",
+   "year": 1981,
+   "genre": "Rock",
+   "subgenre": "New Wave, Indie Rock"
+  },
+  {
+   "album": "Hysteria",
+   "artist": "Def Leppard",
+   "year": 1987,
+   "genre": "Rock",
+   "subgenre": "Hard Rock, Arena Rock"
+  },
+  {
+   "album": "69 Love Songs",
+   "artist": "The Magnetic Fields",
+   "year": 1999,
+   "genre": "Electronic, Rock",
+   "subgenre": "Synth-pop, Indie Rock"
+  },
+  {
+   "album": "A Rush of Blood to the Head",
+   "artist": "Coldplay",
+   "year": 2002,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Pop Rock"
+  },
+  {
+   "album": "Tunnel of Love",
+   "artist": "Bruce Springsteen",
+   "year": 1987,
+   "genre": "Rock",
+   "subgenre": "None"
+  },
+  {
+   "album": "The Paul Butterfield Blues Band",
+   "artist": "The Paul Butterfield Blues Band",
+   "year": 1965,
+   "genre": "Rock, Blues",
+   "subgenre": "Blues Rock, Electric Blues, Chicago Blues, Modern Electric Blues, Harmonica Blues"
+  },
+  {
+   "album": "The Score",
+   "artist": "Fugees",
+   "year": 1996,
+   "genre": "Hip Hop",
+   "subgenre": "Pop Rap, Conscious"
+  },
+  {
+   "album": "Radio",
+   "artist": "L.L. Cool J",
+   "year": 1985,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "I Want to See the Bright Lights Tonight",
+   "artist": "Richard & Linda Thompson",
+   "year": 1974,
+   "genre": "Rock",
+   "subgenre": "Classic Rock, Folk Rock"
+  },
+  {
+   "album": "Faith",
+   "artist": "George Michael",
+   "year": 1987,
+   "genre": "Electronic, Rock, Funk / Soul, Blues, Pop",
+   "subgenre": "Downtempo, Soft Rock, Pop Rock, Synth-pop"
+  },
+  {
+   "album": "The Smiths",
+   "artist": "The Smiths",
+   "year": 1984,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Proxima estacion: Esperanza",
+   "artist": "Manu Chao",
+   "year": 2001,
+   "genre": "Rock, Reggae, Latin",
+   "subgenre": "Folk Rock, Reggae, Reggae-Pop"
+  },
+  {
+   "album": "Armed Forces",
+   "artist": "Elvis Costello & The Attractions",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "New Wave, Pop Rock"
+  },
+  {
+   "album": "Life After Death",
+   "artist": "The Notorious B.I.G.",
+   "year": 1997,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Down Every Road",
+   "artist": "Merle Haggard",
+   "year": 1996,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country"
+  },
+  {
+   "album": "All Time Greatest Hits",
+   "artist": "Loretta Lynn",
+   "year": 2002,
+   "genre": "Folk, World, & Country",
+   "subgenre": "Country"
+  },
+  {
+   "album": "Maggot Brain",
+   "artist": "Funkadelic",
+   "year": 1971,
+   "genre": "Rock, Funk / Soul",
+   "subgenre": "P.Funk, Psychedelic Rock"
+  },
+  {
+   "album": "Only Built 4 Cuban Linx",
+   "artist": "Raekwon",
+   "year": 1995,
+   "genre": "Hip Hop",
+   "subgenre": "None"
+  },
+  {
+   "album": "Voodoo",
+   "artist": "D'Angelo",
+   "year": 2000,
+   "genre": "Hip Hop, Funk / Soul",
+   "subgenre": "Soul, Funk, Neo Soul"
+  },
+  {
+   "album": "Guitar Town",
+   "artist": "Steve Earle",
+   "year": 1986,
+   "genre": "Rock, Folk, World, & Country",
+   "subgenre": "Country, Honky Tonk"
+  },
+  {
+   "album": "Entertainment!",
+   "artist": "Gang of Four",
+   "year": 1979,
+   "genre": "Rock",
+   "subgenre": "Post-Punk, New Wave"
+  },
+  {
+   "album": "All the Young Dudes",
+   "artist": "Mott the Hoople",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Classic Rock, Glam"
+  },
+  {
+   "album": "Vitalogy",
+   "artist": "Pearl Jam",
+   "year": 1994,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Hard Rock"
+  },
+  {
+   "album": "That's the Way of the World",
+   "artist": "Earth, Wind & Fire",
+   "year": 1975,
+   "genre": "Funk / Soul",
+   "subgenre": "Soul, Funk, Disco"
+  },
+  {
+   "album": "She's So Unusual",
+   "artist": "Cyndi Lauper",
+   "year": 1983,
+   "genre": "Electronic, Rock",
+   "subgenre": "Pop Rock, Synth-pop"
+  },
+  {
+   "album": "New Day Rising",
+   "artist": "Husker Du",
+   "year": 1985,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock, Hardcore, Punk"
+  },
+  {
+   "album": "Destroyer",
+   "artist": "KISS",
+   "year": 1976,
+   "genre": "Rock",
+   "subgenre": "Hard Rock"
+  },
+  {
+   "album": "Tres hombres",
+   "artist": "ZZ Top",
+   "year": 1973,
+   "genre": "Rock",
+   "subgenre": "Blues Rock, Classic Rock"
+  },
+  {
+   "album": "Born Under a Bad Sign",
+   "artist": "Albert King",
+   "year": 1967,
+   "genre": "Funk / Soul, Blues",
+   "subgenre": "Electric Blues, Rhythm & Blues, Soul"
+  },
+  {
+   "album": "Touch",
+   "artist": "Eurythmics",
+   "year": 1983,
+   "genre": "Electronic, Pop",
+   "subgenre": "New Wave, Synth-pop"
+  },
+  {
+   "album": "Yankee Hotel Foxtrot",
+   "artist": "Wilco",
+   "year": 2002,
+   "genre": "Rock",
+   "subgenre": "Alternative Rock"
+  },
+  {
+   "album": "Oracular Spectacular",
+   "artist": "MGMT",
+   "year": 2007,
+   "genre": "Electronic, Rock, Pop",
+   "subgenre": "Synth-pop, Indie Rock"
+  },
+  {
+   "album": "Give It Up",
+   "artist": "Bonnie Raitt",
+   "year": 1972,
+   "genre": "Rock",
+   "subgenre": "Blues Rock"
+  },
+  {
+   "album": "Boz Scaggs",
+   "artist": "Boz Scaggs",
+   "year": 1969,
+   "genre": "Rock",
+   "subgenre": "Pop Rock"
+  },
+  {
+   "album": "White Blood Cells",
+   "artist": "The White Stripes",
+   "year": 2001,
+   "genre": "Rock",
+   "subgenre": "Indie Rock, Alternative Rock, Blues Rock, Garage Rock"
+  },
+  {
+   "album": "The Stone Roses",
+   "artist": "The Stone Roses",
+   "year": 1989,
+   "genre": "Rock",
+   "subgenre": "Indie Rock"
+  },
+  {
+   "album": "Live in Cook County Jail",
+   "artist": "B.B. King",
+   "year": 1971,
+   "genre": "Blues",
+   "subgenre": "Electric Blues"
+  },
+  {
+   "album": "Aquemini",
+   "artist": "OutKast",
+   "year": 1998,
+   "genre": "Hip Hop",
+   "subgenre": "Reggae, Gangsta, Soul, Conscious"
+  }
+ ]
+}
