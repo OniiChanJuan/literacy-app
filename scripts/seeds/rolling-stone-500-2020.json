@@ -1,0 +1,4006 @@
+{
+ "source": "Rolling Stone 500 Greatest Albums (2020 revision), via gist hasmanyguitars/232302a4",
+ "count": 500,
+ "albums": [
+  {
+   "album": "What's Going On",
+   "artist": "Marvin Gaye",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 1
+  },
+  {
+   "album": "Pet Sounds",
+   "artist": "The Beach Boys",
+   "year": 1966,
+   "genre": "",
+   "subgenre": "",
+   "rank": 2
+  },
+  {
+   "album": "Blue",
+   "artist": "Joni Mitchell",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 3
+  },
+  {
+   "album": "Songs in the Key of Life",
+   "artist": "Stevie Wonder",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 4
+  },
+  {
+   "album": "Abbey Road",
+   "artist": "The Beatles",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 5
+  },
+  {
+   "album": "Nevermind",
+   "artist": "Nirvana",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 6
+  },
+  {
+   "album": "Rumours",
+   "artist": "Fleetwood Mac",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 7
+  },
+  {
+   "album": "Purple Rain",
+   "artist": "Prince and the Revolution",
+   "year": 1984,
+   "genre": "",
+   "subgenre": "",
+   "rank": 8
+  },
+  {
+   "album": "Blood on the Tracks",
+   "artist": "Bob Dylan",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 9
+  },
+  {
+   "album": "The Miseducation of Lauryn Hill",
+   "artist": "Lauryn Hill",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 10
+  },
+  {
+   "album": "Revolver",
+   "artist": "The Beatles",
+   "year": 1966,
+   "genre": "",
+   "subgenre": "",
+   "rank": 11
+  },
+  {
+   "album": "Thriller",
+   "artist": "Michael Jackson",
+   "year": 1982,
+   "genre": "",
+   "subgenre": "",
+   "rank": 12
+  },
+  {
+   "album": "I Never Loved a Man the Way I Love You",
+   "artist": "Aretha Franklin",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 13
+  },
+  {
+   "album": "Exile on Main Street",
+   "artist": "The Rolling Stones",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 14
+  },
+  {
+   "album": "It Takes a Nation of Millions to Hold Us Back",
+   "artist": "Public Enemy",
+   "year": 1988,
+   "genre": "",
+   "subgenre": "",
+   "rank": 15
+  },
+  {
+   "album": "London Calling",
+   "artist": "The Clash",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 16
+  },
+  {
+   "album": "My Beautiful Dark Twisted Fantasy",
+   "artist": "Kanye West",
+   "year": 2010,
+   "genre": "",
+   "subgenre": "",
+   "rank": 17
+  },
+  {
+   "album": "Highway 61 Revisited",
+   "artist": "Bob Dylan",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 18
+  },
+  {
+   "album": "To Pimp a Butterfly",
+   "artist": "Kendrick Lamar",
+   "year": 2015,
+   "genre": "",
+   "subgenre": "",
+   "rank": 19
+  },
+  {
+   "album": "Kid A",
+   "artist": "Radiohead",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 20
+  },
+  {
+   "album": "Born to Run",
+   "artist": "Bruce Springsteen",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 21
+  },
+  {
+   "album": "Ready to Die",
+   "artist": "The Notorious B.I.G.",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 22
+  },
+  {
+   "album": "The Velvet Underground and Nico",
+   "artist": "The Velvet Underground",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 23
+  },
+  {
+   "album": "Sgt. Pepper’s Lonely Hearts Club Band",
+   "artist": "The Beatles",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 24
+  },
+  {
+   "album": "Tapestry",
+   "artist": "Carole King",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 25
+  },
+  {
+   "album": "Horses",
+   "artist": "Patti Smith",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 26
+  },
+  {
+   "album": "Enter the Wu-Tang(36 Chambers)",
+   "artist": "Wu-Tang Clan",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 27
+  },
+  {
+   "album": "Voodoo",
+   "artist": "D’Angelo",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 28
+  },
+  {
+   "album": "White Album",
+   "artist": "The Beatles",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 29
+  },
+  {
+   "album": "Are You Experienced",
+   "artist": "Jimi Hendrix",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 30
+  },
+  {
+   "album": "Kind of Blue",
+   "artist": "Miles Davis",
+   "year": 1959,
+   "genre": "",
+   "subgenre": "",
+   "rank": 31
+  },
+  {
+   "album": "Lemonade",
+   "artist": "Beyoncé",
+   "year": 2016,
+   "genre": "",
+   "subgenre": "",
+   "rank": 32
+  },
+  {
+   "album": "Back to Black",
+   "artist": "Amy Winehouse",
+   "year": 2006,
+   "genre": "",
+   "subgenre": "",
+   "rank": 33
+  },
+  {
+   "album": "Innervisions",
+   "artist": "Stevie Wonder",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 34
+  },
+  {
+   "album": "Rubber Soul",
+   "artist": "The Beatles",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 35
+  },
+  {
+   "album": "Off the Wall",
+   "artist": "Michael Jackson",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 36
+  },
+  {
+   "album": "The Chronic",
+   "artist": "Dr. Dre",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 37
+  },
+  {
+   "album": "Blonde on Blonde",
+   "artist": "Bob Dylan",
+   "year": 1966,
+   "genre": "",
+   "subgenre": "",
+   "rank": 38
+  },
+  {
+   "album": "Remain in Light",
+   "artist": "Talking Heads",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 39
+  },
+  {
+   "album": "The Rise and Fall of Ziggy Stardust and the Spiders From Mars",
+   "artist": "David Bowie",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 40
+  },
+  {
+   "album": "Let It Bleed",
+   "artist": "The Rolling Stones",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 41
+  },
+  {
+   "album": "OK Computer",
+   "artist": "Radiohead",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 42
+  },
+  {
+   "album": "The Low End Theory",
+   "artist": "A Tribe Called Quest",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 43
+  },
+  {
+   "album": "Illmatic",
+   "artist": "Nas",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 44
+  },
+  {
+   "album": "Sign O' the Times",
+   "artist": "Prince",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 45
+  },
+  {
+   "album": "Graceland",
+   "artist": "Paul Simon",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 46
+  },
+  {
+   "album": "Ramones",
+   "artist": "Ramones",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 47
+  },
+  {
+   "album": "Legend",
+   "artist": "Bob Marley and the Wailers",
+   "year": 1984,
+   "genre": "",
+   "subgenre": "",
+   "rank": 48
+  },
+  {
+   "album": "Aquemini",
+   "artist": "OutKast",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 49
+  },
+  {
+   "album": "The Blueprint",
+   "artist": "Jay-Z",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 50
+  },
+  {
+   "album": "The Great Twenty-Eight",
+   "artist": "Chuck Berry",
+   "year": 1982,
+   "genre": "",
+   "subgenre": "",
+   "rank": 51
+  },
+  {
+   "album": "Station to Station",
+   "artist": "David Bowie",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 52
+  },
+  {
+   "album": "Electric Ladyland",
+   "artist": "Jimi Hendrix",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 53
+  },
+  {
+   "album": "Star Time",
+   "artist": "James Brown",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 54
+  },
+  {
+   "album": "The Dark Side of the Moon",
+   "artist": "Pink Floyd",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 55
+  },
+  {
+   "album": "Exile in Guyville",
+   "artist": "Liz Phair",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 56
+  },
+  {
+   "album": "The Band",
+   "artist": "The Band",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 57
+  },
+  {
+   "album": "Led Zeppelin IV",
+   "artist": "Led Zeppelin",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 58
+  },
+  {
+   "album": "Talking Book",
+   "artist": "Stevie Wonder",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 59
+  },
+  {
+   "album": "Astral Weeks",
+   "artist": "Van Morrison",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 60
+  },
+  {
+   "album": "Paid in Full",
+   "artist": "Eric B. and Rakim",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 61
+  },
+  {
+   "album": "Appetite for Destruction",
+   "artist": "Guns N’ Roses",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 62
+  },
+  {
+   "album": "Aja",
+   "artist": "Steely Dan",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 63
+  },
+  {
+   "album": "Stankonia",
+   "artist": "OutKast",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 64
+  },
+  {
+   "album": "Live at the Apollo",
+   "artist": "James Brown",
+   "year": 1963,
+   "genre": "",
+   "subgenre": "",
+   "rank": 65
+  },
+  {
+   "album": "A Love Supreme",
+   "artist": "John Coltrane",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 66
+  },
+  {
+   "album": "Reasonable Doubt",
+   "artist": "Jay-Z",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 67
+  },
+  {
+   "album": "Hounds of Love",
+   "artist": "Kate Bush",
+   "year": 1985,
+   "genre": "",
+   "subgenre": "",
+   "rank": 68
+  },
+  {
+   "album": "Jagged Little Pill",
+   "artist": "Alanis Morissette",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 69
+  },
+  {
+   "album": "Straight Outta Compton",
+   "artist": "N.W.A",
+   "year": 1988,
+   "genre": "",
+   "subgenre": "",
+   "rank": 70
+  },
+  {
+   "album": "Exodus",
+   "artist": "Bob Marley and the Wailers",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 71
+  },
+  {
+   "album": "Harvest",
+   "artist": "Neil Young",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 72
+  },
+  {
+   "album": "Loveless",
+   "artist": "My Bloody Valentine",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 73
+  },
+  {
+   "album": "The College Dropout",
+   "artist": "Kanye West",
+   "year": 2004,
+   "genre": "",
+   "subgenre": "",
+   "rank": 74
+  },
+  {
+   "album": "Lady Soul",
+   "artist": "Aretha Franklin",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 75
+  },
+  {
+   "album": "Superfly",
+   "artist": "Curtis Mayfield",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 76
+  },
+  {
+   "album": "Who's Next",
+   "artist": "The Who",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 77
+  },
+  {
+   "album": "The Sun Sessions",
+   "artist": "Elvis Presley",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 78
+  },
+  {
+   "album": "Blond",
+   "artist": "Frank Ocean",
+   "year": 2016,
+   "genre": "",
+   "subgenre": "",
+   "rank": 79
+  },
+  {
+   "album": "Never Mind the Bollocks Here’s the Sex Pistols",
+   "artist": "The Sex Pistols",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 80
+  },
+  {
+   "album": "Beyoncé",
+   "artist": "Beyoncé",
+   "year": 2013,
+   "genre": "",
+   "subgenre": "",
+   "rank": 81
+  },
+  {
+   "album": "There’s a Riot Goin’ On",
+   "artist": "Sly and the Family Stone",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 82
+  },
+  {
+   "album": "Dusty in Memphis",
+   "artist": "Dusty Springfield",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 83
+  },
+  {
+   "album": "Back in Black",
+   "artist": "AC/DC",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 84
+  },
+  {
+   "album": "Plastic Ono Band",
+   "artist": "John Lennon",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 85
+  },
+  {
+   "album": "The Doors",
+   "artist": "The Doors",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 86
+  },
+  {
+   "album": "Bitches Brew",
+   "artist": "Miles Davis",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 87
+  },
+  {
+   "album": "Hunky Dory",
+   "artist": "David Bowie",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 88
+  },
+  {
+   "album": "Baduizm",
+   "artist": "Erykah Badu",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 89
+  },
+  {
+   "album": "After the Gold Rush",
+   "artist": "Neil Young",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 90
+  },
+  {
+   "album": "Darkness on the Edge of Town",
+   "artist": "Bruce Springsteen",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 91
+  },
+  {
+   "album": "Axis: Bold as Love",
+   "artist": "The Jimi Hendrix Experience",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 92
+  },
+  {
+   "album": "Supa Dupa Fly",
+   "artist": "Missy “Misdemeanor” Elliott",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 93
+  },
+  {
+   "album": "Fun House",
+   "artist": "The Stooges",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 94
+  },
+  {
+   "album": "Take Care",
+   "artist": "Drake",
+   "year": 2011,
+   "genre": "",
+   "subgenre": "",
+   "rank": 95
+  },
+  {
+   "album": "Automatic for the People",
+   "artist": "R.E.M.",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 96
+  },
+  {
+   "album": "Master of Puppets",
+   "artist": "Metallica",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 97
+  },
+  {
+   "album": "Car Wheels on a Gravel Road",
+   "artist": "Lucinda Williams",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 98
+  },
+  {
+   "album": "Red",
+   "artist": "Taylor Swift",
+   "year": 2012,
+   "genre": "",
+   "subgenre": "",
+   "rank": 99
+  },
+  {
+   "album": "Music From Big Pink",
+   "artist": "The Band",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 100
+  },
+  {
+   "album": "Led Zeppelin",
+   "artist": "Led Zeppelin",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 101
+  },
+  {
+   "album": "The Clash",
+   "artist": "The Clash",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 102
+  },
+  {
+   "album": "Three Feet High And Rising",
+   "artist": "De La Soul",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 103
+  },
+  {
+   "album": "Sticky Fingers",
+   "artist": "The Rolling Stones",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 104
+  },
+  {
+   "album": "At Fillmore East",
+   "artist": "The Allman Brothers",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 105
+  },
+  {
+   "album": "Live Through This",
+   "artist": "Hole",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 106
+  },
+  {
+   "album": "Marquee Moon",
+   "artist": "Television",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 107
+  },
+  {
+   "album": "When the Pawn ...",
+   "artist": "Fiona Apple",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 108
+  },
+  {
+   "album": "Transformer",
+   "artist": "Lou Reed",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 109
+  },
+  {
+   "album": "Court and Spark",
+   "artist": "Joni Mitchell",
+   "year": 1974,
+   "genre": "",
+   "subgenre": "",
+   "rank": 110
+  },
+  {
+   "album": "Control",
+   "artist": "Janet Jackson",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 111
+  },
+  {
+   "album": "Goodbye Yellow Brick Road",
+   "artist": "Elton John",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 112
+  },
+  {
+   "album": "The Queen Is Dead",
+   "artist": "The Smiths",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 113
+  },
+  {
+   "album": "Is This It",
+   "artist": "The Strokes",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 114
+  },
+  {
+   "album": "good kid, m.A.A.d city",
+   "artist": "Kendrick Lamar",
+   "year": 2012,
+   "genre": "",
+   "subgenre": "",
+   "rank": 115
+  },
+  {
+   "album": "Disintegration",
+   "artist": "The Cure",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 116
+  },
+  {
+   "album": "Late Registration",
+   "artist": "Kanye West",
+   "year": 2005,
+   "genre": "",
+   "subgenre": "",
+   "rank": 117
+  },
+  {
+   "album": "Hotel California",
+   "artist": "The Eagles",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 118
+  },
+  {
+   "album": "Stand!",
+   "artist": "Sly and the Family Stone",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 119
+  },
+  {
+   "album": "Moondance",
+   "artist": "Van Morrison",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 120
+  },
+  {
+   "album": "This Year’s Model",
+   "artist": "Elvis Costello",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 121
+  },
+  {
+   "album": "The Downward Spiral",
+   "artist": "Nine Inch Nails",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 122
+  },
+  {
+   "album": "Led Zeppelin II",
+   "artist": "Led Zeppelin",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 123
+  },
+  {
+   "album": "Achtung Baby",
+   "artist": "U2",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 124
+  },
+  {
+   "album": "Paul's Boutique",
+   "artist": "Beastie Boys",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 125
+  },
+  {
+   "album": "My Life",
+   "artist": "Mary J. Blige",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 126
+  },
+  {
+   "album": "Modern Sounds in Country and Western Music",
+   "artist": "Ray Charles",
+   "year": 1962,
+   "genre": "",
+   "subgenre": "",
+   "rank": 127
+  },
+  {
+   "album": "A Night at the Opera",
+   "artist": "Queen",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 128
+  },
+  {
+   "album": "The Wall",
+   "artist": "Pink Floyd",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 129
+  },
+  {
+   "album": "1999",
+   "artist": "Prince",
+   "year": 1982,
+   "genre": "",
+   "subgenre": "",
+   "rank": 130
+  },
+  {
+   "album": "Dummy",
+   "artist": "Portishead",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 131
+  },
+  {
+   "album": "40 Greatest Hits",
+   "artist": "Hank Williams",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 132
+  },
+  {
+   "album": "Hejira",
+   "artist": "Joni Mitchell",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 133
+  },
+  {
+   "album": "The Score",
+   "artist": "Fugees",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 134
+  },
+  {
+   "album": "The Joshua Tree",
+   "artist": "U2",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 135
+  },
+  {
+   "album": "Maggot Brain",
+   "artist": "Funkadelic",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 136
+  },
+  {
+   "album": "21",
+   "artist": "Adele",
+   "year": 2011,
+   "genre": "",
+   "subgenre": "",
+   "rank": 137
+  },
+  {
+   "album": "The Immaculate Collection",
+   "artist": "Madonna",
+   "year": 1990,
+   "genre": "",
+   "subgenre": "",
+   "rank": 138
+  },
+  {
+   "album": "Paranoid",
+   "artist": "Black Sabbath",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 139
+  },
+  {
+   "album": "Catch a Fire",
+   "artist": "Bob Marley and the Wailers",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 140
+  },
+  {
+   "album": "Doolittle",
+   "artist": "Pixies",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 141
+  },
+  {
+   "album": "Born in the U.S.A.",
+   "artist": "Bruce Springsteen",
+   "year": 1984,
+   "genre": "",
+   "subgenre": "",
+   "rank": 142
+  },
+  {
+   "album": "The Velvet Underground",
+   "artist": "The Velvet Underground",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 143
+  },
+  {
+   "album": "Physical Graffiti",
+   "artist": "Led Zeppelin",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 144
+  },
+  {
+   "album": "The Marshall Mathers LP",
+   "artist": "Eminem",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 145
+  },
+  {
+   "album": "Parallel Lines",
+   "artist": "Blondie",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 146
+  },
+  {
+   "album": "Grace",
+   "artist": "Jeff Buckley",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 147
+  },
+  {
+   "album": "Channel Orange",
+   "artist": "Frank Ocean",
+   "year": 2012,
+   "genre": "",
+   "subgenre": "",
+   "rank": 148
+  },
+  {
+   "album": "John Prine",
+   "artist": "John Prine",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 149
+  },
+  {
+   "album": "Nebraska",
+   "artist": "Bruce Springsteen",
+   "year": 1982,
+   "genre": "",
+   "subgenre": "",
+   "rank": 150
+  },
+  {
+   "album": "Faith",
+   "artist": "George Michael",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 151
+  },
+  {
+   "album": "Pretenders",
+   "artist": "The Pretenders",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 152
+  },
+  {
+   "album": "Rid of Me",
+   "artist": "PJ Harvey",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 153
+  },
+  {
+   "album": "Amazing Grace",
+   "artist": "Aretha Franklin",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 154
+  },
+  {
+   "album": "The Black Album",
+   "artist": "Jay-Z",
+   "year": 2003,
+   "genre": "",
+   "subgenre": "",
+   "rank": 155
+  },
+  {
+   "album": "Let It Be",
+   "artist": "The Replacements",
+   "year": 1984,
+   "genre": "",
+   "subgenre": "",
+   "rank": 156
+  },
+  {
+   "album": "(What's the Story) Morning Glory?",
+   "artist": "Oasis",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 157
+  },
+  {
+   "album": "Mama's Gun",
+   "artist": "Erykah Badu",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 158
+  },
+  {
+   "album": "Synchronicity",
+   "artist": "The Police",
+   "year": 1983,
+   "genre": "",
+   "subgenre": "",
+   "rank": 159
+  },
+  {
+   "album": "Ten",
+   "artist": "Pearl Jam",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 160
+  },
+  {
+   "album": "Crosby, Stills & Nash",
+   "artist": "Crosby, Stills & Nash",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 161
+  },
+  {
+   "album": "Different Class",
+   "artist": "Pulp",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 162
+  },
+  {
+   "album": "Saturday Night Fever",
+   "artist": "Various Artists",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 163
+  },
+  {
+   "album": "At Folsom Prison",
+   "artist": "Johnny Cash",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 164
+  },
+  {
+   "album": "Murmur",
+   "artist": "R.E.M.",
+   "year": 1983,
+   "genre": "",
+   "subgenre": "",
+   "rank": 165
+  },
+  {
+   "album": "20 Golden Greats",
+   "artist": "Buddy Holly",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 166
+  },
+  {
+   "album": "Violator",
+   "artist": "Depeche Mode",
+   "year": 1990,
+   "genre": "",
+   "subgenre": "",
+   "rank": 167
+  },
+  {
+   "album": "Can’t Buy a Thrill",
+   "artist": "Steely Dan",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 168
+  },
+  {
+   "album": "The Stranger",
+   "artist": "Billy Joel",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 169
+  },
+  {
+   "album": "Disraeli Gears",
+   "artist": "Cream",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 170
+  },
+  {
+   "album": "Daydream Nation",
+   "artist": "Sonic Youth",
+   "year": 1988,
+   "genre": "",
+   "subgenre": "",
+   "rank": 171
+  },
+  {
+   "album": "Bridge Over Troubled Water",
+   "artist": "Simon and Garfunkel",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 172
+  },
+  {
+   "album": "In Utero",
+   "artist": "Nirvana",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 173
+  },
+  {
+   "album": "The Harder They Come: Original Soundtrack",
+   "artist": "Jimmy Cliff and Various Artists",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 174
+  },
+  {
+   "album": "DAMN.",
+   "artist": "Kendrick Lamar",
+   "year": 2017,
+   "genre": "",
+   "subgenre": "",
+   "rank": 175
+  },
+  {
+   "album": "Fear of a Black Planet",
+   "artist": "Public Enemy",
+   "year": 1990,
+   "genre": "",
+   "subgenre": "",
+   "rank": 176
+  },
+  {
+   "album": "Every Picture Tells a Story",
+   "artist": "Rod Stewart",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 177
+  },
+  {
+   "album": "Otis Blue",
+   "artist": "Otis Redding",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 178
+  },
+  {
+   "album": "Life After Death",
+   "artist": "Notorious B.I.G.",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 179
+  },
+  {
+   "album": "Forever Changes",
+   "artist": "Love",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 180
+  },
+  {
+   "album": "Bringing It All Back Home",
+   "artist": "Bob Dylan",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 181
+  },
+  {
+   "album": "Sweet Baby James",
+   "artist": "James Taylor",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 182
+  },
+  {
+   "album": "Brown Sugar",
+   "artist": "D'Angelo",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 183
+  },
+  {
+   "album": "She’s So Unusual",
+   "artist": "Cyndi Lauper",
+   "year": 1983,
+   "genre": "",
+   "subgenre": "",
+   "rank": 184
+  },
+  {
+   "album": "Beggars Banquet",
+   "artist": "The Rolling Stones",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 185
+  },
+  {
+   "album": "Blood Sugar Sex Magik",
+   "artist": "Red Hot Chili Peppers",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 186
+  },
+  {
+   "album": "AmeriKKKa’s Most Wanted",
+   "artist": "Ice Cube",
+   "year": 1990,
+   "genre": "",
+   "subgenre": "",
+   "rank": 187
+  },
+  {
+   "album": "Electric Warrior",
+   "artist": "T. Rex",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 188
+  },
+  {
+   "album": "Dig Me Out",
+   "artist": "Sleater-Kinney",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 189
+  },
+  {
+   "album": "Tommy",
+   "artist": "The Who",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 190
+  },
+  {
+   "album": "At Last!",
+   "artist": "Etta James",
+   "year": 1961,
+   "genre": "",
+   "subgenre": "",
+   "rank": 191
+  },
+  {
+   "album": "Licensed to Ill",
+   "artist": "Beastie Boys",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 192
+  },
+  {
+   "album": "Willy and the Poor Boys",
+   "artist": "Creedence Clearwater Revival",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 193
+  },
+  {
+   "album": "Bad",
+   "artist": "Michael Jackson",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 194
+  },
+  {
+   "album": "Songs of Leonard Cohen",
+   "artist": "Leonard Cohen",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 195
+  },
+  {
+   "album": "Body Talk",
+   "artist": "Robyn",
+   "year": 2010,
+   "genre": "",
+   "subgenre": "",
+   "rank": 196
+  },
+  {
+   "album": "Meet the Beatles!",
+   "artist": "The Beatles",
+   "year": 1964,
+   "genre": "",
+   "subgenre": "",
+   "rank": 197
+  },
+  {
+   "album": "The B-52's",
+   "artist": "The B-52's",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 198
+  },
+  {
+   "album": "Slanted and Enchanted",
+   "artist": "Pavement",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 199
+  },
+  {
+   "album": "Diamond Life",
+   "artist": "Sade",
+   "year": 1984,
+   "genre": "",
+   "subgenre": "",
+   "rank": 200
+  },
+  {
+   "album": "Midnight Marauders",
+   "artist": "A Tribe Called Quest",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 201
+  },
+  {
+   "album": "Homogenic",
+   "artist": "Björk",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 202
+  },
+  {
+   "album": "Pink Moon",
+   "artist": "Nick Drake",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 203
+  },
+  {
+   "album": "Graduation",
+   "artist": "Kanye West",
+   "year": 2007,
+   "genre": "",
+   "subgenre": "",
+   "rank": 204
+  },
+  {
+   "album": "Tea for the Tillerman",
+   "artist": "Cat Stevens",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 205
+  },
+  {
+   "album": "Low",
+   "artist": "David Bowie",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 206
+  },
+  {
+   "album": "Eagles",
+   "artist": "Eagles",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 207
+  },
+  {
+   "album": "Tha Carter III",
+   "artist": "Lil Wayne",
+   "year": 2008,
+   "genre": "",
+   "subgenre": "",
+   "rank": 208
+  },
+  {
+   "album": "Raising Hell",
+   "artist": "Run-DMC",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 209
+  },
+  {
+   "album": "The Birth of Soul",
+   "artist": "Ray Charles",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 210
+  },
+  {
+   "album": "Unknown Pleasures",
+   "artist": "Joy Divison",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 211
+  },
+  {
+   "album": "Wild Is the Wind",
+   "artist": "Nina Simone",
+   "year": 1966,
+   "genre": "",
+   "subgenre": "",
+   "rank": 212
+  },
+  {
+   "album": "The Idler Wheel",
+   "artist": "Fiona Apple",
+   "year": 2012,
+   "genre": "",
+   "subgenre": "",
+   "rank": 213
+  },
+  {
+   "album": "Wildflowers",
+   "artist": "Tom Petty",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 214
+  },
+  {
+   "album": "American Beauty",
+   "artist": "Grateful Dead",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 215
+  },
+  {
+   "album": "Either/Or",
+   "artist": "Elliott Smith",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 216
+  },
+  {
+   "album": "Definitely Maybe",
+   "artist": "Oasis",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 217
+  },
+  {
+   "album": "CrazySexyCool",
+   "artist": "TLC",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 218
+  },
+  {
+   "album": "Only Built 4 Cuban Linx",
+   "artist": "Raekwon",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 219
+  },
+  {
+   "album": "Déjà Vu",
+   "artist": "Crosby, Stills, Nash, and Young",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 220
+  },
+  {
+   "album": "Rage Against the Machine",
+   "artist": "Rage Against the Machine",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 221
+  },
+  {
+   "album": "Ray of Light",
+   "artist": "Madonna",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 222
+  },
+  {
+   "album": "Imagine",
+   "artist": "John Lennon",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 223
+  },
+  {
+   "album": "Fly",
+   "artist": "Dixie Chicks",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 224
+  },
+  {
+   "album": "Yankee Hotel Foxtrot",
+   "artist": "Wilco",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 225
+  },
+  {
+   "album": "Layla and Other Assorted Love Songs",
+   "artist": "Derek and the Dominos",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 226
+  },
+  {
+   "album": "Here’s Little Richard",
+   "artist": "Little Richard",
+   "year": 1957,
+   "genre": "",
+   "subgenre": "",
+   "rank": 227
+  },
+  {
+   "album": "De La Soul Is Dead",
+   "artist": "De La Soul",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 228
+  },
+  {
+   "album": "The Ultimate Collection",
+   "artist": "Patsy Cline",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 229
+  },
+  {
+   "album": "Anti",
+   "artist": "Rihanna",
+   "year": 2016,
+   "genre": "",
+   "subgenre": "",
+   "rank": 230
+  },
+  {
+   "album": "Damn the Torpedoes",
+   "artist": "Tom Petty and the Heartbreakers",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 231
+  },
+  {
+   "album": "Giant Steps",
+   "artist": "John Coltrane",
+   "year": 1960,
+   "genre": "",
+   "subgenre": "",
+   "rank": 232
+  },
+  {
+   "album": "Little Earthquakes",
+   "artist": "Tori Amos",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 233
+  },
+  {
+   "album": "Master of Reality",
+   "artist": "Black Sabbath",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 234
+  },
+  {
+   "album": "Metallica (The Black Album)",
+   "artist": "Metallica",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 235
+  },
+  {
+   "album": "Discovery",
+   "artist": "Daft Punk",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 236
+  },
+  {
+   "album": "Red Headed Stranger",
+   "artist": "Willie Nelson",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 237
+  },
+  {
+   "album": "Trans Europe Express",
+   "artist": "Kraftwerk",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 238
+  },
+  {
+   "album": "Criminal Minded",
+   "artist": "Boogie Down Productions",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 239
+  },
+  {
+   "album": "Live at the Harlem Square Club, 1963",
+   "artist": "Sam Cooke",
+   "year": 1985,
+   "genre": "",
+   "subgenre": "",
+   "rank": 240
+  },
+  {
+   "album": "Blue Lines",
+   "artist": "Massive Attack",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 241
+  },
+  {
+   "album": "Loaded",
+   "artist": "The Velvet Underground",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 242
+  },
+  {
+   "album": "Odessey and Oracle",
+   "artist": "The Zombies",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 243
+  },
+  {
+   "album": "808s & Heartbreak",
+   "artist": "Kanye West",
+   "year": 2008,
+   "genre": "",
+   "subgenre": "",
+   "rank": 244
+  },
+  {
+   "album": "Heaven or Las Vegas",
+   "artist": "Cocteau Twins",
+   "year": 1990,
+   "genre": "",
+   "subgenre": "",
+   "rank": 245
+  },
+  {
+   "album": "Mama Said Knock You Out",
+   "artist": "LL Cool J",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 246
+  },
+  {
+   "album": "Love Deluxe",
+   "artist": "Sade",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 247
+  },
+  {
+   "album": "American Idiot",
+   "artist": "Green Day",
+   "year": 2004,
+   "genre": "",
+   "subgenre": "",
+   "rank": 248
+  },
+  {
+   "album": "Whitney Houston",
+   "artist": "Whitney Houston",
+   "year": 1985,
+   "genre": "",
+   "subgenre": "",
+   "rank": 249
+  },
+  {
+   "album": "Singles Going Steady",
+   "artist": "Buzzcocks",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 250
+  },
+  {
+   "album": "Honky Château",
+   "artist": "Elton John",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 251
+  },
+  {
+   "album": "Q: Are We Not Men? A: We Are Devo!",
+   "artist": "Devo",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 252
+  },
+  {
+   "album": "The Piper at the Gates of Dawn",
+   "artist": "Pink Floyd",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 253
+  },
+  {
+   "album": "Head Hunters",
+   "artist": "Herbie Hancock",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 254
+  },
+  {
+   "album": "The Freewheelin' Bob Dylan",
+   "artist": "Bob Dylan",
+   "year": 1963,
+   "genre": "",
+   "subgenre": "",
+   "rank": 255
+  },
+  {
+   "album": "Tracy Chapman",
+   "artist": "Tracy Chapman",
+   "year": 1988,
+   "genre": "",
+   "subgenre": "",
+   "rank": 256
+  },
+  {
+   "album": "Coat of Many Colors",
+   "artist": "Dolly Parton",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 257
+  },
+  {
+   "album": "The Hissing of Summer Lawns",
+   "artist": "Joni Mitchell",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 258
+  },
+  {
+   "album": "Pearl",
+   "artist": "Janis Joplin",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 259
+  },
+  {
+   "album": "Cut",
+   "artist": "The Slits",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 260
+  },
+  {
+   "album": "Check Your Head",
+   "artist": "Beastie Boys",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 261
+  },
+  {
+   "album": "Power, Corruption & Lies",
+   "artist": "New Order",
+   "year": 1983,
+   "genre": "",
+   "subgenre": "",
+   "rank": 262
+  },
+  {
+   "album": "Hard Day's Night",
+   "artist": "The Beatles",
+   "year": 1964,
+   "genre": "",
+   "subgenre": "",
+   "rank": 263
+  },
+  {
+   "album": "Wish You Were Here",
+   "artist": "Pink Floyd",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 264
+  },
+  {
+   "album": "Wowee Zowee",
+   "artist": "Pavement",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 265
+  },
+  {
+   "album": "Help!",
+   "artist": "The Beatles",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 266
+  },
+  {
+   "album": "Double Nickels on the Dime",
+   "artist": "Minutemen",
+   "year": 1984,
+   "genre": "",
+   "subgenre": "",
+   "rank": 267
+  },
+  {
+   "album": "Sail Away",
+   "artist": "Randy Newman",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 268
+  },
+  {
+   "album": "Yeezus",
+   "artist": "Kanye West",
+   "year": 2013,
+   "genre": "",
+   "subgenre": "",
+   "rank": 269
+  },
+  {
+   "album": "Golden Hour",
+   "artist": "Kacey Musgraves",
+   "year": 2018,
+   "genre": "",
+   "subgenre": "",
+   "rank": 270
+  },
+  {
+   "album": "What’s the 411?",
+   "artist": "Mary J. Blige",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 271
+  },
+  {
+   "album": "White Light/White Heat",
+   "artist": "The Velvet Underground",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 272
+  },
+  {
+   "album": "Entertainment!",
+   "artist": "Gang of Four",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 273
+  },
+  {
+   "album": "Sweetheart of the Rodeo",
+   "artist": "The Byrds",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 274
+  },
+  {
+   "album": "Curtis",
+   "artist": "Curtis Mayfield",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 275
+  },
+  {
+   "album": "The Bends",
+   "artist": "Radiohead",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 276
+  },
+  {
+   "album": "The Diary of Alicia Keys",
+   "artist": "Alicia Keys",
+   "year": 2003,
+   "genre": "",
+   "subgenre": "",
+   "rank": 277
+  },
+  {
+   "album": "Houses of the Holy",
+   "artist": "Led Zeppelin",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 278
+  },
+  {
+   "album": "MTV Unplugged in New York",
+   "artist": "Nirvana",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 279
+  },
+  {
+   "album": "Get Rich or Die Tryin'",
+   "artist": "50 Cent",
+   "year": 2002,
+   "genre": "",
+   "subgenre": "",
+   "rank": 280
+  },
+  {
+   "album": "Nilsson Schmilsson",
+   "artist": "Harry Nilsson",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 281
+  },
+  {
+   "album": "In the Wee Small Hours",
+   "artist": "Frank Sinatra",
+   "year": 1955,
+   "genre": "",
+   "subgenre": "",
+   "rank": 282
+  },
+  {
+   "album": "Bad Girls",
+   "artist": "Donna Summer",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 283
+  },
+  {
+   "album": "Down Every Road 1962-1994",
+   "artist": "Merle Haggard",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 284
+  },
+  {
+   "album": "Third/Sister Lovers",
+   "artist": "Big Star",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 285
+  },
+  {
+   "album": "Californication",
+   "artist": "Red Hot Chili Peppers",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 286
+  },
+  {
+   "album": "Mr. Tambourine Man",
+   "artist": "The Byrds",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 287
+  },
+  {
+   "album": "The Modern Lovers",
+   "artist": "The Modern Lovers",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 288
+  },
+  {
+   "album": "Post",
+   "artist": "Björk",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 289
+  },
+  {
+   "album": "Speakerboxxx/The Love Below",
+   "artist": "OutKast",
+   "year": 2003,
+   "genre": "",
+   "subgenre": "",
+   "rank": 290
+  },
+  {
+   "album": "The Writing’s on the Wall",
+   "artist": "Destiny's Child",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 291
+  },
+  {
+   "album": "Van Halen",
+   "artist": "Van Halen",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 292
+  },
+  {
+   "album": "Last Splash",
+   "artist": "The Breeders",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 293
+  },
+  {
+   "album": "Weezer (The Blue Album)",
+   "artist": "Weezer",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 294
+  },
+  {
+   "album": "Random Access Memories",
+   "artist": "Daft Punk",
+   "year": 2013,
+   "genre": "",
+   "subgenre": "",
+   "rank": 295
+  },
+  {
+   "album": "Rust Never Sleeps",
+   "artist": "Neil Young",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 296
+  },
+  {
+   "album": "So",
+   "artist": "Peter Gabriel",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 297
+  },
+  {
+   "album": "Full Moon Fever",
+   "artist": "Tom Petty",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 298
+  },
+  {
+   "album": "Live at the Regal",
+   "artist": "B.B. King",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 299
+  },
+  {
+   "album": "Come on Over",
+   "artist": "Shania Twain",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 300
+  },
+  {
+   "album": "New York Dolls",
+   "artist": "New York Dolls",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 301
+  },
+  {
+   "album": "Tonight's the Night",
+   "artist": "Neil Young",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 302
+  },
+  {
+   "album": "The Definitive Collection",
+   "artist": "ABBA",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 303
+  },
+  {
+   "album": "Just As I Am",
+   "artist": "Bill Withers",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 304
+  },
+  {
+   "album": "Alive!",
+   "artist": "Kiss",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 305
+  },
+  {
+   "album": "I'm Still in Love With You",
+   "artist": "Al Green",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 306
+  },
+  {
+   "album": "Portrait of a Legend",
+   "artist": "Sam Cooke",
+   "year": 2003,
+   "genre": "",
+   "subgenre": "",
+   "rank": 307
+  },
+  {
+   "album": "Here Come the Warm Jets",
+   "artist": "Brian Eno",
+   "year": 1974,
+   "genre": "",
+   "subgenre": "",
+   "rank": 308
+  },
+  {
+   "album": "Closer",
+   "artist": "Joy Divison",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 309
+  },
+  {
+   "album": "Pink Flag",
+   "artist": "Wire",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 310
+  },
+  {
+   "album": "On the Beach",
+   "artist": "Neil Young",
+   "year": 1974,
+   "genre": "",
+   "subgenre": "",
+   "rank": 311
+  },
+  {
+   "album": "A Seat at the Table",
+   "artist": "Solange",
+   "year": 2016,
+   "genre": "",
+   "subgenre": "",
+   "rank": 312
+  },
+  {
+   "album": "Stories From the City, Stories From the Sea",
+   "artist": "PJ Harvey",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 313
+  },
+  {
+   "album": "One in a Million",
+   "artist": "Aaliyah",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 314
+  },
+  {
+   "album": "El Mal Querer",
+   "artist": "Rosalía",
+   "year": 2018,
+   "genre": "",
+   "subgenre": "",
+   "rank": 315
+  },
+  {
+   "album": "The Who Sell Out",
+   "artist": "The Who",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 316
+  },
+  {
+   "album": "Lady in Satin",
+   "artist": "Billie Holiday",
+   "year": 1958,
+   "genre": "",
+   "subgenre": "",
+   "rank": 317
+  },
+  {
+   "album": "The Velvet Rope",
+   "artist": "Janet Jackson",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 318
+  },
+  {
+   "album": "The Stone Roses",
+   "artist": "The Stone Roses",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 319
+  },
+  {
+   "album": "Los Angeles",
+   "artist": "X",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 320
+  },
+  {
+   "album": "Norman Fucking Rockwell!",
+   "artist": "Lana Del Rey",
+   "year": 2019,
+   "genre": "",
+   "subgenre": "",
+   "rank": 321
+  },
+  {
+   "album": "From Elvis in Memphis",
+   "artist": "Elvis Presley",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 322
+  },
+  {
+   "album": "Sandinista!",
+   "artist": "The Clash",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 323
+  },
+  {
+   "album": "A Rush of Blood to the Head",
+   "artist": "Coldplay",
+   "year": 2002,
+   "genre": "",
+   "subgenre": "",
+   "rank": 324
+  },
+  {
+   "album": "All Killer No Filler!",
+   "artist": "Jerry Lee Lewis",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 325
+  },
+  {
+   "album": "Dirty Mind",
+   "artist": "Prince",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 326
+  },
+  {
+   "album": "Live at Leeds",
+   "artist": "The Who",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 327
+  },
+  {
+   "album": "Modern Vampires of the City",
+   "artist": "Vampire Weekend",
+   "year": 2013,
+   "genre": "",
+   "subgenre": "",
+   "rank": 328
+  },
+  {
+   "album": "Endtroducing.....",
+   "artist": "DJ Shadow",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 329
+  },
+  {
+   "album": "Aftermath",
+   "artist": "The Rolling Stones",
+   "year": 1966,
+   "genre": "",
+   "subgenre": "",
+   "rank": 330
+  },
+  {
+   "album": "Like a Prayer",
+   "artist": "Madonna",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 331
+  },
+  {
+   "album": "Elvis Presley",
+   "artist": "Elvis Presley",
+   "year": 1956,
+   "genre": "",
+   "subgenre": "",
+   "rank": 332
+  },
+  {
+   "album": "Still Bill",
+   "artist": "Bill Withers",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 333
+  },
+  {
+   "album": "Abraxas",
+   "artist": "Santana",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 334
+  },
+  {
+   "album": "The Basement Tapes",
+   "artist": "Bob Dylan and the Band",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 335
+  },
+  {
+   "album": "Avalon",
+   "artist": "Roxy Music",
+   "year": 1982,
+   "genre": "",
+   "subgenre": "",
+   "rank": 336
+  },
+  {
+   "album": "John Wesley Harding",
+   "artist": "Bob Dylan",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 337
+  },
+  {
+   "album": "Another Green World",
+   "artist": "Brian Eno",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 338
+  },
+  {
+   "album": "Rhythm Nation 1814",
+   "artist": "Janet Jackson",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 339
+  },
+  {
+   "album": "Doggystyle",
+   "artist": "Snoop Doggy Dogg",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 340
+  },
+  {
+   "album": "Siamese Dream",
+   "artist": "The Smashing Pumpkins",
+   "year": 1993,
+   "genre": "",
+   "subgenre": "",
+   "rank": 341
+  },
+  {
+   "album": "Let It Be",
+   "artist": "The Beatles",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 342
+  },
+  {
+   "album": "Greatest Hits",
+   "artist": "Sly and the Family Stone",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 343
+  },
+  {
+   "album": "Funky Kingston",
+   "artist": "Toots and the Maytals",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 344
+  },
+  {
+   "album": "The Wild, the Innocent & the E Street Shuffle",
+   "artist": "Bruce Springsteen",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 345
+  },
+  {
+   "album": "AM",
+   "artist": "Arctic Monkeys",
+   "year": 2013,
+   "genre": "",
+   "subgenre": "",
+   "rank": 346
+  },
+  {
+   "album": "Liquid Swords",
+   "artist": "GZA",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 347
+  },
+  {
+   "album": "Time (The Revelator)",
+   "artist": "Gillian Welch",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 348
+  },
+  {
+   "album": "Kick Out the Jams",
+   "artist": "MC5",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 349
+  },
+  {
+   "album": "Music of My Mind",
+   "artist": "Stevie Wonder",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 350
+  },
+  {
+   "album": "For Your Pleasure",
+   "artist": "Roxy Music",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 351
+  },
+  {
+   "album": "The Slim Shady LP",
+   "artist": "Eminem",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 352
+  },
+  {
+   "album": "The Cars",
+   "artist": "The Cars",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 353
+  },
+  {
+   "album": "Germfree Adolescents",
+   "artist": "X-Ray Spex",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 354
+  },
+  {
+   "album": "Black Sabbath",
+   "artist": "Black Sabbath",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 355
+  },
+  {
+   "album": "Gris-Gris",
+   "artist": "Dr. John",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 356
+  },
+  {
+   "album": "Rain Dogs",
+   "artist": "Tom Waits",
+   "year": 1985,
+   "genre": "",
+   "subgenre": "",
+   "rank": 357
+  },
+  {
+   "album": "Goo",
+   "artist": "Sonic Youth",
+   "year": 1990,
+   "genre": "",
+   "subgenre": "",
+   "rank": 358
+  },
+  {
+   "album": "Radio City",
+   "artist": "Big Star",
+   "year": 1974,
+   "genre": "",
+   "subgenre": "",
+   "rank": 359
+  },
+  {
+   "album": "One Nation Under a Groove",
+   "artist": "Funkadelic",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 360
+  },
+  {
+   "album": "The Black Parade",
+   "artist": "My Chemical Romance",
+   "year": 2006,
+   "genre": "",
+   "subgenre": "",
+   "rank": 361
+  },
+  {
+   "album": "Never Too Much",
+   "artist": "Luther Vandross",
+   "year": 1981,
+   "genre": "",
+   "subgenre": "",
+   "rank": 362
+  },
+  {
+   "album": "The Mothership Connection",
+   "artist": "Parliament",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 363
+  },
+  {
+   "album": "More Songs About Buildings and Food",
+   "artist": "Talking Heads",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 364
+  },
+  {
+   "album": "Madvillainy",
+   "artist": "Madvillain",
+   "year": 2004,
+   "genre": "",
+   "subgenre": "",
+   "rank": 365
+  },
+  {
+   "album": "Rocks",
+   "artist": "Aerosmith",
+   "year": 1976,
+   "genre": "",
+   "subgenre": "",
+   "rank": 366
+  },
+  {
+   "album": "If You're Reading This It's Too Late",
+   "artist": "Drake",
+   "year": 2015,
+   "genre": "",
+   "subgenre": "",
+   "rank": 367
+  },
+  {
+   "album": "All Things Must Pass",
+   "artist": "George Harrison",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 368
+  },
+  {
+   "album": "The Infamous",
+   "artist": "Mobb Deep",
+   "year": 1995,
+   "genre": "",
+   "subgenre": "",
+   "rank": 369
+  },
+  {
+   "album": "Tha Carter II",
+   "artist": "Lil Wayne",
+   "year": 2005,
+   "genre": "",
+   "subgenre": "",
+   "rank": 370
+  },
+  {
+   "album": "Anthology",
+   "artist": "The Temptations",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 371
+  },
+  {
+   "album": "Cheap Thrills",
+   "artist": "Big Brother and the Holding Company",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 372
+  },
+  {
+   "album": "Hot Buttered Soul",
+   "artist": "Isaac Hayes",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 373
+  },
+  {
+   "album": "King of the Delta Blues Singers",
+   "artist": "Robert Johnson",
+   "year": 1961,
+   "genre": "",
+   "subgenre": "",
+   "rank": 374
+  },
+  {
+   "album": "Dookie",
+   "artist": "Green Day",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 375
+  },
+  {
+   "album": "In the Aeroplane Over the Sea",
+   "artist": "Neutral Milk Hotel",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 376
+  },
+  {
+   "album": "Fever to Tell",
+   "artist": "Yeah Yeah Yeahs",
+   "year": 2003,
+   "genre": "",
+   "subgenre": "",
+   "rank": 377
+  },
+  {
+   "album": "Run-D.M.C.",
+   "artist": "Run-DMC",
+   "year": 1983,
+   "genre": "",
+   "subgenre": "",
+   "rank": 378
+  },
+  {
+   "album": "Moving Pictures",
+   "artist": "Rush",
+   "year": 1981,
+   "genre": "",
+   "subgenre": "",
+   "rank": 379
+  },
+  {
+   "album": "Mingus Ah Um",
+   "artist": "Charles Mingus",
+   "year": 1959,
+   "genre": "",
+   "subgenre": "",
+   "rank": 380
+  },
+  {
+   "album": "(Pronounced 'Lĕh-'nérd 'Skin-'nérd)",
+   "artist": "Lynyrd Skynyrd",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 381
+  },
+  {
+   "album": "Currents",
+   "artist": "Tame Impala",
+   "year": 2015,
+   "genre": "",
+   "subgenre": "",
+   "rank": 382
+  },
+  {
+   "album": "Mezzanine",
+   "artist": "Massive Attack",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 383
+  },
+  {
+   "album": "The Kinks Are the Village Green Preservation Society",
+   "artist": "The Kinks",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 384
+  },
+  {
+   "album": "Rocket to Russia",
+   "artist": "Ramones",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 385
+  },
+  {
+   "album": "Donuts",
+   "artist": "J Dilla",
+   "year": 2006,
+   "genre": "",
+   "subgenre": "",
+   "rank": 386
+  },
+  {
+   "album": "In Rainbows",
+   "artist": "Radiohead",
+   "year": 2007,
+   "genre": "",
+   "subgenre": "",
+   "rank": 387
+  },
+  {
+   "album": "Young, Gifted and Black",
+   "artist": "Aretha Franklin",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 388
+  },
+  {
+   "album": "The Emancipation of Mimi",
+   "artist": "Mariah Carey",
+   "year": 2005,
+   "genre": "",
+   "subgenre": "",
+   "rank": 389
+  },
+  {
+   "album": "Surfer Rosa",
+   "artist": "Pixies",
+   "year": 1988,
+   "genre": "",
+   "subgenre": "",
+   "rank": 390
+  },
+  {
+   "album": "Kaleidoscope",
+   "artist": "Kelis",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 391
+  },
+  {
+   "album": "Proud Mary: The Best of Ike and Tina Turner",
+   "artist": "Ike and Tina Turner",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 392
+  },
+  {
+   "album": "1989",
+   "artist": "Taylor Swift",
+   "year": 2014,
+   "genre": "",
+   "subgenre": "",
+   "rank": 393
+  },
+  {
+   "album": "Diana",
+   "artist": "Diana Ross",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 394
+  },
+  {
+   "album": "Black Messiah",
+   "artist": "D’Angelo and the Vanguard",
+   "year": 2014,
+   "genre": "",
+   "subgenre": "",
+   "rank": 395
+  },
+  {
+   "album": "Something/Anything?",
+   "artist": "Todd Rundgren",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 396
+  },
+  {
+   "album": "When We All Fall Asleep, Where Do We Go?",
+   "artist": "Billie Eilish",
+   "year": 2019,
+   "genre": "",
+   "subgenre": "",
+   "rank": 397
+  },
+  {
+   "album": "The Raincoats",
+   "artist": "The Raincoats",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 398
+  },
+  {
+   "album": "Smile",
+   "artist": "Brian Wilson",
+   "year": 2004,
+   "genre": "",
+   "subgenre": "",
+   "rank": 399
+  },
+  {
+   "album": "Beauty and the Beat",
+   "artist": "The Go-Go’s",
+   "year": 1981,
+   "genre": "",
+   "subgenre": "",
+   "rank": 400
+  },
+  {
+   "album": "Blondie",
+   "artist": "Blondie",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 401
+  },
+  {
+   "album": "Expensive Shit",
+   "artist": "Fela Kuti and Africa 70",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 402
+  },
+  {
+   "album": "Supreme Clientele",
+   "artist": "Ghostface Killah",
+   "year": 2000,
+   "genre": "",
+   "subgenre": "",
+   "rank": 403
+  },
+  {
+   "album": "Rapture",
+   "artist": "Anita Baker",
+   "year": 1986,
+   "genre": "",
+   "subgenre": "",
+   "rank": 404
+  },
+  {
+   "album": "Nuggets: Original Artyfacts from the First Psychedelic Era",
+   "artist": "Various",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 405
+  },
+  {
+   "album": "69 Love Songs",
+   "artist": "Magnetic Fields",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 406
+  },
+  {
+   "album": "Everybody Knows This Is Nowhere",
+   "artist": "Neil Young",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 407
+  },
+  {
+   "album": "Ace of Spades",
+   "artist": "Motörhead",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 408
+  },
+  {
+   "album": "Workingman’s Dead",
+   "artist": "Grateful Dead",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 409
+  },
+  {
+   "album": "Wild Honey",
+   "artist": "The Beach Boys",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 410
+  },
+  {
+   "album": "Love and Theft",
+   "artist": "Bob Dylan",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 411
+  },
+  {
+   "album": "Going to a Go Go",
+   "artist": "Smokey Robinson and the Miracles",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 412
+  },
+  {
+   "album": "Cosmo's Factory",
+   "artist": "Creedence Clearwater Revival",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 413
+  },
+  {
+   "album": "Risqué",
+   "artist": "Chic",
+   "year": 1979,
+   "genre": "",
+   "subgenre": "",
+   "rank": 414
+  },
+  {
+   "album": "Looka Py Py",
+   "artist": "The Meters",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 415
+  },
+  {
+   "album": "Things Fall Apart",
+   "artist": "The Roots",
+   "year": 1999,
+   "genre": "",
+   "subgenre": "",
+   "rank": 416
+  },
+  {
+   "album": "The Shape of Jazz to Come",
+   "artist": "Ornette Coleman",
+   "year": 1959,
+   "genre": "",
+   "subgenre": "",
+   "rank": 417
+  },
+  {
+   "album": "Brothers in Arms",
+   "artist": "Dire Straits",
+   "year": 1985,
+   "genre": "",
+   "subgenre": "",
+   "rank": 418
+  },
+  {
+   "album": "Chief",
+   "artist": "Eric Church",
+   "year": 2011,
+   "genre": "",
+   "subgenre": "",
+   "rank": 419
+  },
+  {
+   "album": "That’s the Way of the World",
+   "artist": "Earth, Wind and Fire",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 420
+  },
+  {
+   "album": "Arular",
+   "artist": "M.I.A.",
+   "year": 2005,
+   "genre": "",
+   "subgenre": "",
+   "rank": 421
+  },
+  {
+   "album": "Let's Get It On",
+   "artist": "Marvin Gaye",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 422
+  },
+  {
+   "album": "I Can Hear the Heart Beating As One",
+   "artist": "Yo La Tengo",
+   "year": 1997,
+   "genre": "",
+   "subgenre": "",
+   "rank": 423
+  },
+  {
+   "album": "Odelay",
+   "artist": "Beck",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 424
+  },
+  {
+   "album": "Paul Simon",
+   "artist": "Paul Simon",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 425
+  },
+  {
+   "album": "Lucinda Williams",
+   "artist": "Lucinda Williams",
+   "year": 1988,
+   "genre": "",
+   "subgenre": "",
+   "rank": 426
+  },
+  {
+   "album": "Call Me",
+   "artist": "Al Green",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 427
+  },
+  {
+   "album": "New Day Rising",
+   "artist": "Hüsker Dü",
+   "year": 1985,
+   "genre": "",
+   "subgenre": "",
+   "rank": 428
+  },
+  {
+   "album": "Reach Out",
+   "artist": "The Four Tops",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 429
+  },
+  {
+   "album": "My Aim Is True",
+   "artist": "Elvis Costello",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 430
+  },
+  {
+   "album": "How Will the Wolf Survive?",
+   "artist": "Los Lobos",
+   "year": 1984,
+   "genre": "",
+   "subgenre": "",
+   "rank": 431
+  },
+  {
+   "album": "Confessions",
+   "artist": "Usher",
+   "year": 2004,
+   "genre": "",
+   "subgenre": "",
+   "rank": 432
+  },
+  {
+   "album": "Sound of Silver",
+   "artist": "LCD Soundsystem",
+   "year": 2007,
+   "genre": "",
+   "subgenre": "",
+   "rank": 433
+  },
+  {
+   "album": "Crooked Rain, Crooked Rain",
+   "artist": "Pavement",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 434
+  },
+  {
+   "album": "Actually",
+   "artist": "Pet Shop Boys",
+   "year": 1987,
+   "genre": "",
+   "subgenre": "",
+   "rank": 435
+  },
+  {
+   "album": "All Eyez on Me",
+   "artist": "2Pac",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 436
+  },
+  {
+   "album": "Screamadelica",
+   "artist": "Primal Scream",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 437
+  },
+  {
+   "album": "Parklife",
+   "artist": "Blur",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 438
+  },
+  {
+   "album": "Sex Machine",
+   "artist": "James Brown",
+   "year": 1970,
+   "genre": "",
+   "subgenre": "",
+   "rank": 439
+  },
+  {
+   "album": "Coal Miner's Daughter",
+   "artist": "Loretta Lynn",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 440
+  },
+  {
+   "album": "Blackout",
+   "artist": "Britney Spears",
+   "year": 2007,
+   "genre": "",
+   "subgenre": "",
+   "rank": 441
+  },
+  {
+   "album": "Beauty Behind the Madness",
+   "artist": "The Weeknd",
+   "year": 2015,
+   "genre": "",
+   "subgenre": "",
+   "rank": 442
+  },
+  {
+   "album": "Scary Monsters",
+   "artist": "David Bowie",
+   "year": 1980,
+   "genre": "",
+   "subgenre": "",
+   "rank": 443
+  },
+  {
+   "album": "Extraordinary Machine",
+   "artist": "Fiona Apple",
+   "year": 2005,
+   "genre": "",
+   "subgenre": "",
+   "rank": 444
+  },
+  {
+   "album": "Close to the Edge",
+   "artist": "Yes",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 445
+  },
+  {
+   "album": "Journey in Satchidanada",
+   "artist": "Alice Coltrane",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 446
+  },
+  {
+   "album": "X 100pre",
+   "artist": "Bad Bunny",
+   "year": 2018,
+   "genre": "",
+   "subgenre": "",
+   "rank": 447
+  },
+  {
+   "album": "Dictionary of Soul",
+   "artist": "Otis Redding",
+   "year": 1966,
+   "genre": "",
+   "subgenre": "",
+   "rank": 448
+  },
+  {
+   "album": "Elephant",
+   "artist": "The White Stripes",
+   "year": 2003,
+   "genre": "",
+   "subgenre": "",
+   "rank": 449
+  },
+  {
+   "album": "Ram",
+   "artist": "Paul and Linda McCartney",
+   "year": 1971,
+   "genre": "",
+   "subgenre": "",
+   "rank": 450
+  },
+  {
+   "album": "First Take",
+   "artist": "Roberta Flack",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 451
+  },
+  {
+   "album": "Anthology",
+   "artist": "Diana Ross and the Supremes",
+   "year": 1974,
+   "genre": "",
+   "subgenre": "",
+   "rank": 452
+  },
+  {
+   "album": "Pretty Hate Machine",
+   "artist": "Nine Inch Nails",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 453
+  },
+  {
+   "album": "Ege Bamyasi",
+   "artist": "Can",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 454
+  },
+  {
+   "album": "Bo Diddley/Go Bo Diddley",
+   "artist": "Bo Diddley",
+   "year": 1958,
+   "genre": "",
+   "subgenre": "",
+   "rank": 455
+  },
+  {
+   "album": "Greatest Hits",
+   "artist": "Al Green",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 456
+  },
+  {
+   "album": "I Do Not Want What I Haven’t Got",
+   "artist": "Sinéad O’Connor",
+   "year": 1990,
+   "genre": "",
+   "subgenre": "",
+   "rank": 457
+  },
+  {
+   "album": "Southeastern",
+   "artist": "Jason Isbell",
+   "year": 2013,
+   "genre": "",
+   "subgenre": "",
+   "rank": 458
+  },
+  {
+   "album": "Man on the Moon: The End of the Day",
+   "artist": "Kid Cudi",
+   "year": 2009,
+   "genre": "",
+   "subgenre": "",
+   "rank": 459
+  },
+  {
+   "album": "Melodrama",
+   "artist": "Lorde",
+   "year": 2017,
+   "genre": "",
+   "subgenre": "",
+   "rank": 460
+  },
+  {
+   "album": "For Emma",
+   "artist": "Bon Iver",
+   "year": 2008,
+   "genre": "",
+   "subgenre": "",
+   "rank": 461
+  },
+  {
+   "album": "The Gilded Palace of Sin",
+   "artist": "The Flying Burrito Brothers",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 462
+  },
+  {
+   "album": "Eli & the 13th Confession",
+   "artist": "Laura Nyro",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 463
+  },
+  {
+   "album": "3 + 3",
+   "artist": "The Isley Brothers",
+   "year": 1973,
+   "genre": "",
+   "subgenre": "",
+   "rank": 464
+  },
+  {
+   "album": "The Best of the Classic Years",
+   "artist": "King Sunny Adé",
+   "year": 2003,
+   "genre": "",
+   "subgenre": "",
+   "rank": 465
+  },
+  {
+   "album": "The Beach  Boys Today!",
+   "artist": "The Beach Boys",
+   "year": 1965,
+   "genre": "",
+   "subgenre": "",
+   "rank": 466
+  },
+  {
+   "album": "BLACKsummers’night",
+   "artist": "Maxwell",
+   "year": 2009,
+   "genre": "",
+   "subgenre": "",
+   "rank": 467
+  },
+  {
+   "album": "Some Girls",
+   "artist": "The Rolling Stones",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 468
+  },
+  {
+   "album": "Clandestino",
+   "artist": "Manu Chao",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 469
+  },
+  {
+   "album": "400 Degreez",
+   "artist": "Juvenile",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 470
+  },
+  {
+   "album": "Surrealistic Pillow",
+   "artist": "Jefferson Airplane",
+   "year": 1967,
+   "genre": "",
+   "subgenre": "",
+   "rank": 471
+  },
+  {
+   "album": "Ctrl",
+   "artist": "SZA",
+   "year": 2017,
+   "genre": "",
+   "subgenre": "",
+   "rank": 472
+  },
+  {
+   "album": "Barrio Fino",
+   "artist": "Daddy Yankee",
+   "year": 2004,
+   "genre": "",
+   "subgenre": "",
+   "rank": 473
+  },
+  {
+   "album": "#1 Record",
+   "artist": "Big Star",
+   "year": 1972,
+   "genre": "",
+   "subgenre": "",
+   "rank": 474
+  },
+  {
+   "album": "Sheryl Crow",
+   "artist": "Sheryl Crow",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 475
+  },
+  {
+   "album": "Kimono My House",
+   "artist": "Sparks",
+   "year": 1974,
+   "genre": "",
+   "subgenre": "",
+   "rank": 476
+  },
+  {
+   "album": "Moanin' in the Moonlight",
+   "artist": "Howlin’ Wolf",
+   "year": 1959,
+   "genre": "",
+   "subgenre": "",
+   "rank": 477
+  },
+  {
+   "album": "Something Else by the Kinks",
+   "artist": "The Kinks",
+   "year": 1968,
+   "genre": "",
+   "subgenre": "",
+   "rank": 478
+  },
+  {
+   "album": "Amor Prohibido",
+   "artist": "Selena",
+   "year": 1994,
+   "genre": "",
+   "subgenre": "",
+   "rank": 479
+  },
+  {
+   "album": "The Weight of These Wings",
+   "artist": "Miranda Lambert",
+   "year": 2016,
+   "genre": "",
+   "subgenre": "",
+   "rank": 480
+  },
+  {
+   "album": "If You’re Feeling Sinister",
+   "artist": "Belle and Sebastian",
+   "year": 1996,
+   "genre": "",
+   "subgenre": "",
+   "rank": 481
+  },
+  {
+   "album": "Bizarre Ride II the Pharcyde",
+   "artist": "The Pharcyde",
+   "year": 1992,
+   "genre": "",
+   "subgenre": "",
+   "rank": 482
+  },
+  {
+   "album": "The Anthology",
+   "artist": "Muddy Waters",
+   "year": 2001,
+   "genre": "",
+   "subgenre": "",
+   "rank": 483
+  },
+  {
+   "album": "Born This Way",
+   "artist": "Lady Gaga",
+   "year": 2011,
+   "genre": "",
+   "subgenre": "",
+   "rank": 484
+  },
+  {
+   "album": "I Want to See the Bright Lights Tonight",
+   "artist": "Richard and Linda Thompson",
+   "year": 1974,
+   "genre": "",
+   "subgenre": "",
+   "rank": 485
+  },
+  {
+   "album": "Continuum",
+   "artist": "John Mayer",
+   "year": 2006,
+   "genre": "",
+   "subgenre": "",
+   "rank": 486
+  },
+  {
+   "album": "Damaged",
+   "artist": "Black Flag",
+   "year": 1981,
+   "genre": "",
+   "subgenre": "",
+   "rank": 487
+  },
+  {
+   "album": "The Stooges",
+   "artist": "The Stooges",
+   "year": 1969,
+   "genre": "",
+   "subgenre": "",
+   "rank": 488
+  },
+  {
+   "album": "Back to Mono (1958-1969)",
+   "artist": "Phil Spector and Various Artists",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 489
+  },
+  {
+   "album": "Heart Like a Wheel",
+   "artist": "Linda Ronstadt",
+   "year": 1975,
+   "genre": "",
+   "subgenre": "",
+   "rank": 490
+  },
+  {
+   "album": "Fine Line",
+   "artist": "Harry Styles",
+   "year": 2019,
+   "genre": "",
+   "subgenre": "",
+   "rank": 491
+  },
+  {
+   "album": "Nick of Time",
+   "artist": "Bonnie Raitt",
+   "year": 1989,
+   "genre": "",
+   "subgenre": "",
+   "rank": 492
+  },
+  {
+   "album": "Here, My Dear",
+   "artist": "Marvin Gaye",
+   "year": 1978,
+   "genre": "",
+   "subgenre": "",
+   "rank": 493
+  },
+  {
+   "album": "Presenting the Fabulous Ronettes",
+   "artist": "The Ronettes",
+   "year": 1964,
+   "genre": "",
+   "subgenre": "",
+   "rank": 494
+  },
+  {
+   "album": "II",
+   "artist": "Boyz II Men",
+   "year": 1991,
+   "genre": "",
+   "subgenre": "",
+   "rank": 495
+  },
+  {
+   "album": "Dónde Están los Ladrones",
+   "artist": "Shakira",
+   "year": 1998,
+   "genre": "",
+   "subgenre": "",
+   "rank": 496
+  },
+  {
+   "album": "The Indestructible Beat of Soweto",
+   "artist": "Various Artists",
+   "year": 1985,
+   "genre": "",
+   "subgenre": "",
+   "rank": 497
+  },
+  {
+   "album": "Suicide",
+   "artist": "Suicide",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 498
+  },
+  {
+   "album": "Ask Rufus",
+   "artist": "Rufus, Chaka Khan",
+   "year": 1977,
+   "genre": "",
+   "subgenre": "",
+   "rank": 499
+  },
+  {
+   "album": "Funeral",
+   "artist": "Arcade Fire",
+   "year": 2004,
+   "genre": "",
+   "subgenre": "",
+   "rank": 500
+  }
+ ]
+}
