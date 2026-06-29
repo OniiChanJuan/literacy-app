@@ -89,6 +89,7 @@ const deMojibake = (s: string) => (s || '').replace(/�/g, ' ').replace(/\s+/g,
 const ALBUM_ALIASES: Record<string, string> = {
   signpeacethetimes: "Sign 'O' the Times", // Prince — the peace-symbol "O" got transcribed as "Peace"
   honkychteau: 'Honky Château',            // Elton John — lost "â" in "Château"
+  psalm69: 'ΚΕΦΑΛΗΞΘ',                      // Ministry — MB's canonical title is the Greek glyphs; "Psalm 69" is the common alias
 };
 
 // Ordered list of titles to try as MB queries for one seed album. Applies the
@@ -128,7 +129,7 @@ async function coverUrl(rgMbid: string): Promise<string | null> {
   return null;
 }
 
-const REISSUE_RE = /\b(deluxe|remaster|remastered|anniversary|expanded|edition|reissue|mono version|stereo version|live|demos?|instrumental|karaoke|super deluxe)\b/i;
+const REISSUE_RE = /\b(deluxe|remaster|remastered|anniversary|expanded|edition|reissue|mono version|stereo version|live|demos?|instrumental|karaoke|super deluxe|radio edit|slowed|sped(?: up)?)\b/i;
 
 async function main() {
   const seedFile = JSON.parse(readFileSync(SEED_PATH, 'utf8'));
