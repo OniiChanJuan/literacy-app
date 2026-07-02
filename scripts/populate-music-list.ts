@@ -129,7 +129,7 @@ async function coverUrl(rgMbid: string): Promise<string | null> {
   return null;
 }
 
-const REISSUE_RE = /\b(deluxe|remaster|remastered|anniversary|expanded|edition|reissue|mono version|stereo version|live|demos?|instrumental|karaoke|super deluxe|radio edit|slowed|sped(?: up)?)\b/i;
+const REISSUE_RE = /\b(deluxe|remaster|remastered|anniversary|expanded|edition|reissue|mono version|stereo version|live|demos?|instrumental|karaoke|super deluxe|radio edit|slowed|sped(?: up)?|best of|greatest hits|very best)\b/i;
 
 async function main() {
   const seedFile = JSON.parse(readFileSync(SEED_PATH, 'utf8'));
@@ -194,7 +194,13 @@ async function main() {
       else if (nTitles.some((q) => nt.includes(q) || q.includes(nt))) s += 100;
       if (r['primary-type'] === 'Album') s += 50;
       if (!(r['secondary-types']?.length)) s += 25;
-      if (REISSUE_RE.test(r.title)) s -= 300; // demote deluxe/remaster/live titles
+      // Prefer an original studio LP over a later compilation of the same
+      // material when BOTH exist (the jazz reissue swamp: comps score higher in
+      // MB search than the low-scoring originals). A comp still wins when it is
+      // the only candidate (e.g. pre-album-era 78rpm material), so intentional
+      // compilation entries are unaffected.
+      if (r['secondary-types']?.includes('Compilation')) s -= 200;
+      if (REISSUE_RE.test(r.title)) s -= 300; // demote deluxe/remaster/live/best-of titles
       const y = parseInt((r['first-release-date'] || '9999').slice(0, 4)) || 9999;
       if (csvYear) { const d = Math.abs(y - csvYear); if (d <= 1) s += 400; else if (d <= 3) s += 100; } // prefer the known original year
       return s - y / 100; // tiebreak: earliest
