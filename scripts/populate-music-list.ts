@@ -62,6 +62,14 @@ function deriveVibes(genres: string[]): string[] {
   if (g.has('indie') || g.has('folk') || g.has('shoegaze')) v.push('Melancholic', 'Heartfelt');
   if (g.has('pop') || g.has('disco')) v.push('Uplifting');
   if (g.has('rock') || g.has('alternative')) v.push('Intense', 'Epic');
+  // Genre→vibe branches added for the thin genres the batches surfaced (music
+  // fingerprints come almost entirely from vibes). Appended last so an
+  // existing co-tag's vibes take precedence under the 3-cap. Mapped only where
+  // the genre has a defensible central register; Reggae/Latin/etc. deliberately
+  // left neutral (too internally split to map honestly).
+  if (g.has('country')) v.push('Heartfelt', 'Emotional');
+  if (g.has('blues')) v.push('Melancholic', 'Emotional');
+  if (g.has('funk')) v.push('Uplifting', 'Stylish');
   return [...new Set(v)].slice(0, 3);
 }
 
