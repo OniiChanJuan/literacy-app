@@ -68,8 +68,12 @@ const EXCLUSIONS: { name: string; test: (rg: RG, ctx: Ctx) => boolean }[] = [
   { name: 'not-album-form', test: (rg) => rg.primaryType !== 'Album' }, // drop Single/EP/Broadcast/Other from this pass
   { name: 'comp-remix-demo-etc', test: (rg) => rg.secondaryTypes.some((t) => NOISE_SECONDARY.has(t)) },
   { name: 'split-or-future', test: (rg) => / \/ /.test(rg.title) || rg.year > CUR_YEAR + 1 }, // splits (two-artist) + bogus future dates
-  { name: 'reissue-title', test: (rg) => REISSUE_RE.test(rg.title) },
+  { name: 'reissue-title', test: (rg) => REISSUE_RE.test(rg.title) || /:\s*original\b/i.test(rg.title) }, // + ": Original" reissue suffix (Goatlord: Original)
 ];
+// require-cover lever (on by default): drop the peripheral no-cover releases MB
+// mislabels as "Album" (livestreams/outtakes/bootlegs) — the no-cover signal
+// flags them cleanly. --allow-no-cover to disable.
+const REQUIRE_COVER = !process.argv.includes('--allow-no-cover');
 
 async function mb(path: string, retries = 0): Promise<any> {
   await sleep(1100);
@@ -117,11 +121,24 @@ async function main() {
   }
 
   const created: number[] = existsSync(OUT) ? (JSON.parse(readFileSync(OUT, 'utf8')).ids || []) : [];
-  let slice = SLICE; if (LIMIT) slice = slice.slice(0, LIMIT);
-  console.log(`discography-depth — ${DRY ? 'DRY' : 'LIVE'} — ${slice.length} artists\n`);
+  // --genre=X walks every distinct catalog artist carrying that genre tag; else
+  // falls back to the hardcoded calibration SLICE. Cross-batch dedup is safe
+  // (existing RG-MBIDs reloaded from the catalog each run).
+  const GENRE = argOf('genre');
+  let slice: string[];
+  if (GENRE) {
+    const set = new Set<string>();
+    for (const m of music) {
+      if (!((m.genre as string[]) || []).includes(GENRE)) continue;
+      const a = firstArtist(m.people); if (a && norm(a) !== 'variousartists') set.add(a);
+    }
+    slice = [...set].sort();
+  } else slice = SLICE;
+  if (LIMIT) slice = slice.slice(0, LIMIT);
+  console.log(`discography-depth — ${DRY ? 'DRY' : 'LIVE'}${GENRE ? ` — genre=${GENRE}` : ''} — ${slice.length} artists — require-cover=${REQUIRE_COVER}\n`);
 
   const perArtist: { artist: string; included: number; excl: Record<string, number>; created: string[]; note?: string }[] = [];
-  const globalExcl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'failed-notability': 0 };
+  const globalExcl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'no-cover': 0, 'failed-notability': 0 };
   let totalIncluded = 0, withCover = 0;
 
   for (const artistName of slice) {
@@ -166,9 +183,12 @@ async function main() {
     }
 
     const createdTitles: string[] = [];
+    let madeCount = 0;
     for (const rg of toCreate) {
       const cover = await coverUrl(rg.id);
+      if (!cover && REQUIRE_COVER) { excl['no-cover']++; globalExcl['no-cover']++; continue; } // require-cover lever
       if (cover) withCover++;
+      madeCount++;
       createdTitles.push(`${rg.title} (${rg.year || '????'})${rg.secondaryTypes.includes('Live') ? ' [live]' : ''}${cover ? '' : ' [no cover]'}`);
       if (!DRY) {
         const genre = info.genre.length ? info.genre : ['Metal'];
@@ -185,12 +205,12 @@ async function main() {
         writeFileSync(OUT, JSON.stringify({ batch: 'discography-depth', ids: created }, null, 1));
       }
     }
-    totalIncluded += toCreate.length;
-    perArtist.push({ artist: artistName, included: toCreate.length, excl, created: createdTitles });
-    console.log(`  ${artistName.padEnd(16)} walked ${String(rgs.length).padStart(4)} RGs → +${toCreate.length}  (excl: dedup ${excl.dedup}, live/other-unrated ${excl['failed-notability']}, comp ${excl['comp-remix-demo-etc']}, single/ep/other ${excl['not-album-form']}, reissue-title ${excl['reissue-title']})`);
+    totalIncluded += madeCount;
+    perArtist.push({ artist: artistName, included: madeCount, excl, created: createdTitles });
+    console.log(`  ${artistName.padEnd(18)} walked ${String(rgs.length).padStart(4)} RGs → +${madeCount}  (excl: dedup ${excl.dedup}, live/other-unrated ${excl['failed-notability']}, comp ${excl['comp-remix-demo-etc']}, no-cover ${excl['no-cover']}, reissue ${excl['reissue-title']})`);
   }
 
-  console.log(`\n──────── DISCOGRAPHY-DEPTH CALIBRATION (${DRY ? 'dry' : 'live'}) ────────`);
+  console.log(`\n──────── DISCOGRAPHY-DEPTH ${GENRE ? `[${GENRE}] ` : ''}(${DRY ? 'dry' : 'live'}) ────────`);
   console.log(`artists: ${slice.length}   albums ${DRY ? 'would-add' : 'added'}: ${totalIncluded}   avg/artist: ${(totalIncluded / slice.length).toFixed(1)}`);
   console.log(`cover coverage: ${withCover}/${totalIncluded} (${totalIncluded ? Math.round(withCover / totalIncluded * 100) : 0}%)`);
   console.log(`\nGATE SELECTIVITY — excluded by reason (global):`);
