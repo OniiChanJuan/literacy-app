@@ -74,6 +74,12 @@ const EXCLUSIONS: { name: string; test: (rg: RG, ctx: Ctx) => boolean }[] = [
 // mislabels as "Album" (livestreams/outtakes/bootlegs) — the no-cover signal
 // flags them cleanly. --allow-no-cover to disable.
 const REQUIRE_COVER = !process.argv.includes('--allow-no-cover');
+// official-status filter (on by default): MB's "Album" primary-type is polluted
+// for some genres (hip-hop especially) with bootlegs / fan-compilations /
+// scrapped leaks / instrumental beat-tapes that require-cover can't catch (fan
+// covers exist). A studio RG qualifies only if ≥1 of its releases is
+// status=Official. Costs one extra MB call per surviving candidate.
+const OFFICIAL_ONLY = !process.argv.includes('--allow-unofficial');
 
 async function mb(path: string, retries = 0): Promise<any> {
   await sleep(1100);
@@ -87,6 +93,13 @@ async function coverUrl(rg: string): Promise<string | null> {
   const u = `https://coverartarchive.org/release-group/${rg}/front-500`;
   try { const r = await fetch(u, { headers: { 'User-Agent': UA }, redirect: 'follow' }); if (r.ok && (r.headers.get('content-type') || '').startsWith('image')) return u; } catch { /* */ }
   return null;
+}
+// ≥1 official release in the RG? (distinguishes real albums from bootleg/
+// fan-made/pseudo RGs that MB still tags primary-type=Album).
+async function hasOfficialRelease(rgId: string): Promise<boolean> {
+  const j = await mb(`release-group/${rgId}?inc=releases&fmt=json`);
+  if (!j) return true; // fail-open on a fetch error rather than silently dropping a real album
+  return (j.releases || []).some((r: any) => r.status === 'Official');
 }
 function deriveVibes(genres: string[]): string[] {
   const v: string[] = []; const g = new Set(genres.map((s) => s.toLowerCase()));
@@ -138,7 +151,8 @@ async function main() {
   console.log(`discography-depth — ${DRY ? 'DRY' : 'LIVE'}${GENRE ? ` — genre=${GENRE}` : ''} — ${slice.length} artists — require-cover=${REQUIRE_COVER}\n`);
 
   const perArtist: { artist: string; included: number; excl: Record<string, number>; created: string[]; note?: string }[] = [];
-  const globalExcl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'no-cover': 0, 'failed-notability': 0 };
+  const globalExcl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'unofficial': 0, 'no-cover': 0, 'failed-notability': 0 };
+  const seenArtistMbids = new Set<string>(); // dedup catalog artist-name variants (Jay-Z / Jaÿ-Z → same MB artist)
   let totalIncluded = 0, withCover = 0;
 
   for (const artistName of slice) {
@@ -148,6 +162,8 @@ async function main() {
     const seed = await mb(`release-group/${info.seedRg}?inc=artist-credits&fmt=json`);
     const artistMbid = seed?.['artist-credit']?.[0]?.artist?.id;
     if (!artistMbid) { perArtist.push({ artist: artistName, included: 0, excl: {}, created: [], note: 'artist MBID unresolved — skipped' }); continue; }
+    if (seenArtistMbids.has(artistMbid)) { perArtist.push({ artist: artistName, included: 0, excl: {}, created: [], note: 'duplicate artist-name variant — already walked' }); continue; }
+    seenArtistMbids.add(artistMbid);
 
     // paginate all primary-type=Album RGs (studio + live + comp), with ratings
     const rgs: RG[] = [];
@@ -162,7 +178,7 @@ async function main() {
     }
 
     const ctx: Ctx = { existingMbids: allMbids, isDupTitle: (t) => info.titles.has(norm(t)) };
-    const excl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'failed-notability': 0 };
+    const excl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'unofficial': 0, 'no-cover': 0, 'failed-notability': 0 };
     const toCreate: RG[] = [];
     const liveCandidates: RG[] = [];
     for (const rg of rgs) {
@@ -185,6 +201,7 @@ async function main() {
     const createdTitles: string[] = [];
     let madeCount = 0;
     for (const rg of toCreate) {
+      if (OFFICIAL_ONLY && rg.secondaryTypes.length === 0 && !(await hasOfficialRelease(rg.id))) { excl['unofficial']++; globalExcl['unofficial']++; continue; } // bootleg/fan-made/scrapped Album-typed RGs
       const cover = await coverUrl(rg.id);
       if (!cover && REQUIRE_COVER) { excl['no-cover']++; globalExcl['no-cover']++; continue; } // require-cover lever
       if (cover) withCover++;
@@ -207,7 +224,7 @@ async function main() {
     }
     totalIncluded += madeCount;
     perArtist.push({ artist: artistName, included: madeCount, excl, created: createdTitles });
-    console.log(`  ${artistName.padEnd(18)} walked ${String(rgs.length).padStart(4)} RGs → +${madeCount}  (excl: dedup ${excl.dedup}, live/other-unrated ${excl['failed-notability']}, comp ${excl['comp-remix-demo-etc']}, no-cover ${excl['no-cover']}, reissue ${excl['reissue-title']})`);
+    console.log(`  ${artistName.padEnd(18)} walked ${String(rgs.length).padStart(4)} RGs → +${madeCount}  (excl: dedup ${excl.dedup}, unrated-live/other ${excl['failed-notability']}, comp ${excl['comp-remix-demo-etc']}, unofficial ${excl['unofficial']}, no-cover ${excl['no-cover']}, reissue ${excl['reissue-title']})`);
   }
 
   console.log(`\n──────── DISCOGRAPHY-DEPTH ${GENRE ? `[${GENRE}] ` : ''}(${DRY ? 'dry' : 'live'}) ────────`);
