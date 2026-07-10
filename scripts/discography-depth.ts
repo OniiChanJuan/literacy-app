@@ -94,12 +94,33 @@ async function coverUrl(rg: string): Promise<string | null> {
   try { const r = await fetch(u, { headers: { 'User-Agent': UA }, redirect: 'follow' }); if (r.ok && (r.headers.get('content-type') || '').startsWith('image')) return u; } catch { /* */ }
   return null;
 }
-// ≥1 official release in the RG? (distinguishes real albums from bootleg/
-// fan-made/pseudo RGs that MB still tags primary-type=Album).
-async function hasOfficialRelease(rgId: string): Promise<boolean> {
-  const j = await mb(`release-group/${rgId}?inc=releases&fmt=json`);
-  if (!j) return true; // fail-open on a fetch error rather than silently dropping a real album
-  return (j.releases || []).some((r: any) => r.status === 'Official');
+// One RG lookup that serves BOTH the official-status gate and per-album genre
+// re-derivation (owner: don't inherit the artist's catalog genre — a Sinatra
+// pop LP walked under a "Jazz"-tagged artist should read Pop). inc=releases for
+// status; genres+tags for the album's own genre.
+async function rgDetail(rgId: string): Promise<{ official: boolean; genres: string[] }> {
+  const j = await mb(`release-group/${rgId}?inc=releases+genres+tags&fmt=json`);
+  if (!j) return { official: true, genres: [] }; // fail-open (don't drop / mis-genre a real album on a fetch error)
+  const official = (j.releases || []).some((r: any) => r.status === 'Official');
+  const g = (j.genres || []).sort((a: any, b: any) => b.count - a.count).map((x: any) => x.name);
+  const t = (j.tags || []).sort((a: any, b: any) => b.count - a.count).map((x: any) => x.name);
+  return { official, genres: [...g, ...t] }; // MB genres preferred; folksonomy tags as fallback
+}
+
+// Map MB genre/tag names → our catalog genre buckets (mirrors populate-music-list.ts).
+const GENRE_KEYWORDS: [string, string][] = [
+  ['hip hop', 'Hip-Hop'], ['hip-hop', 'Hip-Hop'], ['rap', 'Hip-Hop'], ['r&b', 'R&B'], ['rnb', 'R&B'],
+  ['soul', 'Soul'], ['funk', 'Funk'], ['jazz', 'Jazz'], ['classical', 'Classical'], ['reggae', 'Reggae'],
+  ['electronic', 'Electronic'], ['house', 'Electronic'], ['techno', 'Electronic'], ['ambient', 'Ambient'], ['disco', 'Disco'],
+  ['art rock', 'Alternative'], ['alternative', 'Alternative'], ['indie', 'Indie'], ['shoegaze', 'Shoegaze'],
+  ['punk', 'Punk'], ['metal', 'Metal'], ['rock', 'Rock'], ['blues', 'Blues'],
+  ['art pop', 'Pop'], ['synth', 'Pop'], ['pop', 'Pop'], ['country', 'Country'], ['folk', 'Folk'],
+];
+function mapGenres(...parts: string[]): string[] {
+  const tokens = parts.join(', ').split(/[,/]/).map((s) => s.trim()).filter(Boolean);
+  const out = new Set<string>();
+  for (const tok of tokens) { const low = tok.toLowerCase(); for (const [kw, g] of GENRE_KEYWORDS) { if (low.includes(kw)) { out.add(g); break; } } }
+  return [...out].slice(0, 4);
 }
 function deriveVibes(genres: string[]): string[] {
   const v: string[] = []; const g = new Set(genres.map((s) => s.toLowerCase()));
@@ -201,14 +222,17 @@ async function main() {
     const createdTitles: string[] = [];
     let madeCount = 0;
     for (const rg of toCreate) {
-      if (OFFICIAL_ONLY && rg.secondaryTypes.length === 0 && !(await hasOfficialRelease(rg.id))) { excl['unofficial']++; globalExcl['unofficial']++; continue; } // bootleg/fan-made/scrapped Album-typed RGs
+      const detail = await rgDetail(rg.id); // official-status + per-album genre (one call)
+      if (OFFICIAL_ONLY && rg.secondaryTypes.length === 0 && !detail.official) { excl['unofficial']++; globalExcl['unofficial']++; continue; } // bootleg/fan-made/scrapped Album-typed RGs
       const cover = await coverUrl(rg.id);
       if (!cover && REQUIRE_COVER) { excl['no-cover']++; globalExcl['no-cover']++; continue; } // require-cover lever
       if (cover) withCover++;
       madeCount++;
-      createdTitles.push(`${rg.title} (${rg.year || '????'})${rg.secondaryTypes.includes('Live') ? ' [live]' : ''}${cover ? '' : ' [no cover]'}`);
+      // re-derive genre from the album's own MB genres/tags; fall back to the artist's catalog genre only when MB has none
+      const mapped = mapGenres(...detail.genres);
+      const genre = mapped.length ? mapped : (info.genre.length ? info.genre : []);
+      createdTitles.push(`${rg.title} (${rg.year || '????'})${rg.secondaryTypes.includes('Live') ? ' [live]' : ''} [${genre.join('/') || 'no-genre'}]`);
       if (!DRY) {
-        const genre = info.genre.length ? info.genre : ['Metal'];
         let slug = makeSlugFromTitle(rg.title); if (allSlugs.has(slug)) slug = `${slug}-${rg.year || 'album'}`;
         let n = 2; while (allSlugs.has(slug)) slug = `${makeSlugFromTitle(rg.title)}-${rg.year}-${n++}`;
         allSlugs.add(slug);
