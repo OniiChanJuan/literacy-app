@@ -51,6 +51,7 @@ export default function AdminFranchisesPage() {
   const [franchises, setFranchises] = useState<FranchiseData[]>([]);
   const [suggestions, setSuggestions] = useState<SuggestionData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [unauthorized, setUnauthorized] = useState(false);
   const [tab, setTab] = useState<"franchises" | "suggestions" | "create">("franchises");
 
   // Create form state
@@ -73,8 +74,17 @@ export default function AdminFranchisesPage() {
         fetch("/api/admin/franchises"),
         fetch("/api/admin/suggestions"),
       ]);
-      setFranchises(await fRes.json());
-      setSuggestions(await sRes.json());
+      if (fRes.status === 403 || sRes.status === 403) {
+        setUnauthorized(true);
+        setFranchises([]);
+        setSuggestions([]);
+      } else {
+        const fJson = await fRes.json().catch(() => null);
+        const sJson = await sRes.json().catch(() => null);
+        setUnauthorized(false);
+        setFranchises(Array.isArray(fJson) ? fJson : []);
+        setSuggestions(Array.isArray(sJson) ? sJson : []);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -155,6 +165,16 @@ export default function AdminFranchisesPage() {
       <p style={{ fontSize: 13, color: "var(--text-faint)", marginBottom: 28 }}>
         Manage auto-detected and manual franchise connections
       </p>
+
+      {unauthorized && (
+        <div style={{
+          padding: "14px 18px", borderRadius: 10, marginBottom: 24,
+          background: "rgba(232,72,85,0.08)", border: "1px solid rgba(232,72,85,0.3)",
+          color: "#E84855", fontSize: 13,
+        }}>
+          Admin access required. Sign in with an authorized account to manage franchises.
+        </div>
+      )}
 
       {/* Tabs */}
       <div style={{ display: "flex", gap: 8, marginBottom: 28 }}>

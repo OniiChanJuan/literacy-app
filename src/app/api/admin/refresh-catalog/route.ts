@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getClaims } from "@/lib/supabase/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
+import { isAdmin } from "@/lib/admin";
 
 /**
  * POST /api/admin/refresh-catalog
@@ -13,6 +14,9 @@ export async function POST(req: NextRequest) {
   const claims = await getClaims();
   if (!claims?.sub) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   if (!rateLimit(`admin-refresh:${claims.sub}`, 5, 60_000)) {

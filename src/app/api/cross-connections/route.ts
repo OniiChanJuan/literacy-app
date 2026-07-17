@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import { adminEmails } from "@/lib/admin";
 import type { TasteDimensions } from "@/lib/taste-dimensions";
 import {
   computeConnectionAffinity,
@@ -82,13 +83,6 @@ async function attachConnectionRecs(prisma: typeof import("@/lib/prisma").prisma
   }
 }
 
-// Admin gate for the debug surface — mirrors the ADMIN_EMAILS hardcode
-// pattern in /api/admin/reports/route.ts. Replace when the broader
-// admin auth audit (the DB role column) lands.
-const ADMIN_EMAILS = new Set<string>([
-  "admin@crossshelf.app",
-  "juanguajardo2014@gmail.com",  // member #1 — project owner
-]);
 
 type SectionMode = "personalized" | "trending" | "discovery";
 
@@ -523,11 +517,12 @@ export async function GET(req: NextRequest) {
 
     // ── Stage 4c admin debug surface ──────────────────────────────────
     // Append the full per-candidate breakdown when (a) ?debug=1 is in
-    // the query AND (b) the caller is an admin per ADMIN_EMAILS. Strip
-    // for everyone else. Never leaks to non-admin sessions.
+    // the query AND (b) the caller is an admin per the shared allowlist
+    // in @/lib/admin. Strip for everyone else. Never leaks to non-admin
+    // sessions.
     let debugPayload: { _debug?: DebugRow[] } = {};
     const wantsDebug = req.nextUrl.searchParams.get("debug") === "1";
-    if (wantsDebug && claims?.email && ADMIN_EMAILS.has(claims.email.toLowerCase())) {
+    if (wantsDebug && claims?.email && adminEmails().has(claims.email.toLowerCase())) {
       debugPayload = { _debug: debugRows };
     }
 
