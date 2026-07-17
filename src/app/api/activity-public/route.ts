@@ -101,22 +101,19 @@ export async function GET(req: NextRequest) {
 
     // Privacy gates. Anon public feed — every caller is "other", so the
     // owner-exception isn't applicable. The toggles compound:
-    //   - is_private=true                hides rating + library events
-    //                                    (reviews still surface; gated
-    //                                    by showActivityPublicly below)
+    //   - is_private=true                hides ALL events, incl. reviews
     //   - showRatingsPublicly=false      hides rating events
-    //   - showLibraryPublicly=false      hides library events  (commit 3)
+    //   - showLibraryPublicly=false      hides library events
     //   - showActivityPublicly=false     hides ALL events incl. reviews
-    //                                    (commit 4)
     const flagsMap = userIds.length > 0 ? await loadPrivacyFlags(userIds) : new Map();
     const isHiddenByPrivacy = (userId: string): boolean =>
       profileMap.get(userId)?.isPrivate === true;
-    // showActivityPublicly is the master switch — when false, EVERY
-    // event type (including reviews) is suppressed from the feed.
-    // Note: reviews remain visible on the item page itself via
-    // /api/reviews — only the activity-feed surface is suppressed.
     const hidesActivity = (userId: string): boolean =>
       flagsMap.get(userId)?.showActivityPublicly === false;
+    // Reviews are hidden when the author is private OR has turned off
+    // public activity — same is_private gate ratings/library apply.
+    const hidesReviews = (userId: string): boolean =>
+      isHiddenByPrivacy(userId) || hidesActivity(userId);
     const hidesRatings = (userId: string): boolean =>
       isHiddenByPrivacy(userId) ||
       flagsMap.get(userId)?.showRatingsPublicly === false ||
@@ -128,7 +125,7 @@ export async function GET(req: NextRequest) {
 
     const combined: FeedEntry[] = [
       ...reviews
-        .filter((r) => !hidesActivity(r.userId))
+        .filter((r) => !hidesReviews(r.userId))
         .map((r): FeedEntry => ({
           kind: "review",
           createdAt: r.createdAt.toISOString(),

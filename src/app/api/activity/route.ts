@@ -69,22 +69,21 @@ export async function GET(req: NextRequest) {
   const profileMap = new Map(profiles.map((p) => [p.id, p]));
 
   // Privacy gates compound:
-  //   - is_private=true            hides rating events (passive consumption)
-  //                                — reviews still surface (gated below
-  //                                by showActivityPublicly in commit 4).
+  //   - is_private=true            hides ALL events, incl. reviews.
   //   - showRatingsPublicly=false  hides rating events.
-  //   - showActivityPublicly=false hides ALL events incl. reviews (commit 4).
+  //   - showActivityPublicly=false hides ALL events incl. reviews.
   //
   // Owner exception isn't applicable: this feed only shows followed users,
   // never the caller's own activity.
   const flagsMap = authorIds.length > 0 ? await loadPrivacyFlags(authorIds) : new Map();
   const isHiddenByPrivacy = (userId: string): boolean =>
     profileMap.get(userId)?.isPrivate === true;
-  // Master switch: showActivityPublicly=false suppresses ALL events
-  // (incl. reviews) from feeds. Reviews remain visible on item pages
-  // via /api/reviews, just not in activity-feed surfaces.
   const hidesActivity = (userId: string): boolean =>
     flagsMap.get(userId)?.showActivityPublicly === false;
+  // Reviews are hidden when the author is private OR has turned off public
+  // activity — same is_private gate ratings/library already apply.
+  const hidesReviews = (userId: string): boolean =>
+    isHiddenByPrivacy(userId) || hidesActivity(userId);
   const hidesRatings = (userId: string): boolean =>
     isHiddenByPrivacy(userId) ||
     flagsMap.get(userId)?.showRatingsPublicly === false ||
@@ -122,14 +121,13 @@ export async function GET(req: NextRequest) {
   };
 
   const reviewEntries: ActivityEntry[] = reviews
-    .filter((r) => !hidesActivity(r.userId))
+    .filter((r) => !hidesReviews(r.userId))
     .map((r) => {
     const rating = ratingMap.get(`${r.userId}-${r.itemId}`);
     const u = profileMap.get(r.userId);
-    // When the review author has showRatingsPublicly=false (or is_private),
-    // surface the review text but omit the paired score so the UI renders
-    // no star block. The review remains visible — it's an intentional
-    // public act per the privacy product decision.
+    // Author is already known non-private here (hidesReviews filtered the
+    // private ones out). Still omit the paired score when the author hides
+    // ratings, so the UI renders no star block.
     const ratingHidden = hidesRatings(r.userId);
     return {
       id: `review-${r.id}`,

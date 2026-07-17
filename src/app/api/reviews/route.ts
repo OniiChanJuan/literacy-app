@@ -72,12 +72,24 @@ export async function GET(req: NextRequest) {
     const profileMap = new Map(profiles.map((p: any) => [p.id, p]));
     const ratingMap = new Map(ratings.map((r: any) => [r.userId, r]));
 
-    // Shape each review.
-    // Privacy: when the author has showRatingsPublicly=false (or is_private),
-    // the paired star score is suppressed. Review text + identity remain
-    // public — writing a review is an intentional public act. Owner sees
-    // their own score regardless.
-    const shaped = allReviews.map((r) => {
+    // Privacy: a review is hidden entirely from OTHER viewers when its
+    // author is private (is_private) or has turned off public activity
+    // (showActivityPublicly=false) — matching how ratings/library gate on
+    // is_private. The owner always sees their own reviews. Replies whose
+    // parent is removed fall out of the tree naturally.
+    const reviewHidden = (userId: string): boolean => {
+      if (userId === currentUserId) return false;
+      const u = profileMap.get(userId) as { isPrivate?: boolean } | undefined;
+      if (u?.isPrivate === true) return true;
+      if (flags.get(userId)?.showActivityPublicly === false) return true;
+      return false;
+    };
+    const visibleReviews = allReviews.filter((r) => !reviewHidden(r.userId));
+
+    // Shape each visible review. A non-private author who hides only their
+    // ratings (showRatingsPublicly=false) still shows review text — just
+    // with the paired star score suppressed. Owner sees their own score.
+    const shaped = visibleReviews.map((r) => {
       const rating = ratingMap.get(r.userId) as { score: number; recommendTag: string | null } | undefined;
       const u = profileMap.get(r.userId) as { name: string | null; image: string | null; avatar: string; memberNumber: number | null; isPrivate: boolean } | undefined;
       const votes = (r as any).helpfulVotes as { userId: string; voteType: string }[] | undefined;
