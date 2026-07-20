@@ -111,9 +111,14 @@ export async function GET(req: NextRequest) {
   });
   const followedIds = new Set(follows.map((f) => f.followedId));
 
+  // Candidates here are already non-private with showRatingsPublicly=true
+  // (the hiddenSet filter above excludes the rest), so ratingsCount is
+  // legitimately public. reviewsCount still needs the showActivityPublicly
+  // gate — a user can show ratings but hide review activity.
   return NextResponse.json(ranked.map((r) => {
     const u = userMap.get(r.userId);
     if (!u) return null;
+    const showReviews = candidateFlags.get(r.userId)?.showActivityPublicly !== false;
     return {
       id: u.id,
       name: u.name || "Anonymous",
@@ -121,7 +126,7 @@ export async function GET(req: NextRequest) {
       bio: u.bio,
       memberNumber: u.memberNumber,
       ratingsCount: u._count.ratings,
-      reviewsCount: u._count.reviews,
+      reviewsCount: showReviews ? u._count.reviews : 0,
       sharedRatings: r.shared,
       isFollowing: followedIds.has(u.id),
     };

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getClaims } from "@/lib/supabase/auth";
 import { rateLimit } from "@/lib/validation";
+import { loadPrivacyFlags } from "@/lib/privacy";
 
 // GET /api/users/search?q=username — search users by name
 export async function GET(req: NextRequest) {
@@ -28,12 +29,15 @@ export async function GET(req: NextRequest) {
     take: 20,
   });
 
-  const counts = profiles.length > 0
-    ? await prisma.user.findMany({
-        where: { id: { in: profiles.map((p) => p.id) } },
-        select: { id: true, _count: { select: { ratings: true, reviews: true } } },
-      })
-    : [];
+  const [counts, flags] = await Promise.all([
+    profiles.length > 0
+      ? prisma.user.findMany({
+          where: { id: { in: profiles.map((p) => p.id) } },
+          select: { id: true, _count: { select: { ratings: true, reviews: true } } },
+        })
+      : Promise.resolve([] as { id: string; _count: { ratings: number; reviews: number } }[]),
+    loadPrivacyFlags(profiles.map((p) => p.id)),
+  ]);
   const countMap = new Map(counts.map((c) => [c.id, c._count]));
 
   const users = profiles.map((p) => ({
@@ -51,14 +55,22 @@ export async function GET(req: NextRequest) {
     followedIds = new Set(follows.map((f) => f.followedId));
   }
 
-  return NextResponse.json(users.map((u) => ({
-    id: u.id,
-    name: u.name || "Anonymous",
-    avatar: u.image || u.avatar || "",
-    bio: u.bio,
-    memberNumber: u.memberNumber,
-    ratingsCount: u._count.ratings,
-    reviewsCount: u._count.reviews,
-    isFollowing: followedIds.has(u.id),
-  })));
+  // Privacy: a matched user still appears in search (findable + followable),
+  // but their activity counts follow the same gates as the profile page —
+  // is_private hides both; the per-surface toggles narrow further. Mirrors
+  // showRatings / showReviews in /api/users/[id].
+  return NextResponse.json(users.map((u) => {
+    const showRatings = !u.isPrivate && flags.get(u.id)?.showRatingsPublicly !== false;
+    const showReviews = !u.isPrivate && flags.get(u.id)?.showActivityPublicly !== false;
+    return {
+      id: u.id,
+      name: u.name || "Anonymous",
+      avatar: u.image || u.avatar || "",
+      bio: u.bio,
+      memberNumber: u.memberNumber,
+      ratingsCount: showRatings ? u._count.ratings : 0,
+      reviewsCount: showReviews ? u._count.reviews : 0,
+      isFollowing: followedIds.has(u.id),
+    };
+  }));
 }

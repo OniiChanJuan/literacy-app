@@ -60,8 +60,11 @@ export async function GET(req: NextRequest) {
   //     accepted the follow — basic identity stays visible).
   //   - is_private=true OR showRatingsPublicly=false → hide rating-derived
   //     stats (topMediaTypes, lastActiveAt, ratedCount). Ratings are passive
-  //     consumption; either gate suppresses them. reviewCount stays visible
-  //     (reviews are an intentional public act per the product decision).
+  //     consumption; either gate suppresses them.
+  //   - is_private=true OR showActivityPublicly=false → hide reviewCount.
+  //     (Under the locked Private Library model reviews are NOT a public
+  //     act — is_private hides them and their count, matching /api/users/[id]
+  //     and the H2 review-visibility fix.)
   const users = follows
     .map((f) => {
       const p = profileMap.get(f.followedId);
@@ -69,6 +72,7 @@ export async function GET(req: NextRequest) {
       const c = countMap.get(f.followedId);
       const f_ = flags.get(f.followedId);
       const ratingsHidden = p.isPrivate === true || f_?.showRatingsPublicly === false;
+      const reviewsHidden = p.isPrivate === true || f_?.showActivityPublicly === false;
       const userRatings = ratingsHidden ? [] : ratingsByUser.get(f.followedId) ?? [];
 
       const typeCounts: Record<string, number> = {};
@@ -88,7 +92,7 @@ export async function GET(req: NextRequest) {
         avatar: p.avatar || p.image || "",
         memberNumber: p.memberNumber,
         ratedCount: ratingsHidden ? 0 : (c?.ratings ?? 0),
-        reviewCount: c?.reviews ?? 0,
+        reviewCount: reviewsHidden ? 0 : (c?.reviews ?? 0),
         topMediaTypes,
         // Per-type rating counts (already computed above) so the mobile
         // type-mix bar can render real proportions. Empty when ratings hidden.
