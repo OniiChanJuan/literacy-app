@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { VALID_SLUG_TYPES } from "@/lib/slugs";
 import { ItemPageRender, dbItemToItem } from "@/app/item/_page-impl";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
+import { serializeJsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
 
 const TYPE_LABEL: Record<string, string> = {
@@ -155,7 +156,7 @@ export default async function ItemSlugPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJson) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(ldJson) }}
       />
       <ItemPageRender
         item={item}

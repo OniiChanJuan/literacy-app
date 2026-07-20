@@ -17,6 +17,7 @@ import {
   SITE_TITLE_DEFAULT,
   SITE_TITLE_TEMPLATE,
 } from "@/lib/site";
+import { serializeJsonLd } from "@/lib/json-ld";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -98,7 +99,7 @@ export default function RootLayout({
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
+            __html: serializeJsonLd([
               {
                 "@context": "https://schema.org",
                 "@type": "Organization",
