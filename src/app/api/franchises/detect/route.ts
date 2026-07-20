@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
+import { isAdmin } from "@/lib/admin";
 
 /**
  * POST /api/franchises/detect — Real-time franchise detection for a single item.
- * Called automatically when a new item is added to the database.
+ *
+ * Admin-only. No in-app surface calls this route (item creation paths run
+ * detectFranchiseForItem from @/lib/dedup in-process instead) — it exists
+ * as manual curation tooling, so it gets the strictest gate.
  *
  * Checks:
  * 1. Title pattern matching against existing franchises
@@ -15,6 +19,9 @@ export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for") || "unknown";
   if (!rateLimit(`franchises-detect:${ip}`, 120, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   try {

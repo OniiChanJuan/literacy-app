@@ -3,16 +3,25 @@ import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/validation";
 import { detectFranchiseForItem } from "@/lib/dedup";
 import { cleanDescription } from "@/lib/clean-description";
+import { isAdmin } from "@/lib/admin";
 
 /**
  * POST /api/import — Import an external API item into our database
  * Body: { source, externalId, type, title, year, cover, description, genre, vibes, people, platforms, ext, totalEp }
  * Returns: the newly created (or existing) item with its local database ID
+ *
+ * Admin-only. No in-app surface calls this route (the user-facing import
+ * flow is /api/import/batch, which is auth'd and user-scoped; ingestion
+ * scripts write via Prisma directly) — it exists as manual curation
+ * tooling, so it gets the strictest gate.
  */
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for") || "unknown";
   if (!rateLimit(`import:${ip}`, 120, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again in a moment." }, { status: 429, headers: { "Retry-After": "60" } });
+  }
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   let body: any;
