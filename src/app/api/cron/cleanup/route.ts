@@ -12,7 +12,10 @@ import { prisma } from "@/lib/prisma";
  *      A connection at 1.50 drifts to 1.475 overnight, 1.0 after
  *      ~135 nights of no activity. Floors a stale 0.30 the same way.
  *
- * Protected by CRON_SECRET environment variable.
+ * Protected by CRON_SECRET environment variable. Vercel Cron sends
+ * `Authorization: Bearer $CRON_SECRET` automatically when CRON_SECRET is
+ * set in the project env, so CRON_SECRET MUST be configured in Vercel
+ * (Production) for the nightly job to authenticate.
  *
  * vercel.json: { "crons": [{ "path": "/api/cron/cleanup", "schedule": "0 3 * * *" }] }
  */
@@ -20,7 +23,12 @@ export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
 
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  // Fail CLOSED. A missing secret must never mean "no auth required" — if
+  // CRON_SECRET is unset we reject everyone (the job simply won't run until
+  // it's configured), and when set we require an exact bearer match. This
+  // route does destructive deletes + a corpus decay, so an unauthenticated
+  // caller must never reach the body.
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
