@@ -43,7 +43,14 @@ const SLICE = [
 ];
 
 const REISSUE_RE = /\b(deluxe|remaster|remastered|anniversary|expanded|edition|reissue|mono version|stereo version|demos?|karaoke|super deluxe|box set|bonus)\b/i;
-const NOISE_SECONDARY = new Set(['Compilation', 'Remix', 'DJ-mix', 'Mixtape/Street', 'Interview', 'Audiobook', 'Soundtrack', 'Spokenword', 'Demo']);
+// NOTE: 'Mixtape/Street' is deliberately NOT here — mixtapes get the HYBRID
+// gate below (owner-approved): qualify iff MB rating votes ≥1, then the same
+// official+cover checks as studio albums. Blanket exclusion lost canonical
+// tapes (Coloring Book, No Ceilings); blanket inclusion admitted DJ-blend/fan
+// junk that MB marks "official" with covers. Votes≥1 + official + cover is the
+// clean automatic middle; the canonical zero-vote remainder is hand-recovered
+// by MBID per batch (curated delta selection, pre-war-jazz style).
+const NOISE_SECONDARY = new Set(['Compilation', 'Remix', 'DJ-mix', 'Interview', 'Audiobook', 'Soundtrack', 'Spokenword', 'Demo']);
 
 interface RG { id: string; title: string; primaryType: string | null; secondaryTypes: string[]; year: number; ratingVotes: number; }
 
@@ -172,7 +179,7 @@ async function main() {
   console.log(`discography-depth — ${DRY ? 'DRY' : 'LIVE'}${GENRE ? ` — genre=${GENRE}` : ''} — ${slice.length} artists — require-cover=${REQUIRE_COVER}\n`);
 
   const perArtist: { artist: string; included: number; excl: Record<string, number>; created: string[]; note?: string }[] = [];
-  const globalExcl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'unofficial': 0, 'no-cover': 0, 'failed-notability': 0 };
+  const globalExcl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'unofficial': 0, 'no-cover': 0, 'mixtape-novotes': 0, 'failed-notability': 0 };
   const seenArtistMbids = new Set<string>(); // dedup catalog artist-name variants (Jay-Z / Jaÿ-Z → same MB artist)
   let totalIncluded = 0, withCover = 0;
 
@@ -199,7 +206,7 @@ async function main() {
     }
 
     const ctx: Ctx = { existingMbids: allMbids, isDupTitle: (t) => info.titles.has(norm(t)) };
-    const excl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'unofficial': 0, 'no-cover': 0, 'failed-notability': 0 };
+    const excl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'unofficial': 0, 'no-cover': 0, 'mixtape-novotes': 0, 'failed-notability': 0 };
     const toCreate: RG[] = [];
     const liveCandidates: RG[] = [];
     for (const rg of rgs) {
@@ -209,6 +216,13 @@ async function main() {
       if (NOTABILITY.some((c) => c.test(rg))) { toCreate.push(rg); continue; }
       // not a studio album → hold as a live candidate if it's a rated live album; else fails notability
       if (rg.secondaryTypes.includes('Live') && rg.ratingVotes >= DEFINITIVE_LIVE.minVotes) { liveCandidates.push(rg); continue; }
+      // HYBRID mixtape gate: a rated (votes≥1) mixtape proceeds to the same
+      // official+cover checks as a studio album; zero-vote tapes are counted
+      // separately so the batch report can surface the delta for hand-recovery.
+      if (rg.secondaryTypes.includes('Mixtape/Street')) {
+        if (rg.ratingVotes >= 1) { toCreate.push(rg); continue; }
+        excl['mixtape-novotes']++; globalExcl['mixtape-novotes']++; continue;
+      }
       excl['failed-notability']++; globalExcl['failed-notability']++;
     }
     // add at most ONE live album — the single best-rated (the "definitive live album")
@@ -223,7 +237,7 @@ async function main() {
     let madeCount = 0;
     for (const rg of toCreate) {
       const detail = await rgDetail(rg.id); // official-status + per-album genre (one call)
-      if (OFFICIAL_ONLY && rg.secondaryTypes.length === 0 && !detail.official) { excl['unofficial']++; globalExcl['unofficial']++; continue; } // bootleg/fan-made/scrapped Album-typed RGs
+      if (OFFICIAL_ONLY && !rg.secondaryTypes.includes('Live') && !detail.official) { excl['unofficial']++; globalExcl['unofficial']++; continue; } // bootleg/fan-made/scrapped RGs — studio AND mixtape; the rating-vetted live pick is exempt
       const cover = await coverUrl(rg.id);
       if (!cover && REQUIRE_COVER) { excl['no-cover']++; globalExcl['no-cover']++; continue; } // require-cover lever
       if (cover) withCover++;
@@ -231,7 +245,7 @@ async function main() {
       // re-derive genre from the album's own MB genres/tags; fall back to the artist's catalog genre only when MB has none
       const mapped = mapGenres(...detail.genres);
       const genre = mapped.length ? mapped : (info.genre.length ? info.genre : []);
-      createdTitles.push(`${rg.title} (${rg.year || '????'})${rg.secondaryTypes.includes('Live') ? ' [live]' : ''} [${genre.join('/') || 'no-genre'}]`);
+      createdTitles.push(`${rg.title} (${rg.year || '????'})${rg.secondaryTypes.includes('Live') ? ' [live]' : ''}${rg.secondaryTypes.includes('Mixtape/Street') ? ' [mixtape]' : ''} [${genre.join('/') || 'no-genre'}]`);
       if (!DRY) {
         let slug = makeSlugFromTitle(rg.title); if (allSlugs.has(slug)) slug = `${slug}-${rg.year || 'album'}`;
         let n = 2; while (allSlugs.has(slug)) slug = `${makeSlugFromTitle(rg.title)}-${rg.year}-${n++}`;
