@@ -87,6 +87,11 @@ const REQUIRE_COVER = !process.argv.includes('--allow-no-cover');
 // covers exist). A studio RG qualifies only if ≥1 of its releases is
 // status=Official. Costs one extra MB call per surviving candidate.
 const OFFICIAL_ONLY = !process.argv.includes('--allow-unofficial');
+// --emit-delta=<path>: for the hip-hop batch, record the zero-vote mixtapes
+// that WOULD pass official+cover (i.e. the A−B delta held out by votes≥1) to a
+// JSON file, so the canonical ones can be hand-recovered by MBID after review.
+// Not ingested here — surfaced for the annotated-delta review.
+const EMIT_DELTA = argOf('emit-delta');
 
 async function mb(path: string, retries = 0): Promise<any> {
   await sleep(1100);
@@ -181,6 +186,7 @@ async function main() {
   const perArtist: { artist: string; included: number; excl: Record<string, number>; created: string[]; note?: string }[] = [];
   const globalExcl: Record<string, number> = { dedup: 0, 'not-album-form': 0, 'comp-remix-demo-etc': 0, 'split-or-future': 0, 'reissue-title': 0, 'unofficial': 0, 'no-cover': 0, 'mixtape-novotes': 0, 'failed-notability': 0 };
   const seenArtistMbids = new Set<string>(); // dedup catalog artist-name variants (Jay-Z / Jaÿ-Z → same MB artist)
+  const deltaList: { id: string; title: string; year: number; artist: string; genre: string[] }[] = []; // --emit-delta: zero-vote mixtapes that pass official+cover
   let totalIncluded = 0, withCover = 0;
 
   for (const artistName of slice) {
@@ -221,7 +227,13 @@ async function main() {
       // separately so the batch report can surface the delta for hand-recovery.
       if (rg.secondaryTypes.includes('Mixtape/Street')) {
         if (rg.ratingVotes >= 1) { toCreate.push(rg); continue; }
-        excl['mixtape-novotes']++; globalExcl['mixtape-novotes']++; continue;
+        excl['mixtape-novotes']++; globalExcl['mixtape-novotes']++;
+        if (EMIT_DELTA) { // record the A−B delta candidate iff it would pass official+cover
+          const d = await rgDetail(rg.id);
+          const cov = d.official ? await coverUrl(rg.id) : null;
+          if (d.official && cov) { const mp = mapGenres(...d.genres); deltaList.push({ id: rg.id, title: rg.title, year: rg.year, artist: artistName, genre: mp.length ? mp : info.genre }); }
+        }
+        continue;
       }
       excl['failed-notability']++; globalExcl['failed-notability']++;
     }
@@ -277,6 +289,10 @@ async function main() {
   // dump created titles for spot-checking
   console.log(`\nADDED ALBUMS (spot-check editions):`);
   for (const pa of perArtist) if (pa.created.length) console.log(`  ${pa.artist}:\n    ${pa.created.join('\n    ')}`);
+  if (EMIT_DELTA) {
+    writeFileSync(EMIT_DELTA, JSON.stringify({ note: 'zero-vote mixtapes passing official+cover — A−B delta for annotated hand-recovery', items: deltaList }, null, 1));
+    console.log(`\nA−B DELTA (zero-vote mixtapes passing official+cover) → ${EMIT_DELTA}: ${deltaList.length} candidates`);
+  }
   await prisma.$disconnect();
 }
 main().catch(async (e) => { console.error(e); await prisma.$disconnect(); process.exit(1); });
