@@ -145,6 +145,7 @@ model Item {
   libraryEntries LibraryEntry[]
   franchiseItems FranchiseItem[]
   externalScores ExternalScore[]
+  awardRecords   Award[]
   implicitSignals ImplicitSignal[]
   dismissedItems  DismissedItem[]
   tagSuggestions UserTagSuggestion[]
@@ -167,6 +168,31 @@ model Item {
   // (created by scripts/add-title-trgm-index.ts; declared here so db push keeps it).
   @@index([title(ops: raw("gin_trgm_ops"))], type: Gin, map: "items_title_trgm_idx")
   @@map("items")
+}
+
+/// Relational awards/provenance — source of truth for pedigree data.
+/// award_key joins the AWARDS registry in src/lib/awards.ts (labels, icons,
+/// colors, allowed types). The legacy items.awards JSON stays as a
+/// denormalized display cache (array of award keys) maintained by the seed
+/// scripts — the badge UI reads it; this table powers browse/queries and
+/// (later) Layer 3 award-cluster seeds.
+/// year semantics follow each award's own labeling convention: Oscars/Palme/
+/// TGA = year of the work/edition; Emmys/Grammys/Booker/Hugo = award year.
+model Award {
+  id        Int      @id @default(autoincrement())
+  itemId    Int      @map("item_id")
+  awardKey  String   @map("award_key") // 'oscar', 'booker', 'tga', ...
+  category  String   @default("")      // 'Best Picture', 'Best Novel', '' if N/A
+  year      Int
+  result    String                     // 'won' | 'nominated' | 'selected'
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, awardKey, category, year])
+  @@index([awardKey, year])
+  @@index([itemId])
+  @@map("awards")
 }
 
 model ExternalScore {

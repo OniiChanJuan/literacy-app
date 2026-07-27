@@ -1,0 +1,2052 @@
+[
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1927,
+  "title": "Wings",
+  "itemYear": 1927,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1929,
+  "title": "The Broadway Melody",
+  "itemYear": 1929,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1930,
+  "title": "All Quiet on the Western Front",
+  "itemYear": 1930,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1931,
+  "title": "Cimarron",
+  "itemYear": 1931,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1932,
+  "title": "Grand Hotel",
+  "itemYear": 1932,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1933,
+  "title": "Cavalcade",
+  "itemYear": 1933,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1936,
+  "title": "The Great Ziegfeld",
+  "itemYear": 1936,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1937,
+  "title": "The Life of Emile Zola",
+  "itemYear": 1937,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1941,
+  "title": "How Green Was My Valley",
+  "itemYear": 1941,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1942,
+  "title": "Mrs. Miniver",
+  "itemYear": 1942,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1944,
+  "title": "Going My Way",
+  "itemYear": 1944,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1947,
+  "title": "Gentleman's Agreement",
+  "itemYear": 1947,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1948,
+  "title": "Hamlet",
+  "itemYear": 1948,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1949,
+  "title": "All the King's Men",
+  "itemYear": 1949,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1951,
+  "title": "An American in Paris",
+  "itemYear": 1951,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1952,
+  "title": "The Greatest Show on Earth",
+  "itemYear": 1952,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1953,
+  "title": "From Here to Eternity",
+  "itemYear": 1953,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1956,
+  "title": "Around the World in 80 Days",
+  "itemYear": 1956,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1958,
+  "title": "Gigi",
+  "itemYear": 1958,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1961,
+  "title": "West Side Story",
+  "itemYear": 1961,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1963,
+  "title": "Tom Jones",
+  "itemYear": 1963,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1968,
+  "title": "Oliver!",
+  "itemYear": 1968,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1981,
+  "title": "Chariots of Fire",
+  "itemYear": 1981,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1983,
+  "title": "Terms of Endearment",
+  "itemYear": 1983,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "oscar",
+  "category": "Best Picture",
+  "year": 1989,
+  "title": "Driving Miss Daisy",
+  "itemYear": 1989,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1975,
+  "title": "Chronicle of the Years of Fire",
+  "itemYear": 1975,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1977,
+  "title": "Padre Padrone",
+  "itemYear": 1977,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1978,
+  "title": "The Tree of Wooden Clogs",
+  "itemYear": 1978,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1981,
+  "title": "Man of Iron",
+  "itemYear": 1981,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1982,
+  "title": "Missing",
+  "itemYear": 1982,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1982,
+  "title": "Yol",
+  "itemYear": 1982,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1983,
+  "title": "The Ballad of Narayama",
+  "itemYear": 1983,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1985,
+  "title": "When Father Was Away on Business",
+  "itemYear": 1985,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1987,
+  "title": "Under the Sun of Satan",
+  "itemYear": 1987,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1988,
+  "title": "Pelle the Conqueror",
+  "itemYear": 1987,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1992,
+  "title": "The Best Intentions",
+  "itemYear": 1992,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1997,
+  "title": "The Eel",
+  "itemYear": 1997,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1998,
+  "title": "Eternity and a Day",
+  "itemYear": 1998,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 1999,
+  "title": "Rosetta",
+  "itemYear": 1999,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2001,
+  "title": "The Son's Room",
+  "itemYear": 2001,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2003,
+  "title": "Elephant",
+  "itemYear": 2003,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2004,
+  "title": "Fahrenheit 9/11",
+  "itemYear": 2004,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2005,
+  "title": "L'Enfant",
+  "itemYear": 2005,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2008,
+  "title": "The Class",
+  "itemYear": 2008,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2010,
+  "title": "Uncle Boonmee Who Can Recall His Past Lives",
+  "itemYear": 2010,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2011,
+  "title": "The Tree of Life",
+  "itemYear": 2011,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2013,
+  "title": "Blue Is the Warmest Colour",
+  "itemYear": 2013,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2015,
+  "title": "Dheepan",
+  "itemYear": 2015,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "palme",
+  "category": "",
+  "year": 2021,
+  "title": "Titane",
+  "itemYear": 2021,
+  "person": null,
+  "type": "movie",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 1995,
+  "title": "NYPD Blue",
+  "itemYear": 1993,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 1996,
+  "title": "ER",
+  "itemYear": 1994,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 1998,
+  "title": "The Practice",
+  "itemYear": 1997,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 1999,
+  "title": "The Practice",
+  "itemYear": 1997,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 2000,
+  "title": "The West Wing",
+  "itemYear": 1999,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 2001,
+  "title": "The West Wing",
+  "itemYear": 1999,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 2002,
+  "title": "The West Wing",
+  "itemYear": 1999,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 2003,
+  "title": "The West Wing",
+  "itemYear": 1999,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Drama Series",
+  "year": 2012,
+  "title": "Homeland",
+  "itemYear": 2011,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Comedy Series",
+  "year": 1991,
+  "title": "Cheers",
+  "itemYear": 1982,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Comedy Series",
+  "year": 1999,
+  "title": "Ally McBeal",
+  "itemYear": 1997,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Comedy Series",
+  "year": 2000,
+  "title": "Will & Grace",
+  "itemYear": 1998,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Comedy Series",
+  "year": 2001,
+  "title": "Sex and the City",
+  "itemYear": 1998,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2003,
+  "title": "Taken",
+  "itemYear": 2002,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2004,
+  "title": "Angels in America",
+  "itemYear": 2003,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2008,
+  "title": "John Adams",
+  "itemYear": 2008,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2009,
+  "title": "Little Dorrit",
+  "itemYear": 2008,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2015,
+  "title": "Olive Kitteridge",
+  "itemYear": 2014,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2020,
+  "title": "Watchmen",
+  "itemYear": 2019,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2024,
+  "title": "Baby Reindeer",
+  "itemYear": 2024,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "emmy",
+  "category": "Outstanding Limited Series",
+  "year": 2025,
+  "title": "Adolescence",
+  "itemYear": 2025,
+  "person": null,
+  "type": "tv",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1959,
+  "title": "The Music from Peter Gunn",
+  "itemYear": 1958,
+  "person": "mancini",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1961,
+  "title": "The Button-Down Mind of Bob Newhart",
+  "itemYear": 1960,
+  "person": "newhart",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1962,
+  "title": "Judy at Carnegie Hall",
+  "itemYear": 1961,
+  "person": "garland",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1963,
+  "title": "The First Family",
+  "itemYear": 1962,
+  "person": "meader",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1964,
+  "title": "The Barbra Streisand Album",
+  "itemYear": 1963,
+  "person": "streisand",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1973,
+  "title": "The Concert for Bangladesh",
+  "itemYear": 1971,
+  "person": "harrison",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1979,
+  "title": "Saturday Night Fever",
+  "itemYear": 1977,
+  "person": "bee gees",
+  "type": "music",
+  "reason": "not matched: title present but artist/year window failed"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1981,
+  "title": "Christopher Cross",
+  "itemYear": 1979,
+  "person": "cross",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1983,
+  "title": "Toto IV",
+  "itemYear": 1982,
+  "person": "toto",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1985,
+  "title": "Can't Slow Down",
+  "itemYear": 1983,
+  "person": "richie",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1986,
+  "title": "No Jacket Required",
+  "itemYear": 1985,
+  "person": "collins",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1991,
+  "title": "Back on the Block",
+  "itemYear": 1989,
+  "person": "quincy",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1992,
+  "title": "Unforgettable... with Love",
+  "itemYear": 1991,
+  "person": "cole",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1994,
+  "title": "The Bodyguard",
+  "itemYear": 1992,
+  "person": "houston",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1995,
+  "title": "MTV Unplugged",
+  "itemYear": 1994,
+  "person": "bennett",
+  "type": "music",
+  "reason": "not matched: title present but artist/year window failed"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 1997,
+  "title": "Falling into You",
+  "itemYear": 1996,
+  "person": "dion",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2002,
+  "title": "O Brother, Where Art Thou?",
+  "itemYear": 2000,
+  "person": "various",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2003,
+  "title": "Come Away with Me",
+  "itemYear": 2002,
+  "person": "jones",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2004,
+  "title": "Speakerboxxx/The Love Below",
+  "itemYear": 2003,
+  "person": "outkast",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2006,
+  "title": "How to Dismantle an Atomic Bomb",
+  "itemYear": 2004,
+  "person": "u2",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2009,
+  "title": "Raising Sand",
+  "itemYear": 2007,
+  "person": "krauss",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2013,
+  "title": "Babel",
+  "itemYear": 2012,
+  "person": "mumford",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2018,
+  "title": "24K Magic",
+  "itemYear": 2016,
+  "person": "mars",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2022,
+  "title": "We Are",
+  "itemYear": 2021,
+  "person": "batiste",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "grammy",
+  "category": "Album of the Year",
+  "year": 2023,
+  "title": "Harry's House",
+  "itemYear": 2022,
+  "person": "styles",
+  "type": "music",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "tga",
+  "category": "Game of the Year",
+  "year": 2014,
+  "title": "Dragon Age: Inquisition",
+  "itemYear": 2014,
+  "person": null,
+  "type": "game",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1969,
+  "title": "Something to Answer For",
+  "itemYear": 1969,
+  "person": "newby",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1970,
+  "title": "The Elected Member",
+  "itemYear": 1970,
+  "person": "rubens",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1971,
+  "title": "In a Free State",
+  "itemYear": 1971,
+  "person": "naipaul",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1972,
+  "title": "G.",
+  "itemYear": 1972,
+  "person": "berger",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1973,
+  "title": "The Siege of Krishnapur",
+  "itemYear": 1973,
+  "person": "farrell",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1974,
+  "title": "The Conservationist",
+  "itemYear": 1974,
+  "person": "gordimer",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1974,
+  "title": "Holiday",
+  "itemYear": 1974,
+  "person": "middleton",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1975,
+  "title": "Heat and Dust",
+  "itemYear": 1975,
+  "person": "jhabvala",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1976,
+  "title": "Saville",
+  "itemYear": 1976,
+  "person": "storey",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1977,
+  "title": "Staying On",
+  "itemYear": 1977,
+  "person": "scott",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1978,
+  "title": "The Sea, the Sea",
+  "itemYear": 1978,
+  "person": "murdoch",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1979,
+  "title": "Offshore",
+  "itemYear": 1979,
+  "person": "fitzgerald",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1980,
+  "title": "Rites of Passage",
+  "itemYear": 1980,
+  "person": "golding",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1981,
+  "title": "Midnight's Children",
+  "itemYear": 1981,
+  "person": "rushdie",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1982,
+  "title": "Schindler's Ark",
+  "itemYear": 1982,
+  "person": "keneally",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1983,
+  "title": "Life & Times of Michael K",
+  "itemYear": 1983,
+  "person": "coetzee",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1984,
+  "title": "Hotel du Lac",
+  "itemYear": 1984,
+  "person": "brookner",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1985,
+  "title": "The Bone People",
+  "itemYear": 1985,
+  "person": "hulme",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1986,
+  "title": "The Old Devils",
+  "itemYear": 1986,
+  "person": "amis",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1987,
+  "title": "Moon Tiger",
+  "itemYear": 1987,
+  "person": "lively",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1988,
+  "title": "Oscar and Lucinda",
+  "itemYear": 1988,
+  "person": "carey",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1990,
+  "title": "Possession",
+  "itemYear": 1990,
+  "person": "byatt",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1991,
+  "title": "The Famished Road",
+  "itemYear": 1991,
+  "person": "okri",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1992,
+  "title": "The English Patient",
+  "itemYear": 1992,
+  "person": "ondaatje",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1992,
+  "title": "Sacred Hunger",
+  "itemYear": 1992,
+  "person": "unsworth",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1993,
+  "title": "Paddy Clarke Ha Ha Ha",
+  "itemYear": 1993,
+  "person": "doyle",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1994,
+  "title": "How Late It Was, How Late",
+  "itemYear": 1994,
+  "person": "kelman",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1995,
+  "title": "The Ghost Road",
+  "itemYear": 1995,
+  "person": "barker",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1996,
+  "title": "Last Orders",
+  "itemYear": 1996,
+  "person": "swift",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1997,
+  "title": "The God of Small Things",
+  "itemYear": 1997,
+  "person": "roy",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1998,
+  "title": "Amsterdam",
+  "itemYear": 1998,
+  "person": "mcewan",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 1999,
+  "title": "Disgrace",
+  "itemYear": 1999,
+  "person": "coetzee",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2001,
+  "title": "True History of the Kelly Gang",
+  "itemYear": 2001,
+  "person": "carey",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2003,
+  "title": "Vernon God Little",
+  "itemYear": 2003,
+  "person": "pierre",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2004,
+  "title": "The Line of Beauty",
+  "itemYear": 2004,
+  "person": "hollinghurst",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2005,
+  "title": "The Sea",
+  "itemYear": 2005,
+  "person": "banville",
+  "type": "book",
+  "reason": "ambiguous: title matches but author 'banville' unverified (#18148)"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2007,
+  "title": "The Gathering",
+  "itemYear": 2007,
+  "person": "enright",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2008,
+  "title": "The White Tiger",
+  "itemYear": 2008,
+  "person": "adiga",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2009,
+  "title": "Wolf Hall",
+  "itemYear": 2009,
+  "person": "mantel",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2010,
+  "title": "The Finkler Question",
+  "itemYear": 2010,
+  "person": "jacobson",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2011,
+  "title": "The Sense of an Ending",
+  "itemYear": 2011,
+  "person": "barnes",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2012,
+  "title": "Bring Up the Bodies",
+  "itemYear": 2012,
+  "person": "mantel",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2013,
+  "title": "The Luminaries",
+  "itemYear": 2013,
+  "person": "catton",
+  "type": "book",
+  "reason": "ambiguous: title matches but author 'catton' unverified (#25973)"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2014,
+  "title": "The Narrow Road to the Deep North",
+  "itemYear": 2014,
+  "person": "flanagan",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2016,
+  "title": "The Sellout",
+  "itemYear": 2016,
+  "person": "beatty",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2019,
+  "title": "Girl, Woman, Other",
+  "itemYear": 2019,
+  "person": "evaristo",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2021,
+  "title": "The Promise",
+  "itemYear": 2021,
+  "person": "galgut",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2022,
+  "title": "The Seven Moons of Maali Almeida",
+  "itemYear": 2022,
+  "person": "karunatilaka",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2023,
+  "title": "Prophet Song",
+  "itemYear": 2023,
+  "person": "lynch",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "booker",
+  "category": "",
+  "year": 2025,
+  "title": "Flesh",
+  "itemYear": 2025,
+  "person": "szalay",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1953,
+  "title": "The Demolished Man",
+  "itemYear": 1953,
+  "person": "bester",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1955,
+  "title": "They'd Rather Be Right",
+  "itemYear": 1955,
+  "person": "clifton",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1956,
+  "title": "Double Star",
+  "itemYear": 1956,
+  "person": "heinlein",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1958,
+  "title": "The Big Time",
+  "itemYear": 1958,
+  "person": "leiber",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1959,
+  "title": "A Case of Conscience",
+  "itemYear": 1959,
+  "person": "blish",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1960,
+  "title": "Starship Troopers",
+  "itemYear": 1960,
+  "person": "heinlein",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1961,
+  "title": "A Canticle for Leibowitz",
+  "itemYear": 1961,
+  "person": "miller",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1962,
+  "title": "Stranger in a Strange Land",
+  "itemYear": 1962,
+  "person": "heinlein",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1964,
+  "title": "Way Station",
+  "itemYear": 1964,
+  "person": "simak",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1965,
+  "title": "The Wanderer",
+  "itemYear": 1965,
+  "person": "leiber",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1966,
+  "title": "This Immortal",
+  "itemYear": 1966,
+  "person": "zelazny",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1967,
+  "title": "The Moon Is a Harsh Mistress",
+  "itemYear": 1967,
+  "person": "heinlein",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1968,
+  "title": "Lord of Light",
+  "itemYear": 1968,
+  "person": "zelazny",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1969,
+  "title": "Stand on Zanzibar",
+  "itemYear": 1969,
+  "person": "brunner",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1971,
+  "title": "Ringworld",
+  "itemYear": 1971,
+  "person": "niven",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1972,
+  "title": "To Your Scattered Bodies Go",
+  "itemYear": 1972,
+  "person": "farmer",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1974,
+  "title": "Rendezvous with Rama",
+  "itemYear": 1974,
+  "person": "clarke",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1976,
+  "title": "The Forever War",
+  "itemYear": 1976,
+  "person": "haldeman",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1977,
+  "title": "Where Late the Sweet Birds Sang",
+  "itemYear": 1977,
+  "person": "wilhelm",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1978,
+  "title": "Gateway",
+  "itemYear": 1978,
+  "person": "pohl",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1979,
+  "title": "Dreamsnake",
+  "itemYear": 1979,
+  "person": "mcintyre",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1980,
+  "title": "The Fountains of Paradise",
+  "itemYear": 1980,
+  "person": "clarke",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1981,
+  "title": "The Snow Queen",
+  "itemYear": 1981,
+  "person": "vinge",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1982,
+  "title": "Downbelow Station",
+  "itemYear": 1982,
+  "person": "cherryh",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1984,
+  "title": "Startide Rising",
+  "itemYear": 1984,
+  "person": "brin",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1987,
+  "title": "Speaker for the Dead",
+  "itemYear": 1987,
+  "person": "card",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1988,
+  "title": "The Uplift War",
+  "itemYear": 1988,
+  "person": "brin",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1989,
+  "title": "Cyteen",
+  "itemYear": 1989,
+  "person": "cherryh",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1990,
+  "title": "Hyperion",
+  "itemYear": 1990,
+  "person": "simmons",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1991,
+  "title": "The Vor Game",
+  "itemYear": 1991,
+  "person": "bujold",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1992,
+  "title": "Barrayar",
+  "itemYear": 1992,
+  "person": "bujold",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1993,
+  "title": "A Fire Upon the Deep",
+  "itemYear": 1993,
+  "person": "vinge",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1993,
+  "title": "Doomsday Book",
+  "itemYear": 1993,
+  "person": "willis",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1994,
+  "title": "Green Mars",
+  "itemYear": 1994,
+  "person": "robinson",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1995,
+  "title": "Mirror Dance",
+  "itemYear": 1995,
+  "person": "bujold",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1996,
+  "title": "The Diamond Age",
+  "itemYear": 1996,
+  "person": "stephenson",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1997,
+  "title": "Blue Mars",
+  "itemYear": 1997,
+  "person": "robinson",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1998,
+  "title": "Forever Peace",
+  "itemYear": 1998,
+  "person": "haldeman",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 1999,
+  "title": "To Say Nothing of the Dog",
+  "itemYear": 1999,
+  "person": "willis",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2000,
+  "title": "A Deepness in the Sky",
+  "itemYear": 2000,
+  "person": "vinge",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2003,
+  "title": "Hominids",
+  "itemYear": 2003,
+  "person": "sawyer",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2004,
+  "title": "Paladin of Souls",
+  "itemYear": 2004,
+  "person": "bujold",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2005,
+  "title": "Jonathan Strange & Mr Norrell",
+  "itemYear": 2005,
+  "person": "clarke",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2006,
+  "title": "Spin",
+  "itemYear": 2006,
+  "person": "wilson",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2007,
+  "title": "Rainbows End",
+  "itemYear": 2007,
+  "person": "vinge",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2008,
+  "title": "The Yiddish Policemen's Union",
+  "itemYear": 2008,
+  "person": "chabon",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2010,
+  "title": "The City & The City",
+  "itemYear": 2010,
+  "person": "mieville",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2011,
+  "title": "Blackout",
+  "itemYear": 2011,
+  "person": "willis",
+  "type": "book",
+  "reason": "ambiguous: title matches but author 'willis' unverified (#26997,#27454)"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2011,
+  "title": "All Clear",
+  "itemYear": 2011,
+  "person": "willis",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2012,
+  "title": "Among Others",
+  "itemYear": 2012,
+  "person": "walton",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2013,
+  "title": "Redshirts",
+  "itemYear": 2013,
+  "person": "scalzi",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2014,
+  "title": "Ancillary Justice",
+  "itemYear": 2014,
+  "person": "leckie",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2017,
+  "title": "The Obelisk Gate",
+  "itemYear": 2017,
+  "person": "jemisin",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2019,
+  "title": "The Calculating Stars",
+  "itemYear": 2019,
+  "person": "kowal",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2020,
+  "title": "A Memory Called Empire",
+  "itemYear": 2020,
+  "person": "martine",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2022,
+  "title": "A Desolation Called Peace",
+  "itemYear": 2022,
+  "person": "martine",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2023,
+  "title": "Nettle & Bone",
+  "itemYear": 2023,
+  "person": "kingfisher",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2024,
+  "title": "Some Desperate Glory",
+  "itemYear": 2024,
+  "person": "tesh",
+  "type": "book",
+  "reason": "not_in_catalog"
+ },
+ {
+  "awardKey": "hugo",
+  "category": "Best Novel",
+  "year": 2025,
+  "title": "The Tainted Cup",
+  "itemYear": 2025,
+  "person": "bennett",
+  "type": "book",
+  "reason": "not_in_catalog"
+ }
+]

@@ -1,0 +1,3080 @@
+{
+ "awardRows": [
+  {
+   "itemId": 6956,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1934,
+   "result": "won"
+  },
+  {
+   "itemId": 7624,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1935,
+   "result": "won"
+  },
+  {
+   "itemId": 7352,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1938,
+   "result": "won"
+  },
+  {
+   "itemId": 2922,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1939,
+   "result": "won"
+  },
+  {
+   "itemId": 6891,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1940,
+   "result": "won"
+  },
+  {
+   "itemId": 146,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1943,
+   "result": "won"
+  },
+  {
+   "itemId": 7160,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1945,
+   "result": "won"
+  },
+  {
+   "itemId": 7008,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1946,
+   "result": "won"
+  },
+  {
+   "itemId": 6796,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1950,
+   "result": "won"
+  },
+  {
+   "itemId": 6914,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1954,
+   "result": "won"
+  },
+  {
+   "itemId": 7475,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1955,
+   "result": "won"
+  },
+  {
+   "itemId": 6947,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1957,
+   "result": "won"
+  },
+  {
+   "itemId": 2716,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1959,
+   "result": "won"
+  },
+  {
+   "itemId": 125,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1960,
+   "result": "won"
+  },
+  {
+   "itemId": 4503,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1962,
+   "result": "won"
+  },
+  {
+   "itemId": 5244,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1964,
+   "result": "won"
+  },
+  {
+   "itemId": 3000,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1965,
+   "result": "won"
+  },
+  {
+   "itemId": 7660,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1966,
+   "result": "won"
+  },
+  {
+   "itemId": 7120,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1967,
+   "result": "won"
+  },
+  {
+   "itemId": 7326,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1969,
+   "result": "won"
+  },
+  {
+   "itemId": 7413,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1970,
+   "result": "won"
+  },
+  {
+   "itemId": 7344,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1971,
+   "result": "won"
+  },
+  {
+   "itemId": 2638,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1972,
+   "result": "won"
+  },
+  {
+   "itemId": 5003,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1973,
+   "result": "won"
+  },
+  {
+   "itemId": 2639,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1974,
+   "result": "won"
+  },
+  {
+   "itemId": 2661,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1975,
+   "result": "won"
+  },
+  {
+   "itemId": 3277,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1976,
+   "result": "won"
+  },
+  {
+   "itemId": 7036,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1977,
+   "result": "won"
+  },
+  {
+   "itemId": 4832,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1978,
+   "result": "won"
+  },
+  {
+   "itemId": 4644,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1979,
+   "result": "won"
+  },
+  {
+   "itemId": 7466,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1980,
+   "result": "won"
+  },
+  {
+   "itemId": 4528,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1982,
+   "result": "won"
+  },
+  {
+   "itemId": 3009,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1984,
+   "result": "won"
+  },
+  {
+   "itemId": 6231,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1985,
+   "result": "won"
+  },
+  {
+   "itemId": 2914,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1986,
+   "result": "won"
+  },
+  {
+   "itemId": 4647,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1987,
+   "result": "won"
+  },
+  {
+   "itemId": 4466,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1988,
+   "result": "won"
+  },
+  {
+   "itemId": 2937,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1990,
+   "result": "won"
+  },
+  {
+   "itemId": 44,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1991,
+   "result": "won"
+  },
+  {
+   "itemId": 2943,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1992,
+   "result": "won"
+  },
+  {
+   "itemId": 2640,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1993,
+   "result": "won"
+  },
+  {
+   "itemId": 2649,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1994,
+   "result": "won"
+  },
+  {
+   "itemId": 2899,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1995,
+   "result": "won"
+  },
+  {
+   "itemId": 4896,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1996,
+   "result": "won"
+  },
+  {
+   "itemId": 2852,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1997,
+   "result": "won"
+  },
+  {
+   "itemId": 4684,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1998,
+   "result": "won"
+  },
+  {
+   "itemId": 3458,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 1999,
+   "result": "won"
+  },
+  {
+   "itemId": 93,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2000,
+   "result": "won"
+  },
+  {
+   "itemId": 3696,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2001,
+   "result": "won"
+  },
+  {
+   "itemId": 4978,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2002,
+   "result": "won"
+  },
+  {
+   "itemId": 1353,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2003,
+   "result": "won"
+  },
+  {
+   "itemId": 4590,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2004,
+   "result": "won"
+  },
+  {
+   "itemId": 4101,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2005,
+   "result": "won"
+  },
+  {
+   "itemId": 138,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2006,
+   "result": "won"
+  },
+  {
+   "itemId": 2932,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2007,
+   "result": "won"
+  },
+  {
+   "itemId": 266,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2008,
+   "result": "won"
+  },
+  {
+   "itemId": 2917,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2009,
+   "result": "won"
+  },
+  {
+   "itemId": 4359,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2010,
+   "result": "won"
+  },
+  {
+   "itemId": 7484,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2011,
+   "result": "won"
+  },
+  {
+   "itemId": 3753,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2012,
+   "result": "won"
+  },
+  {
+   "itemId": 3054,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2013,
+   "result": "won"
+  },
+  {
+   "itemId": 4073,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2014,
+   "result": "won"
+  },
+  {
+   "itemId": 4670,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2015,
+   "result": "won"
+  },
+  {
+   "itemId": 3297,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 3309,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 96,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 13,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 6345,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2020,
+   "result": "won"
+  },
+  {
+   "itemId": 2988,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2021,
+   "result": "won"
+  },
+  {
+   "itemId": 16,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2022,
+   "result": "won"
+  },
+  {
+   "itemId": 3027,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2023,
+   "result": "won"
+  },
+  {
+   "itemId": 2879,
+   "awardKey": "oscar",
+   "category": "Best Picture",
+   "year": 2024,
+   "result": "won"
+  },
+  {
+   "itemId": 160,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1976,
+   "result": "won"
+  },
+  {
+   "itemId": 70,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1979,
+   "result": "won"
+  },
+  {
+   "itemId": 4400,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1979,
+   "result": "won"
+  },
+  {
+   "itemId": 7391,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1980,
+   "result": "won"
+  },
+  {
+   "itemId": 4576,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1980,
+   "result": "won"
+  },
+  {
+   "itemId": 182,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1984,
+   "result": "won"
+  },
+  {
+   "itemId": 7571,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1986,
+   "result": "won"
+  },
+  {
+   "itemId": 4672,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1989,
+   "result": "won"
+  },
+  {
+   "itemId": 5846,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1990,
+   "result": "won"
+  },
+  {
+   "itemId": 7429,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1991,
+   "result": "won"
+  },
+  {
+   "itemId": 4903,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1993,
+   "result": "won"
+  },
+  {
+   "itemId": 6315,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1993,
+   "result": "won"
+  },
+  {
+   "itemId": 2646,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1994,
+   "result": "won"
+  },
+  {
+   "itemId": 7045,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1995,
+   "result": "won"
+  },
+  {
+   "itemId": 7233,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1996,
+   "result": "won"
+  },
+  {
+   "itemId": 7089,
+   "awardKey": "palme",
+   "category": "",
+   "year": 1997,
+   "result": "won"
+  },
+  {
+   "itemId": 6594,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2000,
+   "result": "won"
+  },
+  {
+   "itemId": 37,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2002,
+   "result": "won"
+  },
+  {
+   "itemId": 7705,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2006,
+   "result": "won"
+  },
+  {
+   "itemId": 7262,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2007,
+   "result": "won"
+  },
+  {
+   "itemId": 7417,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2009,
+   "result": "won"
+  },
+  {
+   "itemId": 5922,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2012,
+   "result": "won"
+  },
+  {
+   "itemId": 7313,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2014,
+   "result": "won"
+  },
+  {
+   "itemId": 7059,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 6429,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 6929,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 13,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 5869,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2022,
+   "result": "won"
+  },
+  {
+   "itemId": 3714,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2023,
+   "result": "won"
+  },
+  {
+   "itemId": 2879,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2024,
+   "result": "won"
+  },
+  {
+   "itemId": 2714,
+   "awardKey": "palme",
+   "category": "",
+   "year": 2025,
+   "result": "won"
+  },
+  {
+   "itemId": 8491,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 1990,
+   "result": "won"
+  },
+  {
+   "itemId": 8491,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 1991,
+   "result": "won"
+  },
+  {
+   "itemId": 8201,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 1992,
+   "result": "won"
+  },
+  {
+   "itemId": 10233,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 1993,
+   "result": "won"
+  },
+  {
+   "itemId": 10233,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 1994,
+   "result": "won"
+  },
+  {
+   "itemId": 8160,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 1997,
+   "result": "won"
+  },
+  {
+   "itemId": 311,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2004,
+   "result": "won"
+  },
+  {
+   "itemId": 8183,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2005,
+   "result": "won"
+  },
+  {
+   "itemId": 8212,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2006,
+   "result": "won"
+  },
+  {
+   "itemId": 311,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2007,
+   "result": "won"
+  },
+  {
+   "itemId": 8345,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2008,
+   "result": "won"
+  },
+  {
+   "itemId": 8345,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2009,
+   "result": "won"
+  },
+  {
+   "itemId": 8345,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2010,
+   "result": "won"
+  },
+  {
+   "itemId": 8345,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2011,
+   "result": "won"
+  },
+  {
+   "itemId": 27,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2013,
+   "result": "won"
+  },
+  {
+   "itemId": 27,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2014,
+   "result": "won"
+  },
+  {
+   "itemId": 1455,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2015,
+   "result": "won"
+  },
+  {
+   "itemId": 1455,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 8512,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 1455,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 1455,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 8675,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2020,
+   "result": "won"
+  },
+  {
+   "itemId": 8334,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2021,
+   "result": "won"
+  },
+  {
+   "itemId": 8675,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2022,
+   "result": "won"
+  },
+  {
+   "itemId": 8675,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2023,
+   "result": "won"
+  },
+  {
+   "itemId": 9557,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2024,
+   "result": "won"
+  },
+  {
+   "itemId": 303,
+   "awardKey": "emmy",
+   "category": "Outstanding Drama Series",
+   "year": 2025,
+   "result": "won"
+  },
+  {
+   "itemId": 9462,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1990,
+   "result": "won"
+  },
+  {
+   "itemId": 9462,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1992,
+   "result": "won"
+  },
+  {
+   "itemId": 8203,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1993,
+   "result": "won"
+  },
+  {
+   "itemId": 8164,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1994,
+   "result": "won"
+  },
+  {
+   "itemId": 8164,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1995,
+   "result": "won"
+  },
+  {
+   "itemId": 8164,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1996,
+   "result": "won"
+  },
+  {
+   "itemId": 8164,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1997,
+   "result": "won"
+  },
+  {
+   "itemId": 8164,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 1998,
+   "result": "won"
+  },
+  {
+   "itemId": 8178,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2002,
+   "result": "won"
+  },
+  {
+   "itemId": 8749,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2003,
+   "result": "won"
+  },
+  {
+   "itemId": 8694,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2004,
+   "result": "won"
+  },
+  {
+   "itemId": 8749,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2005,
+   "result": "won"
+  },
+  {
+   "itemId": 342,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2006,
+   "result": "won"
+  },
+  {
+   "itemId": 8185,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2007,
+   "result": "won"
+  },
+  {
+   "itemId": 8185,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2008,
+   "result": "won"
+  },
+  {
+   "itemId": 8185,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2009,
+   "result": "won"
+  },
+  {
+   "itemId": 8175,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2010,
+   "result": "won"
+  },
+  {
+   "itemId": 8175,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2011,
+   "result": "won"
+  },
+  {
+   "itemId": 8175,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2012,
+   "result": "won"
+  },
+  {
+   "itemId": 8175,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2013,
+   "result": "won"
+  },
+  {
+   "itemId": 8175,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2014,
+   "result": "won"
+  },
+  {
+   "itemId": 8817,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2015,
+   "result": "won"
+  },
+  {
+   "itemId": 8817,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 8817,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 9613,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 10683,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 8884,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2020,
+   "result": "won"
+  },
+  {
+   "itemId": 8854,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2021,
+   "result": "won"
+  },
+  {
+   "itemId": 8854,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2022,
+   "result": "won"
+  },
+  {
+   "itemId": 8930,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2023,
+   "result": "won"
+  },
+  {
+   "itemId": 9017,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2024,
+   "result": "won"
+  },
+  {
+   "itemId": 9831,
+   "awardKey": "emmy",
+   "category": "Outstanding Comedy Series",
+   "year": 2025,
+   "result": "won"
+  },
+  {
+   "itemId": 30176,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2000,
+   "result": "won"
+  },
+  {
+   "itemId": 349,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2002,
+   "result": "won"
+  },
+  {
+   "itemId": 10279,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2010,
+   "result": "won"
+  },
+  {
+   "itemId": 8756,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2011,
+   "result": "won"
+  },
+  {
+   "itemId": 8302,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2014,
+   "result": "won"
+  },
+  {
+   "itemId": 8792,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 10918,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 8792,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 300,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 10612,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2021,
+   "result": "won"
+  },
+  {
+   "itemId": 8505,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2022,
+   "result": "won"
+  },
+  {
+   "itemId": 10573,
+   "awardKey": "emmy",
+   "category": "Outstanding Limited Series",
+   "year": 2023,
+   "result": "won"
+  },
+  {
+   "itemId": 32472,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1959,
+   "result": "won"
+  },
+  {
+   "itemId": 1033,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1965,
+   "result": "won"
+  },
+  {
+   "itemId": 32522,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1966,
+   "result": "won"
+  },
+  {
+   "itemId": 32493,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1967,
+   "result": "won"
+  },
+  {
+   "itemId": 30231,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1968,
+   "result": "won"
+  },
+  {
+   "itemId": 37152,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1969,
+   "result": "won"
+  },
+  {
+   "itemId": 31767,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1970,
+   "result": "won"
+  },
+  {
+   "itemId": 30267,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1971,
+   "result": "won"
+  },
+  {
+   "itemId": 30254,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1972,
+   "result": "won"
+  },
+  {
+   "itemId": 30243,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1974,
+   "result": "won"
+  },
+  {
+   "itemId": 38820,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1975,
+   "result": "won"
+  },
+  {
+   "itemId": 35592,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1976,
+   "result": "won"
+  },
+  {
+   "itemId": 30205,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1977,
+   "result": "won"
+  },
+  {
+   "itemId": 30194,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1978,
+   "result": "won"
+  },
+  {
+   "itemId": 30536,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1980,
+   "result": "won"
+  },
+  {
+   "itemId": 35068,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1982,
+   "result": "won"
+  },
+  {
+   "itemId": 30195,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1984,
+   "result": "won"
+  },
+  {
+   "itemId": 30217,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1987,
+   "result": "won"
+  },
+  {
+   "itemId": 30245,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1988,
+   "result": "won"
+  },
+  {
+   "itemId": 30643,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1989,
+   "result": "won"
+  },
+  {
+   "itemId": 30424,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1990,
+   "result": "won"
+  },
+  {
+   "itemId": 34747,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1993,
+   "result": "won"
+  },
+  {
+   "itemId": 30674,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1996,
+   "result": "won"
+  },
+  {
+   "itemId": 30586,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1998,
+   "result": "won"
+  },
+  {
+   "itemId": 30199,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 1999,
+   "result": "won"
+  },
+  {
+   "itemId": 35882,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2000,
+   "result": "won"
+  },
+  {
+   "itemId": 33531,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2001,
+   "result": "won"
+  },
+  {
+   "itemId": 33215,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2005,
+   "result": "won"
+  },
+  {
+   "itemId": 34532,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2007,
+   "result": "won"
+  },
+  {
+   "itemId": 32632,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2008,
+   "result": "won"
+  },
+  {
+   "itemId": 31095,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2010,
+   "result": "won"
+  },
+  {
+   "itemId": 30886,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2011,
+   "result": "won"
+  },
+  {
+   "itemId": 30684,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2012,
+   "result": "won"
+  },
+  {
+   "itemId": 30220,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2014,
+   "result": "won"
+  },
+  {
+   "itemId": 34020,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2015,
+   "result": "won"
+  },
+  {
+   "itemId": 30765,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 38227,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 30723,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 30767,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2020,
+   "result": "won"
+  },
+  {
+   "itemId": 36089,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2021,
+   "result": "won"
+  },
+  {
+   "itemId": 36078,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2024,
+   "result": "won"
+  },
+  {
+   "itemId": 39175,
+   "awardKey": "grammy",
+   "category": "Album of the Year",
+   "year": 2025,
+   "result": "won"
+  },
+  {
+   "itemId": 9,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2015,
+   "result": "won"
+  },
+  {
+   "itemId": 11243,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 456,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 462,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 550,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 486,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2020,
+   "result": "won"
+  },
+  {
+   "itemId": 11261,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2021,
+   "result": "won"
+  },
+  {
+   "itemId": 454,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2022,
+   "result": "won"
+  },
+  {
+   "itemId": 455,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2023,
+   "result": "won"
+  },
+  {
+   "itemId": 483,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2024,
+   "result": "won"
+  },
+  {
+   "itemId": 613,
+   "awardKey": "tga",
+   "category": "Game of the Year",
+   "year": 2025,
+   "result": "won"
+  },
+  {
+   "itemId": 16574,
+   "awardKey": "booker",
+   "category": "",
+   "year": 1989,
+   "result": "won"
+  },
+  {
+   "itemId": 16137,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2000,
+   "result": "won"
+  },
+  {
+   "itemId": 16955,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2002,
+   "result": "won"
+  },
+  {
+   "itemId": 14777,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2006,
+   "result": "won"
+  },
+  {
+   "itemId": 14537,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2015,
+   "result": "won"
+  },
+  {
+   "itemId": 29366,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2017,
+   "result": "won"
+  },
+  {
+   "itemId": 28825,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 16156,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2019,
+   "result": "won"
+  },
+  {
+   "itemId": 27412,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2020,
+   "result": "won"
+  },
+  {
+   "itemId": 24520,
+   "awardKey": "booker",
+   "category": "",
+   "year": 2024,
+   "result": "won"
+  },
+  {
+   "itemId": 16189,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1963,
+   "result": "won"
+  },
+  {
+   "itemId": 10,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1966,
+   "result": "won"
+  },
+  {
+   "itemId": 15935,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1970,
+   "result": "won"
+  },
+  {
+   "itemId": 16208,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1973,
+   "result": "won"
+  },
+  {
+   "itemId": 15934,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1975,
+   "result": "won"
+  },
+  {
+   "itemId": 16211,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1983,
+   "result": "won"
+  },
+  {
+   "itemId": 2,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1985,
+   "result": "won"
+  },
+  {
+   "itemId": 16751,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 1986,
+   "result": "won"
+  },
+  {
+   "itemId": 1985,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2001,
+   "result": "won"
+  },
+  {
+   "itemId": 15909,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2002,
+   "result": "won"
+  },
+  {
+   "itemId": 17555,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2009,
+   "result": "won"
+  },
+  {
+   "itemId": 17195,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2010,
+   "result": "won"
+  },
+  {
+   "itemId": 16346,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2015,
+   "result": "won"
+  },
+  {
+   "itemId": 17193,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2016,
+   "result": "won"
+  },
+  {
+   "itemId": 29711,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2018,
+   "result": "won"
+  },
+  {
+   "itemId": 27887,
+   "awardKey": "hugo",
+   "category": "Best Novel",
+   "year": 2021,
+   "result": "won"
+  }
+ ],
+ "jsonAdded": [
+  {
+   "itemId": 6956,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7624,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7352,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2922,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 6891,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 146,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7160,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7008,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 6796,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 6914,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7475,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 6947,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2716,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 125,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4503,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 5244,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3000,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7660,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7120,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7326,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7413,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7344,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2638,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 5003,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2639,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2661,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3277,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7036,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4832,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4644,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7466,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4528,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3009,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 6231,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2914,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4647,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4466,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2937,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 44,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2943,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2640,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2649,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2899,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4896,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2852,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4684,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3458,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 93,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3696,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4978,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 1353,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4590,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4101,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 138,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2932,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 266,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2917,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4359,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 7484,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3753,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3054,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4073,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 4670,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3297,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3309,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 96,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 6345,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2988,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 3027,
+   "added": [
+    "oscar"
+   ]
+  },
+  {
+   "itemId": 2879,
+   "added": [
+    "oscar",
+    "palme"
+   ]
+  },
+  {
+   "itemId": 160,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 70,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 4400,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7391,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 4576,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 182,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7571,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 4672,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 5846,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7429,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 4903,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 6315,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 2646,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7045,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7233,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7089,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 6594,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 37,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7705,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7262,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7417,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 5922,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7313,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 7059,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 6429,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 6929,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 5869,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 3714,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 2714,
+   "added": [
+    "palme"
+   ]
+  },
+  {
+   "itemId": 8491,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8201,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 10233,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8160,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 311,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8183,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8212,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8345,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 1455,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8512,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8675,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8334,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 9557,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 303,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 9462,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8203,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8164,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8178,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8749,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8694,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 342,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8185,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8175,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8817,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 9613,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 10683,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8884,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8854,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8930,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 9017,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 9831,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 30176,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 349,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 10279,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8756,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8302,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8792,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 10918,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 300,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 10612,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 8505,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 10573,
+   "added": [
+    "emmy"
+   ]
+  },
+  {
+   "itemId": 32472,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 1033,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 32522,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 32493,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30231,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 37152,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 31767,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30267,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30254,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30243,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 38820,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 35592,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30205,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30194,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30536,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 35068,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30195,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30217,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30245,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30643,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30424,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 34747,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30674,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30586,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30199,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 35882,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 33531,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 33215,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 34532,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 32632,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 31095,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30886,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30684,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30220,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 34020,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30765,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 38227,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30723,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 30767,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 36089,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 36078,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 39175,
+   "added": [
+    "grammy"
+   ]
+  },
+  {
+   "itemId": 11243,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 456,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 462,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 550,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 486,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 11261,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 454,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 455,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 483,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 613,
+   "added": [
+    "tga"
+   ]
+  },
+  {
+   "itemId": 16574,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 16137,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 16955,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 14777,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 14537,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 29366,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 28825,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 16156,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 27412,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 24520,
+   "added": [
+    "booker"
+   ]
+  },
+  {
+   "itemId": 16189,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 15935,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 16208,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 15934,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 16211,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 16751,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 1985,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 15909,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 17555,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 17195,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 16346,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 17193,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 29711,
+   "added": [
+    "hugo"
+   ]
+  },
+  {
+   "itemId": 27887,
+   "added": [
+    "hugo"
+   ]
+  }
+ ]
+}
