@@ -29,7 +29,7 @@ function jsonResponseNoCache(data: any) {
 const ITEM_SELECT = {
   id: true, title: true, type: true, genre: true, vibes: true,
   year: true, cover: true, description: true, people: true,
-  ext: true, totalEp: true,
+  awards: true, ext: true, totalEp: true,
   popularityScore: true, voteCount: true, malId: true,
 } as const;
 
@@ -578,7 +578,7 @@ function mapItem(item: any) {
     year: item.year, cover: item.cover || "",
     desc: truncateDesc(item.description),
     people: (item.people || []).slice(0, 3),
-    awards: [], platforms: [],
+    awards: Array.isArray(item.awards) ? item.awards : [], platforms: [],
     ext: slimExt(item.ext), totalEp: item.totalEp || 0,
     voteCount: item.voteCount || 0,
     malId: item.malId ?? null,
