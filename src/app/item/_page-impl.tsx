@@ -62,7 +62,7 @@ export function dbItemToItem(dbItem: any): Item & { primaryColor?: string | null
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function getPrimaryCreator(people: Person[], type: MediaType): { name: string; role: string } | null {
+export function getPrimaryCreator(people: Person[], type: MediaType): { name: string; role: string } | null {
   if (!people || people.length === 0) return null;
 
   const roleMap: Record<MediaType, string[]> = {

@@ -11,7 +11,9 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { VALID_SLUG_TYPES } from "@/lib/slugs";
-import { ItemPageRender, dbItemToItem } from "@/app/item/_page-impl";
+import { ItemPageRender, dbItemToItem, getPrimaryCreator } from "@/app/item/_page-impl";
+import { EXPLORE_SEGMENT_BY_TYPE } from "@/lib/explore-segments";
+import { TYPES, type MediaType } from "@/lib/data";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 import { serializeJsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
@@ -139,6 +141,16 @@ export default async function ItemSlugPage({
     } catch {}
   }
 
+  // Community rating aggregate for structured data. COMMUNITY ratings only —
+  // NEVER the CrossShelf Score: it blends external critics, and Google's
+  // review-snippet policy requires aggregateRating to come directly from
+  // this site's own users. Marking up the blended score risks a manual action.
+  const ratingAgg = await prisma.rating
+    .aggregate({ where: { itemId: dbItem.id }, _avg: { score: true }, _count: true })
+    .catch(() => null);
+  const ratingCount = ratingAgg?._count ?? 0;
+  const ratingAvg = ratingAgg?._avg?.score ?? null;
+
   // Structured data for item detail pages — helps Google show rich results
   const schemaType = SCHEMA_TYPE[type] || "CreativeWork";
   const cleanDesc = (dbItem.description || "").replace(/<[^>]*>/g, "").slice(0, 500);
@@ -150,6 +162,44 @@ export default async function ItemSlugPage({
     ...(cleanDesc ? { description: cleanDesc } : {}),
     ...(dbItem.cover?.startsWith("http") ? { image: dbItem.cover } : {}),
     ...(dbItem.year ? { datePublished: String(dbItem.year) } : {}),
+    ...(dbItem.genre?.length ? { genre: dbItem.genre } : {}),
+  };
+
+  const creator = getPrimaryCreator(item.people, item.type);
+  if (creator?.name) {
+    if (type === "movie" || type === "tv") {
+      ldJson.director = { "@type": "Person", name: creator.name };
+    } else if (type === "music") {
+      ldJson.byArtist = { "@type": "MusicGroup", name: creator.name };
+    } else {
+      ldJson.author = { "@type": "Person", name: creator.name };
+    }
+  }
+
+  // Suppress below 5 ratings — "5.0 from 1 rating" stars are spammy and useless.
+  if (ratingCount >= 5 && ratingAvg != null) {
+    ldJson.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: Number(ratingAvg.toFixed(1)),
+      ratingCount,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Explore", item: absoluteUrl("/explore") },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: TYPES[type as MediaType]?.label ?? type,
+        item: absoluteUrl(`/explore/${EXPLORE_SEGMENT_BY_TYPE[type]}`),
+      },
+      { "@type": "ListItem", position: 3, name: dbItem.title },
+    ],
   };
 
   return (
@@ -158,6 +208,11 @@ export default async function ItemSlugPage({
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(ldJson) }}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbLd) }}
       />
       <ItemPageRender
         item={item}
