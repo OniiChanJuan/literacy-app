@@ -10,6 +10,20 @@ const browseLinks = [
   { label: "Coming Soon", href: "/" },
 ];
 
+// Keep in sync with src/lib/explore-segments.ts — these are the
+// server-rendered browse pages, linked here so crawlers reach the
+// catalog from every page.
+const catalogLinks = [
+  { label: "Movies", href: "/explore/movies" },
+  { label: "TV Shows", href: "/explore/tv" },
+  { label: "Books", href: "/explore/books" },
+  { label: "Manga", href: "/explore/manga" },
+  { label: "Comics", href: "/explore/comics" },
+  { label: "Games", href: "/explore/games" },
+  { label: "Music", href: "/explore/music" },
+  { label: "Podcasts", href: "/explore/podcasts" },
+];
+
 const legalLinks = [
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
@@ -99,6 +113,21 @@ export default function Footer() {
           <div style={{ minWidth: 200 }}>
             <div style={sectionHeaderStyle}>Browse</div>
             {browseLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="footer-link"
+                style={linkStyle}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Catalog */}
+          <div style={{ minWidth: 140 }}>
+            <div style={sectionHeaderStyle}>Catalog</div>
+            {catalogLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}

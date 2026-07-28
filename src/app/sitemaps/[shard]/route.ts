@@ -8,6 +8,7 @@
  *   franchises.xml  → franchise pages
  */
 import { prisma } from "@/lib/prisma";
+import { EXPLORE_SEGMENTS } from "@/lib/explore-segments";
 import { SITE_URL } from "@/lib/site";
 import { VALID_SLUG_TYPES } from "@/lib/slugs";
 import {
@@ -24,6 +25,7 @@ export const revalidate = 86400;
 const PUBLIC_STATIC_PATHS = [
   "/",
   "/explore",
+  ...EXPLORE_SEGMENTS.map((s) => `/explore/${s}`),
   "/people",
   "/privacy",
   "/terms",
