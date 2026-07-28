@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { VALID_SLUG_TYPES } from "@/lib/slugs";
 import { ItemPageRender, dbItemToItem, getPrimaryCreator } from "@/app/item/_page-impl";
 import { EXPLORE_SEGMENT_BY_TYPE } from "@/lib/explore-segments";
+import { getRelatedItems } from "@/lib/related-items";
 import { TYPES, type MediaType } from "@/lib/data";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -141,6 +142,14 @@ export default async function ItemSlugPage({
     } catch {}
   }
 
+  // Stable, crawlable related links (cheap bounded queries — cached with the
+  // page by ISR, so they only recompute every `revalidate` seconds)
+  const relatedLinks = await getRelatedItems({
+    id: dbItem.id,
+    type,
+    genre: dbItem.genre ?? [],
+  }).catch(() => []);
+
   // Community rating aggregate for structured data. COMMUNITY ratings only —
   // NEVER the CrossShelf Score: it blends external critics, and Google's
   // review-snippet policy requires aggregateRating to come directly from
@@ -223,6 +232,7 @@ export default async function ItemSlugPage({
         dlcs={dlcs}
         parentGame={parentGame}
         itemSubtype={itemSubtype}
+        relatedLinks={relatedLinks}
       />
     </>
   );

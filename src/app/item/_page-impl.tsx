@@ -161,6 +161,9 @@ export interface ItemPageRenderProps {
   dlcs: any[];
   parentGame: { id: number; title: string } | null;
   itemSubtype: string | null;
+  /** Server-fetched stable related links (see src/lib/related-items.ts) —
+   *  rendered as real anchors so crawlers can walk between item pages. */
+  relatedLinks?: import("@/lib/related-items").RelatedLink[];
 }
 
 export function ItemPageRender({
@@ -172,6 +175,7 @@ export function ItemPageRender({
   dlcs,
   parentGame,
   itemSubtype,
+  relatedLinks,
 }: ItemPageRenderProps) {
   const upcoming = !isExternal && isUpcoming(item);
   const hasImageCover = item.cover?.startsWith("http") ?? false;
@@ -511,6 +515,47 @@ export function ItemPageRender({
         )}
 
         {!upcoming && !isExternal && <ErrorBoundary><Recommendations item={item} /></ErrorBoundary>}
+
+        {/* Server-rendered related links — present in HTML with JS disabled,
+            unlike the client-fetched carousels above. */}
+        {!upcoming && !isExternal && relatedLinks && relatedLinks.length > 0 && (
+          <section style={{ marginTop: 32, marginBottom: 8 }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: 18,
+                fontWeight: 600,
+                marginBottom: 12,
+              }}
+            >
+              If you liked {item.title}
+            </h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {relatedLinks.map((r) => (
+                <Link
+                  key={`${r.type}-${r.slug}`}
+                  href={`/${r.type}/${r.slug}`}
+                  prefetch={false}
+                  style={{
+                    fontSize: 12,
+                    padding: "6px 12px",
+                    borderRadius: 16,
+                    background: "rgba(255,255,255,0.05)",
+                    color: "rgba(255,255,255,0.7)",
+                    textDecoration: "none",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {r.title}
+                  {r.year ? ` (${r.year})` : ""}
+                  <span style={{ color: hexToRgba(TYPES[r.type as MediaType]?.color ?? "#888", 0.9), marginLeft: 6 }}>
+                    {TYPES[r.type as MediaType]?.label ?? r.type}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       {/* Mobile smart-hide action bar (rate + status), stacks above BottomNav.
