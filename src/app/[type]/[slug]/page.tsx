@@ -57,25 +57,24 @@ export async function generateMetadata({
   const description = descSrc
     ? `${descSrc.slice(0, 150)}${descSrc.length > 150 ? "…" : ""} Rate and review ${dbItem.title} on ${SITE_NAME}.`
     : `Rate, review, and discover ${dbItem.title} and similar ${typeLabel.toLowerCase()}s on ${SITE_NAME}.`;
-  const image = dbItem.cover?.startsWith("http") ? dbItem.cover : undefined;
-
   return {
     title: pageTitle,
     description,
     alternates: { canonical: `/${type}/${slug}` },
+    // No images here — the opengraph-image.tsx file convention in this
+    // segment generates the 1200×630 share card and would be overridden
+    // by (and conflict with) any images set in metadata.
     openGraph: {
       type: "website",
       url: absoluteUrl(`/${type}/${slug}`),
       title: pageTitle,
       description,
       siteName: SITE_NAME,
-      ...(image ? { images: [{ url: image, width: 300, height: 450 }] } : {}),
     },
     twitter: {
-      card: image ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: pageTitle,
       description,
-      ...(image ? { images: [image] } : {}),
     },
   };
 }
