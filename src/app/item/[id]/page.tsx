@@ -23,27 +23,33 @@ import type { Metadata } from "next";
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const numId = parseInt(id);
-  let title = "CrossShelf";
+  // Bare title only — the root layout template appends "| CrossShelf".
+  // Never set the brand as a page title (renders "CrossShelf | CrossShelf").
+  let title: string | null = null;
   let description = "Rate, review, and discover across every medium.";
   let image: string | undefined;
 
   if (!isNaN(numId)) {
     const item = ALL_ITEMS.find((i) => i.id === numId);
     if (item) {
-      title = `${item.title} — CrossShelf`;
+      title = item.title;
       description = (item.desc || "").slice(0, 160).replace(/<[^>]*>/g, "");
       if (item.cover?.startsWith("http")) image = item.cover;
     }
   }
-  if (title === "CrossShelf" && !isNaN(numId)) {
+  if (title === null && !isNaN(numId)) {
     try {
       const dbItem = await prisma.item.findUnique({ where: { id: numId }, select: { title: true, description: true, cover: true } });
       if (dbItem) {
-        title = `${dbItem.title} — CrossShelf`;
+        title = dbItem.title;
         description = (dbItem.description || "").slice(0, 160).replace(/<[^>]*>/g, "");
         if (dbItem.cover?.startsWith("http")) image = dbItem.cover;
       }
     } catch {}
+  }
+
+  if (title === null) {
+    return { title: "Not Found", robots: { index: false, follow: false } };
   }
 
   return {

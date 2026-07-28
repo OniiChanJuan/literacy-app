@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create Account — CrossShelf",
+  title: "Create Account",
   description: "Join CrossShelf to rate, review, and discover across every medium.",
 };
 

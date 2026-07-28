@@ -42,7 +42,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const { type: segment } = await params;
   const { page } = await searchParams;
   const type = TYPE_BY_EXPLORE_SEGMENT[segment];
-  if (!type) return { title: "Not found", robots: { index: false, follow: false } };
+  // Real 404 status — thrown here, before the response starts streaming
+  if (!type) notFound();
 
   const label = TYPES[type as MediaType].label;
   const p = Math.max(1, Number(page ?? 1) || 1);

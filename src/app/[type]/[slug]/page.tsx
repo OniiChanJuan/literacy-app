@@ -39,13 +39,15 @@ export async function generateMetadata({
   params: Promise<{ type: string; slug: string }>;
 }): Promise<Metadata> {
   const { type, slug } = await params;
-  if (!VALID_SLUG_TYPES.has(type)) return { title: SITE_NAME };
+  // notFound() here (not in the page body) so the response is a real HTTP 404 —
+  // thrown during render it arrives after streaming starts and the status stays 200.
+  if (!VALID_SLUG_TYPES.has(type)) notFound();
 
   const dbItem = await prisma.item
     .findFirst({ where: { type, slug }, select: { title: true, description: true, cover: true, year: true } })
     .catch(() => null);
 
-  if (!dbItem) return { title: SITE_NAME };
+  if (!dbItem) notFound();
 
   const typeLabel = TYPE_LABEL[type] || type;
   const yearSuffix = dbItem.year ? ` (${dbItem.year})` : "";
