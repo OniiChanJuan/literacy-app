@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { VALID_SLUG_TYPES } from "@/lib/slugs";
 import { ItemPageRender, dbItemToItem, getPrimaryCreator } from "@/app/item/_page-impl";
 import { EXPLORE_SEGMENT_BY_TYPE } from "@/lib/explore-segments";
+import { getItemBySlug } from "@/lib/item-lookup";
 import { getRelatedItems } from "@/lib/related-items";
 import { TYPES, type MediaType } from "@/lib/data";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
@@ -46,9 +47,7 @@ export async function generateMetadata({
   // thrown during render it arrives after streaming starts and the status stays 200.
   if (!VALID_SLUG_TYPES.has(type)) notFound();
 
-  const dbItem = await prisma.item
-    .findFirst({ where: { type, slug }, select: { title: true, description: true, cover: true, year: true } })
-    .catch(() => null);
+  const dbItem = await getItemBySlug(type, slug);
 
   if (!dbItem) notFound();
 
@@ -94,9 +93,7 @@ export default async function ItemSlugPage({
   // Only handle known media types — let other routes (e.g. /franchise/...) pass through
   if (!VALID_SLUG_TYPES.has(type)) notFound();
 
-  const dbItem = await prisma.item
-    .findFirst({ where: { type, slug } })
-    .catch(() => null);
+  const dbItem = await getItemBySlug(type, slug);
 
   if (!dbItem) notFound();
 
