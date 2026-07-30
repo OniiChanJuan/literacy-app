@@ -1,0 +1,1514 @@
+[
+ {
+  "entry": {
+   "t": "Something to Answer For",
+   "a": "P. H. Newby",
+   "tok": "newby",
+   "y": 1969
+  },
+  "volumeId": "XdBvX8JlgSkC",
+  "gbTitle": "Something to Answer For",
+  "gbAuthors": [
+   "P. H. Newby"
+  ],
+  "gbPublished": "2012-10-04",
+  "editionDrift": 43,
+  "cover": "https://books.google.com/books/content?id=XdBvX8JlgSkC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 852,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 255,
+  "vibes": [
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "something-to-answer-for"
+ },
+ {
+  "entry": {
+   "t": "The Elected Member",
+   "a": "Bernice Rubens",
+   "tok": "rubens",
+   "y": 1970
+  },
+  "volumeId": "2FIvAQAAIAAJ",
+  "gbTitle": "The Elected Member",
+  "gbAuthors": [
+   "Bernice Rubens"
+  ],
+  "gbPublished": "1969",
+  "editionDrift": -1,
+  "cover": "https://books.google.com/books/content?id=2FIvAQAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 653,
+  "categories": [
+   "Literary Fiction",
+   "Political Science"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 232,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-elected-member"
+ },
+ {
+  "entry": {
+   "t": "In a Free State",
+   "a": "V. S. Naipaul",
+   "tok": "naipaul",
+   "y": 1971
+  },
+  "volumeId": "UhYp4cak5rkC",
+  "gbTitle": "In a Free State",
+  "gbAuthors": [
+   "V.S. Naipaul"
+  ],
+  "gbPublished": "2012-03-22",
+  "editionDrift": 41,
+  "cover": "https://books.google.com/books/content?id=UhYp4cak5rkC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1118,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 259,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "in-a-free-state"
+ },
+ {
+  "entry": {
+   "t": "G.",
+   "a": "John Berger",
+   "tok": "berger",
+   "y": 1972,
+   "alt": [
+    "G"
+   ]
+  },
+  "volumeId": "KQCfu0WInPcC",
+  "gbTitle": "G.: A Novel (Man Booker Prize Winner)",
+  "gbAuthors": [
+   "John Berger"
+  ],
+  "gbPublished": "1992-01-08",
+  "editionDrift": 20,
+  "cover": "https://books.google.com/books/content?id=KQCfu0WInPcC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 907,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 337,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "g"
+ },
+ {
+  "entry": {
+   "t": "The Siege of Krishnapur",
+   "a": "J. G. Farrell",
+   "tok": "farrell",
+   "y": 1973
+  },
+  "volumeId": "h4Oap-Kty7gC",
+  "gbTitle": "The Siege of Krishnapur",
+  "gbAuthors": [
+   "J.G. Farrell"
+  ],
+  "gbPublished": "2010-06-23",
+  "editionDrift": 37,
+  "cover": "https://books.google.com/books/content?id=h4Oap-Kty7gC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1135,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 378,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-siege-of-krishnapur"
+ },
+ {
+  "entry": {
+   "t": "The Conservationist",
+   "a": "Nadine Gordimer",
+   "tok": "gordimer",
+   "y": 1974
+  },
+  "volumeId": "BIFPEAAAQBAJ",
+  "gbTitle": "The Conservationist: Booker Prize Winner (A Novel)",
+  "gbAuthors": [
+   "Nadine Gordimer"
+  ],
+  "gbPublished": "1983-02-24",
+  "editionDrift": 9,
+  "cover": "https://books.google.com/books/content?id=BIFPEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 563,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 273,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-conservationist"
+ },
+ {
+  "entry": {
+   "t": "Holiday",
+   "a": "Stanley Middleton",
+   "tok": "middleton",
+   "y": 1974
+  },
+  "volumeId": "CiuAzgEACAAJ",
+  "gbTitle": "Holiday",
+  "gbAuthors": [
+   "Stanley Middleton"
+  ],
+  "gbPublished": "2021",
+  "editionDrift": 47,
+  "cover": "https://books.google.com/books/content?id=CiuAzgEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 0,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 256,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "holiday"
+ },
+ {
+  "entry": {
+   "t": "Heat and Dust",
+   "a": "Ruth Prawer Jhabvala",
+   "tok": "jhabvala",
+   "y": 1975
+  },
+  "volumeId": "pq8OAQAAMAAJ",
+  "gbTitle": "Heat and Dust",
+  "gbAuthors": [
+   "Ruth Prawer Jhabvala"
+  ],
+  "gbPublished": "1977",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=pq8OAQAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 784,
+  "categories": [
+   "Literary Fiction",
+   "India"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 196,
+  "vibes": [
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "heat-and-dust"
+ },
+ {
+  "entry": {
+   "t": "Saville",
+   "a": "David Storey",
+   "tok": "storey",
+   "y": 1976
+  },
+  "volumeId": "a95A6vWA4bUC",
+  "gbTitle": "Saville",
+  "gbAuthors": [
+   "David Storey"
+  ],
+  "gbPublished": "1976",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=a95A6vWA4bUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 0,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 522,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "saville"
+ },
+ {
+  "entry": {
+   "t": "Staying On",
+   "a": "Paul Scott",
+   "tok": "scott",
+   "y": 1977
+  },
+  "volumeId": "ERHUpkwhu1sC",
+  "gbTitle": "Staying On: A Novel",
+  "gbAuthors": [
+   "Paul Scott"
+  ],
+  "gbPublished": "2013-02-11",
+  "editionDrift": 36,
+  "cover": "https://books.google.com/books/content?id=ERHUpkwhu1sC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1327,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 225,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "staying-on"
+ },
+ {
+  "entry": {
+   "t": "The Sea, the Sea",
+   "a": "Iris Murdoch",
+   "tok": "murdoch",
+   "y": 1978
+  },
+  "volumeId": "IJ5fL72Vvs8C",
+  "gbTitle": "The Sea, The Sea",
+  "gbAuthors": [
+   "Iris Murdoch"
+  ],
+  "gbPublished": "2008-12-29",
+  "editionDrift": 30,
+  "cover": "https://books.google.com/books/content?id=IJ5fL72Vvs8C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 800,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 1,
+  "pageCount": 562,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-sea-the-sea"
+ },
+ {
+  "entry": {
+   "t": "Offshore",
+   "a": "Penelope Fitzgerald",
+   "tok": "fitzgerald",
+   "y": 1979
+  },
+  "volumeId": "-m0ko_6rZcAC",
+  "gbTitle": "Offshore: A Novel",
+  "gbAuthors": [
+   "Penelope Fitzgerald"
+  ],
+  "gbPublished": "2013-06-11",
+  "editionDrift": 34,
+  "cover": "https://books.google.com/books/content?id=-m0ko_6rZcAC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1060,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 141,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "offshore"
+ },
+ {
+  "entry": {
+   "t": "Rites of Passage",
+   "a": "William Golding",
+   "tok": "golding",
+   "y": 1980
+  },
+  "volumeId": "bX9KAQAAQBAJ",
+  "gbTitle": "Rites of Passage: With an introduction by Annie Proulx",
+  "gbAuthors": [
+   "William Golding"
+  ],
+  "gbPublished": "2013-11-05",
+  "editionDrift": 33,
+  "cover": "https://books.google.com/books/content?id=bX9KAQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1279,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 274,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "rites-of-passage"
+ },
+ {
+  "entry": {
+   "t": "Midnight's Children",
+   "a": "Salman Rushdie",
+   "tok": "rushdie",
+   "y": 1981
+  },
+  "volumeId": "NKzepmTUipEC",
+  "gbTitle": "Midnight's Children: A Novel",
+  "gbAuthors": [
+   "Salman Rushdie"
+  ],
+  "gbPublished": "2010-12-31",
+  "editionDrift": 29,
+  "cover": "https://books.google.com/books/content?id=NKzepmTUipEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1382,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 3,
+  "averageRating": 3.5,
+  "pageCount": 561,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "midnights-children"
+ },
+ {
+  "entry": {
+   "t": "Schindler's Ark",
+   "a": "Thomas Keneally",
+   "tok": "keneally",
+   "y": 1982,
+   "alt": [
+    "Schindler's List"
+   ]
+  },
+  "volumeId": "WjRYeGdrIu0C",
+  "gbTitle": "Schindler's Ark: The Booker Prize winning novel filmed as ‘Schindler's List'",
+  "gbAuthors": [
+   "Thomas Keneally"
+  ],
+  "gbPublished": "2009-07-23",
+  "editionDrift": 27,
+  "cover": "https://books.google.com/books/content?id=WjRYeGdrIu0C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 682,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 5,
+  "pageCount": 443,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "schindlers-ark"
+ },
+ {
+  "entry": {
+   "t": "Life & Times of Michael K",
+   "a": "J. M. Coetzee",
+   "tok": "coetzee",
+   "y": 1983,
+   "alt": [
+    "Life and Times of Michael K"
+   ]
+  },
+  "volumeId": "PIFPEAAAQBAJ",
+  "gbTitle": "Life and Times of Michael K: A Novel",
+  "gbAuthors": [
+   "J. M. Coetzee"
+  ],
+  "gbPublished": "1985-01-08",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=PIFPEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 692,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 194,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "life-and-times-of-michael-k"
+ },
+ {
+  "entry": {
+   "t": "Hotel du Lac",
+   "a": "Anita Brookner",
+   "tok": "brookner",
+   "y": 1984
+  },
+  "volumeId": "msYgAQAAIAAJ",
+  "gbTitle": "Hotel du Lac: Repr",
+  "gbAuthors": [
+   "Anita Brookner"
+  ],
+  "gbPublished": "1984",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=msYgAQAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 187,
+  "categories": [
+   "Literary Fiction",
+   "British"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 192,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "hotel-du-lac"
+ },
+ {
+  "entry": {
+   "t": "The Bone People",
+   "a": "Keri Hulme",
+   "tok": "hulme",
+   "y": 1985
+  },
+  "volumeId": "20l40QEACAAJ",
+  "gbTitle": "The Bone People: A Novel",
+  "gbAuthors": [
+   "Keri Hulme"
+  ],
+  "gbPublished": "1985",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=20l40QEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 156,
+  "categories": [
+   "Literary Fiction",
+   "Commitment (Psychology)"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 0,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-bone-people"
+ },
+ {
+  "entry": {
+   "t": "The Old Devils",
+   "a": "Kingsley Amis",
+   "tok": "amis",
+   "y": 1986
+  },
+  "volumeId": "iM8R18qgF7EC",
+  "gbTitle": "The Old Devils",
+  "gbAuthors": [
+   "Kingsley Amis"
+  ],
+  "gbPublished": "2012-10-02",
+  "editionDrift": 26,
+  "cover": "https://books.google.com/books/content?id=iM8R18qgF7EC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 897,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 321,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-old-devils"
+ },
+ {
+  "entry": {
+   "t": "Moon Tiger",
+   "a": "Penelope Lively",
+   "tok": "lively",
+   "y": 1987
+  },
+  "volumeId": "IaEqaPdLawYC",
+  "gbTitle": "Moon Tiger",
+  "gbAuthors": [
+   "Penelope Lively"
+  ],
+  "gbPublished": "1987",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=IaEqaPdLawYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 131,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 2,
+  "averageRating": 4.5,
+  "pageCount": 228,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "moon-tiger"
+ },
+ {
+  "entry": {
+   "t": "Oscar and Lucinda",
+   "a": "Peter Carey",
+   "tok": "carey",
+   "y": 1988
+  },
+  "volumeId": "WoqNnWsFfvcC",
+  "gbTitle": "Oscar and Lucinda",
+  "gbAuthors": [
+   "Peter Carey"
+  ],
+  "gbPublished": "2010-12-22",
+  "editionDrift": 22,
+  "cover": "https://books.google.com/books/content?id=WoqNnWsFfvcC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 402,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 5,
+  "pageCount": 544,
+  "vibes": [
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "oscar-and-lucinda"
+ },
+ {
+  "entry": {
+   "t": "Possession",
+   "a": "A. S. Byatt",
+   "tok": "byatt",
+   "y": 1990,
+   "alt": [
+    "Possession: A Romance"
+   ]
+  },
+  "volumeId": "4mUrVvGTeewC",
+  "gbTitle": "Possession",
+  "gbAuthors": [
+   "A. S. Byatt"
+  ],
+  "gbPublished": "1991-10-01",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=4mUrVvGTeewC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 730,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 3,
+  "averageRating": 3,
+  "pageCount": 578,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "possession"
+ },
+ {
+  "entry": {
+   "t": "The Famished Road",
+   "a": "Ben Okri",
+   "tok": "okri",
+   "y": 1991
+  },
+  "volumeId": "SGTrWF_X71EC",
+  "gbTitle": "The Famished Road: Man Booker Prize Winner",
+  "gbAuthors": [
+   "Ben Okri"
+  ],
+  "gbPublished": "1993-05-01",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=SGTrWF_X71EC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 939,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 2,
+  "averageRating": 4,
+  "pageCount": 514,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-famished-road"
+ },
+ {
+  "entry": {
+   "t": "The English Patient",
+   "a": "Michael Ondaatje",
+   "tok": "ondaatje",
+   "y": 1992
+  },
+  "volumeId": "fVjXBN9edXYC",
+  "gbTitle": "The English Patient: Man Booker Prize Winner",
+  "gbAuthors": [
+   "Michael Ondaatje"
+  ],
+  "gbPublished": "2011-04-06",
+  "editionDrift": 19,
+  "cover": "https://books.google.com/books/content?id=fVjXBN9edXYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 752,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 11,
+  "averageRating": 4,
+  "pageCount": 322,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-english-patient"
+ },
+ {
+  "entry": {
+   "t": "Sacred Hunger",
+   "a": "Barry Unsworth",
+   "tok": "unsworth",
+   "y": 1992
+  },
+  "volumeId": "Z4lbAAAAMAAJ",
+  "gbTitle": "Sacred Hunger",
+  "gbAuthors": [
+   "Barry Unsworth"
+  ],
+  "gbPublished": "1992",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=Z4lbAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 255,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 648,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "sacred-hunger"
+ },
+ {
+  "entry": {
+   "t": "Paddy Clarke Ha Ha Ha",
+   "a": "Roddy Doyle",
+   "tok": "doyle",
+   "y": 1993
+  },
+  "volumeId": "e8F70MxEViAC",
+  "gbTitle": "Paddy Clarke Ha Ha Ha: Booker Prize Winner",
+  "gbAuthors": [
+   "Roddy Doyle"
+  ],
+  "gbPublished": "1995-01-01",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=e8F70MxEViAC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 831,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 2,
+  "averageRating": 3,
+  "pageCount": 292,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "paddy-clarke-ha-ha-ha"
+ },
+ {
+  "entry": {
+   "t": "How Late It Was, How Late",
+   "a": "James Kelman",
+   "tok": "kelman",
+   "y": 1994
+  },
+  "volumeId": "wIHWAAAAMAAJ",
+  "gbTitle": "How Late it Was, how Late",
+  "gbAuthors": [
+   "James Kelman"
+  ],
+  "gbPublished": "1996",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=wIHWAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 325,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 3,
+  "pageCount": 388,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "how-late-it-was-how-late"
+ },
+ {
+  "entry": {
+   "t": "The Ghost Road",
+   "a": "Pat Barker",
+   "tok": "barker",
+   "y": 1995
+  },
+  "volumeId": "aazHAAAAQBAJ",
+  "gbTitle": "The Ghost Road: Booker Prize Winner (A Novel)",
+  "gbAuthors": [
+   "Pat Barker"
+  ],
+  "gbPublished": "2013-12-31",
+  "editionDrift": 18,
+  "cover": "https://books.google.com/books/content?id=aazHAAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 975,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 201,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-ghost-road"
+ },
+ {
+  "entry": {
+   "t": "Last Orders",
+   "a": "Graham Swift",
+   "tok": "swift",
+   "y": 1996
+  },
+  "volumeId": "5FcfAQAAIAAJ",
+  "gbTitle": "Last Orders",
+  "gbAuthors": [
+   "Graham Swift"
+  ],
+  "gbPublished": "1996",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=5FcfAQAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 987,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 312,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "last-orders"
+ },
+ {
+  "entry": {
+   "t": "The God of Small Things",
+   "a": "Arundhati Roy",
+   "tok": "roy",
+   "y": 1997
+  },
+  "volumeId": "nwICBETtEqYC",
+  "gbTitle": "The God of Small Things: A Novel",
+  "gbAuthors": [
+   "Arundhati Roy"
+  ],
+  "gbPublished": "2008-12-16",
+  "editionDrift": 11,
+  "cover": "https://books.google.com/books/content?id=nwICBETtEqYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 94,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 7,
+  "averageRating": 4.5,
+  "pageCount": 411,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-god-of-small-things"
+ },
+ {
+  "entry": {
+   "t": "Amsterdam",
+   "a": "Ian McEwan",
+   "tok": "mcewan",
+   "y": 1998
+  },
+  "volumeId": "gAyU0Z3FYcoC",
+  "gbTitle": "Amsterdam",
+  "gbAuthors": [
+   "Ian McEwan"
+  ],
+  "gbPublished": "2010-07-20",
+  "editionDrift": 12,
+  "cover": "https://books.google.com/books/content?id=gAyU0Z3FYcoC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 725,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 162,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "amsterdam"
+ },
+ {
+  "entry": {
+   "t": "Disgrace",
+   "a": "J. M. Coetzee",
+   "tok": "coetzee",
+   "y": 1999
+  },
+  "volumeId": "zVFpDQAAQBAJ",
+  "gbTitle": "Disgrace: A Novel",
+  "gbAuthors": [
+   "J. M. Coetzee"
+  ],
+  "gbPublished": "2017-01-03",
+  "editionDrift": 18,
+  "cover": "https://books.google.com/books/content?id=zVFpDQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 632,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 228,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "disgrace"
+ },
+ {
+  "entry": {
+   "t": "True History of the Kelly Gang",
+   "a": "Peter Carey",
+   "tok": "carey",
+   "y": 2001
+  },
+  "volumeId": "m4y0INR2ZfUC",
+  "gbTitle": "True History of the Kelly Gang: A Novel",
+  "gbAuthors": [
+   "Peter Carey"
+  ],
+  "gbPublished": "2010-10-22",
+  "editionDrift": 9,
+  "cover": "https://books.google.com/books/content?id=m4y0INR2ZfUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 992,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 386,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "true-history-of-the-kelly-gang"
+ },
+ {
+  "entry": {
+   "t": "Vernon God Little",
+   "a": "DBC Pierre",
+   "tok": "pierre",
+   "y": 2003
+  },
+  "volumeId": "s1INxSzuaFUC",
+  "gbTitle": "Vernon God Little",
+  "gbAuthors": [
+   "DBC Pierre"
+  ],
+  "gbPublished": "2012-08-07",
+  "editionDrift": 9,
+  "cover": "https://books.google.com/books/content?id=s1INxSzuaFUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 693,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 219,
+  "vibes": [
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "vernon-god-little"
+ },
+ {
+  "entry": {
+   "t": "The Line of Beauty",
+   "a": "Alan Hollinghurst",
+   "tok": "hollinghurst",
+   "y": 2004
+  },
+  "volumeId": "PruQEQAAQBAJ",
+  "gbTitle": "The Line of Beauty",
+  "gbAuthors": [
+   "Alan Hollinghurst"
+  ],
+  "gbPublished": "2025-11-06",
+  "editionDrift": 21,
+  "cover": "https://books.google.com/books/content?id=PruQEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 184,
+  "categories": [
+   "Literary Fiction",
+   "Performing Arts"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 82,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-line-of-beauty"
+ },
+ {
+  "entry": {
+   "t": "The Sea",
+   "a": "John Banville",
+   "tok": "banville",
+   "y": 2005
+  },
+  "volumeId": "ZMV0OxvLseIC",
+  "gbTitle": "The Sea",
+  "gbAuthors": [
+   "John Banville"
+  ],
+  "gbPublished": "2007-12-18",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=ZMV0OxvLseIC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 804,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 9,
+  "averageRating": 3.5,
+  "pageCount": 208,
+  "vibes": [
+   "heartbreaking"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": true,
+  "slug": "the-sea-2005"
+ },
+ {
+  "entry": {
+   "t": "The Gathering",
+   "a": "Anne Enright",
+   "tok": "enright",
+   "y": 2007
+  },
+  "volumeId": "2q7SDwAAQBAJ",
+  "gbTitle": "The Gathering",
+  "gbAuthors": [
+   "Anne Enright"
+  ],
+  "gbPublished": "2007-12-01",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=2q7SDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1061,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 214,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-gathering"
+ },
+ {
+  "entry": {
+   "t": "The White Tiger",
+   "a": "Aravind Adiga",
+   "tok": "adiga",
+   "y": 2008
+  },
+  "volumeId": "WWMengEACAAJ",
+  "gbTitle": "The White Tiger",
+  "gbAuthors": [
+   "Aravind Adiga"
+  ],
+  "gbPublished": "2008-04-22",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=WWMengEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 281,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 276,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-white-tiger"
+ },
+ {
+  "entry": {
+   "t": "Wolf Hall",
+   "a": "Hilary Mantel",
+   "tok": "mantel",
+   "y": 2009
+  },
+  "volumeId": "AUqkcy2G-N8C",
+  "gbTitle": "Wolf Hall: A Novel",
+  "gbAuthors": [
+   "Hilary Mantel"
+  ],
+  "gbPublished": "2009-10-13",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=AUqkcy2G-N8C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1335,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 16,
+  "averageRating": 4,
+  "pageCount": 636,
+  "vibes": [
+   "heartbreaking"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "wolf-hall"
+ },
+ {
+  "entry": {
+   "t": "The Finkler Question",
+   "a": "Howard Jacobson",
+   "tok": "jacobson",
+   "y": 2010
+  },
+  "volumeId": "52KgAwAAQBAJ",
+  "gbTitle": "The Finkler Question: A Novel",
+  "gbAuthors": [
+   "Howard Jacobson"
+  ],
+  "gbPublished": "2010-10-12",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=52KgAwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 239,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 319,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-finkler-question"
+ },
+ {
+  "entry": {
+   "t": "The Sense of an Ending",
+   "a": "Julian Barnes",
+   "tok": "barnes",
+   "y": 2011
+  },
+  "volumeId": "KkZeDWkc6WYC",
+  "gbTitle": "The Sense of an Ending",
+  "gbAuthors": [
+   "Julian Barnes"
+  ],
+  "gbPublished": "2011-08-02",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=KkZeDWkc6WYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1297,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 17,
+  "averageRating": 3.5,
+  "pageCount": 162,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-sense-of-an-ending"
+ },
+ {
+  "entry": {
+   "t": "Bring Up the Bodies",
+   "a": "Hilary Mantel",
+   "tok": "mantel",
+   "y": 2012
+  },
+  "volumeId": "kn_NX4fjdEYC",
+  "gbTitle": "Bring Up the Bodies: A Novel",
+  "gbAuthors": [
+   "Hilary Mantel"
+  ],
+  "gbPublished": "2012-05-08",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=kn_NX4fjdEYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1282,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 122,
+  "averageRating": 3,
+  "pageCount": 446,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "bring-up-the-bodies"
+ },
+ {
+  "entry": {
+   "t": "The Luminaries",
+   "a": "Eleanor Catton",
+   "tok": "catton",
+   "y": 2013
+  },
+  "volumeId": "vp7FHp1Y4hwC",
+  "gbTitle": "The Luminaries",
+  "gbAuthors": [
+   "Eleanor Catton"
+  ],
+  "gbPublished": "2013-09-03",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=vp7FHp1Y4hwC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1589,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 2,
+  "pageCount": 812,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": true,
+  "slug": "the-luminaries"
+ },
+ {
+  "entry": {
+   "t": "The Narrow Road to the Deep North",
+   "a": "Richard Flanagan",
+   "tok": "flanagan",
+   "y": 2014
+  },
+  "volumeId": "MliNDQAAQBAJ",
+  "gbTitle": "The Narrow Road to the Deep North",
+  "gbAuthors": [
+   "Richard Flanagan"
+  ],
+  "gbPublished": "2015-04-14",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=MliNDQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 604,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 418,
+  "vibes": [
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-narrow-road-to-the-deep-north"
+ },
+ {
+  "entry": {
+   "t": "The Sellout",
+   "a": "Paul Beatty",
+   "tok": "beatty",
+   "y": 2016
+  },
+  "volumeId": "wnAmBgAAQBAJ",
+  "gbTitle": "The Sellout: A Novel",
+  "gbAuthors": [
+   "Paul Beatty"
+  ],
+  "gbPublished": "2015-03-03",
+  "editionDrift": -1,
+  "cover": "https://books.google.com/books/content?id=wnAmBgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 535,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 305,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-sellout"
+ },
+ {
+  "entry": {
+   "t": "Girl, Woman, Other",
+   "a": "Bernardine Evaristo",
+   "tok": "evaristo",
+   "y": 2019
+  },
+  "volumeId": "U32pDwAAQBAJ",
+  "gbTitle": "Girl, Woman, Other: A Novel (Booker Prize Winner)",
+  "gbAuthors": [
+   "Bernardine Evaristo"
+  ],
+  "gbPublished": "2019-11-05",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=U32pDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1999,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 414,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "girl-woman-other"
+ },
+ {
+  "entry": {
+   "t": "The Promise",
+   "a": "Damon Galgut",
+   "tok": "galgut",
+   "y": 2021
+  },
+  "volumeId": "6RwhEQAAQBAJ",
+  "gbTitle": "The Promise: A Novel",
+  "gbAuthors": [
+   "Damon Galgut"
+  ],
+  "gbPublished": "2021-04-06",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=6RwhEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1040,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 233,
+  "vibes": [
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-promise"
+ },
+ {
+  "entry": {
+   "t": "The Seven Moons of Maali Almeida",
+   "a": "Shehan Karunatilaka",
+   "tok": "karunatilaka",
+   "y": 2022
+  },
+  "volumeId": "6ruqEAAAQBAJ",
+  "gbTitle": "The Seven Moons of Maali Almeida: Winner of the Booker Prize 2022",
+  "gbAuthors": [
+   "Shehan Karunatilaka"
+  ],
+  "gbPublished": "2022-08-04",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=6ruqEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1013,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 442,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "the-seven-moons-of-maali-almeida"
+ },
+ {
+  "entry": {
+   "t": "Prophet Song",
+   "a": "Paul Lynch",
+   "tok": "lynch",
+   "y": 2023
+  },
+  "volumeId": "zSfAEAAAQBAJ",
+  "gbTitle": "Prophet Song: WINNER OF THE BOOKER PRIZE 2023",
+  "gbAuthors": [
+   "Paul Lynch"
+  ],
+  "gbPublished": "2023-08-24",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=zSfAEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1554,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 283,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "prophet-song"
+ },
+ {
+  "entry": {
+   "t": "Flesh",
+   "a": "David Szalay",
+   "tok": "szalay",
+   "y": 2025
+  },
+  "volumeId": "bbTbEAAAQBAJ",
+  "gbTitle": "Flesh: WINNER OF THE BOOKER PRIZE 2025",
+  "gbAuthors": [
+   "David Szalay"
+  ],
+  "gbPublished": "2025-03-06",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=bbTbEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1549,
+  "categories": [
+   "Literary Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 301,
+  "vibes": [
+   "thought-provoking"
+  ],
+  "fallbackVibes": true,
+  "titleCollision": false,
+  "slug": "flesh"
+ }
+]
