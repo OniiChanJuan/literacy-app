@@ -1,0 +1,356 @@
+[
+ {
+  "itemId": 39665,
+  "awardRowId": 304,
+  "volumeId": "RliJrgEACAAJ",
+  "title": "The Demolished Man"
+ },
+ {
+  "itemId": 39666,
+  "awardRowId": 305,
+  "volumeId": "0R3bPwAACAAJ",
+  "title": "They'd Rather Be Right"
+ },
+ {
+  "itemId": 39667,
+  "awardRowId": 306,
+  "volumeId": "lWOvAAAAIAAJ",
+  "title": "Double Star"
+ },
+ {
+  "itemId": 39668,
+  "awardRowId": 307,
+  "volumeId": "5PKbEAAAQBAJ",
+  "title": "The Big Time"
+ },
+ {
+  "itemId": 39669,
+  "awardRowId": 308,
+  "volumeId": "ht5_DQAAQBAJ",
+  "title": "A Case of Conscience"
+ },
+ {
+  "itemId": 39670,
+  "awardRowId": 309,
+  "volumeId": "Qx1xDwAAQBAJ",
+  "title": "Starship Troopers"
+ },
+ {
+  "itemId": 39671,
+  "awardRowId": 310,
+  "volumeId": "ia84AAAAIAAJ",
+  "title": "A Canticle for Leibowitz"
+ },
+ {
+  "itemId": 39672,
+  "awardRowId": 311,
+  "volumeId": "Kn1bNU91sAoC",
+  "title": "Stranger in a Strange Land"
+ },
+ {
+  "itemId": 39673,
+  "awardRowId": 312,
+  "volumeId": "LOgCEQAAQBAJ",
+  "title": "Way Station"
+ },
+ {
+  "itemId": 39674,
+  "awardRowId": 313,
+  "volumeId": "2_4OAQAAMAAJ",
+  "title": "The Wanderer"
+ },
+ {
+  "itemId": 39675,
+  "awardRowId": 314,
+  "volumeId": "n3lbAAAAMAAJ",
+  "title": "This Immortal"
+ },
+ {
+  "itemId": 39676,
+  "awardRowId": 315,
+  "volumeId": "KqwmAQAAMAAJ",
+  "title": "The Moon Is a Harsh Mistress"
+ },
+ {
+  "itemId": 39677,
+  "awardRowId": 316,
+  "volumeId": "waWUyfAXugcC",
+  "title": "Lord of Light"
+ },
+ {
+  "itemId": 39678,
+  "awardRowId": 317,
+  "volumeId": "xBY9AAAAIAAJ",
+  "title": "Stand on Zanzibar"
+ },
+ {
+  "itemId": 39679,
+  "awardRowId": 318,
+  "volumeId": "aQONEAAAQBAJ",
+  "title": "Ringworld"
+ },
+ {
+  "itemId": 39680,
+  "awardRowId": 319,
+  "volumeId": "FIxcFrjFaO8C",
+  "title": "To Your Scattered Bodies Go"
+ },
+ {
+  "itemId": 39681,
+  "awardRowId": 320,
+  "volumeId": "8l-aAAAAIAAJ",
+  "title": "Rendezvous with Rama"
+ },
+ {
+  "itemId": 39682,
+  "awardRowId": 321,
+  "volumeId": "jc1eCZlD-ScC",
+  "title": "The Forever War"
+ },
+ {
+  "itemId": 39683,
+  "awardRowId": 322,
+  "volumeId": "_c_cDwAAQBAJ",
+  "title": "Where Late the Sweet Birds Sang"
+ },
+ {
+  "itemId": 39684,
+  "awardRowId": 323,
+  "volumeId": "y-gOAQAAMAAJ",
+  "title": "Gateway"
+ },
+ {
+  "itemId": 39685,
+  "awardRowId": 324,
+  "volumeId": "WnQ_EAAAQBAJ",
+  "title": "Dreamsnake"
+ },
+ {
+  "itemId": 39686,
+  "awardRowId": 325,
+  "volumeId": "lU8OI6p0IyIC",
+  "title": "The Fountains of Paradise"
+ },
+ {
+  "itemId": 39687,
+  "awardRowId": 326,
+  "volumeId": "fiXFCgAAQBAJ",
+  "title": "The Snow Queen"
+ },
+ {
+  "itemId": 39688,
+  "awardRowId": 327,
+  "volumeId": "h1uJEAAAQBAJ",
+  "title": "Downbelow Station"
+ },
+ {
+  "itemId": 39689,
+  "awardRowId": 328,
+  "volumeId": "IKoFX1gqU6wC",
+  "title": "Startide Rising"
+ },
+ {
+  "itemId": 39690,
+  "awardRowId": 329,
+  "volumeId": "GYi1s6OuY-sC",
+  "title": "Speaker for the Dead"
+ },
+ {
+  "itemId": 39691,
+  "awardRowId": 330,
+  "volumeId": "nM3TlUji1noC",
+  "title": "The Uplift War"
+ },
+ {
+  "itemId": 39692,
+  "awardRowId": 331,
+  "volumeId": "7VbpswEACAAJ",
+  "title": "Cyteen"
+ },
+ {
+  "itemId": 39693,
+  "awardRowId": 332,
+  "volumeId": "4wy2QgAACAAJ",
+  "title": "Hyperion"
+ },
+ {
+  "itemId": 39694,
+  "awardRowId": 333,
+  "volumeId": "aTLuAAAAMAAJ",
+  "title": "The Vor Game"
+ },
+ {
+  "itemId": 39695,
+  "awardRowId": 334,
+  "volumeId": "BooXEQAAQBAJ",
+  "title": "Barrayar"
+ },
+ {
+  "itemId": 39696,
+  "awardRowId": 335,
+  "volumeId": "UGAKB3r0sZQC",
+  "title": "A Fire Upon the Deep"
+ },
+ {
+  "itemId": 39697,
+  "awardRowId": 336,
+  "volumeId": "lS7ipesDYFUC",
+  "title": "Doomsday Book"
+ },
+ {
+  "itemId": 39698,
+  "awardRowId": 337,
+  "volumeId": "RuxpY5T5kKMC",
+  "title": "Green Mars"
+ },
+ {
+  "itemId": 39699,
+  "awardRowId": 338,
+  "volumeId": "aZ0YkIU0HusC",
+  "title": "Mirror Dance"
+ },
+ {
+  "itemId": 39700,
+  "awardRowId": 339,
+  "volumeId": "aAV6wV4Rn00C",
+  "title": "The Diamond Age"
+ },
+ {
+  "itemId": 39701,
+  "awardRowId": 340,
+  "volumeId": "Y0-3B8x7R1gC",
+  "title": "Blue Mars"
+ },
+ {
+  "itemId": 39702,
+  "awardRowId": 341,
+  "volumeId": "P7TEDAAAQBAJ",
+  "title": "Forever Peace"
+ },
+ {
+  "itemId": 39703,
+  "awardRowId": 342,
+  "volumeId": "fgcRcb2bYicC",
+  "title": "To Say Nothing of the Dog"
+ },
+ {
+  "itemId": 39704,
+  "awardRowId": 343,
+  "volumeId": "7DuqEAAAQBAJ",
+  "title": "A Deepness in the Sky"
+ },
+ {
+  "itemId": 39705,
+  "awardRowId": 344,
+  "volumeId": "gZ3y-kTiyR0C",
+  "title": "Hominids"
+ },
+ {
+  "itemId": 39706,
+  "awardRowId": 345,
+  "volumeId": "kNix8frieocC",
+  "title": "Paladin of Souls"
+ },
+ {
+  "itemId": 39707,
+  "awardRowId": 346,
+  "volumeId": "uGHWsBJx6KQC",
+  "title": "Jonathan Strange & Mr Norrell"
+ },
+ {
+  "itemId": 39708,
+  "awardRowId": 347,
+  "volumeId": "0_zyf3DRjxEC",
+  "title": "Spin"
+ },
+ {
+  "itemId": 39709,
+  "awardRowId": 348,
+  "volumeId": "SrLwPdBJodMC",
+  "title": "Rainbows End"
+ },
+ {
+  "itemId": 39710,
+  "awardRowId": 349,
+  "volumeId": "-reD1g77BfsC",
+  "title": "The Yiddish Policemen's Union"
+ },
+ {
+  "itemId": 39711,
+  "awardRowId": 350,
+  "volumeId": "CN8xEPSybEIC",
+  "title": "The City & The City"
+ },
+ {
+  "itemId": 39712,
+  "awardRowId": 351,
+  "volumeId": "zPNgwV6VPywC",
+  "title": "Blackout"
+ },
+ {
+  "itemId": 39713,
+  "awardRowId": 352,
+  "volumeId": "LaN7NnHAItcC",
+  "title": "All Clear"
+ },
+ {
+  "itemId": 39714,
+  "awardRowId": 353,
+  "volumeId": "wz69HqibYJEC",
+  "title": "Among Others"
+ },
+ {
+  "itemId": 39715,
+  "awardRowId": 354,
+  "volumeId": "2myG-uWq5zQC",
+  "title": "Redshirts"
+ },
+ {
+  "itemId": 39716,
+  "awardRowId": 355,
+  "volumeId": "obAHf43THvQC",
+  "title": "Ancillary Justice"
+ },
+ {
+  "itemId": 39717,
+  "awardRowId": 356,
+  "volumeId": "9PorDAAAQBAJ",
+  "title": "The Obelisk Gate"
+ },
+ {
+  "itemId": 39718,
+  "awardRowId": 357,
+  "volumeId": "jvoyDwAAQBAJ",
+  "title": "The Calculating Stars"
+ },
+ {
+  "itemId": 39719,
+  "awardRowId": 358,
+  "volumeId": "O-5WDwAAQBAJ",
+  "title": "A Memory Called Empire"
+ },
+ {
+  "itemId": 39720,
+  "awardRowId": 359,
+  "volumeId": "NUaSDwAAQBAJ",
+  "title": "A Desolation Called Peace"
+ },
+ {
+  "itemId": 39721,
+  "awardRowId": 360,
+  "volumeId": "oJsOEAAAQBAJ",
+  "title": "Nettle & Bone"
+ },
+ {
+  "itemId": 39722,
+  "awardRowId": 361,
+  "volumeId": "LG9pEAAAQBAJ",
+  "title": "Some Desperate Glory"
+ },
+ {
+  "itemId": 39723,
+  "awardRowId": 362,
+  "volumeId": "v84YEQAAQBAJ",
+  "title": "The Tainted Cup"
+ }
+]

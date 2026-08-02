@@ -1,0 +1,1842 @@
+[
+ {
+  "entry": {
+   "t": "The Demolished Man",
+   "a": "Alfred Bester",
+   "tok": "bester",
+   "y": 1953,
+   "py": 1953
+  },
+  "volumeId": "RliJrgEACAAJ",
+  "gbTitle": "The Demolished Man",
+  "gbAuthors": [
+   "Alfred Bester"
+  ],
+  "gbPublished": "1999",
+  "editionDrift": 46,
+  "cover": "https://books.google.com/books/content?id=RliJrgEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 524,
+  "categories": [
+   "Science Fiction",
+   "Science fiction, American"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 250,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-demolished-man"
+ },
+ {
+  "entry": {
+   "t": "They'd Rather Be Right",
+   "a": "Mark Clifton",
+   "tok": "clifton",
+   "y": 1955,
+   "py": 1954,
+   "alt": [
+    "The Forever Machine"
+   ]
+  },
+  "volumeId": "0R3bPwAACAAJ",
+  "gbTitle": "They'd Rather be Right",
+  "gbAuthors": [
+   "Mark Clifton",
+   "Frank Riley",
+   "Easton Press"
+  ],
+  "gbPublished": "1990",
+  "editionDrift": 36,
+  "cover": "",
+  "descLen": 0,
+  "categories": [
+   "Science Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 189,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "theyd-rather-be-right"
+ },
+ {
+  "entry": {
+   "t": "Double Star",
+   "a": "Robert A. Heinlein",
+   "tok": "heinlein",
+   "y": 1956,
+   "py": 1956
+  },
+  "volumeId": "lWOvAAAAIAAJ",
+  "gbTitle": "Double Star",
+  "gbAuthors": [
+   "Robert Anson Heinlein"
+  ],
+  "gbPublished": "1957",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=lWOvAAAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 686,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 138,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "double-star"
+ },
+ {
+  "entry": {
+   "t": "The Big Time",
+   "a": "Fritz Leiber",
+   "tok": "leiber",
+   "y": 1958,
+   "py": 1958
+  },
+  "volumeId": "5PKbEAAAQBAJ",
+  "gbTitle": "The Big Time: Including \"No Great Magic\"",
+  "gbAuthors": [
+   "Fritz Leiber"
+  ],
+  "gbPublished": "2022-11-13",
+  "editionDrift": 64,
+  "cover": "https://books.google.com/books/content?id=5PKbEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1667,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 159,
+  "vibes": [
+   "mind-bending",
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-big-time"
+ },
+ {
+  "entry": {
+   "t": "A Case of Conscience",
+   "a": "James Blish",
+   "tok": "blish",
+   "y": 1959,
+   "py": 1958
+  },
+  "volumeId": "ht5_DQAAQBAJ",
+  "gbTitle": "A Case of Conscience",
+  "gbAuthors": [
+   "James Blish"
+  ],
+  "gbPublished": "2017-01-24",
+  "editionDrift": 59,
+  "cover": "https://books.google.com/books/content?id=ht5_DQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1487,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 168,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "a-case-of-conscience"
+ },
+ {
+  "entry": {
+   "t": "Starship Troopers",
+   "a": "Robert A. Heinlein",
+   "tok": "heinlein",
+   "y": 1960,
+   "py": 1959
+  },
+  "volumeId": "Qx1xDwAAQBAJ",
+  "gbTitle": "Starship Troopers",
+  "gbAuthors": [
+   "Robert A. Heinlein"
+  ],
+  "gbPublished": "2006-06-27",
+  "editionDrift": 47,
+  "cover": "https://books.google.com/books/content?id=Qx1xDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 688,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 289,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "starship-troopers"
+ },
+ {
+  "entry": {
+   "t": "A Canticle for Leibowitz",
+   "a": "Walter M. Miller Jr.",
+   "tok": "miller",
+   "y": 1961,
+   "py": 1960
+  },
+  "volumeId": "ia84AAAAIAAJ",
+  "gbTitle": "A Canticle for Leibowitz: A Novel",
+  "gbAuthors": [
+   "Walter M. Miller"
+  ],
+  "gbPublished": "1960",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=ia84AAAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 190,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 5,
+  "pageCount": 332,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "a-canticle-for-leibowitz"
+ },
+ {
+  "entry": {
+   "t": "Stranger in a Strange Land",
+   "a": "Robert A. Heinlein",
+   "tok": "heinlein",
+   "y": 1962,
+   "py": 1961
+  },
+  "volumeId": "Kn1bNU91sAoC",
+  "gbTitle": "Stranger in a Strange Land",
+  "gbAuthors": [
+   "Robert Anson Heinlein"
+  ],
+  "gbPublished": "1987",
+  "editionDrift": 26,
+  "cover": "https://books.google.com/books/content?id=Kn1bNU91sAoC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 289,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 76,
+  "averageRating": 4,
+  "pageCount": 452,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "stranger-in-a-strange-land"
+ },
+ {
+  "entry": {
+   "t": "Way Station",
+   "a": "Clifford D. Simak",
+   "tok": "simak",
+   "y": 1964,
+   "py": 1963
+  },
+  "volumeId": "LOgCEQAAQBAJ",
+  "gbTitle": "Way Station",
+  "gbAuthors": [
+   "Clifford D. Simak"
+  ],
+  "gbPublished": "2015-07-21",
+  "editionDrift": 52,
+  "cover": "https://books.google.com/books/content?id=LOgCEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1243,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 239,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "way-station"
+ },
+ {
+  "entry": {
+   "t": "The Wanderer",
+   "a": "Fritz Leiber",
+   "tok": "leiber",
+   "y": 1965,
+   "py": 1964
+  },
+  "volumeId": "2_4OAQAAMAAJ",
+  "gbTitle": "The Wanderer",
+  "gbAuthors": [
+   "Fritz Leiber"
+  ],
+  "gbPublished": "1964",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=2_4OAQAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 205,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 340,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-wanderer"
+ },
+ {
+  "entry": {
+   "t": "This Immortal",
+   "a": "Roger Zelazny",
+   "tok": "zelazny",
+   "y": 1966,
+   "py": 1966,
+   "alt": [
+    "...And Call Me Conrad"
+   ]
+  },
+  "volumeId": "n3lbAAAAMAAJ",
+  "gbTitle": "This Immortal",
+  "gbAuthors": [
+   "Roger Zelazny"
+  ],
+  "gbPublished": "1966",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=n3lbAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 328,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 208,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "this-immortal"
+ },
+ {
+  "entry": {
+   "t": "The Moon Is a Harsh Mistress",
+   "a": "Robert A. Heinlein",
+   "tok": "heinlein",
+   "y": 1967,
+   "py": 1966
+  },
+  "volumeId": "KqwmAQAAMAAJ",
+  "gbTitle": "The Moon is a Harsh Mistress",
+  "gbAuthors": [
+   "Robert Anson Heinlein"
+  ],
+  "gbPublished": "1987",
+  "editionDrift": 21,
+  "cover": "https://books.google.com/books/content?id=KqwmAQAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 122,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 308,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-moon-is-a-harsh-mistress"
+ },
+ {
+  "entry": {
+   "t": "Lord of Light",
+   "a": "Roger Zelazny",
+   "tok": "zelazny",
+   "y": 1968,
+   "py": 1967
+  },
+  "volumeId": "waWUyfAXugcC",
+  "gbTitle": "LORD OF LIGHT",
+  "gbAuthors": [
+   "ROGER ZELAZNY"
+  ],
+  "gbPublished": "1976",
+  "editionDrift": 9,
+  "cover": "https://books.google.com/books/content?id=waWUyfAXugcC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 0,
+  "categories": [
+   "Science Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 324,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "lord-of-light"
+ },
+ {
+  "entry": {
+   "t": "Stand on Zanzibar",
+   "a": "John Brunner",
+   "tok": "brunner",
+   "y": 1969,
+   "py": 1968
+  },
+  "volumeId": "xBY9AAAAIAAJ",
+  "gbTitle": "Stand on Zanzibar",
+  "gbAuthors": [
+   "John Brunner"
+  ],
+  "gbPublished": "1968",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=xBY9AAAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 255,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 3,
+  "averageRating": 3.5,
+  "pageCount": 536,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "stand-on-zanzibar"
+ },
+ {
+  "entry": {
+   "t": "Ringworld",
+   "a": "Larry Niven",
+   "tok": "niven",
+   "y": 1971,
+   "py": 1970
+  },
+  "volumeId": "aQONEAAAQBAJ",
+  "gbTitle": "Ringworld: A Novel",
+  "gbAuthors": [
+   "Larry Niven"
+  ],
+  "gbPublished": "1985-09-12",
+  "editionDrift": 15,
+  "cover": "https://books.google.com/books/content?id=aQONEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 771,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 0,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "ringworld"
+ },
+ {
+  "entry": {
+   "t": "To Your Scattered Bodies Go",
+   "a": "Philip José Farmer",
+   "tok": "farmer",
+   "y": 1972,
+   "py": 1971
+  },
+  "volumeId": "FIxcFrjFaO8C",
+  "gbTitle": "To Your Scattered Bodies Go",
+  "gbAuthors": [
+   "Philip Jose Farmer"
+  ],
+  "gbPublished": "2013-01-24",
+  "editionDrift": 42,
+  "cover": "https://books.google.com/books/content?id=FIxcFrjFaO8C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1018,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 180,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "to-your-scattered-bodies-go"
+ },
+ {
+  "entry": {
+   "t": "Rendezvous with Rama",
+   "a": "Arthur C. Clarke",
+   "tok": "clarke",
+   "y": 1974,
+   "py": 1973
+  },
+  "volumeId": "8l-aAAAAIAAJ",
+  "gbTitle": "Rendezvous with Rama",
+  "gbAuthors": [
+   "Arthur Charles Clarke"
+  ],
+  "gbPublished": "1973",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=8l-aAAAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 201,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 4,
+  "pageCount": 288,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "rendezvous-with-rama"
+ },
+ {
+  "entry": {
+   "t": "The Forever War",
+   "a": "Joe Haldeman",
+   "tok": "haldeman",
+   "y": 1976,
+   "py": 1974
+  },
+  "volumeId": "jc1eCZlD-ScC",
+  "gbTitle": "The Forever War",
+  "gbAuthors": [
+   "Joe W. Haldeman"
+  ],
+  "gbPublished": "2003-09-02",
+  "editionDrift": 29,
+  "cover": "https://books.google.com/books/content?id=jc1eCZlD-ScC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 154,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 2,
+  "averageRating": 5,
+  "pageCount": 290,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-forever-war"
+ },
+ {
+  "entry": {
+   "t": "Where Late the Sweet Birds Sang",
+   "a": "Kate Wilhelm",
+   "tok": "wilhelm",
+   "y": 1977,
+   "py": 1976
+  },
+  "volumeId": "_c_cDwAAQBAJ",
+  "gbTitle": "Where Late The Sweet Birds Sang",
+  "gbAuthors": [
+   "Kate Wilhelm"
+  ],
+  "gbPublished": "2020-04-30",
+  "editionDrift": 44,
+  "cover": "https://books.google.com/books/content?id=_c_cDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 433,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 194,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "where-late-the-sweet-birds-sang"
+ },
+ {
+  "entry": {
+   "t": "Gateway",
+   "a": "Frederik Pohl",
+   "tok": "pohl",
+   "y": 1978,
+   "py": 1977
+  },
+  "volumeId": "y-gOAQAAMAAJ",
+  "gbTitle": "Gateway",
+  "gbAuthors": [
+   "Frederik Pohl"
+  ],
+  "gbPublished": "1977",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=y-gOAQAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 660,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 2,
+  "averageRating": 4,
+  "pageCount": 324,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "gateway"
+ },
+ {
+  "entry": {
+   "t": "Dreamsnake",
+   "a": "Vonda N. McIntyre",
+   "tok": "mcintyre",
+   "y": 1979,
+   "py": 1978
+  },
+  "volumeId": "WnQ_EAAAQBAJ",
+  "gbTitle": "Dreamsnake",
+  "gbAuthors": [
+   "Vonda N. McIntyre"
+  ],
+  "gbPublished": "2021-10-12",
+  "editionDrift": 43,
+  "cover": "https://books.google.com/books/content?id=WnQ_EAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 853,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 302,
+  "vibes": [
+   "mind-bending",
+   "heartbreaking"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "dreamsnake"
+ },
+ {
+  "entry": {
+   "t": "The Fountains of Paradise",
+   "a": "Arthur C. Clarke",
+   "tok": "clarke",
+   "y": 1980,
+   "py": 1979
+  },
+  "volumeId": "lU8OI6p0IyIC",
+  "gbTitle": "The Fountains of Paradise",
+  "gbAuthors": [
+   "Arthur C. Clarke"
+  ],
+  "gbPublished": "2001-08-01",
+  "editionDrift": 22,
+  "cover": "https://books.google.com/books/content?id=lU8OI6p0IyIC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 339,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 3,
+  "averageRating": 4.5,
+  "pageCount": 273,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-fountains-of-paradise"
+ },
+ {
+  "entry": {
+   "t": "The Snow Queen",
+   "a": "Joan D. Vinge",
+   "tok": "vinge",
+   "y": 1981,
+   "py": 1980
+  },
+  "volumeId": "fiXFCgAAQBAJ",
+  "gbTitle": "The Snow Queen",
+  "gbAuthors": [
+   "Joan D. Vinge"
+  ],
+  "gbPublished": "2015-10-27",
+  "editionDrift": 35,
+  "cover": "https://books.google.com/books/content?id=fiXFCgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 964,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 619,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-snow-queen"
+ },
+ {
+  "entry": {
+   "t": "Downbelow Station",
+   "a": "C. J. Cherryh",
+   "tok": "cherryh",
+   "y": 1982,
+   "py": 1981
+  },
+  "volumeId": "h1uJEAAAQBAJ",
+  "gbTitle": "Downbelow Station",
+  "gbAuthors": [
+   "C. J. Cherryh"
+  ],
+  "gbPublished": "2008-12-02",
+  "editionDrift": 27,
+  "cover": "https://books.google.com/books/content?id=h1uJEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1387,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 434,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "downbelow-station"
+ },
+ {
+  "entry": {
+   "t": "Startide Rising",
+   "a": "David Brin",
+   "tok": "brin",
+   "y": 1984,
+   "py": 1983
+  },
+  "volumeId": "IKoFX1gqU6wC",
+  "gbTitle": "Startide Rising",
+  "gbAuthors": [
+   "David Brin"
+  ],
+  "gbPublished": "2010-07-21",
+  "editionDrift": 27,
+  "cover": "https://books.google.com/books/content?id=IKoFX1gqU6wC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 805,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 4,
+  "averageRating": 4,
+  "pageCount": 498,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "startide-rising"
+ },
+ {
+  "entry": {
+   "t": "Speaker for the Dead",
+   "a": "Orson Scott Card",
+   "tok": "card",
+   "y": 1987,
+   "py": 1986
+  },
+  "volumeId": "GYi1s6OuY-sC",
+  "gbTitle": "Speaker for the Dead",
+  "gbAuthors": [
+   "Orson Scott Card"
+  ],
+  "gbPublished": "1992-08-15",
+  "editionDrift": 6,
+  "cover": "https://books.google.com/books/content?id=GYi1s6OuY-sC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 153,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 19,
+  "averageRating": 4,
+  "pageCount": 308,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "speaker-for-the-dead"
+ },
+ {
+  "entry": {
+   "t": "The Uplift War",
+   "a": "David Brin",
+   "tok": "brin",
+   "y": 1988,
+   "py": 1987
+  },
+  "volumeId": "nM3TlUji1noC",
+  "gbTitle": "The Uplift War",
+  "gbAuthors": [
+   "David Brin"
+  ],
+  "gbPublished": "2009-12-16",
+  "editionDrift": 22,
+  "cover": "https://books.google.com/books/content?id=nM3TlUji1noC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 928,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 3,
+  "averageRating": 4,
+  "pageCount": 674,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-uplift-war"
+ },
+ {
+  "entry": {
+   "t": "Cyteen",
+   "a": "C. J. Cherryh",
+   "tok": "cherryh",
+   "y": 1989,
+   "py": 1988
+  },
+  "volumeId": "7VbpswEACAAJ",
+  "gbTitle": "Cyteen",
+  "gbAuthors": [
+   "Carolyn J. Cherryh"
+  ],
+  "gbPublished": "1990",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=7VbpswEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 0,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 885,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "cyteen"
+ },
+ {
+  "entry": {
+   "t": "Hyperion",
+   "a": "Dan Simmons",
+   "tok": "simmons",
+   "y": 1990,
+   "py": 1989
+  },
+  "volumeId": "4wy2QgAACAAJ",
+  "gbTitle": "Hyperion",
+  "gbAuthors": [
+   "Dan Simmons"
+  ],
+  "gbPublished": "1991",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=4wy2QgAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 966,
+  "categories": [
+   "Science Fiction",
+   "Future life"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 502,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "hyperion"
+ },
+ {
+  "entry": {
+   "t": "The Vor Game",
+   "a": "Lois McMaster Bujold",
+   "tok": "bujold",
+   "y": 1991,
+   "py": 1990
+  },
+  "volumeId": "aTLuAAAAMAAJ",
+  "gbTitle": "The Vor Game",
+  "gbAuthors": [
+   "Lois McMaster Bujold"
+  ],
+  "gbPublished": "1990",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=aTLuAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 108,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 446,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-vor-game"
+ },
+ {
+  "entry": {
+   "t": "Barrayar",
+   "a": "Lois McMaster Bujold",
+   "tok": "bujold",
+   "y": 1992,
+   "py": 1991
+  },
+  "volumeId": "BooXEQAAQBAJ",
+  "gbTitle": "Barrayar",
+  "gbAuthors": [
+   "Lois McMaster Bujold"
+  ],
+  "gbPublished": "2024-08-02",
+  "editionDrift": 33,
+  "cover": "https://books.google.com/books/content?id=BooXEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1953,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 317,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "barrayar"
+ },
+ {
+  "entry": {
+   "t": "A Fire Upon the Deep",
+   "a": "Vernor Vinge",
+   "tok": "vinge",
+   "y": 1993,
+   "py": 1992
+  },
+  "volumeId": "UGAKB3r0sZQC",
+  "gbTitle": "A Fire Upon The Deep",
+  "gbAuthors": [
+   "Vernor Vinge"
+  ],
+  "gbPublished": "1993-02-15",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=UGAKB3r0sZQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1137,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 40,
+  "averageRating": 4.5,
+  "pageCount": 640,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "a-fire-upon-the-deep"
+ },
+ {
+  "entry": {
+   "t": "Doomsday Book",
+   "a": "Connie Willis",
+   "tok": "willis",
+   "y": 1993,
+   "py": 1992
+  },
+  "volumeId": "lS7ipesDYFUC",
+  "gbTitle": "Doomsday Book: A Novel of the Oxford Time Travel Series",
+  "gbAuthors": [
+   "Connie Willis"
+  ],
+  "gbPublished": "2011-01-05",
+  "editionDrift": 19,
+  "cover": "https://books.google.com/books/content?id=lS7ipesDYFUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 907,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 610,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "doomsday-book"
+ },
+ {
+  "entry": {
+   "t": "Green Mars",
+   "a": "Kim Stanley Robinson",
+   "tok": "robinson",
+   "y": 1994,
+   "py": 1993
+  },
+  "volumeId": "RuxpY5T5kKMC",
+  "gbTitle": "Green Mars",
+  "gbAuthors": [
+   "Kim Stanley Robinson"
+  ],
+  "gbPublished": "2003-05-27",
+  "editionDrift": 10,
+  "cover": "https://books.google.com/books/content?id=RuxpY5T5kKMC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 842,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 761,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "green-mars"
+ },
+ {
+  "entry": {
+   "t": "Mirror Dance",
+   "a": "Lois McMaster Bujold",
+   "tok": "bujold",
+   "y": 1995,
+   "py": 1994
+  },
+  "volumeId": "aZ0YkIU0HusC",
+  "gbTitle": "Mirror Dance",
+  "gbAuthors": [
+   "Lois McMaster Bujold"
+  ],
+  "gbPublished": "1994",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=aZ0YkIU0HusC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 270,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 6,
+  "averageRating": 4.5,
+  "pageCount": 316,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "mirror-dance"
+ },
+ {
+  "entry": {
+   "t": "The Diamond Age",
+   "a": "Neal Stephenson",
+   "tok": "stephenson",
+   "y": 1996,
+   "py": 1995
+  },
+  "volumeId": "aAV6wV4Rn00C",
+  "gbTitle": "The Diamond Age: Or, a Young Lady's Illustrated Primer",
+  "gbAuthors": [
+   "Neal Stephenson"
+  ],
+  "gbPublished": "2003-08-26",
+  "editionDrift": 8,
+  "cover": "https://books.google.com/books/content?id=aAV6wV4Rn00C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1578,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 47,
+  "averageRating": 4.5,
+  "pageCount": 514,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-diamond-age"
+ },
+ {
+  "entry": {
+   "t": "Blue Mars",
+   "a": "Kim Stanley Robinson",
+   "tok": "robinson",
+   "y": 1997,
+   "py": 1996
+  },
+  "volumeId": "Y0-3B8x7R1gC",
+  "gbTitle": "Blue Mars",
+  "gbAuthors": [
+   "Kim Stanley Robinson"
+  ],
+  "gbPublished": "2003-05-27",
+  "editionDrift": 7,
+  "cover": "https://books.google.com/books/content?id=Y0-3B8x7R1gC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 914,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 26,
+  "averageRating": 4,
+  "pageCount": 861,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "blue-mars"
+ },
+ {
+  "entry": {
+   "t": "Forever Peace",
+   "a": "Joe Haldeman",
+   "tok": "haldeman",
+   "y": 1998,
+   "py": 1997
+  },
+  "volumeId": "P7TEDAAAQBAJ",
+  "gbTitle": "Forever Peace",
+  "gbAuthors": [
+   "Joe Haldeman"
+  ],
+  "gbPublished": "1998-10-01",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=P7TEDAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 186,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 367,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "forever-peace"
+ },
+ {
+  "entry": {
+   "t": "To Say Nothing of the Dog",
+   "a": "Connie Willis",
+   "tok": "willis",
+   "y": 1999,
+   "py": 1998
+  },
+  "volumeId": "fgcRcb2bYicC",
+  "gbTitle": "To Say Nothing of the Dog: A novel of the Oxford Time Travel series",
+  "gbAuthors": [
+   "Connie Willis"
+  ],
+  "gbPublished": "2009-11-18",
+  "editionDrift": 11,
+  "cover": "https://books.google.com/books/content?id=fgcRcb2bYicC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 854,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 5,
+  "averageRating": 4,
+  "pageCount": 514,
+  "vibes": [
+   "mind-bending",
+   "immersive"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "to-say-nothing-of-the-dog"
+ },
+ {
+  "entry": {
+   "t": "A Deepness in the Sky",
+   "a": "Vernor Vinge",
+   "tok": "vinge",
+   "y": 2000,
+   "py": 1999
+  },
+  "volumeId": "7DuqEAAAQBAJ",
+  "gbTitle": "A Deepness in the Sky",
+  "gbAuthors": [
+   "Vernor Vinge"
+  ],
+  "gbPublished": "2023-10-03",
+  "editionDrift": 24,
+  "cover": "https://books.google.com/books/content?id=7DuqEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1231,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 0,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "a-deepness-in-the-sky"
+ },
+ {
+  "entry": {
+   "t": "Hominids",
+   "a": "Robert J. Sawyer",
+   "tok": "sawyer",
+   "y": 2003,
+   "py": 2002
+  },
+  "volumeId": "gZ3y-kTiyR0C",
+  "gbTitle": "Hominids",
+  "gbAuthors": [
+   "Robert J. Sawyer"
+  ],
+  "gbPublished": "2003-02-17",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=gZ3y-kTiyR0C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 183,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 4,
+  "averageRating": 3.5,
+  "pageCount": 448,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "hominids"
+ },
+ {
+  "entry": {
+   "t": "Paladin of Souls",
+   "a": "Lois McMaster Bujold",
+   "tok": "bujold",
+   "y": 2004,
+   "py": 2003
+  },
+  "volumeId": "kNix8frieocC",
+  "gbTitle": "Paladin of Souls",
+  "gbAuthors": [
+   "Lois McMaster Bujold"
+  ],
+  "gbPublished": "2004",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=kNix8frieocC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 14,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 594,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "paladin-of-souls"
+ },
+ {
+  "entry": {
+   "t": "Jonathan Strange & Mr Norrell",
+   "a": "Susanna Clarke",
+   "tok": "clarke",
+   "y": 2005,
+   "py": 2004
+  },
+  "volumeId": "uGHWsBJx6KQC",
+  "gbTitle": "Jonathan Strange & Mr Norrell: A Novel",
+  "gbAuthors": [
+   "Susanna Clarke"
+  ],
+  "gbPublished": "2006-08",
+  "editionDrift": 2,
+  "cover": "https://books.google.com/books/content?id=uGHWsBJx6KQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 234,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 73,
+  "averageRating": 4,
+  "pageCount": 1028,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "jonathan-strange-and-mr-norrell"
+ },
+ {
+  "entry": {
+   "t": "Spin",
+   "a": "Robert Charles Wilson",
+   "tok": "wilson",
+   "y": 2006,
+   "py": 2005
+  },
+  "volumeId": "0_zyf3DRjxEC",
+  "gbTitle": "Spin",
+  "gbAuthors": [
+   "Robert Charles Wilson"
+  ],
+  "gbPublished": "2005-04",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=0_zyf3DRjxEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 43,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 367,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "spin"
+ },
+ {
+  "entry": {
+   "t": "Rainbows End",
+   "a": "Vernor Vinge",
+   "tok": "vinge",
+   "y": 2007,
+   "py": 2006
+  },
+  "volumeId": "SrLwPdBJodMC",
+  "gbTitle": "Rainbows End",
+  "gbAuthors": [
+   "Vernor Vinge"
+  ],
+  "gbPublished": "2006-05-02",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=SrLwPdBJodMC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 36,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 25,
+  "averageRating": 3.5,
+  "pageCount": 380,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "rainbows-end"
+ },
+ {
+  "entry": {
+   "t": "The Yiddish Policemen's Union",
+   "a": "Michael Chabon",
+   "tok": "chabon",
+   "y": 2008,
+   "py": 2007
+  },
+  "volumeId": "-reD1g77BfsC",
+  "gbTitle": "The Yiddish Policemen's Union: A Novel",
+  "gbAuthors": [
+   "Michael Chabon"
+  ],
+  "gbPublished": "2007-05-01",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=-reD1g77BfsC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1992,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 5,
+  "pageCount": 436,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-yiddish-policemens-union"
+ },
+ {
+  "entry": {
+   "t": "The City & The City",
+   "a": "China Miéville",
+   "tok": "mieville",
+   "y": 2010,
+   "py": 2009
+  },
+  "volumeId": "CN8xEPSybEIC",
+  "gbTitle": "The City & The City",
+  "gbAuthors": [
+   "China Mieville"
+  ],
+  "gbPublished": "2009-04-29",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=CN8xEPSybEIC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 854,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 343,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-city-and-the-city"
+ },
+ {
+  "entry": {
+   "t": "Blackout",
+   "a": "Connie Willis",
+   "tok": "willis",
+   "y": 2011,
+   "py": 2010
+  },
+  "volumeId": "zPNgwV6VPywC",
+  "gbTitle": "Blackout",
+  "gbAuthors": [
+   "Connie Willis"
+  ],
+  "gbPublished": "2010-02-02",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=zPNgwV6VPywC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 971,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 7,
+  "averageRating": 4,
+  "pageCount": 513,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": true,
+  "slug": "blackout"
+ },
+ {
+  "entry": {
+   "t": "All Clear",
+   "a": "Connie Willis",
+   "tok": "willis",
+   "y": 2011,
+   "py": 2010
+  },
+  "volumeId": "LaN7NnHAItcC",
+  "gbTitle": "All Clear: A Novel",
+  "gbAuthors": [
+   "Connie Willis"
+  ],
+  "gbPublished": "2011-10-25",
+  "editionDrift": 1,
+  "cover": "https://books.google.com/books/content?id=LaN7NnHAItcC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1159,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 658,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "all-clear"
+ },
+ {
+  "entry": {
+   "t": "Among Others",
+   "a": "Jo Walton",
+   "tok": "walton",
+   "y": 2012,
+   "py": 2011
+  },
+  "volumeId": "wz69HqibYJEC",
+  "gbTitle": "Among Others: A Novel",
+  "gbAuthors": [
+   "Jo Walton",
+   "Ursula K. Le Guin"
+  ],
+  "gbPublished": "2011-01-18",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=wz69HqibYJEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1518,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 25,
+  "averageRating": 3.5,
+  "pageCount": 303,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "among-others"
+ },
+ {
+  "entry": {
+   "t": "Redshirts",
+   "a": "John Scalzi",
+   "tok": "scalzi",
+   "y": 2013,
+   "py": 2012
+  },
+  "volumeId": "2myG-uWq5zQC",
+  "gbTitle": "Redshirts: A Novel with Three Codas",
+  "gbAuthors": [
+   "John Scalzi"
+  ],
+  "gbPublished": "2012-06-05",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=2myG-uWq5zQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1222,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 13,
+  "averageRating": 4,
+  "pageCount": 318,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "redshirts"
+ },
+ {
+  "entry": {
+   "t": "Ancillary Justice",
+   "a": "Ann Leckie",
+   "tok": "leckie",
+   "y": 2014,
+   "py": 2013
+  },
+  "volumeId": "obAHf43THvQC",
+  "gbTitle": "Ancillary Justice",
+  "gbAuthors": [
+   "Ann Leckie"
+  ],
+  "gbPublished": "2013-10-01",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=obAHf43THvQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 751,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 4,
+  "pageCount": 304,
+  "vibes": [
+   "mind-bending",
+   "heartbreaking"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "ancillary-justice"
+ },
+ {
+  "entry": {
+   "t": "The Obelisk Gate",
+   "a": "N. K. Jemisin",
+   "tok": "jemisin",
+   "y": 2017,
+   "py": 2016
+  },
+  "volumeId": "9PorDAAAQBAJ",
+  "gbTitle": "The Obelisk Gate",
+  "gbAuthors": [
+   "N. K. Jemisin"
+  ],
+  "gbPublished": "2016-08-16",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=9PorDAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 668,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 363,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-obelisk-gate"
+ },
+ {
+  "entry": {
+   "t": "The Calculating Stars",
+   "a": "Mary Robinette Kowal",
+   "tok": "kowal",
+   "y": 2019,
+   "py": 2018
+  },
+  "volumeId": "jvoyDwAAQBAJ",
+  "gbTitle": "The Calculating Stars: A Lady Astronaut Novel",
+  "gbAuthors": [
+   "Mary Robinette Kowal"
+  ],
+  "gbPublished": "2018-07-03",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=jvoyDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 2216,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 390,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-calculating-stars"
+ },
+ {
+  "entry": {
+   "t": "A Memory Called Empire",
+   "a": "Arkady Martine",
+   "tok": "martine",
+   "y": 2020,
+   "py": 2019
+  },
+  "volumeId": "O-5WDwAAQBAJ",
+  "gbTitle": "A Memory Called Empire",
+  "gbAuthors": [
+   "Arkady Martine"
+  ],
+  "gbPublished": "2019-03-26",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=O-5WDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1223,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 4,
+  "pageCount": 459,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "a-memory-called-empire"
+ },
+ {
+  "entry": {
+   "t": "A Desolation Called Peace",
+   "a": "Arkady Martine",
+   "tok": "martine",
+   "y": 2022,
+   "py": 2021
+  },
+  "volumeId": "NUaSDwAAQBAJ",
+  "gbTitle": "A Desolation Called Peace",
+  "gbAuthors": [
+   "Arkady Martine"
+  ],
+  "gbPublished": "2021-03-02",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=NUaSDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 907,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 5,
+  "pageCount": 467,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "a-desolation-called-peace"
+ },
+ {
+  "entry": {
+   "t": "Nettle & Bone",
+   "a": "T. Kingfisher",
+   "tok": "kingfisher",
+   "y": 2023,
+   "py": 2022
+  },
+  "volumeId": "oJsOEAAAQBAJ",
+  "gbTitle": "Nettle & Bone",
+  "gbAuthors": [
+   "T. Kingfisher"
+  ],
+  "gbPublished": "2022-04-26",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=oJsOEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1461,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 4,
+  "pageCount": 220,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "nettle-and-bone"
+ },
+ {
+  "entry": {
+   "t": "Some Desperate Glory",
+   "a": "Emily Tesh",
+   "tok": "tesh",
+   "y": 2024,
+   "py": 2023
+  },
+  "volumeId": "LG9pEAAAQBAJ",
+  "gbTitle": "Some Desperate Glory",
+  "gbAuthors": [
+   "Emily Tesh"
+  ],
+  "gbPublished": "2023-04-11",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=LG9pEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1678,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 1,
+  "averageRating": 5,
+  "pageCount": 375,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "some-desperate-glory"
+ },
+ {
+  "entry": {
+   "t": "The Tainted Cup",
+   "a": "Robert Jackson Bennett",
+   "tok": "bennett",
+   "y": 2025,
+   "py": 2024
+  },
+  "volumeId": "v84YEQAAQBAJ",
+  "gbTitle": "The Tainted Cup",
+  "gbAuthors": [
+   "Robert Jackson Bennett"
+  ],
+  "gbPublished": "2024-11-05",
+  "editionDrift": 0,
+  "cover": "https://books.google.com/books/content?id=v84YEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+  "descLen": 1875,
+  "categories": [
+   "Science Fiction",
+   "Fiction"
+  ],
+  "ratingsCount": 0,
+  "averageRating": 0,
+  "pageCount": 433,
+  "vibes": [
+   "mind-bending"
+  ],
+  "fallbackVibes": false,
+  "titleCollision": false,
+  "slug": "the-tainted-cup"
+ }
+]
