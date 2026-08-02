@@ -1,0 +1,500 @@
+{
+ "marked": [
+  14259,
+  17017,
+  16998,
+  17015,
+  16485,
+  16944,
+  17295,
+  16115,
+  16089,
+  28190,
+  16591,
+  25271,
+  27026,
+  28626,
+  27434,
+  27293,
+  27948,
+  24596,
+  25409,
+  23795
+ ],
+ "created": [
+  {
+   "itemId": 39724,
+   "awardRowId": 383,
+   "volumeId": "qSghEQAAQBAJ",
+   "title": "His Family"
+  },
+  {
+   "itemId": 39725,
+   "awardRowId": 384,
+   "volumeId": "PZI1AAAAMAAJ",
+   "title": "The Magnificent Ambersons"
+  },
+  {
+   "itemId": 39726,
+   "awardRowId": 385,
+   "volumeId": "hn5LAAAAIAAJ",
+   "title": "Alice Adams"
+  },
+  {
+   "itemId": 39727,
+   "awardRowId": 386,
+   "volumeId": "cLMSAAAAYAAJ",
+   "title": "One of Ours"
+  },
+  {
+   "itemId": 39728,
+   "awardRowId": 387,
+   "volumeId": "UTSGDwAAQBAJ",
+   "title": "The Able McLaughlins"
+  },
+  {
+   "itemId": 39729,
+   "awardRowId": 388,
+   "volumeId": "0Kv4ywEACAAJ",
+   "title": "So Big"
+  },
+  {
+   "itemId": 39730,
+   "awardRowId": 389,
+   "volumeId": "ye1dongYGgUC",
+   "title": "Arrowsmith"
+  },
+  {
+   "itemId": 39731,
+   "awardRowId": 390,
+   "volumeId": "ZxmHEQAAQBAJ",
+   "title": "Early Autumn"
+  },
+  {
+   "itemId": 39732,
+   "awardRowId": 391,
+   "volumeId": "ryScEAAAQBAJ",
+   "title": "The Bridge of San Luis Rey"
+  },
+  {
+   "itemId": 39733,
+   "awardRowId": 392,
+   "volumeId": "EafrEAAAQBAJ",
+   "title": "Scarlet Sister Mary"
+  },
+  {
+   "itemId": 39734,
+   "awardRowId": 393,
+   "volumeId": "5ZFiBxZj6xUC",
+   "title": "Laughing Boy"
+  },
+  {
+   "itemId": 39735,
+   "awardRowId": 394,
+   "volumeId": "unOlEQAAQBAJ",
+   "title": "Years of Grace"
+  },
+  {
+   "itemId": 39736,
+   "awardRowId": 395,
+   "volumeId": "ibvbDwAAQBAJ",
+   "title": "The Good Earth"
+  },
+  {
+   "itemId": 39737,
+   "awardRowId": 396,
+   "volumeId": "ef9mBgAAQBAJ",
+   "title": "The Store"
+  },
+  {
+   "itemId": 39738,
+   "awardRowId": 397,
+   "volumeId": "GUtCAAAAIAAJ",
+   "title": "Lamb in His Bosom"
+  },
+  {
+   "itemId": 39739,
+   "awardRowId": 398,
+   "volumeId": "9x8dAwAAQBAJ",
+   "title": "Now in November"
+  },
+  {
+   "itemId": 39740,
+   "awardRowId": 399,
+   "volumeId": "JhcPAAAAMAAJ",
+   "title": "Honey in the Horn"
+  },
+  {
+   "itemId": 39741,
+   "awardRowId": 400,
+   "volumeId": "QMQsAAAAIAAJ",
+   "title": "The Late George Apley"
+  },
+  {
+   "itemId": 39742,
+   "awardRowId": 401,
+   "volumeId": "suUMAAAAIAAJ",
+   "title": "In This Our Life"
+  },
+  {
+   "itemId": 39743,
+   "awardRowId": 402,
+   "volumeId": "gOMlCwAAQBAJ",
+   "title": "Dragon's Teeth"
+  },
+  {
+   "itemId": 39744,
+   "awardRowId": 403,
+   "volumeId": "AZRAAAAAIAAJ",
+   "title": "Journey in the Dark"
+  },
+  {
+   "itemId": 39745,
+   "awardRowId": 404,
+   "volumeId": "SoiVDwAAQBAJ",
+   "title": "A Bell for Adano"
+  },
+  {
+   "itemId": 39746,
+   "awardRowId": 405,
+   "volumeId": "QRO0ie4ZX6oC",
+   "title": "All the King's Men"
+  },
+  {
+   "itemId": 39747,
+   "awardRowId": 406,
+   "volumeId": "iiqPEAAAQBAJ",
+   "title": "Tales of the South Pacific"
+  },
+  {
+   "itemId": 39748,
+   "awardRowId": 407,
+   "volumeId": "O7VaAAAAMAAJ",
+   "title": "Guard of Honor"
+  },
+  {
+   "itemId": 39749,
+   "awardRowId": 408,
+   "volumeId": "Yj03zf7jPdAC",
+   "title": "The Way West"
+  },
+  {
+   "itemId": 39750,
+   "awardRowId": 409,
+   "volumeId": "vSYFAQAAIAAJ",
+   "title": "The Town"
+  },
+  {
+   "itemId": 39751,
+   "awardRowId": 410,
+   "volumeId": "UaYFAQAAIAAJ",
+   "title": "The Caine Mutiny"
+  },
+  {
+   "itemId": 39752,
+   "awardRowId": 411,
+   "volumeId": "rvkdAAAAMAAJ",
+   "title": "A Fable"
+  },
+  {
+   "itemId": 39753,
+   "awardRowId": 412,
+   "volumeId": "xV5xuZ_UQwsC",
+   "title": "Andersonville"
+  },
+  {
+   "itemId": 39754,
+   "awardRowId": 413,
+   "volumeId": "46-KDQAAQBAJ",
+   "title": "A Death in the Family"
+  },
+  {
+   "itemId": 39755,
+   "awardRowId": 414,
+   "volumeId": "2EooAQAAMAAJ",
+   "title": "The Travels of Jaimie McPheeters"
+  },
+  {
+   "itemId": 39756,
+   "awardRowId": 415,
+   "volumeId": "scdDKTozT7kC",
+   "title": "Advise and Consent"
+  },
+  {
+   "itemId": 39757,
+   "awardRowId": 416,
+   "volumeId": "hvfA7rIdyhUC",
+   "title": "The Edge of Sadness"
+  },
+  {
+   "itemId": 39758,
+   "awardRowId": 417,
+   "volumeId": "lE7V-v3AjmAC",
+   "title": "The Reivers"
+  },
+  {
+   "itemId": 39759,
+   "awardRowId": 418,
+   "volumeId": "E2Te_bosjlsC",
+   "title": "The Keepers of the House"
+  },
+  {
+   "itemId": 39760,
+   "awardRowId": 419,
+   "volumeId": "bbmRGBT6XEcC",
+   "title": "The Fixer"
+  },
+  {
+   "itemId": 39761,
+   "awardRowId": 420,
+   "volumeId": "9UsLNxq2vk8C",
+   "title": "The Confessions of Nat Turner"
+  },
+  {
+   "itemId": 39762,
+   "awardRowId": 421,
+   "volumeId": "g8M4RJMd-qIC",
+   "title": "House Made of Dawn"
+  },
+  {
+   "itemId": 39763,
+   "awardRowId": 422,
+   "volumeId": "s1JpPwAACAAJ",
+   "title": "Collected Stories"
+  },
+  {
+   "itemId": 39764,
+   "awardRowId": 423,
+   "volumeId": "yHBxSNd3rzoC",
+   "title": "Angle of Repose"
+  },
+  {
+   "itemId": 39765,
+   "awardRowId": 424,
+   "volumeId": "S9yJDQAAQBAJ",
+   "title": "The Optimist's Daughter"
+  },
+  {
+   "itemId": 39766,
+   "awardRowId": 425,
+   "volumeId": "MDjsZCMybiMC",
+   "title": "The Killer Angels"
+  },
+  {
+   "itemId": 39767,
+   "awardRowId": 426,
+   "volumeId": "r0bFQu7Y6SIC",
+   "title": "Humboldt's Gift"
+  },
+  {
+   "itemId": 39768,
+   "awardRowId": 427,
+   "volumeId": "hZVBDwAAQBAJ",
+   "title": "Elbow Room"
+  },
+  {
+   "itemId": 39769,
+   "awardRowId": 428,
+   "volumeId": "TKKJ6y1upfgC",
+   "title": "The Stories of John Cheever"
+  },
+  {
+   "itemId": 39770,
+   "awardRowId": 429,
+   "volumeId": "8gctPN0_ihgC",
+   "title": "The Executioner's Song"
+  },
+  {
+   "itemId": 39771,
+   "awardRowId": 430,
+   "volumeId": "1VGwQgAACAAJ",
+   "title": "Rabbit Is Rich"
+  },
+  {
+   "itemId": 39772,
+   "awardRowId": 431,
+   "volumeId": "ekvfngEACAAJ",
+   "title": "The Color Purple"
+  },
+  {
+   "itemId": 39773,
+   "awardRowId": 432,
+   "volumeId": "RIFPEAAAQBAJ",
+   "title": "Ironweed"
+  },
+  {
+   "itemId": 39774,
+   "awardRowId": 433,
+   "volumeId": "Bgcq0vVrRMoC",
+   "title": "Foreign Affairs"
+  },
+  {
+   "itemId": 39775,
+   "awardRowId": 434,
+   "volumeId": "Re9ZwgL01jUC",
+   "title": "Lonesome Dove"
+  },
+  {
+   "itemId": 39776,
+   "awardRowId": 435,
+   "volumeId": "kJiMPwAACAAJ",
+   "title": "A Summons to Memphis"
+  },
+  {
+   "itemId": 39777,
+   "awardRowId": 436,
+   "volumeId": "fJ-RiNbg6TcC",
+   "title": "Breathing Lessons"
+  },
+  {
+   "itemId": 39778,
+   "awardRowId": 437,
+   "volumeId": "jOdiQgAACAAJ",
+   "title": "The Mambo Kings Play Songs of Love"
+  },
+  {
+   "itemId": 39779,
+   "awardRowId": 438,
+   "volumeId": "S_XLsfquzuIC",
+   "title": "Rabbit at Rest"
+  },
+  {
+   "itemId": 39780,
+   "awardRowId": 439,
+   "volumeId": "NioeXwaAWVgC",
+   "title": "A Thousand Acres"
+  },
+  {
+   "itemId": 39781,
+   "awardRowId": 440,
+   "volumeId": "OCagSdxOpiIC",
+   "title": "A Good Scent from a Strange Mountain"
+  },
+  {
+   "itemId": 39782,
+   "awardRowId": 441,
+   "volumeId": "jHp8VHqgCmQC",
+   "title": "The Shipping News"
+  },
+  {
+   "itemId": 39783,
+   "awardRowId": 442,
+   "volumeId": "Ro6c5FN7bPsC",
+   "title": "The Stone Diaries"
+  },
+  {
+   "itemId": 39784,
+   "awardRowId": 443,
+   "volumeId": "rUJJgU0TZTIC",
+   "title": "Independence Day"
+  },
+  {
+   "itemId": 39785,
+   "awardRowId": 444,
+   "volumeId": "21yMDQAAQBAJ",
+   "title": "Martin Dressler: The Tale of an American Dreamer"
+  },
+  {
+   "itemId": 39786,
+   "awardRowId": 445,
+   "volumeId": "iDrV0QEACAAJ",
+   "title": "American Pastoral"
+  },
+  {
+   "itemId": 39787,
+   "awardRowId": 446,
+   "volumeId": "HooXAwAAQBAJ",
+   "title": "The Hours"
+  },
+  {
+   "itemId": 39788,
+   "awardRowId": 447,
+   "volumeId": "w4bZtp8Azw8C",
+   "title": "Interpreter of Maladies"
+  },
+  {
+   "itemId": 39789,
+   "awardRowId": 448,
+   "volumeId": "W2y0nnZRCc8C",
+   "title": "The Amazing Adventures of Kavalier & Clay"
+  },
+  {
+   "itemId": 39790,
+   "awardRowId": 449,
+   "volumeId": "bX8N8shdUTAC",
+   "title": "Empire Falls"
+  },
+  {
+   "itemId": 39791,
+   "awardRowId": 450,
+   "volumeId": "Bzg8AAAAIAAJ",
+   "title": "Middlesex"
+  },
+  {
+   "itemId": 39792,
+   "awardRowId": 451,
+   "volumeId": "Cxg0yqFgU6oC",
+   "title": "The Known World"
+  },
+  {
+   "itemId": 39793,
+   "awardRowId": 452,
+   "volumeId": "IkEpGgAACAAJ",
+   "title": "Gilead"
+  },
+  {
+   "itemId": 39794,
+   "awardRowId": 453,
+   "volumeId": "1qRTDBq_264C",
+   "title": "March"
+  },
+  {
+   "itemId": 39795,
+   "awardRowId": 454,
+   "volumeId": "qW3n_pZqKycC",
+   "title": "The Brief Wondrous Life of Oscar Wao"
+  },
+  {
+   "itemId": 39796,
+   "awardRowId": 455,
+   "volumeId": "gNKxPeHoeYAC",
+   "title": "Tinkers"
+  },
+  {
+   "itemId": 39797,
+   "awardRowId": 456,
+   "volumeId": "KpGNejM3nkEC",
+   "title": "A Visit from the Goon Squad"
+  },
+  {
+   "itemId": 39798,
+   "awardRowId": 457,
+   "volumeId": "AMMyrIxxCaoC",
+   "title": "The Orphan Master's Son"
+  },
+  {
+   "itemId": 39799,
+   "awardRowId": 458,
+   "volumeId": "dYYVBgAAQBAJ",
+   "title": "The Sympathizer"
+  },
+  {
+   "itemId": 39800,
+   "awardRowId": 459,
+   "volumeId": "elASEAAAQBAJ",
+   "title": "The Netanyahus"
+  },
+  {
+   "itemId": 39801,
+   "awardRowId": 460,
+   "volumeId": "RRWczwEACAAJ",
+   "title": "Night Watch"
+  },
+  {
+   "itemId": 39802,
+   "awardRowId": 461,
+   "volumeId": "AtYnEQAAQBAJ",
+   "title": "Angel Down"
+  }
+ ]
+}
