@@ -1,0 +1,414 @@
+{
+ "marked": [
+  39752,
+  39760,
+  39771,
+  39772,
+  16103,
+  39782,
+  27026,
+  29192,
+  28734,
+  27489,
+  25546,
+  23795
+ ],
+ "created": [
+  {
+   "itemId": 39831,
+   "awardRowId": 537,
+   "volumeId": "1BxXs0ff-nUC",
+   "title": "The Man with the Golden Arm"
+  },
+  {
+   "itemId": 39832,
+   "awardRowId": 538,
+   "volumeId": "oDx9PwAACAAJ",
+   "title": "The Collected Stories of William Faulkner"
+  },
+  {
+   "itemId": 39833,
+   "awardRowId": 539,
+   "volumeId": "tfSQV5frAo0C",
+   "title": "From Here to Eternity"
+  },
+  {
+   "itemId": 39834,
+   "awardRowId": 540,
+   "volumeId": "d_a3QgAACAAJ",
+   "title": "Invisible Man"
+  },
+  {
+   "itemId": 39835,
+   "awardRowId": 541,
+   "volumeId": "cThZAAAAYAAJ",
+   "title": "The Adventures of Augie March"
+  },
+  {
+   "itemId": 39836,
+   "awardRowId": 542,
+   "volumeId": "g1I8AgAAQBAJ",
+   "title": "Ten North Frederick"
+  },
+  {
+   "itemId": 39837,
+   "awardRowId": 543,
+   "volumeId": "z3UVAAAAMAAJ",
+   "title": "The Field of Vision"
+  },
+  {
+   "itemId": 39838,
+   "awardRowId": 544,
+   "volumeId": "rABDEAAAQBAJ",
+   "title": "The Wapshot Chronicle"
+  },
+  {
+   "itemId": 39839,
+   "awardRowId": 545,
+   "volumeId": "KqtE_e83cKYC",
+   "title": "The Magic Barrel"
+  },
+  {
+   "itemId": 39840,
+   "awardRowId": 546,
+   "volumeId": "JFgmCwAAQBAJ",
+   "title": "Goodbye, Columbus"
+  },
+  {
+   "itemId": 39841,
+   "awardRowId": 547,
+   "volumeId": "32iHDwAAQBAJ",
+   "title": "The Waters of Kronos"
+  },
+  {
+   "itemId": 39842,
+   "awardRowId": 548,
+   "volumeId": "Z0dH1DLiSTEC",
+   "title": "The Moviegoer"
+  },
+  {
+   "itemId": 39843,
+   "awardRowId": 549,
+   "volumeId": "Gmgo36ZY6_MC",
+   "title": "Morte d'Urban"
+  },
+  {
+   "itemId": 39844,
+   "awardRowId": 550,
+   "volumeId": "Y6gIqM8qhGsC",
+   "title": "The Centaur"
+  },
+  {
+   "itemId": 39845,
+   "awardRowId": 551,
+   "volumeId": "iG4xngEACAAJ",
+   "title": "Herzog"
+  },
+  {
+   "itemId": 39846,
+   "awardRowId": 552,
+   "volumeId": "tqs7PgAACAAJ",
+   "title": "The Collected Stories of Katherine Anne Porter"
+  },
+  {
+   "itemId": 39847,
+   "awardRowId": 553,
+   "volumeId": "BIklmz_HqIUC",
+   "title": "The Eighth Day"
+  },
+  {
+   "itemId": 39848,
+   "awardRowId": 554,
+   "volumeId": "BTkK-A-R73oC",
+   "title": "Steps"
+  },
+  {
+   "itemId": 39849,
+   "awardRowId": 555,
+   "volumeId": "hII5sPW7q1IC",
+   "title": "them"
+  },
+  {
+   "itemId": 39850,
+   "awardRowId": 556,
+   "volumeId": "kI5PEAAAQBAJ",
+   "title": "Mr. Sammler's Planet"
+  },
+  {
+   "itemId": 39851,
+   "awardRowId": 557,
+   "volumeId": "MKZJqNkha_EC",
+   "title": "The Complete Stories"
+  },
+  {
+   "itemId": 39852,
+   "awardRowId": 558,
+   "volumeId": "z8QDzgEACAAJ",
+   "title": "Chimera"
+  },
+  {
+   "itemId": 39853,
+   "awardRowId": 559,
+   "volumeId": "LmjHAwAAQBAJ",
+   "title": "Augustus"
+  },
+  {
+   "itemId": 39854,
+   "awardRowId": 560,
+   "volumeId": "GGPm4I3BbxAC",
+   "title": "Gravity's Rainbow"
+  },
+  {
+   "itemId": 39855,
+   "awardRowId": 561,
+   "volumeId": "_VZNgAGAf3UC",
+   "title": "A Crown of Feathers"
+  },
+  {
+   "itemId": 39856,
+   "awardRowId": 562,
+   "volumeId": "SrguEQAAQBAJ",
+   "title": "Dog Soldiers"
+  },
+  {
+   "itemId": 39857,
+   "awardRowId": 563,
+   "volumeId": "TXfZAAAAMAAJ",
+   "title": "The Hair of Harold Roux"
+  },
+  {
+   "itemId": 39858,
+   "awardRowId": 564,
+   "volumeId": "-YrJDwAAQBAJ",
+   "title": "JR"
+  },
+  {
+   "itemId": 39859,
+   "awardRowId": 565,
+   "volumeId": "f58sDgAAQBAJ",
+   "title": "The Spectator Bird"
+  },
+  {
+   "itemId": 39860,
+   "awardRowId": 566,
+   "volumeId": "4OK2YxpfUtsC",
+   "title": "Going After Cacciato"
+  },
+  {
+   "itemId": 39861,
+   "awardRowId": 567,
+   "volumeId": "jtawAAAAIAAJ",
+   "title": "Sophie's Choice"
+  },
+  {
+   "itemId": 39862,
+   "awardRowId": 568,
+   "volumeId": "O_iSAQAACAAJ",
+   "title": "Plains Song"
+  },
+  {
+   "itemId": 39863,
+   "awardRowId": 569,
+   "volumeId": "6OSbAgAAQBAJ",
+   "title": "Victory Over Japan"
+  },
+  {
+   "itemId": 39864,
+   "awardRowId": 570,
+   "volumeId": "zpFPEAAAQBAJ",
+   "title": "White Noise"
+  },
+  {
+   "itemId": 39865,
+   "awardRowId": 571,
+   "volumeId": "GQY5pBvrzCgC",
+   "title": "World's Fair"
+  },
+  {
+   "itemId": 39866,
+   "awardRowId": 572,
+   "volumeId": "Tdkj1x5WwV8C",
+   "title": "Paco's Story"
+  },
+  {
+   "itemId": 39867,
+   "awardRowId": 573,
+   "volumeId": "Xb_CAwAAQBAJ",
+   "title": "Paris Trout"
+  },
+  {
+   "itemId": 39868,
+   "awardRowId": 574,
+   "volumeId": "o42ODQAAQBAJ",
+   "title": "Spartina"
+  },
+  {
+   "itemId": 39869,
+   "awardRowId": 575,
+   "volumeId": "-lERCgAAQBAJ",
+   "title": "Middle Passage"
+  },
+  {
+   "itemId": 39870,
+   "awardRowId": 576,
+   "volumeId": "SWOKDQAAQBAJ",
+   "title": "Mating"
+  },
+  {
+   "itemId": 39871,
+   "awardRowId": 577,
+   "volumeId": "iHB6QgAACAAJ",
+   "title": "A Frolic of His Own"
+  },
+  {
+   "itemId": 39872,
+   "awardRowId": 578,
+   "volumeId": "YWJZrpDgTuYC",
+   "title": "Sabbath's Theater"
+  },
+  {
+   "itemId": 39873,
+   "awardRowId": 579,
+   "volumeId": "og3Kccn-4OAC",
+   "title": "Ship Fever"
+  },
+  {
+   "itemId": 39874,
+   "awardRowId": 580,
+   "volumeId": "BMSiuQAACAAJ",
+   "title": "Cold Mountain"
+  },
+  {
+   "itemId": 39875,
+   "awardRowId": 581,
+   "volumeId": "hyiZ8byOoZ0C",
+   "title": "Charming Billy"
+  },
+  {
+   "itemId": 39876,
+   "awardRowId": 582,
+   "volumeId": "im-PDQAAQBAJ",
+   "title": "Waiting"
+  },
+  {
+   "itemId": 39877,
+   "awardRowId": 583,
+   "volumeId": "mFeeAgAAQBAJ",
+   "title": "In America"
+  },
+  {
+   "itemId": 39878,
+   "awardRowId": 584,
+   "volumeId": "FodGfz5li5wC",
+   "title": "The Corrections"
+  },
+  {
+   "itemId": 39879,
+   "awardRowId": 585,
+   "volumeId": "ZyXGD_G514YC",
+   "title": "Three Junes"
+  },
+  {
+   "itemId": 39880,
+   "awardRowId": 586,
+   "volumeId": "mrcgxVBzWH0C",
+   "title": "The Great Fire"
+  },
+  {
+   "itemId": 39881,
+   "awardRowId": 587,
+   "volumeId": "5F3S8RgQNUQC",
+   "title": "The News from Paraguay"
+  },
+  {
+   "itemId": 39882,
+   "awardRowId": 588,
+   "volumeId": "Pu0kDwAAQBAJ",
+   "title": "Europe Central"
+  },
+  {
+   "itemId": 39883,
+   "awardRowId": 589,
+   "volumeId": "d-Qi16GXlUAC",
+   "title": "The Echo Maker"
+  },
+  {
+   "itemId": 39884,
+   "awardRowId": 590,
+   "volumeId": "VcoiujDb3CYC",
+   "title": "Tree of Smoke"
+  },
+  {
+   "itemId": 39885,
+   "awardRowId": 591,
+   "volumeId": "jgXeWZItd_MC",
+   "title": "Shadow Country"
+  },
+  {
+   "itemId": 39886,
+   "awardRowId": 592,
+   "volumeId": "hhxUcgAACAAJ",
+   "title": "Let the Great World Spin"
+  },
+  {
+   "itemId": 39887,
+   "awardRowId": 593,
+   "volumeId": "VpMkAQAAMAAJ",
+   "title": "Lord of Misrule"
+  },
+  {
+   "itemId": 39888,
+   "awardRowId": 594,
+   "volumeId": "PNOmCAAAQBAJ",
+   "title": "Salvage the Bones"
+  },
+  {
+   "itemId": 39889,
+   "awardRowId": 595,
+   "volumeId": "qBmeBAAAQBAJ",
+   "title": "The Round House"
+  },
+  {
+   "itemId": 39890,
+   "awardRowId": 596,
+   "volumeId": "hv7aCwAAQBAJ",
+   "title": "The Good Lord Bird"
+  },
+  {
+   "itemId": 39891,
+   "awardRowId": 597,
+   "volumeId": "lKeMDQAAQBAJ",
+   "title": "Redeployment"
+  },
+  {
+   "itemId": 39892,
+   "awardRowId": 598,
+   "volumeId": "m-f4DAAAQBAJ",
+   "title": "Fortune Smiles"
+  },
+  {
+   "itemId": 39893,
+   "awardRowId": 599,
+   "volumeId": "II92DwAAQBAJ",
+   "title": "Trust Exercise"
+  },
+  {
+   "itemId": 39894,
+   "awardRowId": 600,
+   "volumeId": "YJUTEAAAQBAJ",
+   "title": "Hell of a Book"
+  },
+  {
+   "itemId": 39895,
+   "awardRowId": 601,
+   "volumeId": "_b-iEAAAQBAJ",
+   "title": "Blackouts"
+  },
+  {
+   "itemId": 39896,
+   "awardRowId": 602,
+   "volumeId": "ndPd0QEACAAJ",
+   "title": "The True True Story of Raja the Gullible"
+  }
+ ]
+}

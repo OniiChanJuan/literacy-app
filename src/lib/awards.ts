@@ -17,6 +17,7 @@ export const AWARDS: Record<string, AwardMeta> = {
   bafta:    { label: "BAFTA",             icon: "🎭", color: "#9B5DE5", allowedTypes: ["movie", "tv", "game"] },
   hugo:     { label: "Hugo Award",        icon: "🚀", color: "#3185FC" }, // spans book, comic, manga, tv, movie
   booker:   { label: "Booker Prize",      icon: "📚", color: "#B8860B", allowedTypes: ["book"] },
+  nba:      { label: "National Book Award", icon: "📕", color: "#C0392B", allowedTypes: ["book"] },
   nebula:   { label: "Nebula Award",      icon: "✨", color: "#00BBF9", allowedTypes: ["book", "comic", "manga"] },
   pulitzer: { label: "Pulitzer Prize",    icon: "📰", color: "#D4AF37", allowedTypes: ["book", "comic", "music"] },
   palme:    { label: "Palme d'Or",        icon: "🌴", color: "#2EC4B6", allowedTypes: ["movie"] },

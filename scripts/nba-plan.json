@@ -1,0 +1,1975 @@
+{
+ "mark": [
+  {
+   "y": 1955,
+   "t": "A Fable",
+   "itemId": 39752
+  },
+  {
+   "y": 1967,
+   "t": "The Fixer",
+   "itemId": 39760
+  },
+  {
+   "y": 1982,
+   "t": "Rabbit Is Rich",
+   "itemId": 39771
+  },
+  {
+   "y": 1983,
+   "t": "The Color Purple",
+   "itemId": 39772
+  },
+  {
+   "y": 1992,
+   "t": "All the Pretty Horses",
+   "itemId": 16103
+  },
+  {
+   "y": 1993,
+   "t": "The Shipping News",
+   "itemId": 39782
+  },
+  {
+   "y": 2016,
+   "t": "The Underground Railroad",
+   "itemId": 27026
+  },
+  {
+   "y": 2017,
+   "t": "Sing, Unburied, Sing",
+   "itemId": 29192
+  },
+  {
+   "y": 2018,
+   "t": "The Friend",
+   "itemId": 28734
+  },
+  {
+   "y": 2020,
+   "t": "Interior Chinatown",
+   "itemId": 27489
+  },
+  {
+   "y": 2022,
+   "t": "The Rabbit Hutch",
+   "itemId": 25546
+  },
+  {
+   "y": 2024,
+   "t": "James",
+   "itemId": 23795
+  }
+ ],
+ "ingest": [
+  {
+   "entry": {
+    "t": "The Man with the Golden Arm",
+    "a": "Nelson Algren",
+    "tok": "algren",
+    "y": 1950,
+    "py": 1949
+   },
+   "volumeId": "1BxXs0ff-nUC",
+   "gbTitle": "The Man with the Golden Arm",
+   "gbAuthors": [
+    "Nelson Algren"
+   ],
+   "gbPublished": "2011-01-04",
+   "cover": "https://books.google.com/books/content?id=1BxXs0ff-nUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 622,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 453,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-man-with-the-golden-arm"
+  },
+  {
+   "entry": {
+    "t": "The Collected Stories of William Faulkner",
+    "a": "William Faulkner",
+    "tok": "faulkner",
+    "y": 1951,
+    "py": 1950,
+    "alt": [
+     "Collected Stories of William Faulkner"
+    ]
+   },
+   "volumeId": "oDx9PwAACAAJ",
+   "gbTitle": "The Collected Stories of William Faulkner",
+   "gbAuthors": [
+    "William Faulkner"
+   ],
+   "gbPublished": "1989",
+   "cover": "",
+   "descLen": 0,
+   "categories": [
+    "Literary Fiction",
+    "Short stories, American"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 900,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-collected-stories-of-william-faulkner"
+  },
+  {
+   "entry": {
+    "t": "From Here to Eternity",
+    "a": "James Jones",
+    "tok": "jones",
+    "y": 1952,
+    "py": 1951
+   },
+   "volumeId": "tfSQV5frAo0C",
+   "gbTitle": "From Here to Eternity",
+   "gbAuthors": [
+    "James Jones"
+   ],
+   "gbPublished": "2011-05-10",
+   "cover": "https://books.google.com/books/content?id=tfSQV5frAo0C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 978,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 4,
+   "averageRating": 3.5,
+   "pageCount": 1590,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "from-here-to-eternity"
+  },
+  {
+   "entry": {
+    "t": "Invisible Man",
+    "a": "Ralph Ellison",
+    "tok": "ellison",
+    "y": 1953,
+    "py": 1952
+   },
+   "volumeId": "d_a3QgAACAAJ",
+   "gbTitle": "Invisible Man",
+   "gbAuthors": [
+    "Ralph Ellison"
+   ],
+   "gbPublished": "2001-01-01",
+   "cover": "https://books.google.com/books/content?id=d_a3QgAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 247,
+   "categories": [
+    "Literary Fiction",
+    "African Americans"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 581,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "invisible-man"
+  },
+  {
+   "entry": {
+    "t": "The Adventures of Augie March",
+    "a": "Saul Bellow",
+    "tok": "bellow",
+    "y": 1954,
+    "py": 1953
+   },
+   "volumeId": "cThZAAAAYAAJ",
+   "gbTitle": "The Adventures of Augie March",
+   "gbAuthors": [
+    "Saul Bellow"
+   ],
+   "gbPublished": "1984",
+   "cover": "https://books.google.com/books/content?id=cThZAAAAYAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 93,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 552,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-adventures-of-augie-march"
+  },
+  {
+   "entry": {
+    "t": "Ten North Frederick",
+    "a": "John O'Hara",
+    "tok": "hara",
+    "y": 1956,
+    "py": 1955
+   },
+   "volumeId": "g1I8AgAAQBAJ",
+   "gbTitle": "Ten North Frederick: National Book Award Winner",
+   "gbAuthors": [
+    "John O'Hara"
+   ],
+   "gbPublished": "2014-06-24",
+   "cover": "https://books.google.com/books/content?id=g1I8AgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1281,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 464,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "ten-north-frederick"
+  },
+  {
+   "entry": {
+    "t": "The Field of Vision",
+    "a": "Wright Morris",
+    "tok": "morris",
+    "y": 1957,
+    "py": 1956
+   },
+   "volumeId": "z3UVAAAAMAAJ",
+   "gbTitle": "The Field of Vision",
+   "gbAuthors": [
+    "Wright Morris"
+   ],
+   "gbPublished": "1956",
+   "cover": "https://books.google.com/books/content?id=z3UVAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 155,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 270,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-field-of-vision"
+  },
+  {
+   "entry": {
+    "t": "The Wapshot Chronicle",
+    "a": "John Cheever",
+    "tok": "cheever",
+    "y": 1958,
+    "py": 1957
+   },
+   "volumeId": "rABDEAAAQBAJ",
+   "gbTitle": "The Wapshot Chronicle",
+   "gbAuthors": [
+    "John Cheever"
+   ],
+   "gbPublished": "2021-02-02",
+   "cover": "https://books.google.com/books/content?id=rABDEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 871,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 401,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-wapshot-chronicle"
+  },
+  {
+   "entry": {
+    "t": "The Magic Barrel",
+    "a": "Bernard Malamud",
+    "tok": "malamud",
+    "y": 1959,
+    "py": 1958
+   },
+   "volumeId": "KqtE_e83cKYC",
+   "gbTitle": "The Magic Barrel: Stories",
+   "gbAuthors": [
+    "Bernard Malamud"
+   ],
+   "gbPublished": "2003",
+   "cover": "https://books.google.com/books/content?id=KqtE_e83cKYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 128,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 237,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-magic-barrel"
+  },
+  {
+   "entry": {
+    "t": "Goodbye, Columbus",
+    "a": "Philip Roth",
+    "tok": "roth",
+    "y": 1960,
+    "py": 1959
+   },
+   "volumeId": "JFgmCwAAQBAJ",
+   "gbTitle": "Goodbye, Columbus",
+   "gbAuthors": [
+    "Philip Roth"
+   ],
+   "gbPublished": "2012-05-01",
+   "cover": "https://books.google.com/books/content?id=JFgmCwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1748,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 269,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "goodbye-columbus"
+  },
+  {
+   "entry": {
+    "t": "The Waters of Kronos",
+    "a": "Conrad Richter",
+    "tok": "richter",
+    "y": 1961,
+    "py": 1960
+   },
+   "volumeId": "32iHDwAAQBAJ",
+   "gbTitle": "The Waters of Kronos",
+   "gbAuthors": [
+    "Conrad Richter"
+   ],
+   "gbPublished": "2013-12-12",
+   "cover": "https://books.google.com/books/content?id=32iHDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1431,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 127,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-waters-of-kronos"
+  },
+  {
+   "entry": {
+    "t": "The Moviegoer",
+    "a": "Walker Percy",
+    "tok": "percy",
+    "y": 1962,
+    "py": 1961
+   },
+   "volumeId": "Z0dH1DLiSTEC",
+   "gbTitle": "The Moviegoer: A Novel",
+   "gbAuthors": [
+    "Walker Percy"
+   ],
+   "gbPublished": "2011-03-29",
+   "cover": "https://books.google.com/books/content?id=Z0dH1DLiSTEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 820,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 5,
+   "pageCount": 184,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-moviegoer"
+  },
+  {
+   "entry": {
+    "t": "Morte d'Urban",
+    "a": "J. F. Powers",
+    "tok": "powers",
+    "y": 1963,
+    "py": 1962
+   },
+   "volumeId": "Gmgo36ZY6_MC",
+   "gbTitle": "Morte D'Urban",
+   "gbAuthors": [
+    "J.F. Powers"
+   ],
+   "gbPublished": "2000-05-31",
+   "cover": "https://books.google.com/books/content?id=Gmgo36ZY6_MC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1122,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 364,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "morte-durban"
+  },
+  {
+   "entry": {
+    "t": "The Centaur",
+    "a": "John Updike",
+    "tok": "updike",
+    "y": 1964,
+    "py": 1963
+   },
+   "volumeId": "Y6gIqM8qhGsC",
+   "gbTitle": "The Centaur: A Novel",
+   "gbAuthors": [
+    "John Updike"
+   ],
+   "gbPublished": "2012-06-05",
+   "cover": "https://books.google.com/books/content?id=Y6gIqM8qhGsC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 864,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 305,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-centaur"
+  },
+  {
+   "entry": {
+    "t": "Herzog",
+    "a": "Saul Bellow",
+    "tok": "bellow",
+    "y": 1965,
+    "py": 1964
+   },
+   "volumeId": "iG4xngEACAAJ",
+   "gbTitle": "Herzog",
+   "gbAuthors": [
+    "Saul Bellow"
+   ],
+   "gbPublished": "1976",
+   "cover": "https://books.google.com/books/content?id=iG4xngEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 317,
+   "categories": [
+    "Literary Fiction",
+    "American literature"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 341,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "herzog"
+  },
+  {
+   "entry": {
+    "t": "The Collected Stories of Katherine Anne Porter",
+    "a": "Katherine Anne Porter",
+    "tok": "porter",
+    "y": 1966,
+    "py": 1965
+   },
+   "volumeId": "tqs7PgAACAAJ",
+   "gbTitle": "The Collected Stories of Katherine Anne Porter",
+   "gbAuthors": [
+    "Katherine Anne Porter"
+   ],
+   "gbPublished": "1981",
+   "cover": "",
+   "descLen": 326,
+   "categories": [
+    "Literary Fiction",
+    "Manners and customs"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 540,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-collected-stories-of-katherine-anne-porter"
+  },
+  {
+   "entry": {
+    "t": "The Eighth Day",
+    "a": "Thornton Wilder",
+    "tok": "wilder",
+    "y": 1968,
+    "py": 1967
+   },
+   "volumeId": "BIklmz_HqIUC",
+   "gbTitle": "The Eighth Day",
+   "gbAuthors": [
+    "Thornton Wilder"
+   ],
+   "gbPublished": "1967",
+   "cover": "https://books.google.com/books/content?id=BIklmz_HqIUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 110,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 388,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-eighth-day"
+  },
+  {
+   "entry": {
+    "t": "Steps",
+    "a": "Jerzy Kosiński",
+    "tok": "kosinski",
+    "y": 1969,
+    "py": 1968
+   },
+   "volumeId": "BTkK-A-R73oC",
+   "gbTitle": "Steps",
+   "gbAuthors": [
+    "Jerzy Kosinski"
+   ],
+   "gbPublished": "1997",
+   "cover": "https://books.google.com/books/content?id=BTkK-A-R73oC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 365,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 3.5,
+   "pageCount": 166,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "steps"
+  },
+  {
+   "entry": {
+    "t": "them",
+    "a": "Joyce Carol Oates",
+    "tok": "oates",
+    "y": 1970,
+    "py": 1969
+   },
+   "volumeId": "hII5sPW7q1IC",
+   "gbTitle": "them",
+   "gbAuthors": [
+    "Joyce Carol Oates"
+   ],
+   "gbPublished": "2006-09-12",
+   "cover": "https://books.google.com/books/content?id=hII5sPW7q1IC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1195,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 4,
+   "pageCount": 594,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "them"
+  },
+  {
+   "entry": {
+    "t": "Mr. Sammler's Planet",
+    "a": "Saul Bellow",
+    "tok": "bellow",
+    "y": 1971,
+    "py": 1970
+   },
+   "volumeId": "kI5PEAAAQBAJ",
+   "gbTitle": "Mr. Sammler's Planet",
+   "gbAuthors": [
+    "Saul Bellow"
+   ],
+   "gbPublished": "2004-01-06",
+   "cover": "https://books.google.com/books/content?id=kI5PEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1605,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 289,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "mr-sammlers-planet"
+  },
+  {
+   "entry": {
+    "t": "The Complete Stories",
+    "a": "Flannery O'Connor",
+    "tok": "connor",
+    "y": 1972,
+    "py": 1971,
+    "alt": [
+     "The Complete Stories of Flannery O'Connor"
+    ]
+   },
+   "volumeId": "MKZJqNkha_EC",
+   "gbTitle": "The Complete Stories",
+   "gbAuthors": [
+    "Flannery O'Connor"
+   ],
+   "gbPublished": "1971",
+   "cover": "https://books.google.com/books/content?id=MKZJqNkha_EC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 64,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 580,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-complete-stories"
+  },
+  {
+   "entry": {
+    "t": "Chimera",
+    "a": "John Barth",
+    "tok": "barth",
+    "y": 1973,
+    "py": 1972
+   },
+   "volumeId": "z8QDzgEACAAJ",
+   "gbTitle": "Chimera",
+   "gbAuthors": [
+    "John Barth"
+   ],
+   "gbPublished": "2001",
+   "cover": "",
+   "descLen": 448,
+   "categories": [
+    "Literary Fiction",
+    "Mythology"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 308,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "chimera"
+  },
+  {
+   "entry": {
+    "t": "Augustus",
+    "a": "John Williams",
+    "tok": "williams",
+    "y": 1973,
+    "py": 1972
+   },
+   "volumeId": "LmjHAwAAQBAJ",
+   "gbTitle": "Augustus: Un Romanzo",
+   "gbAuthors": [
+    "John Williams"
+   ],
+   "gbPublished": "2013-09-20T00:00:00+02:00",
+   "cover": "https://books.google.com/books/content?id=LmjHAwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 558,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 5,
+   "pageCount": 274,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "augustus"
+  },
+  {
+   "entry": {
+    "t": "Gravity's Rainbow",
+    "a": "Thomas Pynchon",
+    "tok": "pynchon",
+    "y": 1974,
+    "py": 1973
+   },
+   "volumeId": "GGPm4I3BbxAC",
+   "gbTitle": "Gravity's Rainbow",
+   "gbAuthors": [
+    "Thomas Pynchon"
+   ],
+   "gbPublished": "2012-06-13",
+   "cover": "https://books.google.com/books/content?id=GGPm4I3BbxAC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 578,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 6,
+   "averageRating": 2.5,
+   "pageCount": 885,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "gravitys-rainbow"
+  },
+  {
+   "entry": {
+    "t": "A Crown of Feathers",
+    "a": "Isaac Bashevis Singer",
+    "tok": "singer",
+    "y": 1974,
+    "py": 1973,
+    "alt": [
+     "A Crown of Feathers and Other Stories"
+    ]
+   },
+   "volumeId": "_VZNgAGAf3UC",
+   "gbTitle": "A Crown of Feathers",
+   "gbAuthors": [
+    "Isaac Bashevis Singer"
+   ],
+   "gbPublished": "1981-04",
+   "cover": "https://books.google.com/books/content?id=_VZNgAGAf3UC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 105,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 358,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "a-crown-of-feathers"
+  },
+  {
+   "entry": {
+    "t": "Dog Soldiers",
+    "a": "Robert Stone",
+    "tok": "stone",
+    "y": 1975,
+    "py": 1974
+   },
+   "volumeId": "SrguEQAAQBAJ",
+   "gbTitle": "Dog Soldiers",
+   "gbAuthors": [
+    "Robert Stone"
+   ],
+   "gbPublished": "2023-10-27",
+   "cover": "https://books.google.com/books/content?id=SrguEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1590,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 436,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "dog-soldiers"
+  },
+  {
+   "entry": {
+    "t": "The Hair of Harold Roux",
+    "a": "Thomas Williams",
+    "tok": "williams",
+    "y": 1975,
+    "py": 1974
+   },
+   "volumeId": "TXfZAAAAMAAJ",
+   "gbTitle": "The Hair of Harold Roux",
+   "gbAuthors": [
+    "Thomas Williams"
+   ],
+   "gbPublished": "1988",
+   "cover": "https://books.google.com/books/content?id=TXfZAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 0,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 386,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-hair-of-harold-roux"
+  },
+  {
+   "entry": {
+    "t": "JR",
+    "a": "William Gaddis",
+    "tok": "gaddis",
+    "y": 1976,
+    "py": 1975,
+    "alt": [
+     "J R"
+    ]
+   },
+   "volumeId": "-YrJDwAAQBAJ",
+   "gbTitle": "J R",
+   "gbAuthors": [
+    "William Gaddis"
+   ],
+   "gbPublished": "2020-10-20",
+   "cover": "https://books.google.com/books/content?id=-YrJDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1322,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 785,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "jr"
+  },
+  {
+   "entry": {
+    "t": "The Spectator Bird",
+    "a": "Wallace Stegner",
+    "tok": "stegner",
+    "y": 1977,
+    "py": 1976
+   },
+   "volumeId": "f58sDgAAQBAJ",
+   "gbTitle": "The Spectator Bird",
+   "gbAuthors": [
+    "Wallace Stegner"
+   ],
+   "gbPublished": "2017-03-21",
+   "cover": "https://books.google.com/books/content?id=f58sDgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1090,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 226,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-spectator-bird"
+  },
+  {
+   "entry": {
+    "t": "Going After Cacciato",
+    "a": "Tim O'Brien",
+    "tok": "brien",
+    "y": 1979,
+    "py": 1978
+   },
+   "volumeId": "4OK2YxpfUtsC",
+   "gbTitle": "Going After Cacciato: A Novel",
+   "gbAuthors": [
+    "Tim O'Brien"
+   ],
+   "gbPublished": "2009-02-18",
+   "cover": "https://books.google.com/books/content?id=4OK2YxpfUtsC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 832,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 8,
+   "averageRating": 4,
+   "pageCount": 354,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "going-after-cacciato"
+  },
+  {
+   "entry": {
+    "t": "Sophie's Choice",
+    "a": "William Styron",
+    "tok": "styron",
+    "y": 1980,
+    "py": 1979
+   },
+   "volumeId": "jtawAAAAIAAJ",
+   "gbTitle": "Sophie's Choice",
+   "gbAuthors": [
+    "William Styron"
+   ],
+   "gbPublished": "1979",
+   "cover": "https://books.google.com/books/content?id=jtawAAAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 260,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 540,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "sophies-choice"
+  },
+  {
+   "entry": {
+    "t": "Plains Song",
+    "a": "Wright Morris",
+    "tok": "morris",
+    "y": 1981,
+    "py": 1980,
+    "alt": [
+     "Plains Song: For Female Voices"
+    ]
+   },
+   "volumeId": "O_iSAQAACAAJ",
+   "gbTitle": "Plains Song: For Female Voices",
+   "gbAuthors": [
+    "Wright Morris"
+   ],
+   "gbPublished": "2014-05-27",
+   "cover": "https://books.google.com/books/content?id=O_iSAQAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 420,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 225,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "plains-song"
+  },
+  {
+   "entry": {
+    "t": "Victory Over Japan",
+    "a": "Ellen Gilchrist",
+    "tok": "gilchrist",
+    "y": 1984,
+    "alt": [
+     "Victory Over Japan: A Book of Stories"
+    ]
+   },
+   "volumeId": "6OSbAgAAQBAJ",
+   "gbTitle": "Victory Over Japan",
+   "gbAuthors": [
+    "Ellen Gilchrist"
+   ],
+   "gbPublished": "2014-01-17",
+   "cover": "https://books.google.com/books/content?id=6OSbAgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1067,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 227,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "victory-over-japan"
+  },
+  {
+   "entry": {
+    "t": "White Noise",
+    "a": "Don DeLillo",
+    "tok": "delillo",
+    "y": 1985
+   },
+   "volumeId": "zpFPEAAAQBAJ",
+   "gbTitle": "White Noise: (Penguin Classics Deluxe Edition)",
+   "gbAuthors": [
+    "Don DeLillo"
+   ],
+   "gbPublished": "2009-12-29",
+   "cover": "https://books.google.com/books/content?id=zpFPEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1293,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 337,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "white-noise"
+  },
+  {
+   "entry": {
+    "t": "World's Fair",
+    "a": "E. L. Doctorow",
+    "tok": "doctorow",
+    "y": 1986,
+    "py": 1985
+   },
+   "volumeId": "GQY5pBvrzCgC",
+   "gbTitle": "World's Fair: A Novel",
+   "gbAuthors": [
+    "E.L. Doctorow"
+   ],
+   "gbPublished": "2010-11-10",
+   "cover": "https://books.google.com/books/content?id=GQY5pBvrzCgC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1078,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 304,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "worlds-fair"
+  },
+  {
+   "entry": {
+    "t": "Paco's Story",
+    "a": "Larry Heinemann",
+    "tok": "heinemann",
+    "y": 1987,
+    "py": 1986
+   },
+   "volumeId": "Tdkj1x5WwV8C",
+   "gbTitle": "Paco's Story: A Novel",
+   "gbAuthors": [
+    "Larry Heinemann"
+   ],
+   "gbPublished": "2010-05-05",
+   "cover": "https://books.google.com/books/content?id=Tdkj1x5WwV8C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 845,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 5,
+   "pageCount": 226,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "pacos-story"
+  },
+  {
+   "entry": {
+    "t": "Paris Trout",
+    "a": "Pete Dexter",
+    "tok": "dexter",
+    "y": 1988
+   },
+   "volumeId": "Xb_CAwAAQBAJ",
+   "gbTitle": "Paris Trout: A Novel",
+   "gbAuthors": [
+    "Pete Dexter"
+   ],
+   "gbPublished": "2014-11-04",
+   "cover": "https://books.google.com/books/content?id=Xb_CAwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 714,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 321,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "paris-trout"
+  },
+  {
+   "entry": {
+    "t": "Spartina",
+    "a": "John Casey",
+    "tok": "casey",
+    "y": 1989
+   },
+   "volumeId": "o42ODQAAQBAJ",
+   "gbTitle": "Spartina: National Book Award Winner",
+   "gbAuthors": [
+    "John Casey"
+   ],
+   "gbPublished": "1998-04-28",
+   "cover": "https://books.google.com/books/content?id=o42ODQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 804,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 385,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "spartina"
+  },
+  {
+   "entry": {
+    "t": "Middle Passage",
+    "a": "Charles Johnson",
+    "tok": "johnson",
+    "y": 1990
+   },
+   "volumeId": "-lERCgAAQBAJ",
+   "gbTitle": "Middle Passage",
+   "gbAuthors": [
+    "Charles Johnson"
+   ],
+   "gbPublished": "2015-07-07",
+   "cover": "https://books.google.com/books/content?id=-lERCgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 42,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 224,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "middle-passage"
+  },
+  {
+   "entry": {
+    "t": "Mating",
+    "a": "Norman Rush",
+    "tok": "rush",
+    "y": 1991
+   },
+   "volumeId": "SWOKDQAAQBAJ",
+   "gbTitle": "Mating: A Novel (National Book Award Winner)",
+   "gbAuthors": [
+    "Norman Rush"
+   ],
+   "gbPublished": "1992-09-01",
+   "cover": "https://books.google.com/books/content?id=SWOKDQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1091,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 497,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "mating"
+  },
+  {
+   "entry": {
+    "t": "A Frolic of His Own",
+    "a": "William Gaddis",
+    "tok": "gaddis",
+    "y": 1994
+   },
+   "volumeId": "iHB6QgAACAAJ",
+   "gbTitle": "A Frolic of His Own",
+   "gbAuthors": [
+    "William Gaddis"
+   ],
+   "gbPublished": "1994",
+   "cover": "",
+   "descLen": 0,
+   "categories": [
+    "Literary Fiction",
+    "College teachers"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 586,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "a-frolic-of-his-own"
+  },
+  {
+   "entry": {
+    "t": "Sabbath's Theater",
+    "a": "Philip Roth",
+    "tok": "roth",
+    "y": 1995
+   },
+   "volumeId": "YWJZrpDgTuYC",
+   "gbTitle": "Sabbath's Theater",
+   "gbAuthors": [
+    "Philip Roth"
+   ],
+   "gbPublished": "1995",
+   "cover": "https://books.google.com/books/content?id=YWJZrpDgTuYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 98,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 464,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "sabbaths-theater"
+  },
+  {
+   "entry": {
+    "t": "Ship Fever",
+    "a": "Andrea Barrett",
+    "tok": "barrett",
+    "y": 1996,
+    "alt": [
+     "Ship Fever and Other Stories"
+    ]
+   },
+   "volumeId": "og3Kccn-4OAC",
+   "gbTitle": "Ship Fever and Other Stories",
+   "gbAuthors": [
+    "Andrea Barrett"
+   ],
+   "gbPublished": "1996",
+   "cover": "https://books.google.com/books/content?id=og3Kccn-4OAC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 342,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 264,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "ship-fever"
+  },
+  {
+   "entry": {
+    "t": "Cold Mountain",
+    "a": "Charles Frazier",
+    "tok": "frazier",
+    "y": 1997
+   },
+   "volumeId": "BMSiuQAACAAJ",
+   "gbTitle": "Cold Mountain",
+   "gbAuthors": [
+    "Charles Frazier"
+   ],
+   "gbPublished": "2011",
+   "cover": "https://books.google.com/books/content?id=BMSiuQAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 120,
+   "categories": [
+    "Literary Fiction",
+    "Historical fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 792,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "cold-mountain"
+  },
+  {
+   "entry": {
+    "t": "Charming Billy",
+    "a": "Alice McDermott",
+    "tok": "mcdermott",
+    "y": 1998
+   },
+   "volumeId": "hyiZ8byOoZ0C",
+   "gbTitle": "Charming Billy",
+   "gbAuthors": [
+    "Alice McDermott"
+   ],
+   "gbPublished": "1998",
+   "cover": "https://books.google.com/books/content?id=hyiZ8byOoZ0C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 730,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 258,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "charming-billy"
+  },
+  {
+   "entry": {
+    "t": "Waiting",
+    "a": "Ha Jin",
+    "tok": "jin",
+    "y": 1999
+   },
+   "volumeId": "im-PDQAAQBAJ",
+   "gbTitle": "Waiting: A Novel",
+   "gbAuthors": [
+    "Ha Jin"
+   ],
+   "gbPublished": "2000-09-19",
+   "cover": "https://books.google.com/books/content?id=im-PDQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1385,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 320,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "waiting"
+  },
+  {
+   "entry": {
+    "t": "In America",
+    "a": "Susan Sontag",
+    "tok": "sontag",
+    "y": 2000
+   },
+   "volumeId": "mFeeAgAAQBAJ",
+   "gbTitle": "In America: A Novel",
+   "gbAuthors": [
+    "Susan Sontag"
+   ],
+   "gbPublished": "2000",
+   "cover": "https://books.google.com/books/content?id=mFeeAgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 139,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 307,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "in-america"
+  },
+  {
+   "entry": {
+    "t": "The Corrections",
+    "a": "Jonathan Franzen",
+    "tok": "franzen",
+    "y": 2001
+   },
+   "volumeId": "FodGfz5li5wC",
+   "gbTitle": "The Corrections: A Novel",
+   "gbAuthors": [
+    "Jonathan Franzen"
+   ],
+   "gbPublished": "2001-09-15",
+   "cover": "https://books.google.com/books/content?id=FodGfz5li5wC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1364,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 47,
+   "averageRating": 4,
+   "pageCount": 577,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-corrections"
+  },
+  {
+   "entry": {
+    "t": "Three Junes",
+    "a": "Julia Glass",
+    "tok": "glass",
+    "y": 2002
+   },
+   "volumeId": "ZyXGD_G514YC",
+   "gbTitle": "Three Junes",
+   "gbAuthors": [
+    "Julia Glass"
+   ],
+   "gbPublished": "2003-04-22",
+   "cover": "https://books.google.com/books/content?id=ZyXGD_G514YC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1196,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 370,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "three-junes"
+  },
+  {
+   "entry": {
+    "t": "The Great Fire",
+    "a": "Shirley Hazzard",
+    "tok": "hazzard",
+    "y": 2003
+   },
+   "volumeId": "mrcgxVBzWH0C",
+   "gbTitle": "The Great Fire: A Novel",
+   "gbAuthors": [
+    "Shirley Hazzard"
+   ],
+   "gbPublished": "2003",
+   "cover": "https://books.google.com/books/content?id=mrcgxVBzWH0C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 120,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 340,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-great-fire"
+  },
+  {
+   "entry": {
+    "t": "The News from Paraguay",
+    "a": "Lily Tuck",
+    "tok": "tuck",
+    "y": 2004
+   },
+   "volumeId": "5F3S8RgQNUQC",
+   "gbTitle": "The News from Paraguay: A Novel",
+   "gbAuthors": [
+    "Lily Tuck"
+   ],
+   "gbPublished": "2009-03-17",
+   "cover": "https://books.google.com/books/content?id=5F3S8RgQNUQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 922,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 2,
+   "pageCount": 271,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-news-from-paraguay"
+  },
+  {
+   "entry": {
+    "t": "Europe Central",
+    "a": "William T. Vollmann",
+    "tok": "vollmann",
+    "y": 2005
+   },
+   "volumeId": "Pu0kDwAAQBAJ",
+   "gbTitle": "Europe Central: National Book Award Winner",
+   "gbAuthors": [
+    "William T. Vollmann"
+   ],
+   "gbPublished": "2005-11-14",
+   "cover": "https://books.google.com/books/content?id=Pu0kDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 787,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 834,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "europe-central"
+  },
+  {
+   "entry": {
+    "t": "The Echo Maker",
+    "a": "Richard Powers",
+    "tok": "powers",
+    "y": 2006
+   },
+   "volumeId": "d-Qi16GXlUAC",
+   "gbTitle": "The Echo Maker: A Novel",
+   "gbAuthors": [
+    "Richard Powers"
+   ],
+   "gbPublished": "2007-04-01",
+   "cover": "https://books.google.com/books/content?id=d-Qi16GXlUAC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1224,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 462,
+   "vibes": [
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-echo-maker"
+  },
+  {
+   "entry": {
+    "t": "Tree of Smoke",
+    "a": "Denis Johnson",
+    "tok": "johnson",
+    "y": 2007
+   },
+   "volumeId": "VcoiujDb3CYC",
+   "gbTitle": "Tree of Smoke: A Novel",
+   "gbAuthors": [
+    "Denis Johnson"
+   ],
+   "gbPublished": "2007-09-04",
+   "cover": "https://books.google.com/books/content?id=VcoiujDb3CYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1189,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 6,
+   "averageRating": 2.5,
+   "pageCount": 638,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "tree-of-smoke"
+  },
+  {
+   "entry": {
+    "t": "Shadow Country",
+    "a": "Peter Matthiessen",
+    "tok": "matthiessen",
+    "y": 2008
+   },
+   "volumeId": "jgXeWZItd_MC",
+   "gbTitle": "Shadow Country",
+   "gbAuthors": [
+    "Peter Matthiessen"
+   ],
+   "gbPublished": "2008-08-19",
+   "cover": "https://books.google.com/books/content?id=jgXeWZItd_MC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 745,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 5,
+   "pageCount": 912,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "shadow-country"
+  },
+  {
+   "entry": {
+    "t": "Let the Great World Spin",
+    "a": "Colum McCann",
+    "tok": "mccann",
+    "y": 2009
+   },
+   "volumeId": "hhxUcgAACAAJ",
+   "gbTitle": "Let the Great World Spin",
+   "gbAuthors": [
+    "Colum McCann"
+   ],
+   "gbPublished": "2010-07",
+   "cover": "https://books.google.com/books/content?id=hhxUcgAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 65,
+   "categories": [
+    "Literary Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 349,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "let-the-great-world-spin"
+  },
+  {
+   "entry": {
+    "t": "Lord of Misrule",
+    "a": "Jaimy Gordon",
+    "tok": "gordon",
+    "y": 2010
+   },
+   "volumeId": "VpMkAQAAMAAJ",
+   "gbTitle": "Lord of Misrule: A Novel",
+   "gbAuthors": [
+    "Jaimy Gordon"
+   ],
+   "gbPublished": "2010",
+   "cover": "https://books.google.com/books/content?id=VpMkAQAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 962,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 306,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "lord-of-misrule"
+  },
+  {
+   "entry": {
+    "t": "Salvage the Bones",
+    "a": "Jesmyn Ward",
+    "tok": "ward",
+    "y": 2011
+   },
+   "volumeId": "PNOmCAAAQBAJ",
+   "gbTitle": "Salvage the Bones: A Novel",
+   "gbAuthors": [
+    "Jesmyn Ward"
+   ],
+   "gbPublished": "2012-04-24",
+   "cover": "https://books.google.com/books/content?id=PNOmCAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 288,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 290,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "salvage-the-bones"
+  },
+  {
+   "entry": {
+    "t": "The Round House",
+    "a": "Louise Erdrich",
+    "tok": "erdrich",
+    "y": 2012
+   },
+   "volumeId": "qBmeBAAAQBAJ",
+   "gbTitle": "The Round House",
+   "gbAuthors": [
+    "Louise Erdrich"
+   ],
+   "gbPublished": "2013-02-07",
+   "cover": "https://books.google.com/books/content?id=qBmeBAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1066,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 231,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-round-house"
+  },
+  {
+   "entry": {
+    "t": "The Good Lord Bird",
+    "a": "James McBride",
+    "tok": "mcbride",
+    "y": 2013
+   },
+   "volumeId": "hv7aCwAAQBAJ",
+   "gbTitle": "The Good Lord Bird (National Book Award Winner): A Novel",
+   "gbAuthors": [
+    "James McBride"
+   ],
+   "gbPublished": "2013-08-20",
+   "cover": "https://books.google.com/books/content?id=hv7aCwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 538,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 434,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-good-lord-bird"
+  },
+  {
+   "entry": {
+    "t": "Redeployment",
+    "a": "Phil Klay",
+    "tok": "klay",
+    "y": 2014
+   },
+   "volumeId": "lKeMDQAAQBAJ",
+   "gbTitle": "Redeployment: National Book Award Winner",
+   "gbAuthors": [
+    "Phil Klay"
+   ],
+   "gbPublished": "2015-02-24",
+   "cover": "https://books.google.com/books/content?id=lKeMDQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2130,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 306,
+   "vibes": [
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "redeployment"
+  },
+  {
+   "entry": {
+    "t": "Fortune Smiles",
+    "a": "Adam Johnson",
+    "tok": "johnson",
+    "y": 2015,
+    "alt": [
+     "Fortune Smiles: Stories"
+    ]
+   },
+   "volumeId": "m-f4DAAAQBAJ",
+   "gbTitle": "Fortune Smiles: Stories",
+   "gbAuthors": [
+    "Adam Johnson"
+   ],
+   "gbPublished": "2016-10-04",
+   "cover": "https://books.google.com/books/content?id=m-f4DAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2027,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 338,
+   "vibes": [
+    "heartbreaking",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "fortune-smiles"
+  },
+  {
+   "entry": {
+    "t": "Trust Exercise",
+    "a": "Susan Choi",
+    "tok": "choi",
+    "y": 2019
+   },
+   "volumeId": "II92DwAAQBAJ",
+   "gbTitle": "Trust Exercise: A Novel",
+   "gbAuthors": [
+    "Susan Choi"
+   ],
+   "gbPublished": "2019-04-09",
+   "cover": "https://books.google.com/books/content?id=II92DwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1753,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 270,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "trust-exercise"
+  },
+  {
+   "entry": {
+    "t": "Hell of a Book",
+    "a": "Jason Mott",
+    "tok": "mott",
+    "y": 2021
+   },
+   "volumeId": "YJUTEAAAQBAJ",
+   "gbTitle": "Hell of a Book: WINNER of the National Book Award for Fiction",
+   "gbAuthors": [
+    "Jason Mott"
+   ],
+   "gbPublished": "2021-06-29",
+   "cover": "https://books.google.com/books/content?id=YJUTEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 945,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 270,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "hell-of-a-book"
+  },
+  {
+   "entry": {
+    "t": "Blackouts",
+    "a": "Justin Torres",
+    "tok": "torres",
+    "y": 2023
+   },
+   "volumeId": "_b-iEAAAQBAJ",
+   "gbTitle": "Blackouts: A Novel",
+   "gbAuthors": [
+    "Justin Torres"
+   ],
+   "gbPublished": "2023-10-10",
+   "cover": "https://books.google.com/books/content?id=_b-iEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1943,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 304,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "blackouts"
+  },
+  {
+   "entry": {
+    "t": "The True True Story of Raja the Gullible",
+    "a": "Rabih Alameddine",
+    "tok": "alameddine",
+    "y": 2025,
+    "alt": [
+     "The True True Story of Raja the Gullible (and His Mother)"
+    ]
+   },
+   "volumeId": "ndPd0QEACAAJ",
+   "gbTitle": "The True True Story of Raja the Gullible (and His Mother): A Novel (National Book Award Winner)",
+   "gbAuthors": [
+    "Rabih Alameddine"
+   ],
+   "gbPublished": "2026-09",
+   "cover": "https://books.google.com/books/content?id=ndPd0QEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1472,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 0,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-true-true-story-of-raja-the-gullible"
+  }
+ ]
+}
