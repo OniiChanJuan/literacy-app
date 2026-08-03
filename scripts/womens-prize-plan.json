@@ -1,0 +1,687 @@
+{
+ "mark": [
+  {
+   "y": 2005,
+   "t": "We Need to Talk About Kevin",
+   "itemId": 14728
+  },
+  {
+   "y": 2007,
+   "t": "Half of a Yellow Sun",
+   "itemId": 16550
+  },
+  {
+   "y": 2012,
+   "t": "The Song of Achilles",
+   "itemId": 24
+  },
+  {
+   "y": 2017,
+   "t": "The Power",
+   "itemId": 17188
+  },
+  {
+   "y": 2019,
+   "t": "An American Marriage",
+   "itemId": 28601
+  },
+  {
+   "y": 2020,
+   "t": "Hamnet",
+   "itemId": 14776
+  },
+  {
+   "y": 2021,
+   "t": "Piranesi",
+   "itemId": 27672
+  },
+  {
+   "y": 2023,
+   "t": "Demon Copperhead",
+   "itemId": 24596
+  },
+  {
+   "y": 2026,
+   "t": "The Correspondent",
+   "itemId": 22693
+  }
+ ],
+ "ingest": [
+  {
+   "entry": {
+    "t": "A Spell of Winter",
+    "a": "Helen Dunmore",
+    "tok": "dunmore",
+    "y": 1996
+   },
+   "volumeId": "8oO6nSoUTlYC",
+   "gbTitle": "A Spell of Winter",
+   "gbAuthors": [
+    "Helen Dunmore"
+   ],
+   "gbPublished": "2001",
+   "cover": "https://books.google.com/books/content?id=8oO6nSoUTlYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 218,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 324,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "a-spell-of-winter"
+  },
+  {
+   "entry": {
+    "t": "Fugitive Pieces",
+    "a": "Anne Michaels",
+    "tok": "michaels",
+    "y": 1997
+   },
+   "volumeId": "26qSEQfYMnMC",
+   "gbTitle": "Fugitive Pieces: A Novel (WINNER OF THE BAILEYS WOMEN'S PRIZE FOR FICTION)",
+   "gbAuthors": [
+    "Anne Michaels"
+   ],
+   "gbPublished": "2008-12-24",
+   "cover": "https://books.google.com/books/content?id=26qSEQfYMnMC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1029,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 5,
+   "pageCount": 301,
+   "vibes": [
+    "heartbreaking",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "fugitive-pieces"
+  },
+  {
+   "entry": {
+    "t": "Larry's Party",
+    "a": "Carol Shields",
+    "tok": "shields",
+    "y": 1998
+   },
+   "volumeId": "1XwBQS4D_WsC",
+   "gbTitle": "Larry's Party",
+   "gbAuthors": [
+    "Carol Shields"
+   ],
+   "gbPublished": "1998-09-01",
+   "cover": "https://books.google.com/books/content?id=1XwBQS4D_WsC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1034,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 4.5,
+   "pageCount": 284,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "larrys-party"
+  },
+  {
+   "entry": {
+    "t": "A Crime in the Neighborhood",
+    "a": "Suzanne Berne",
+    "tok": "berne",
+    "y": 1999,
+    "py": 1997
+   },
+   "volumeId": "kCURKr6465EC",
+   "gbTitle": "A Crime in the Neighborhood: A Novel",
+   "gbAuthors": [
+    "Suzanne Berne"
+   ],
+   "gbPublished": "1998-07-15",
+   "cover": "https://books.google.com/books/content?id=kCURKr6465EC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 187,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 308,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "a-crime-in-the-neighborhood"
+  },
+  {
+   "entry": {
+    "t": "When I Lived in Modern Times",
+    "a": "Linda Grant",
+    "tok": "grant",
+    "y": 2000,
+    "py": 2000
+   },
+   "volumeId": "MxgJG7UfmQkC",
+   "gbTitle": "When I Lived in Modern Times",
+   "gbAuthors": [
+    "Linda Grant"
+   ],
+   "gbPublished": "2000",
+   "cover": "https://books.google.com/books/content?id=MxgJG7UfmQkC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 267,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 276,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "when-i-lived-in-modern-times"
+  },
+  {
+   "entry": {
+    "t": "The Idea of Perfection",
+    "a": "Kate Grenville",
+    "tok": "grenville",
+    "y": 2001,
+    "py": 1999
+   },
+   "volumeId": "L2wOIaXgTosC",
+   "gbTitle": "The Idea of Perfection",
+   "gbAuthors": [
+    "Kate Grenville"
+   ],
+   "gbPublished": "2003-10-28",
+   "cover": "https://books.google.com/books/content?id=L2wOIaXgTosC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 744,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 417,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-idea-of-perfection"
+  },
+  {
+   "entry": {
+    "t": "Bel Canto",
+    "a": "Ann Patchett",
+    "tok": "patchett",
+    "y": 2002,
+    "py": 2001
+   },
+   "volumeId": "zl428tiTsA4C",
+   "gbTitle": "Bel Canto: A Novel",
+   "gbAuthors": [
+    "Ann Patchett"
+   ],
+   "gbPublished": "2001-05-22",
+   "cover": "https://books.google.com/books/content?id=zl428tiTsA4C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1545,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 335,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "bel-canto"
+  },
+  {
+   "entry": {
+    "t": "Property",
+    "a": "Valerie Martin",
+    "tok": "martin",
+    "y": 2003,
+    "py": 2003
+   },
+   "volumeId": "-mZabPDM0CYC",
+   "gbTitle": "Property",
+   "gbAuthors": [
+    "Valerie Martin"
+   ],
+   "gbPublished": "2007-12-18",
+   "cover": "https://books.google.com/books/content?id=-mZabPDM0CYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 843,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 3,
+   "averageRating": 3.5,
+   "pageCount": 210,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "property"
+  },
+  {
+   "entry": {
+    "t": "Small Island",
+    "a": "Andrea Levy",
+    "tok": "levy",
+    "y": 2004,
+    "py": 2004
+   },
+   "volumeId": "tahylzEQ78AC",
+   "gbTitle": "Small Island: A Novel",
+   "gbAuthors": [
+    "Andrea Levy"
+   ],
+   "gbPublished": "2005-04",
+   "cover": "https://books.google.com/books/content?id=tahylzEQ78AC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 206,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 3.5,
+   "pageCount": 448,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "small-island"
+  },
+  {
+   "entry": {
+    "t": "On Beauty",
+    "a": "Zadie Smith",
+    "tok": "smith",
+    "y": 2006,
+    "py": 2005
+   },
+   "volumeId": "tmiEvrsxISUC",
+   "gbTitle": "On Beauty: A Novel",
+   "gbAuthors": [
+    "Zadie Smith"
+   ],
+   "gbPublished": "2005-09-13",
+   "cover": "https://books.google.com/books/content?id=tmiEvrsxISUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 751,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 5,
+   "pageCount": 356,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "on-beauty"
+  },
+  {
+   "entry": {
+    "t": "The Road Home",
+    "a": "Rose Tremain",
+    "tok": "tremain",
+    "y": 2008,
+    "py": 2007
+   },
+   "volumeId": "OrFlAAAAMAAJ",
+   "gbTitle": "The Road Home",
+   "gbAuthors": [
+    "Rose Tremain"
+   ],
+   "gbPublished": "2007",
+   "cover": "https://books.google.com/books/content?id=OrFlAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 647,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 3,
+   "averageRating": 3.5,
+   "pageCount": 392,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-road-home"
+  },
+  {
+   "entry": {
+    "t": "Home",
+    "a": "Marilynne Robinson",
+    "tok": "robinson",
+    "y": 2009,
+    "py": 2008
+   },
+   "volumeId": "_Ym5JwAACAAJ",
+   "gbTitle": "Home",
+   "gbAuthors": [
+    "Marilynne Robinson"
+   ],
+   "gbPublished": "2009",
+   "cover": "https://books.google.com/books/content?id=_Ym5JwAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 952,
+   "categories": [
+    "Literary Fiction",
+    "Children of clergy"
+   ],
+   "ratingsCount": 5,
+   "averageRating": 3.5,
+   "pageCount": 0,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "home-2008"
+  },
+  {
+   "entry": {
+    "t": "The Lacuna",
+    "a": "Barbara Kingsolver",
+    "tok": "kingsolver",
+    "y": 2010,
+    "py": 2009
+   },
+   "volumeId": "Kw1IskOtMQQC",
+   "gbTitle": "The Lacuna: Author of Demon Copperhead, Winner of the Women's Prize for Fiction",
+   "gbAuthors": [
+    "Barbara Kingsolver"
+   ],
+   "gbPublished": "2009-11-05",
+   "cover": "https://books.google.com/books/content?id=Kw1IskOtMQQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1045,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 5,
+   "pageCount": 680,
+   "vibes": [
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-lacuna"
+  },
+  {
+   "entry": {
+    "t": "The Tiger's Wife",
+    "a": "Téa Obreht",
+    "tok": "obreht",
+    "y": 2011,
+    "py": 2011
+   },
+   "volumeId": "CNiLDQAAQBAJ",
+   "gbTitle": "The Tiger's Wife: A Novel",
+   "gbAuthors": [
+    "Téa Obreht"
+   ],
+   "gbPublished": "2011",
+   "cover": "https://books.google.com/books/content?id=CNiLDQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 335,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 354,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-tigers-wife"
+  },
+  {
+   "entry": {
+    "t": "May We Be Forgiven",
+    "a": "A. M. Homes",
+    "tok": "homes",
+    "y": 2013,
+    "py": 2012
+   },
+   "volumeId": "H9pt8zB2b3QC",
+   "gbTitle": "May We Be Forgiven: A Novel",
+   "gbAuthors": [
+    "A.M. Homes"
+   ],
+   "gbPublished": "2012-09-27",
+   "cover": "https://books.google.com/books/content?id=H9pt8zB2b3QC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1241,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 4,
+   "averageRating": 3,
+   "pageCount": 498,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "may-we-be-forgiven"
+  },
+  {
+   "entry": {
+    "t": "A Girl Is a Half-formed Thing",
+    "a": "Eimear McBride",
+    "tok": "mcbride",
+    "y": 2014,
+    "py": 2013
+   },
+   "volumeId": "59_DCQAAQBAJ",
+   "gbTitle": "A Girl is a Half-Formed Thing",
+   "gbAuthors": [
+    "Eimear McBride"
+   ],
+   "gbPublished": "2015-06-09",
+   "cover": "https://books.google.com/books/content?id=59_DCQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 455,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 240,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "a-girl-is-a-half-formed-thing"
+  },
+  {
+   "entry": {
+    "t": "How to Be Both",
+    "a": "Ali Smith",
+    "tok": "smith",
+    "y": 2015,
+    "py": 2014
+   },
+   "volumeId": "OSh-BAAAQBAJ",
+   "gbTitle": "How to be both: A novel",
+   "gbAuthors": [
+    "Ali Smith"
+   ],
+   "gbPublished": "2014-12-02",
+   "cover": "https://books.google.com/books/content?id=OSh-BAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1414,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 491,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "how-to-be-both"
+  },
+  {
+   "entry": {
+    "t": "The Glorious Heresies",
+    "a": "Lisa McInerney",
+    "tok": "mcinerney",
+    "y": 2016,
+    "py": 2015
+   },
+   "volumeId": "sgi0BAAAQBAJ",
+   "gbTitle": "The Glorious Heresies: 'A big, brassy, sexy beast of a book' IRISH TIMES",
+   "gbAuthors": [
+    "Lisa McInerney"
+   ],
+   "gbPublished": "2015-04-09",
+   "cover": "https://books.google.com/books/content?id=sgi0BAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 942,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 538,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-glorious-heresies"
+  },
+  {
+   "entry": {
+    "t": "Home Fire",
+    "a": "Kamila Shamsie",
+    "tok": "shamsie",
+    "y": 2018,
+    "py": 2017
+   },
+   "volumeId": "NQRbEAAAQBAJ",
+   "gbTitle": "Home Fire",
+   "gbAuthors": [
+    "Kamila Shamsie"
+   ],
+   "gbPublished": "2018",
+   "cover": "https://books.google.com/books/content?id=NQRbEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1819,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 289,
+   "vibes": [
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "home-fire"
+  },
+  {
+   "entry": {
+    "t": "The Book of Form and Emptiness",
+    "a": "Ruth Ozeki",
+    "tok": "ozeki",
+    "y": 2022,
+    "py": 2021
+   },
+   "volumeId": "c8oZEAAAQBAJ",
+   "gbTitle": "The Book of Form and Emptiness: A Novel",
+   "gbAuthors": [
+    "Ruth Ozeki"
+   ],
+   "gbPublished": "2021-09-21",
+   "cover": "https://books.google.com/books/content?id=c8oZEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2077,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 571,
+   "vibes": [
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-book-of-form-and-emptiness"
+  },
+  {
+   "entry": {
+    "t": "Brotherless Night",
+    "a": "V. V. Ganeshananthan",
+    "tok": "ganeshananthan",
+    "y": 2024,
+    "py": 2023
+   },
+   "volumeId": "7ZVtEAAAQBAJ",
+   "gbTitle": "Brotherless Night: Winner of the Women’s Prize for Fiction 2024",
+   "gbAuthors": [
+    "V. V. Ganeshananthan"
+   ],
+   "gbPublished": "2023-01-03",
+   "cover": "https://books.google.com/books/content?id=7ZVtEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1176,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 308,
+   "vibes": [
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "brotherless-night"
+  },
+  {
+   "entry": {
+    "t": "The Safekeep",
+    "a": "Yael van der Wouden",
+    "tok": "wouden",
+    "y": 2025,
+    "py": 2024
+   },
+   "volumeId": "hxrdEAAAQBAJ",
+   "gbTitle": "The Safekeep",
+   "gbAuthors": [
+    "Yael van der Wouden"
+   ],
+   "gbPublished": "2024-05-28",
+   "cover": "https://books.google.com/books/content?id=hxrdEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2154,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 288,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "the-safekeep"
+  }
+ ]
+}

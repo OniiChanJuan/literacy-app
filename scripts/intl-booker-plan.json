@@ -1,0 +1,309 @@
+{
+ "mark": [
+  {
+   "y": 2016,
+   "t": "The Vegetarian",
+   "itemId": 24635
+  }
+ ],
+ "ingest": [
+  {
+   "entry": {
+    "t": "A Horse Walks into a Bar",
+    "a": "David Grossman",
+    "tok": "grossman",
+    "y": 2017,
+    "py": 2016
+   },
+   "volumeId": "8iPjwAEACAAJ",
+   "gbTitle": "A Horse Walks Into a Bar",
+   "gbAuthors": [
+    "David Grossman"
+   ],
+   "gbPublished": "2017-06-14",
+   "cover": "https://books.google.com/books/content?id=8iPjwAEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 730,
+   "categories": [
+    "Literary Fiction",
+    "Comedians"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 197,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "a-horse-walks-into-a-bar"
+  },
+  {
+   "entry": {
+    "t": "Flights",
+    "a": "Olga Tokarczuk",
+    "tok": "tokarczuk",
+    "y": 2018,
+    "py": 2017
+   },
+   "volumeId": "rS5lDwAAQBAJ",
+   "gbTitle": "Flights: Nobel Prize and Booker Prize Winner",
+   "gbAuthors": [
+    "Olga Tokarczuk"
+   ],
+   "gbPublished": "2018-08-14",
+   "cover": "https://books.google.com/books/content?id=rS5lDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1222,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 417,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "flights"
+  },
+  {
+   "entry": {
+    "t": "Celestial Bodies",
+    "a": "Jokha Alharthi",
+    "tok": "alharthi",
+    "y": 2019,
+    "py": 2018
+   },
+   "volumeId": "EohLEAAAQBAJ",
+   "gbTitle": "Celestial Bodies",
+   "gbAuthors": [
+    "Jokha Alharthi"
+   ],
+   "gbPublished": "2019-10-08",
+   "cover": "https://books.google.com/books/content?id=EohLEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1220,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 257,
+   "vibes": [
+    "heartbreaking",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "celestial-bodies"
+  },
+  {
+   "entry": {
+    "t": "The Discomfort of Evening",
+    "a": "Lucas Rijneveld",
+    "tok": "rijneveld",
+    "y": 2020,
+    "py": 2020
+   },
+   "volumeId": "mALhDwAAQBAJ",
+   "gbTitle": "The Discomfort of Evening: A Novel",
+   "gbAuthors": [
+    "Lucas Rijneveld"
+   ],
+   "gbPublished": "2020-08-18",
+   "cover": "https://books.google.com/books/content?id=mALhDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1464,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 2,
+   "pageCount": 226,
+   "vibes": [
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-discomfort-of-evening"
+  },
+  {
+   "entry": {
+    "t": "At Night All Blood Is Black",
+    "a": "David Diop",
+    "tok": "diop",
+    "y": 2021,
+    "py": 2020
+   },
+   "volumeId": "OyPQDwAAQBAJ",
+   "gbTitle": "At Night All Blood Is Black: A Novel",
+   "gbAuthors": [
+    "David Diop"
+   ],
+   "gbPublished": "2020-11-10",
+   "cover": "https://books.google.com/books/content?id=OyPQDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2142,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 94,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "at-night-all-blood-is-black"
+  },
+  {
+   "entry": {
+    "t": "Tomb of Sand",
+    "a": "Geetanjali Shree",
+    "tok": "shree",
+    "y": 2022,
+    "py": 2021
+   },
+   "volumeId": "WuZ0EAAAQBAJ",
+   "gbTitle": "Tomb of Sand: A Novel",
+   "gbAuthors": [
+    "Geetanjali Shree"
+   ],
+   "gbPublished": "2023-01-31",
+   "cover": "https://books.google.com/books/content?id=WuZ0EAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2032,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 395,
+   "vibes": [
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "tomb-of-sand"
+  },
+  {
+   "entry": {
+    "t": "Time Shelter",
+    "a": "Georgi Gospodinov",
+    "tok": "gospodinov",
+    "y": 2023,
+    "py": 2022
+   },
+   "volumeId": "SpBvzgEACAAJ",
+   "gbTitle": "Time Shelter",
+   "gbAuthors": [
+    "Georgi Gospodinov"
+   ],
+   "gbPublished": "2022-05-10",
+   "cover": "https://books.google.com/books/content?id=SpBvzgEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1581,
+   "categories": [
+    "Literary Fiction",
+    "Zurich (Switzerland)"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 320,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "time-shelter"
+  },
+  {
+   "entry": {
+    "t": "Kairos",
+    "a": "Jenny Erpenbeck",
+    "tok": "erpenbeck",
+    "y": 2024,
+    "py": 2023
+   },
+   "volumeId": "legR0AEACAAJ",
+   "gbTitle": "Kairos",
+   "gbAuthors": [
+    "Jenny Erpenbeck"
+   ],
+   "gbPublished": "2024-04-11",
+   "cover": "https://books.google.com/books/content?id=legR0AEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 169,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 0,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "kairos"
+  },
+  {
+   "entry": {
+    "t": "Heart Lamp",
+    "a": "Banu Mushtaq",
+    "tok": "mushtaq",
+    "y": 2025,
+    "py": 2025,
+    "alt": [
+     "Heart Lamp: Selected Stories"
+    ]
+   },
+   "volumeId": "O7BVEQAAQBAJ",
+   "gbTitle": "Heart Lamp: Selected Stories | WINNER OF THE INTERNATIONAL BOOKER PRIZE 2025",
+   "gbAuthors": [
+    "Banu Mushtaq"
+   ],
+   "gbPublished": "2025-05-21",
+   "cover": "https://books.google.com/books/content?id=O7BVEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1028,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 222,
+   "vibes": [
+    "thought-provoking"
+   ],
+   "fallbackVibes": true,
+   "slug": "heart-lamp"
+  },
+  {
+   "entry": {
+    "t": "Taiwan Travelogue",
+    "a": "Yang Shuang-zi",
+    "tok": "zi",
+    "y": 2026,
+    "py": 2024,
+    "alt": [
+     "Taiwan Travelogue: A Novel"
+    ]
+   },
+   "volumeId": "H03SEQAAQBAJ",
+   "gbTitle": "Taiwan Travelogue: Winner of the International Booker Prize 2026",
+   "gbAuthors": [
+    "Yáng Shuang-zi"
+   ],
+   "gbPublished": "2026-05-07",
+   "cover": "https://books.google.com/books/content?id=H03SEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1577,
+   "categories": [
+    "Literary Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 313,
+   "vibes": [
+    "heartbreaking",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "taiwan-travelogue"
+  }
+ ]
+}
