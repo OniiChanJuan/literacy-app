@@ -1,0 +1,1487 @@
+{
+ "mark": [
+  {
+   "y": 1987,
+   "t": "Perfume",
+   "itemId": 16714
+  },
+  {
+   "y": 2002,
+   "t": "The Other Wind",
+   "itemId": 15948
+  },
+  {
+   "y": 2005,
+   "t": "Jonathan Strange & Mr Norrell",
+   "itemId": 39707
+  },
+  {
+   "y": 2006,
+   "t": "Kafka on the Shore",
+   "itemId": 16068
+  },
+  {
+   "y": 2010,
+   "t": "The City & The City",
+   "itemId": 39711
+  },
+  {
+   "y": 2025,
+   "t": "The Tainted Cup",
+   "itemId": 39723
+  }
+ ],
+ "ingest": [
+  {
+   "entry": {
+    "t": "The Forgotten Beasts of Eld",
+    "a": "Patricia A. McKillip",
+    "tok": "mckillip",
+    "y": 1975
+   },
+   "volumeId": "cxpZAAAAYAAJ",
+   "gbTitle": "The Forgotten Beasts of Eld",
+   "gbAuthors": [
+    "Patricia A. McKillip"
+   ],
+   "gbPublished": "1975",
+   "cover": "https://books.google.com/books/content?id=cxpZAAAAYAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 0,
+   "categories": [
+    "Fantasy",
+    "Science fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 212,
+   "vibes": [
+    "mind-bending",
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-forgotten-beasts-of-eld"
+  },
+  {
+   "entry": {
+    "t": "Bid Time Return",
+    "a": "Richard Matheson",
+    "tok": "matheson",
+    "y": 1976,
+    "alt": [
+     "Somewhere in Time"
+    ]
+   },
+   "volumeId": "2WFEPgAACAAJ",
+   "gbTitle": "Bid Time Return",
+   "gbAuthors": [
+    "Richard Matheson"
+   ],
+   "gbPublished": "1976-02-01",
+   "cover": "",
+   "descLen": 51,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 278,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "bid-time-return"
+  },
+  {
+   "entry": {
+    "t": "Doctor Rat",
+    "a": "William Kotzwinkle",
+    "tok": "kotzwinkle",
+    "y": 1977
+   },
+   "volumeId": "adwqAwAAQBAJ",
+   "gbTitle": "Doctor Rat",
+   "gbAuthors": [
+    "William Kotzwinkle"
+   ],
+   "gbPublished": "2014-04-01",
+   "cover": "https://books.google.com/books/content?id=adwqAwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1172,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 296,
+   "vibes": [
+    "epic",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "doctor-rat"
+  },
+  {
+   "entry": {
+    "t": "Our Lady of Darkness",
+    "a": "Fritz Leiber",
+    "tok": "leiber",
+    "y": 1978
+   },
+   "volumeId": "MbTKAQAACAAJ",
+   "gbTitle": "Our Lady of Darkness",
+   "gbAuthors": [
+    "Fritz Leiber"
+   ],
+   "gbPublished": "1993",
+   "cover": "",
+   "descLen": 0,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 0,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "our-lady-of-darkness"
+  },
+  {
+   "entry": {
+    "t": "Gloriana",
+    "a": "Michael Moorcock",
+    "tok": "moorcock",
+    "y": 1979,
+    "alt": [
+     "Gloriana, or The Unfulfill'd Queen"
+    ]
+   },
+   "volumeId": "6VSQDQAAQBAJ",
+   "gbTitle": "Gloriana: Or, The Unfulfill'd Queen",
+   "gbAuthors": [
+    "Michael Moorcock"
+   ],
+   "gbPublished": "2016-11-29",
+   "cover": "https://books.google.com/books/content?id=6VSQDQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 338,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 416,
+   "vibes": [
+    "epic",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "gloriana"
+  },
+  {
+   "entry": {
+    "t": "Watchtower",
+    "a": "Elizabeth A. Lynn",
+    "tok": "lynn",
+    "y": 1980
+   },
+   "volumeId": "cLCtMJWq7foC",
+   "gbTitle": "Watchtower",
+   "gbAuthors": [
+    "Elizabeth A. Lynn"
+   ],
+   "gbPublished": "1986",
+   "cover": "https://books.google.com/books/content?id=cLCtMJWq7foC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 574,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 244,
+   "vibes": [
+    "epic",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "watchtower"
+  },
+  {
+   "entry": {
+    "t": "The Shadow of the Torturer",
+    "a": "Gene Wolfe",
+    "tok": "wolfe",
+    "y": 1981
+   },
+   "volumeId": "yXpbAAAAMAAJ",
+   "gbTitle": "The Shadow of the Torturer",
+   "gbAuthors": [
+    "Gene Wolfe"
+   ],
+   "gbPublished": "1980",
+   "cover": "https://books.google.com/books/content?id=yXpbAAAAMAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 144,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 6,
+   "averageRating": 4,
+   "pageCount": 280,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-shadow-of-the-torturer"
+  },
+  {
+   "entry": {
+    "t": "Little, Big",
+    "a": "John Crowley",
+    "tok": "crowley",
+    "y": 1982
+   },
+   "volumeId": "CzN9i_nLVM4C",
+   "gbTitle": "Little, Big",
+   "gbAuthors": [
+    "John Crowley"
+   ],
+   "gbPublished": "2012-05-22",
+   "cover": "https://books.google.com/books/content?id=CzN9i_nLVM4C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 529,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 3,
+   "pageCount": 704,
+   "vibes": [
+    "epic",
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "little-big"
+  },
+  {
+   "entry": {
+    "t": "Nifft the Lean",
+    "a": "Michael Shea",
+    "tok": "shea",
+    "y": 1983
+   },
+   "volumeId": "vkaVAAAACAAJ",
+   "gbTitle": "Nifft the Lean",
+   "gbAuthors": [
+    "Michael Shea"
+   ],
+   "gbPublished": "1985-01-01",
+   "cover": "https://books.google.com/books/content?id=vkaVAAAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 0,
+   "categories": [
+    "Fantasy"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 363,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "nifft-the-lean"
+  },
+  {
+   "entry": {
+    "t": "The Dragon Waiting",
+    "a": "John M. Ford",
+    "tok": "ford",
+    "y": 1984
+   },
+   "volumeId": "fFPEDwAAQBAJ",
+   "gbTitle": "The Dragon Waiting",
+   "gbAuthors": [
+    "John M. Ford"
+   ],
+   "gbPublished": "2020-09-29",
+   "cover": "https://books.google.com/books/content?id=fFPEDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 800,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 342,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-dragon-waiting"
+  },
+  {
+   "entry": {
+    "t": "Bridge of Birds",
+    "a": "Barry Hughart",
+    "tok": "hughart",
+    "y": 1985
+   },
+   "volumeId": "mb1APgAACAAJ",
+   "gbTitle": "Bridge of Birds: A Novel of an Ancient China that Never was",
+   "gbAuthors": [
+    "Barry Hughart"
+   ],
+   "gbPublished": "1984",
+   "cover": "https://books.google.com/books/content?id=mb1APgAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 0,
+   "categories": [
+    "Fantasy"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 271,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "bridge-of-birds"
+  },
+  {
+   "entry": {
+    "t": "Mythago Wood",
+    "a": "Robert Holdstock",
+    "tok": "holdstock",
+    "y": 1985
+   },
+   "volumeId": "Ru1dPgAACAAJ",
+   "gbTitle": "Mythago Wood",
+   "gbAuthors": [
+    "Robert Holdstock"
+   ],
+   "gbPublished": "2002-08-05",
+   "cover": "https://books.google.com/books/content?id=Ru1dPgAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 451,
+   "categories": [
+    "Fantasy",
+    "Fantasy fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 319,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "mythago-wood"
+  },
+  {
+   "entry": {
+    "t": "Song of Kali",
+    "a": "Dan Simmons",
+    "tok": "simmons",
+    "y": 1986,
+    "g": "Horror"
+   },
+   "volumeId": "fhliPgAACAAJ",
+   "gbTitle": "Song of Kali",
+   "gbAuthors": [
+    "Dan Simmons"
+   ],
+   "gbPublished": "1986",
+   "cover": "",
+   "descLen": 318,
+   "categories": [
+    "Horror",
+    "Horror tales"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 311,
+   "vibes": [
+    "dark"
+   ],
+   "fallbackVibes": false,
+   "slug": "song-of-kali"
+  },
+  {
+   "entry": {
+    "t": "Replay",
+    "a": "Ken Grimwood",
+    "tok": "grimwood",
+    "y": 1988
+   },
+   "volumeId": "gkoLz3JYTV8C",
+   "gbTitle": "Replay",
+   "gbAuthors": [
+    "Ken Grimwood"
+   ],
+   "gbPublished": "2010-09-14",
+   "cover": "https://books.google.com/books/content?id=gkoLz3JYTV8C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 552,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 248,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "replay"
+  },
+  {
+   "entry": {
+    "t": "Koko",
+    "a": "Peter Straub",
+    "tok": "straub",
+    "y": 1989,
+    "g": "Horror"
+   },
+   "volumeId": "CCUv0KjDsD4C",
+   "gbTitle": "Koko",
+   "gbAuthors": [
+    "Peter Straub"
+   ],
+   "gbPublished": "2011-04-06",
+   "cover": "https://books.google.com/books/content?id=CCUv0KjDsD4C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 744,
+   "categories": [
+    "Horror",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 578,
+   "vibes": [
+    "dark"
+   ],
+   "fallbackVibes": false,
+   "slug": "koko"
+  },
+  {
+   "entry": {
+    "t": "Madouc",
+    "a": "Jack Vance",
+    "tok": "vance",
+    "y": 1990,
+    "alt": [
+     "Lyonesse: Madouc"
+    ]
+   },
+   "volumeId": "rXc1Xw2LXEgC",
+   "gbTitle": "Madouc: Lyonesse Book 3",
+   "gbAuthors": [
+    "Jack Vance"
+   ],
+   "gbPublished": "2011-09-29",
+   "cover": "https://books.google.com/books/content?id=rXc1Xw2LXEgC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1195,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 416,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "madouc"
+  },
+  {
+   "entry": {
+    "t": "Thomas the Rhymer",
+    "a": "Ellen Kushner",
+    "tok": "kushner",
+    "y": 1991
+   },
+   "volumeId": "FvEhTlMpoBUC",
+   "gbTitle": "Thomas the Rhymer",
+   "gbAuthors": [
+    "Ellen Kushner"
+   ],
+   "gbPublished": "2007-12-18",
+   "cover": "https://books.google.com/books/content?id=FvEhTlMpoBUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 930,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 5,
+   "pageCount": 306,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "thomas-the-rhymer"
+  },
+  {
+   "entry": {
+    "t": "Only Begotten Daughter",
+    "a": "James Morrow",
+    "tok": "morrow",
+    "y": 1991
+   },
+   "volumeId": "XfzBGrjKZjQC",
+   "gbTitle": "Only Begotten Daughter",
+   "gbAuthors": [
+    "James Morrow"
+   ],
+   "gbPublished": "1992",
+   "cover": "https://books.google.com/books/content?id=XfzBGrjKZjQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 0,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 324,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "only-begotten-daughter"
+  },
+  {
+   "entry": {
+    "t": "Boy's Life",
+    "a": "Robert McCammon",
+    "tok": "mccammon",
+    "y": 1992,
+    "g": "Horror"
+   },
+   "volumeId": "zl-Hbye_gL8C",
+   "gbTitle": "Boy's Life",
+   "gbAuthors": [
+    "Robert McCammon"
+   ],
+   "gbPublished": "2011-10-18",
+   "cover": "https://books.google.com/books/content?id=zl-Hbye_gL8C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1720,
+   "categories": [
+    "Horror",
+    "Fiction"
+   ],
+   "ratingsCount": 36,
+   "averageRating": 4.5,
+   "pageCount": 722,
+   "vibes": [
+    "dark",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "boys-life"
+  },
+  {
+   "entry": {
+    "t": "Last Call",
+    "a": "Tim Powers",
+    "tok": "powers",
+    "y": 1993
+   },
+   "volumeId": "7OwmdLfhuLwC",
+   "gbTitle": "Last Call",
+   "gbAuthors": [
+    "Tim Powers"
+   ],
+   "gbPublished": "1996-12-01",
+   "cover": "https://books.google.com/books/content?id=7OwmdLfhuLwC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 456,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 5,
+   "averageRating": 4,
+   "pageCount": 546,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "last-call"
+  },
+  {
+   "entry": {
+    "t": "Glimpses",
+    "a": "Lewis Shiner",
+    "tok": "shiner",
+    "y": 1994
+   },
+   "volumeId": "qhxm4w5-uVcC",
+   "gbTitle": "Glimpses",
+   "gbAuthors": [
+    "Lewis Shiner"
+   ],
+   "gbPublished": "2001-03-12",
+   "cover": "https://books.google.com/books/content?id=qhxm4w5-uVcC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 332,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 336,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "glimpses"
+  },
+  {
+   "entry": {
+    "t": "Towing Jehovah",
+    "a": "James Morrow",
+    "tok": "morrow",
+    "y": 1995
+   },
+   "volumeId": "eQoOHOI_fQIC",
+   "gbTitle": "Towing Jehovah",
+   "gbAuthors": [
+    "James Morrow"
+   ],
+   "gbPublished": "1995",
+   "cover": "https://books.google.com/books/content?id=eQoOHOI_fQIC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 301,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 5,
+   "averageRating": 4,
+   "pageCount": 388,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "towing-jehovah"
+  },
+  {
+   "entry": {
+    "t": "The Prestige",
+    "a": "Christopher Priest",
+    "tok": "priest",
+    "y": 1996
+   },
+   "volumeId": "yQX2sAWAPOEC",
+   "gbTitle": "The Prestige",
+   "gbAuthors": [
+    "Christopher Priest"
+   ],
+   "gbPublished": "2006-10-03",
+   "cover": "https://books.google.com/books/content?id=yQX2sAWAPOEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 42,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 4,
+   "averageRating": 4.5,
+   "pageCount": 372,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-prestige"
+  },
+  {
+   "entry": {
+    "t": "Godmother Night",
+    "a": "Rachel Pollack",
+    "tok": "pollack",
+    "y": 1997
+   },
+   "volumeId": "GUMIHQAACAAJ",
+   "gbTitle": "Godmother Night",
+   "gbAuthors": [
+    "Rachel Pollack"
+   ],
+   "gbPublished": "1996",
+   "cover": "https://books.google.com/books/content?id=GUMIHQAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 296,
+   "categories": [
+    "Fantasy",
+    "Death"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 355,
+   "vibes": [
+    "epic",
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "godmother-night"
+  },
+  {
+   "entry": {
+    "t": "The Physiognomy",
+    "a": "Jeffrey Ford",
+    "tok": "ford",
+    "y": 1998
+   },
+   "volumeId": "u29aGwAACAAJ",
+   "gbTitle": "The Physiognomy",
+   "gbAuthors": [
+    "Jeffrey Ford"
+   ],
+   "gbPublished": "1997",
+   "cover": "https://books.google.com/books/content?id=u29aGwAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 230,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 2,
+   "pageCount": 218,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-physiognomy"
+  },
+  {
+   "entry": {
+    "t": "The Antelope Wife",
+    "a": "Louise Erdrich",
+    "tok": "erdrich",
+    "y": 1999
+   },
+   "volumeId": "rE7BUD0bhnUC",
+   "gbTitle": "The Antelope Wife: A Novel",
+   "gbAuthors": [
+    "Louise Erdrich"
+   ],
+   "gbPublished": "2012-08-28",
+   "cover": "https://books.google.com/books/content?id=rE7BUD0bhnUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1138,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 250,
+   "vibes": [
+    "epic",
+    "heartbreaking",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-antelope-wife"
+  },
+  {
+   "entry": {
+    "t": "Thraxas",
+    "a": "Martin Scott",
+    "tok": "scott",
+    "y": 2000
+   },
+   "volumeId": "CkybswEACAAJ",
+   "gbTitle": "Thraxas: Thraxas at War & Thraxas Under Siege",
+   "gbAuthors": [
+    "Martin Scott"
+   ],
+   "gbPublished": "2017-10-30",
+   "cover": "https://books.google.com/books/content?id=CkybswEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 431,
+   "categories": [
+    "Fantasy"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 350,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "thraxas"
+  },
+  {
+   "entry": {
+    "t": "Declare",
+    "a": "Tim Powers",
+    "tok": "powers",
+    "y": 2001
+   },
+   "volumeId": "fzuxo8CJOh8C",
+   "gbTitle": "Declare",
+   "gbAuthors": [
+    "Tim Powers"
+   ],
+   "gbPublished": "2002-06-04",
+   "cover": "https://books.google.com/books/content?id=fzuxo8CJOh8C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 204,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 7,
+   "averageRating": 4,
+   "pageCount": 605,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "declare"
+  },
+  {
+   "entry": {
+    "t": "Galveston",
+    "a": "Sean Stewart",
+    "tok": "stewart",
+    "y": 2001
+   },
+   "volumeId": "bZbjF__QghkC",
+   "gbTitle": "Galveston",
+   "gbAuthors": [
+    "Sean Stewart"
+   ],
+   "gbPublished": "2012-02-01",
+   "cover": "https://books.google.com/books/content?id=bZbjF__QghkC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 389,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 417,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "galveston"
+  },
+  {
+   "entry": {
+    "t": "The Facts of Life",
+    "a": "Graham Joyce",
+    "tok": "joyce",
+    "y": 2003
+   },
+   "volumeId": "FEuyqlB67NwC",
+   "gbTitle": "The Facts of Life: A Novel",
+   "gbAuthors": [
+    "Graham Joyce"
+   ],
+   "gbPublished": "2003-06-17",
+   "cover": "https://books.google.com/books/content?id=FEuyqlB67NwC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 245,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 370,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-facts-of-life"
+  },
+  {
+   "entry": {
+    "t": "Ombria in Shadow",
+    "a": "Patricia A. McKillip",
+    "tok": "mckillip",
+    "y": 2003
+   },
+   "volumeId": "7U8lO3duFPAC",
+   "gbTitle": "Ombria in Shadow",
+   "gbAuthors": [
+    "Patricia A. McKillip"
+   ],
+   "gbPublished": "2002-01-08",
+   "cover": "https://books.google.com/books/content?id=7U8lO3duFPAC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 552,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 251,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "ombria-in-shadow"
+  },
+  {
+   "entry": {
+    "t": "Tooth and Claw",
+    "a": "Jo Walton",
+    "tok": "walton",
+    "y": 2004
+   },
+   "volumeId": "mb72uq-zibcC",
+   "gbTitle": "Tooth and Claw",
+   "gbAuthors": [
+    "Jo Walton"
+   ],
+   "gbPublished": "2003-11",
+   "cover": "https://books.google.com/books/content?id=mb72uq-zibcC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 210,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 262,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "tooth-and-claw"
+  },
+  {
+   "entry": {
+    "t": "Soldier of Sidon",
+    "a": "Gene Wolfe",
+    "tok": "wolfe",
+    "y": 2007
+   },
+   "volumeId": "Baj59zn5ByMC",
+   "gbTitle": "Soldier of Sidon",
+   "gbAuthors": [
+    "Gene Wolfe"
+   ],
+   "gbPublished": "2006-10-31",
+   "cover": "https://books.google.com/books/content?id=Baj59zn5ByMC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 186,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 334,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "soldier-of-sidon"
+  },
+  {
+   "entry": {
+    "t": "Ysabel",
+    "a": "Guy Gavriel Kay",
+    "tok": "kay",
+    "y": 2008
+   },
+   "volumeId": "YsdnCe6zynsC",
+   "gbTitle": "Ysabel",
+   "gbAuthors": [
+    "Guy Gavriel Kay"
+   ],
+   "gbPublished": "2007",
+   "cover": "https://books.google.com/books/content?id=YsdnCe6zynsC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 334,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 6,
+   "averageRating": 4,
+   "pageCount": 444,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "ysabel"
+  },
+  {
+   "entry": {
+    "t": "The Shadow Year",
+    "a": "Jeffrey Ford",
+    "tok": "ford",
+    "y": 2009
+   },
+   "volumeId": "2p-6XVONiKQC",
+   "gbTitle": "The Shadow Year: A Novel",
+   "gbAuthors": [
+    "Jeffrey Ford"
+   ],
+   "gbPublished": "2009-10-13",
+   "cover": "https://books.google.com/books/content?id=2p-6XVONiKQC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2021,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 30,
+   "averageRating": 3,
+   "pageCount": 308,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-shadow-year"
+  },
+  {
+   "entry": {
+    "t": "Tender Morsels",
+    "a": "Margo Lanagan",
+    "tok": "lanagan",
+    "y": 2009
+   },
+   "volumeId": "x4_SsVJVo_4C",
+   "gbTitle": "Tender Morsels",
+   "gbAuthors": [
+    "Margo Lanagan"
+   ],
+   "gbPublished": "2010-02-09",
+   "cover": "https://books.google.com/books/content?id=x4_SsVJVo_4C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 538,
+   "categories": [
+    "Fantasy",
+    "Young Adult Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 466,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "tender-morsels"
+  },
+  {
+   "entry": {
+    "t": "Finch",
+    "a": "Jeff VanderMeer",
+    "tok": "vandermeer",
+    "y": 2010
+   },
+   "volumeId": "sygZBQAAQBAJ",
+   "gbTitle": "Finch",
+   "gbAuthors": [
+    "Jeff VanderMeer"
+   ],
+   "gbPublished": "2009",
+   "cover": "https://books.google.com/books/content?id=sygZBQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 329,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 352,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "finch"
+  },
+  {
+   "entry": {
+    "t": "Who Fears Death",
+    "a": "Nnedi Okorafor",
+    "tok": "okorafor",
+    "y": 2011
+   },
+   "volumeId": "oS-JEAAAQBAJ",
+   "gbTitle": "Who Fears Death",
+   "gbAuthors": [
+    "Nnedi Okorafor"
+   ],
+   "gbPublished": "2020-10-06",
+   "cover": "https://books.google.com/books/content?id=oS-JEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 210,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 402,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "who-fears-death"
+  },
+  {
+   "entry": {
+    "t": "Osama",
+    "a": "Lavie Tidhar",
+    "tok": "tidhar",
+    "y": 2012
+   },
+   "volumeId": "X89mEQAAQBAJ",
+   "gbTitle": "Osama",
+   "gbAuthors": [
+    "Lavie Tidhar"
+   ],
+   "gbPublished": "2012-10-09",
+   "cover": "https://books.google.com/books/content?id=X89mEQAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 617,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 282,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "osama"
+  },
+  {
+   "entry": {
+    "t": "Alif the Unseen",
+    "a": "G. Willow Wilson",
+    "tok": "wilson",
+    "y": 2013
+   },
+   "volumeId": "D_gD5AZLH0wC",
+   "gbTitle": "Alif the Unseen",
+   "gbAuthors": [
+    "G. Willow Wilson"
+   ],
+   "gbPublished": "2012-07-10",
+   "cover": "https://books.google.com/books/content?id=D_gD5AZLH0wC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1527,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 4.5,
+   "pageCount": 361,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "alif-the-unseen"
+  },
+  {
+   "entry": {
+    "t": "A Stranger in Olondria",
+    "a": "Sofia Samatar",
+    "tok": "samatar",
+    "y": 2014
+   },
+   "volumeId": "k3Eqf0s0kT0C",
+   "gbTitle": "A Stranger in Olondria: a novel",
+   "gbAuthors": [
+    "Sofia Samatar"
+   ],
+   "gbPublished": "2013-04-12",
+   "cover": "https://books.google.com/books/content?id=k3Eqf0s0kT0C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1181,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 330,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "a-stranger-in-olondria"
+  },
+  {
+   "entry": {
+    "t": "The Bone Clocks",
+    "a": "David Mitchell",
+    "tok": "mitchell",
+    "y": 2015
+   },
+   "volumeId": "-v3fAgAAQBAJ",
+   "gbTitle": "The Bone Clocks: A Novel",
+   "gbAuthors": [
+    "David Mitchell"
+   ],
+   "gbPublished": "2014-09-02",
+   "cover": "https://books.google.com/books/content?id=-v3fAgAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 2968,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 2.5,
+   "pageCount": 642,
+   "vibes": [
+    "epic",
+    "immersive"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-bone-clocks"
+  },
+  {
+   "entry": {
+    "t": "The Chimes",
+    "a": "Anna Smaill",
+    "tok": "smaill",
+    "y": 2016
+   },
+   "volumeId": "KIw_CwAAQBAJ",
+   "gbTitle": "The Chimes",
+   "gbAuthors": [
+    "Anna Smaill"
+   ],
+   "gbPublished": "2016-05-03",
+   "cover": "https://books.google.com/books/content?id=KIw_CwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1470,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 293,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-chimes-2015"
+  },
+  {
+   "entry": {
+    "t": "The Sudden Appearance of Hope",
+    "a": "Claire North",
+    "tok": "north",
+    "y": 2017
+   },
+   "volumeId": "A9rbAQAACAAJ",
+   "gbTitle": "The Sudden Appearance of Hope",
+   "gbAuthors": [
+    "Claire North"
+   ],
+   "gbPublished": "2016",
+   "cover": "https://books.google.com/books/content?id=A9rbAQAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 735,
+   "categories": [
+    "Fantasy",
+    "Electronic surveillance"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 468,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-sudden-appearance-of-hope"
+  },
+  {
+   "entry": {
+    "t": "The Changeling",
+    "a": "Victor LaValle",
+    "tok": "lavalle",
+    "y": 2018,
+    "g": "Horror"
+   },
+   "volumeId": "XddLDwAAQBAJ",
+   "gbTitle": "The Changeling: A Novel",
+   "gbAuthors": [
+    "Victor LaValle"
+   ],
+   "gbPublished": "2018-03-06",
+   "cover": "https://books.google.com/books/content?id=XddLDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1609,
+   "categories": [
+    "Horror",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 465,
+   "vibes": [
+    "dark",
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-changeling"
+  },
+  {
+   "entry": {
+    "t": "Witchmark",
+    "a": "C. L. Polk",
+    "tok": "polk",
+    "y": 2019
+   },
+   "volumeId": "Qu0yDwAAQBAJ",
+   "gbTitle": "Witchmark",
+   "gbAuthors": [
+    "C. L. Polk"
+   ],
+   "gbPublished": "2018-06-19",
+   "cover": "https://books.google.com/books/content?id=Qu0yDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1592,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 271,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "witchmark"
+  },
+  {
+   "entry": {
+    "t": "Queen of the Conquered",
+    "a": "Kacen Callender",
+    "tok": "callender",
+    "y": 2020
+   },
+   "volumeId": "ZIKLDwAAQBAJ",
+   "gbTitle": "Queen of the Conquered",
+   "gbAuthors": [
+    "Kacen Callender"
+   ],
+   "gbPublished": "2019-11-12",
+   "cover": "https://books.google.com/books/content?id=ZIKLDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 743,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 361,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "queen-of-the-conquered"
+  },
+  {
+   "entry": {
+    "t": "Trouble the Saints",
+    "a": "Alaya Dawn Johnson",
+    "tok": "johnson",
+    "y": 2021
+   },
+   "volumeId": "hgGrDwAAQBAJ",
+   "gbTitle": "Trouble the Saints: A Novel",
+   "gbAuthors": [
+    "Alaya Dawn Johnson"
+   ],
+   "gbPublished": "2020-07-21",
+   "cover": "https://books.google.com/books/content?id=hgGrDwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1274,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 315,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "trouble-the-saints"
+  },
+  {
+   "entry": {
+    "t": "The Jasmine Throne",
+    "a": "Tasha Suri",
+    "tok": "suri",
+    "y": 2022
+   },
+   "volumeId": "cAz1DwAAQBAJ",
+   "gbTitle": "The Jasmine Throne",
+   "gbAuthors": [
+    "Tasha Suri"
+   ],
+   "gbPublished": "2021-06-08",
+   "cover": "https://books.google.com/books/content?id=cAz1DwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1126,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 548,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-jasmine-throne"
+  },
+  {
+   "entry": {
+    "t": "Saint Death's Daughter",
+    "a": "C.S.E. Cooney",
+    "tok": "cooney",
+    "y": 2023
+   },
+   "volumeId": "z7uIzgEACAAJ",
+   "gbTitle": "Saint Death's Daughter",
+   "gbAuthors": [
+    "C. S. E. Cooney"
+   ],
+   "gbPublished": "2022-04-12",
+   "cover": "https://books.google.com/books/content?id=z7uIzgEACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 862,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 624,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "saint-deaths-daughter"
+  },
+  {
+   "entry": {
+    "t": "The Reformatory",
+    "a": "Tananarive Due",
+    "tok": "due",
+    "y": 2024,
+    "g": "Horror"
+   },
+   "volumeId": "QR-UEAAAQBAJ",
+   "gbTitle": "The Reformatory: A Novel",
+   "gbAuthors": [
+    "Tananarive Due"
+   ],
+   "gbPublished": "2023-10-31",
+   "cover": "https://books.google.com/books/content?id=QR-UEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1815,
+   "categories": [
+    "Horror",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 576,
+   "vibes": [
+    "dark",
+    "heartbreaking"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-reformatory"
+  }
+ ]
+}
