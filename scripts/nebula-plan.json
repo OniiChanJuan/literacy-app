@@ -1,0 +1,981 @@
+{
+ "mark": [
+  {
+   "y": 1965,
+   "t": "Dune",
+   "itemId": 10
+  },
+  {
+   "y": 1966,
+   "t": "Flowers for Algernon",
+   "itemId": 16989
+  },
+  {
+   "y": 1969,
+   "t": "The Left Hand of Darkness",
+   "itemId": 15935
+  },
+  {
+   "y": 1970,
+   "t": "Ringworld",
+   "itemId": 39679
+  },
+  {
+   "y": 1972,
+   "t": "The Gods Themselves",
+   "itemId": 16208
+  },
+  {
+   "y": 1973,
+   "t": "Rendezvous with Rama",
+   "itemId": 39681
+  },
+  {
+   "y": 1974,
+   "t": "The Dispossessed",
+   "itemId": 15934
+  },
+  {
+   "y": 1975,
+   "t": "The Forever War",
+   "itemId": 39682
+  },
+  {
+   "y": 1977,
+   "t": "Gateway",
+   "itemId": 39684
+  },
+  {
+   "y": 1978,
+   "t": "Dreamsnake",
+   "itemId": 39685
+  },
+  {
+   "y": 1979,
+   "t": "The Fountains of Paradise",
+   "itemId": 39686
+  },
+  {
+   "y": 1983,
+   "t": "Startide Rising",
+   "itemId": 39689
+  },
+  {
+   "y": 1984,
+   "t": "Neuromancer",
+   "itemId": 2
+  },
+  {
+   "y": 1985,
+   "t": "Ender's Game",
+   "itemId": 16751
+  },
+  {
+   "y": 1986,
+   "t": "Speaker for the Dead",
+   "itemId": 39690
+  },
+  {
+   "y": 1990,
+   "t": "Tehanu",
+   "itemId": 14326
+  },
+  {
+   "y": 1992,
+   "t": "Doomsday Book",
+   "itemId": 39697
+  },
+  {
+   "y": 1998,
+   "t": "Forever Peace",
+   "itemId": 39702
+  },
+  {
+   "y": 1999,
+   "t": "Parable of the Talents",
+   "itemId": 16164
+  },
+  {
+   "y": 2002,
+   "t": "American Gods",
+   "itemId": 15909
+  },
+  {
+   "y": 2004,
+   "t": "Paladin of Souls",
+   "itemId": 39706
+  },
+  {
+   "y": 2007,
+   "t": "The Yiddish Policemen's Union",
+   "itemId": 39710
+  },
+  {
+   "y": 2008,
+   "t": "Powers",
+   "itemId": 17954
+  },
+  {
+   "y": 2009,
+   "t": "The Windup Girl",
+   "itemId": 17195
+  },
+  {
+   "y": 2010,
+   "t": "Blackout",
+   "itemId": 39712
+  },
+  {
+   "y": 2010,
+   "t": "All Clear",
+   "itemId": 39713
+  },
+  {
+   "y": 2011,
+   "t": "Among Others",
+   "itemId": 39714
+  },
+  {
+   "y": 2013,
+   "t": "Ancillary Justice",
+   "itemId": 39716
+  },
+  {
+   "y": 2014,
+   "t": "Annihilation",
+   "itemId": 17186
+  },
+  {
+   "y": 2015,
+   "t": "Uprooted",
+   "itemId": 30161
+  },
+  {
+   "y": 2017,
+   "t": "The Stone Sky",
+   "itemId": 29711
+  },
+  {
+   "y": 2018,
+   "t": "The Calculating Stars",
+   "itemId": 39718
+  },
+  {
+   "y": 2020,
+   "t": "Network Effect",
+   "itemId": 27887
+  },
+  {
+   "y": 2022,
+   "t": "Babel",
+   "itemId": 25507
+  },
+  {
+   "y": 2025,
+   "t": "The Buffalo Hunter Hunter",
+   "itemId": 24285
+  }
+ ],
+ "ingest": [
+  {
+   "entry": {
+    "t": "Babel-17",
+    "a": "Samuel R. Delany",
+    "tok": "delany",
+    "y": 1966
+   },
+   "volumeId": "IMGsQgAACAAJ",
+   "gbTitle": "Babel-17",
+   "gbAuthors": [
+    "Samuel R. Delany"
+   ],
+   "gbPublished": "1999",
+   "cover": "https://books.google.com/books/content?id=IMGsQgAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 247,
+   "categories": [
+    "Science Fiction",
+    "English fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 193,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "babel-17"
+  },
+  {
+   "entry": {
+    "t": "The Einstein Intersection",
+    "a": "Samuel R. Delany",
+    "tok": "delany",
+    "y": 1967
+   },
+   "volumeId": "id0TFxnX1cYC",
+   "gbTitle": "The Einstein Intersection",
+   "gbAuthors": [
+    "Samuel R. Delany"
+   ],
+   "gbPublished": "1998",
+   "cover": "https://books.google.com/books/content?id=id0TFxnX1cYC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 43,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 3,
+   "pageCount": 135,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-einstein-intersection"
+  },
+  {
+   "entry": {
+    "t": "Rite of Passage",
+    "a": "Alexei Panshin",
+    "tok": "panshin",
+    "y": 1968
+   },
+   "volumeId": "HlZfPgAACAAJ",
+   "gbTitle": "Rite of Passage",
+   "gbAuthors": [
+    "Alexei Panshin"
+   ],
+   "gbPublished": "2007",
+   "cover": "https://books.google.com/books/content?id=HlZfPgAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 376,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 0,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "rite-of-passage"
+  },
+  {
+   "entry": {
+    "t": "A Time of Changes",
+    "a": "Robert Silverberg",
+    "tok": "silverberg",
+    "y": 1971
+   },
+   "volumeId": "X7p3sHcMFsgC",
+   "gbTitle": "A Time of Changes",
+   "gbAuthors": [
+    "Robert Silverberg"
+   ],
+   "gbPublished": "2024-03-26",
+   "cover": "https://books.google.com/books/content?id=X7p3sHcMFsgC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1001,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 301,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "a-time-of-changes"
+  },
+  {
+   "entry": {
+    "t": "Man Plus",
+    "a": "Frederik Pohl",
+    "tok": "pohl",
+    "y": 1976
+   },
+   "volumeId": "97dxPwAACAAJ",
+   "gbTitle": "Man Plus",
+   "gbAuthors": [
+    "Frederik Pohl"
+   ],
+   "gbPublished": "2000",
+   "cover": "https://books.google.com/books/content?id=97dxPwAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 502,
+   "categories": [
+    "Science Fiction",
+    "Bioengineering"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 215,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "man-plus"
+  },
+  {
+   "entry": {
+    "t": "Timescape",
+    "a": "Gregory Benford",
+    "tok": "benford",
+    "y": 1980
+   },
+   "volumeId": "sfhsO842oWIC",
+   "gbTitle": "Timescape: A Novel",
+   "gbAuthors": [
+    "Gregory Benford"
+   ],
+   "gbPublished": "1992-08-01",
+   "cover": "https://books.google.com/books/content?id=sfhsO842oWIC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 903,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 513,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "timescape"
+  },
+  {
+   "entry": {
+    "t": "The Claw of the Conciliator",
+    "a": "Gene Wolfe",
+    "tok": "wolfe",
+    "y": 1981,
+    "g": "Fantasy"
+   },
+   "volumeId": "Oj6-5s3FOUEC",
+   "gbTitle": "The Claw of the Conciliator",
+   "gbAuthors": [
+    "Gene Wolfe"
+   ],
+   "gbPublished": "1981",
+   "cover": "https://books.google.com/books/content?id=Oj6-5s3FOUEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 208,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 3,
+   "averageRating": 4,
+   "pageCount": 260,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-claw-of-the-conciliator"
+  },
+  {
+   "entry": {
+    "t": "No Enemy But Time",
+    "a": "Michael Bishop",
+    "tok": "bishop",
+    "y": 1982
+   },
+   "volumeId": "CBx9EAAAQBAJ",
+   "gbTitle": "No Enemy but Time",
+   "gbAuthors": [
+    "Michael Bishop"
+   ],
+   "gbPublished": "2022-08-09",
+   "cover": "https://books.google.com/books/content?id=CBx9EAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1021,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 420,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "no-enemy-but-time"
+  },
+  {
+   "entry": {
+    "t": "The Falling Woman",
+    "a": "Pat Murphy",
+    "tok": "murphy",
+    "y": 1987,
+    "g": "Fantasy"
+   },
+   "volumeId": "Q-IoAwAAQBAJ",
+   "gbTitle": "The Falling Woman",
+   "gbAuthors": [
+    "Pat Murphy"
+   ],
+   "gbPublished": "2014-04-15",
+   "cover": "https://books.google.com/books/content?id=Q-IoAwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 930,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 346,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-falling-woman"
+  },
+  {
+   "entry": {
+    "t": "Falling Free",
+    "a": "Lois McMaster Bujold",
+    "tok": "bujold",
+    "y": 1988
+   },
+   "volumeId": "sWlhPwAACAAJ",
+   "gbTitle": "Falling Free",
+   "gbAuthors": [
+    "Lois McMaster Bujold"
+   ],
+   "gbPublished": "2008-01-29",
+   "cover": "https://books.google.com/books/content?id=sWlhPwAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 492,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 320,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "falling-free"
+  },
+  {
+   "entry": {
+    "t": "The Healer's War",
+    "a": "Elizabeth Ann Scarborough",
+    "tok": "scarborough",
+    "y": 1989
+   },
+   "volumeId": "GImxAAAAIAAJ",
+   "gbTitle": "The Healer's War",
+   "gbAuthors": [
+    "Elizabeth Ann Scarborough"
+   ],
+   "gbPublished": "1988",
+   "cover": "https://books.google.com/books/content?id=GImxAAAAIAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 62,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 328,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-healers-war"
+  },
+  {
+   "entry": {
+    "t": "Stations of the Tide",
+    "a": "Michael Swanwick",
+    "tok": "swanwick",
+    "y": 1991
+   },
+   "volumeId": "3rXU2H7KeHEC",
+   "gbTitle": "Stations of the Tide",
+   "gbAuthors": [
+    "Michael Swanwick",
+    "John Clute"
+   ],
+   "gbPublished": "2011-02-01",
+   "cover": "https://books.google.com/books/content?id=3rXU2H7KeHEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1127,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 257,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "stations-of-the-tide"
+  },
+  {
+   "entry": {
+    "t": "Red Mars",
+    "a": "Kim Stanley Robinson",
+    "tok": "robinson",
+    "y": 1993,
+    "py": 1992
+   },
+   "volumeId": "R8OTfyIAmdEC",
+   "gbTitle": "Red Mars",
+   "gbAuthors": [
+    "Kim Stanley Robinson"
+   ],
+   "gbPublished": "2003-05-27",
+   "cover": "https://books.google.com/books/content?id=R8OTfyIAmdEC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 235,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 4,
+   "averageRating": 4,
+   "pageCount": 627,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "red-mars"
+  },
+  {
+   "entry": {
+    "t": "Moving Mars",
+    "a": "Greg Bear",
+    "tok": "bear",
+    "y": 1994,
+    "py": 1993
+   },
+   "volumeId": "OhKV8foHFGkC",
+   "gbTitle": "Moving Mars: A Novel",
+   "gbAuthors": [
+    "Greg Bear"
+   ],
+   "gbPublished": "2007-05",
+   "cover": "https://books.google.com/books/content?id=OhKV8foHFGkC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 72,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 5,
+   "pageCount": 454,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "moving-mars"
+  },
+  {
+   "entry": {
+    "t": "The Terminal Experiment",
+    "a": "Robert J. Sawyer",
+    "tok": "sawyer",
+    "y": 1995
+   },
+   "volumeId": "DVnPRvHJNDwC",
+   "gbTitle": "The Terminal Experiment",
+   "gbAuthors": [
+    "Robert J. Sawyer"
+   ],
+   "gbPublished": "2011-08-30",
+   "cover": "https://books.google.com/books/content?id=DVnPRvHJNDwC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 172,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 2,
+   "averageRating": 5,
+   "pageCount": 295,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-terminal-experiment"
+  },
+  {
+   "entry": {
+    "t": "Slow River",
+    "a": "Nicola Griffith",
+    "tok": "griffith",
+    "y": 1996,
+    "py": 1995
+   },
+   "volumeId": "L4g-DwAAQBAJ",
+   "gbTitle": "Slow River: A Novel",
+   "gbAuthors": [
+    "Nicola Griffith"
+   ],
+   "gbPublished": "1996-08-20",
+   "cover": "https://books.google.com/books/content?id=L4g-DwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1250,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 369,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "slow-river"
+  },
+  {
+   "entry": {
+    "t": "The Moon and the Sun",
+    "a": "Vonda N. McIntyre",
+    "tok": "mcintyre",
+    "y": 1997,
+    "g": "Fantasy"
+   },
+   "volumeId": "cG-ir08Lb8IC",
+   "gbTitle": "The Moon and the Sun",
+   "gbAuthors": [
+    "Vonda N. McIntyre"
+   ],
+   "gbPublished": "1998",
+   "cover": "https://books.google.com/books/content?id=cG-ir08Lb8IC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 384,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 716,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-moon-and-the-sun"
+  },
+  {
+   "entry": {
+    "t": "Darwin's Radio",
+    "a": "Greg Bear",
+    "tok": "bear",
+    "y": 2000,
+    "py": 1999
+   },
+   "volumeId": "hSisa9UT530C",
+   "gbTitle": "Darwin's Radio: A Novel",
+   "gbAuthors": [
+    "Greg Bear"
+   ],
+   "gbPublished": "2003-03-04",
+   "cover": "https://books.google.com/books/content?id=hSisa9UT530C&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1148,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 11,
+   "averageRating": 3.5,
+   "pageCount": 450,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "darwins-radio"
+  },
+  {
+   "entry": {
+    "t": "The Quantum Rose",
+    "a": "Catherine Asaro",
+    "tok": "asaro",
+    "y": 2001,
+    "py": 2000
+   },
+   "volumeId": "ck8iCkWkMSMC",
+   "gbTitle": "The Quantum Rose",
+   "gbAuthors": [
+    "Catherine Asaro"
+   ],
+   "gbPublished": "2000",
+   "cover": "https://books.google.com/books/content?id=ck8iCkWkMSMC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 177,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 433,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-quantum-rose"
+  },
+  {
+   "entry": {
+    "t": "The Speed of Dark",
+    "a": "Elizabeth Moon",
+    "tok": "moon",
+    "y": 2003,
+    "py": 2002
+   },
+   "volumeId": "T_CpmrhPCsUC",
+   "gbTitle": "The Speed Of Dark",
+   "gbAuthors": [
+    "Elizabeth Moon"
+   ],
+   "gbPublished": "2005",
+   "cover": "https://books.google.com/books/content?id=T_CpmrhPCsUC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 264,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 3,
+   "averageRating": 3,
+   "pageCount": 386,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-speed-of-dark"
+  },
+  {
+   "entry": {
+    "t": "Camouflage",
+    "a": "Joe Haldeman",
+    "tok": "haldeman",
+    "y": 2005,
+    "py": 2004
+   },
+   "volumeId": "wBiTEAAAQBAJ",
+   "gbTitle": "Camouflage",
+   "gbAuthors": [
+    "Joe Haldeman"
+   ],
+   "gbPublished": "2005-07-26",
+   "cover": "https://books.google.com/books/content?id=wBiTEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 427,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 305,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "camouflage"
+  },
+  {
+   "entry": {
+    "t": "Seeker",
+    "a": "Jack McDevitt",
+    "tok": "mcdevitt",
+    "y": 2006,
+    "py": 2005
+   },
+   "volumeId": "Km_Vef8uGUcC",
+   "gbTitle": "Seeker",
+   "gbAuthors": [
+    "Jack McDevitt"
+   ],
+   "gbPublished": "2005-11-01",
+   "cover": "https://books.google.com/books/content?id=Km_Vef8uGUcC&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 441,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 3,
+   "averageRating": 3.5,
+   "pageCount": 357,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "seeker"
+  },
+  {
+   "entry": {
+    "t": "2312",
+    "a": "Kim Stanley Robinson",
+    "tok": "robinson",
+    "y": 2012
+   },
+   "volumeId": "V8BoAQAACAAJ",
+   "gbTitle": "2312",
+   "gbAuthors": [
+    "Kim Stanley Robinson"
+   ],
+   "gbPublished": "2012-05-22",
+   "cover": "https://books.google.com/books/content?id=V8BoAQAACAAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1046,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 576,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "2312"
+  },
+  {
+   "entry": {
+    "t": "All the Birds in the Sky",
+    "a": "Charlie Jane Anders",
+    "tok": "anders",
+    "y": 2016,
+    "g": "Fantasy"
+   },
+   "volumeId": "hzkhCwAAQBAJ",
+   "gbTitle": "All the Birds in the Sky",
+   "gbAuthors": [
+    "Charlie Jane Anders"
+   ],
+   "gbPublished": "2016-01-26",
+   "cover": "https://books.google.com/books/content?id=hzkhCwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 455,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 317,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "all-the-birds-in-the-sky"
+  },
+  {
+   "entry": {
+    "t": "A Song for a New Day",
+    "a": "Sarah Pinsker",
+    "tok": "pinsker",
+    "y": 2019
+   },
+   "volumeId": "fx1-DwAAQBAJ",
+   "gbTitle": "A Song for a New Day",
+   "gbAuthors": [
+    "Sarah Pinsker"
+   ],
+   "gbPublished": "2019-09-10",
+   "cover": "https://books.google.com/books/content?id=fx1-DwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1284,
+   "categories": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 386,
+   "vibes": [
+    "mind-bending"
+   ],
+   "fallbackVibes": false,
+   "slug": "a-song-for-a-new-day"
+  },
+  {
+   "entry": {
+    "t": "A Master of Djinn",
+    "a": "P. Djèlí Clark",
+    "tok": "clark",
+    "y": 2021,
+    "g": "Fantasy"
+   },
+   "volumeId": "kYX7DwAAQBAJ",
+   "gbTitle": "A Master of Djinn",
+   "gbAuthors": [
+    "P. Djèlí Clark"
+   ],
+   "gbPublished": "2021-05-11",
+   "cover": "https://books.google.com/books/content?id=kYX7DwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1618,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 369,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "a-master-of-djinn"
+  },
+  {
+   "entry": {
+    "t": "The Saint of Bright Doors",
+    "a": "Vajra Chandrasekera",
+    "tok": "chandrasekera",
+    "y": 2023,
+    "g": "Fantasy"
+   },
+   "volumeId": "xE-BEAAAQBAJ",
+   "gbTitle": "The Saint of Bright Doors",
+   "gbAuthors": [
+    "Vajra Chandrasekera"
+   ],
+   "gbPublished": "2023-07-11",
+   "cover": "https://books.google.com/books/content?id=xE-BEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1242,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 1,
+   "averageRating": 4,
+   "pageCount": 273,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "the-saint-of-bright-doors"
+  },
+  {
+   "entry": {
+    "t": "Someone You Can Build a Nest In",
+    "a": "John Wiswell",
+    "tok": "wiswell",
+    "y": 2024,
+    "g": "Fantasy"
+   },
+   "volumeId": "Z9fJEAAAQBAJ",
+   "gbTitle": "Someone You Can Build A Nest In: A cosy fantasy as sweet as love and as dark as night",
+   "gbAuthors": [
+    "John Wiswell"
+   ],
+   "gbPublished": "2024-04-11",
+   "cover": "https://books.google.com/books/content?id=Z9fJEAAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api",
+   "descLen": 1082,
+   "categories": [
+    "Fantasy",
+    "Fiction"
+   ],
+   "ratingsCount": 0,
+   "averageRating": 0,
+   "pageCount": 366,
+   "vibes": [
+    "epic"
+   ],
+   "fallbackVibes": false,
+   "slug": "someone-you-can-build-a-nest-in"
+  }
+ ]
+}
