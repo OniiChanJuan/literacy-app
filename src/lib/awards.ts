@@ -21,6 +21,7 @@ export const AWARDS: Record<string, AwardMeta> = {
   womens_prize: { label: "Women's Prize",   icon: "🪶", color: "#2E8B57", allowedTypes: ["book"] },
   intl_booker:  { label: "International Booker", icon: "🌍", color: "#946B00", allowedTypes: ["book"] },
   world_fantasy: { label: "World Fantasy Award", icon: "🐉", color: "#6A5ACD", allowedTypes: ["book"] },
+  stoker:   { label: "Bram Stoker Award",  icon: "🦇", color: "#8B0000", allowedTypes: ["book"] },
   nebula:   { label: "Nebula Award",      icon: "✨", color: "#00BBF9", allowedTypes: ["book", "comic", "manga"] },
   pulitzer: { label: "Pulitzer Prize",    icon: "📰", color: "#D4AF37", allowedTypes: ["book", "comic", "music"] },
   palme:    { label: "Palme d'Or",        icon: "🌴", color: "#2EC4B6", allowedTypes: ["movie"] },
